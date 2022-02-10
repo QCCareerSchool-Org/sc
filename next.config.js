@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/sc',
+  // basePath: '/sc',
   reactStrictMode: true,
   experimental: {
     // Enables the styled-components SWC transform
