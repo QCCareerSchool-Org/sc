@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import { ReactElement } from 'react';
-import styled from 'styled-components';
-import { useScreenWidth } from '../hooks/useScreenWidth';
 
+import { useScreenWidth } from '../hooks/useScreenWidth';
 import Logo from '../images/logo.svg';
-import { Container } from './styled/Container';
+import { AccountIcon } from './AccountIcon';
+import { HeaderBar } from './HeaderBar';
 
 const calculateLogoWidth = (height: number): number => {
   return Math.round(Logo.width / Logo.height * height);
@@ -16,33 +16,28 @@ export const SiteHeader = (): ReactElement => {
   const screenWidth = useScreenWidth();
   const lgOrGreater = screenWidth >= 992;
 
-  const padding = lgOrGreater ? '2rem 0' : '1.375rem 0';
+  const padding = lgOrGreater ? '1.5rem 0' : '0.25rem 0';
 
   const logoHeight = lgOrGreater ? 41 : 21;
   const logoWidth = calculateLogoWidth(logoHeight);
 
   return (
     <>
-      <header style={{ padding }}>
-        <Container>
-          <div style={{ height: logoHeight }}>
-            <Image src={Logo} alt="Online Student Center" width={logoWidth} height={logoHeight} />
+      <header className="bg-white" style={{ padding }}>
+        <div className="container">
+          <div className="row align-items-center">
+            <div className="col">
+              <div style={{ height: logoHeight, marginTop: 3 }}>
+                <Image src={Logo} alt="Online Student Center" width={logoWidth} height={logoHeight} />
+              </div>
+            </div>
+            <div className="col text-end">
+              <AccountIcon />
+            </div>
           </div>
-        </Container>
+        </div>
       </header>
-      <HeaderBar>
-        <Container>
-          <small>Call Us Toll Free: <strong>1-833-600-3751</strong></small>
-        </Container>
-      </HeaderBar>
+      <HeaderBar />
     </>
   );
 };
-
-const HeaderBar = styled.div`
-  background: #e10019;
-  background: linear-gradient(to right, #e10019, #b70404);
-  color: white;
-  padding: 0.1875rem 0;
-  vertical-align: center;
-`;

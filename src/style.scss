@@ -1,0 +1,79 @@
+
+$body-bg: rgb(250, 250, 250);
+$body-color: #212529;
+
+$grid-gutter-width:           1.875rem; // to match old site (remove when old site is gone)
+
+$font-family-sans-serif: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+$navbar-nav-link-padding-x: 1rem;
+
+$dropdown-item-padding-x: 1.5rem;
+
+// $nav-link-color: rgba(0,244,0,.9);
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+.mainNav .navbar-nav > .nav-item .nav-link {
+    text-transform: uppercase;
+}
+
+@include media-breakpoint-up(sm) {
+  .mainNav.navbar-expand-sm .navbar-nav .nav-item:first-child .nav-link {
+    padding-left: 0;
+  }
+}
+@include media-breakpoint-up(md) {
+  .mainNav.navbar-expand-md .navbar-nav .nav-item:first-child .nav-link {
+    padding-left: 0;
+  }
+}
+@include media-breakpoint-up(lg) {
+  .mainNav.navbar-expand-lg .navbar-nav .nav-item:first-child .nav-link {
+    padding-left: 0;
+  }
+}
+@include media-breakpoint-up(xl) {
+  .mainNav.navbar-expand-xl .navbar-nav .nav-item:first-child .nav-link {
+    padding-left: 0;
+  }
+}
+@include media-breakpoint-up(xxl) {
+  .mainNav.navbar-expand-xxl .navbar-nav .nav-item:first-child .nav-link {
+    padding-left: 0;
+  }
+}
+
+.mainNav .dropdown-menu { margin-top: 8px; }
+
+.mainNav .navbar-nav > .nav-item {
+  position: relative;
+}
+
+@include media-breakpoint-up(md) {
+  .mainNav .navbar-nav > .nav-item .nav-link.active .active-indicator {
+    position: absolute;
+    width: calc(100% - 14px);
+    height: 5px;
+    left: 7px;
+    top: 46px;
+    background: #e10019;
+    background: linear-gradient(to right, #e10019, #b70404);
+  }
+  .mainNav .navbar-nav > .nav-item:first-of-type .nav-link.active .active-indicator {
+    width: 100%;
+    left: -7px;
+  }
+}
+
+
+// @media(min-width: 992px) {
+  // .mainNav.navbar-expand-lg {
+  //   .navbar-nav {
+  //     .nav-link {
+  //       padding-right: 1rem;
+  //       padding-left: 0rem;
+  //     }
+  //   }
+  // }
+// }

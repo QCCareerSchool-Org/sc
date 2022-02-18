@@ -1,26 +1,26 @@
 import type { AppProps } from 'next/app';
-import type { ReactElement } from 'react';
-import { ThemeProvider } from 'styled-components';
-import { DebugWindow } from '../components/DebugWindow';
+import { ReactElement, useEffect } from 'react';
 
+import { DebugWindow } from '../components/DebugWindow';
 import { Layout } from '../components/Layout';
 import { RouteGuard } from '../components/RouteGuard';
-import { GlobalStyle } from '../GlobalStyle';
 import StateProvider from '../providers';
-import { theme } from '../theme';
+
+import '../style.scss';
 
 const SCApp = ({ Component, pageProps }: AppProps): ReactElement => {
+  useEffect(() => {
+    import('bootstrap');
+  }, []);
+
   return (
     <StateProvider>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <Layout>
-          <RouteGuard>
-            <Component {...pageProps} />
-          </RouteGuard>
-        </Layout>
-        {process.env.NODE_ENV === 'development' && <DebugWindow />}
-      </ThemeProvider>
+      <Layout>
+        <RouteGuard>
+          <Component {...pageProps} />
+        </RouteGuard>
+      </Layout>
+      {process.env.NODE_ENV === 'development' && <DebugWindow />}
     </StateProvider>
   );
 };

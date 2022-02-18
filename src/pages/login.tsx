@@ -1,25 +1,28 @@
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import React, { ChangeEventHandler, FormEventHandler, useState } from 'react';
-import { Button } from '../components/styled/Button';
-import { Col } from '../components/styled/Col';
-import { Container } from '../components/styled/Container';
-import { FormGroup } from '../components/styled/FormGroup';
-import { Heading } from '../components/styled/Heading';
-import { Input } from '../components/styled/Input';
-import { Label } from '../components/styled/Label';
-import { PageTitle } from '../components/styled/PageTitle';
-import { Paragraph } from '../components/styled/Paragraph';
-import { Row } from '../components/styled/Row';
-import { Section } from '../components/styled/Section';
+import { basePath } from '../basePath';
 
-const LoginPage: NextPage = () => {
+import { useLogIn } from '../hooks/useLogIn';
+
+type Props = {
+  returnUrl: string | null;
+};
+
+const LoginPage: NextPage<Props> = ({ returnUrl }) => {
   const [ username, setUsername ] = useState('');
   const [ password, setPassword ] = useState('');
-  const [ submitting, setSubmitting ] = useState(false);
+
+  const [ logIn, submitting ] = useLogIn();
+  const router = useRouter();
 
   const formSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    const url = 'https://api.qccareerschool.com/';
+    void logIn(username, password).then(success => {
+      if (success) {
+        return router.push(returnUrl ?? `${basePath}`);
+      }
+    });
   };
 
   const usernameChange: ChangeEventHandler<HTMLInputElement> = e => {
@@ -31,32 +34,42 @@ const LoginPage: NextPage = () => {
   };
 
   return (
-    <Section>
-      <Container>
-        <PageTitle>Student Center Login</PageTitle>
-        <Row>
-          <Col cols={6}>
+    <section>
+      <div className="container">
+        <h1>Student Center Login</h1>
+        <div className="row">
+          <div className="col-6">
             <form onSubmit={formSubmit}>
-              <FormGroup>
-                <Label htmlFor="username">Username / Student Number</Label>
-                <Input type="text" id="username" name="username" required value={username} onChange={usernameChange} />
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="password">Password</Label>
-                <Input type="password" id="password" name="password" required value={password} onChange={passwordChange} />
-              </FormGroup>
-              <Button type="submit">Log In</Button>
+              <div className="form-group">
+                <label htmlFor="username">Username / Student Number</label>
+                <input type="text" id="username" name="username" value={username} onChange={usernameChange} className="form-control" required />
+              </div>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input type="password" id="password" name="password" value={password} onChange={passwordChange} className="form-control" required />
+              </div>
+              <button type="submit" className="btn btn-primary" disabled={submitting}>Log In</button>
             </form>
-          </Col>
-          <Col cols={6}>
-            <Heading>Missing your username or password?</Heading>
-            <Paragraph>You'll find your username and password in your welcome email from the School or call us at 1-833-600-3751 and one of our student support specialists will be happy to help.</Paragraph>
-            <Button variant="secondary">Forgot Your Password?</Button>
-          </Col>
-        </Row>
-      </Container>
-    </Section>
+          </div>
+          <div className="col-6">
+            <h2>Missing your username or password?</h2>
+            <p>You'll find your username and password in your welcome email from the School or call us at 1-833-600-3751 and one of our student support specialists will be happy to help.</p>
+            <button className="btn btn-primary">Forgot Your Password?</button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
+};
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
+  const returnUrl = Array.isArray(ctx.query.returnUrl)
+    ? ctx.query.returnUrl[0]
+    : typeof ctx.query.returnUrl === 'string'
+      ? ctx.query.returnUrl
+      : null;
+  return { props: { returnUrl } };
 };
 
 export default LoginPage;

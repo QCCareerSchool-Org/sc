@@ -10,10 +10,10 @@ type Props = {
 export const Layout = ({ children }: Props): ReactElement => {
   console.log('layout rendered');
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div className="d-flex flex-column vh-100">
       <SiteHeader />
       <SiteNav />
-      <main style={{ display: 'flex', flexShrink: 0 }}>
+      <main className="d-flex flex-column flex-shrink-0">
         {children}
       </main>
       <SiteFooter />

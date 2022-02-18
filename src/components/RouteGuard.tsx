@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
+
 import { useAuthState } from '../hooks/useAuthState';
 import { AuthState } from '../state/auth';
 
@@ -32,7 +33,7 @@ export const RouteGuard = ({ children }: Props): ReactElement => {
       const path = url.split('?')[0];
       if (!validPath(path, authState)) {
         setAuthorized(false);
-        void router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
+        void router.push({ pathname: `/login`, query: { returnUrl: router.asPath } });
       } else {
         setAuthorized(true);
       }
@@ -54,7 +55,7 @@ export const RouteGuard = ({ children }: Props): ReactElement => {
       router.events.off('routeChangeComplete', authCheck);
     };
 
-  }, [ router ]);
+  }, [ router, authState ]);
 
   return <>{authorized && children}</>;
 };

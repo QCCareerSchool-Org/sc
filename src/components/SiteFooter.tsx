@@ -1,10 +1,9 @@
 import { ReactElement } from 'react';
-import { Container } from './styled/Container';
 
 export const SiteFooter = (): ReactElement => (
   <footer style={{ marginTop: 'auto' }}>
-    <Container>
+    <div className="container">
       &copy; {(new Date()).getFullYear()} QC Career School
-    </Container>
+    </div>
   </footer>
 );

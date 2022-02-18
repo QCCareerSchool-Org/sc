@@ -1,6 +1,7 @@
 import { ReactElement, ReactNode } from 'react';
 
 import { AuthStateProvider } from './AuthStateProvider';
+import { NavStateProvider } from './NavStateProvider';
 import { ScreenWidthProvider } from './ScreenWidthProvider';
 
 type Props = {
@@ -9,9 +10,11 @@ type Props = {
 
 const StateProvider = ({ children }: Props): ReactElement => (
   <AuthStateProvider>
-    <ScreenWidthProvider>
-      {children}
-    </ScreenWidthProvider>
+    <NavStateProvider>
+      <ScreenWidthProvider>
+        {children}
+      </ScreenWidthProvider>
+    </NavStateProvider>
   </AuthStateProvider>
 );
 
