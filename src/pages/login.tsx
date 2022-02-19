@@ -20,7 +20,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
     e.preventDefault();
     void logIn(username, password).then(success => {
       if (success) {
-        return router.push(returnUrl ?? `${basePath}`);
+        return router.push(returnUrl ?? basePath);
       }
     });
   };

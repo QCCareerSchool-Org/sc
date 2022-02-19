@@ -1,5 +1,4 @@
 
-$body-bg: rgb(250, 250, 250);
 $body-color: #212529;
 
 $grid-gutter-width:           1.875rem; // to match old site (remove when old site is gone)
@@ -13,6 +12,10 @@ $dropdown-item-padding-x: 1.5rem;
 // $nav-link-color: rgba(0,244,0,.9);
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+body {
+  overflow-y: scroll; /* Show scrollbars */
+}
 
 .mainNav .navbar-nav > .nav-item .nav-link {
     text-transform: uppercase;
@@ -50,7 +53,7 @@ $dropdown-item-padding-x: 1.5rem;
   position: relative;
 }
 
-@include media-breakpoint-up(md) {
+@include media-breakpoint-up(xl) {
   .mainNav .navbar-nav > .nav-item .nav-link.active .active-indicator {
     position: absolute;
     width: calc(100% - 14px);
@@ -65,6 +68,27 @@ $dropdown-item-padding-x: 1.5rem;
     left: -7px;
   }
 }
+
+main > section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+@include media-breakpoint-up(md) {
+  main > section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+main > section:nth-of-type(2n) {
+  background-color: rgb(250, 250, 250);
+}
+
+main > section:nth-of-type(2n+1) {
+  background-color: white;
+}
+
 
 
 // @media(min-width: 992px) {

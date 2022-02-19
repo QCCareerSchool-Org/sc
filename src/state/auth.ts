@@ -2,27 +2,28 @@ export type AuthState = {
   studentId?: number;
   tutorId?: number;
   administratorId?: number;
+  xsrfToken?: string;
 };
 
 export type AuthAction =
-  | { type: 'STUDENT_LOG_IN'; payload: number }
-  | { type: 'TUTOR_LOG_IN'; payload: number }
-  | { type: 'ADMINISTRATOR_LOG_IN'; payload: number };
+  | { type: 'STUDENT_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
+  | { type: 'TUTOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
+  | { type: 'ADMINISTRATOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } };
 
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case 'STUDENT_LOG_IN': {
-      const newState = { ...state, studentId: action.payload };
+      const newState: AuthState = { ...state, studentId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
       window.localStorage?.setItem('authState', JSON.stringify(newState));
       return newState;
     }
     case 'TUTOR_LOG_IN': {
-      const newState = { ...state, tutorId: action.payload };
+      const newState: AuthState = { ...state, tutorId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
       window.localStorage?.setItem('authState', JSON.stringify(newState));
       return newState;
     }
     case 'ADMINISTRATOR_LOG_IN': {
-      const newState = { ...state, administratorId: action.payload };
+      const newState: AuthState = { ...state, administratorId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
       window.localStorage?.setItem('authState', JSON.stringify(newState));
       return newState;
     }
@@ -48,6 +49,9 @@ export const authInitializer = (): AuthState => {
         }
         if (typeof parsedAuthState.studentId === 'number') {
           authState.studentId = parsedAuthState.studentId;
+        }
+        if (typeof parsedAuthState.xsrfToken === 'string') {
+          authState.xsrfToken = parsedAuthState.xsrfToken;
         }
       } catch (err) {
         window.localStorage.removeItem('authState'); // it was invalid

@@ -8,7 +8,7 @@ type ThunkFunction<State, Action extends Record<string, unknown>> = (dispatch: D
 export const useThunkReducer = <State, Action extends Record<string, unknown>>(reducer: ReducerFunction<State, Action>, initialArg: State, init: InitializerFunction<State> = a => a): [ State, (action: Action | ThunkFunction<State, Action>) => void ] => {
   const [ hookState, setHookState ] = useState(init(initialArg));
 
-  // State management.
+  // state management
   const state = useRef(hookState);
   const getState = useCallback(() => state.current, [ state ]);
   const setState = useCallback(newState => {
@@ -16,12 +16,12 @@ export const useThunkReducer = <State, Action extends Record<string, unknown>>(r
     setHookState(newState);
   }, [ state, setHookState ]);
 
-  // Reducer.
+  // reducer
   const reduce = useCallback((action: Action) => {
     return reducer(getState(), action);
   }, [ reducer, getState ]);
 
-  // Augmented dispatcher.
+  // augmented dispatcher
   const dispatch = useCallback((action: Action | ThunkFunction<State, Action>): void => {
     return typeof action === 'function'
       ? (action as ThunkFunction<State, Action>)(dispatch, getState)

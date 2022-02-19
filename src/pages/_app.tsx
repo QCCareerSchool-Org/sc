@@ -20,7 +20,7 @@ const SCApp = ({ Component, pageProps }: AppProps): ReactElement => {
           <Component {...pageProps} />
         </RouteGuard>
       </Layout>
-      {process.env.NODE_ENV === 'development' && <DebugWindow />}
+      {/* {process.env.NODE_ENV === 'development' && <DebugWindow />} */}
     </StateProvider>
   );
 };

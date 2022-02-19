@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 
+import { basePath } from '../basePath';
 import { useAuthState } from '../hooks/useAuthState';
 import { AuthState } from '../state/auth';
 
@@ -9,13 +10,13 @@ type Props = {
 };
 
 const validPath = (path: string, authState: AuthState): boolean => {
-  if (path.startsWith('/students') && typeof authState.studentId === 'undefined') {
+  if (path.startsWith(`${basePath}/students`) && typeof authState.studentId === 'undefined') {
     return false;
   }
-  if (path.startsWith('/tutors') && typeof authState.tutorId === 'undefined') {
+  if (path.startsWith(`${basePath}/tutors`) && typeof authState.tutorId === 'undefined') {
     return false;
   }
-  if (path.startsWith('/administrator') && typeof authState.administratorId === 'undefined') {
+  if (path.startsWith(`${basePath}/administrator`) && typeof authState.administratorId === 'undefined') {
     return false;
   }
   return true;
@@ -33,7 +34,7 @@ export const RouteGuard = ({ children }: Props): ReactElement => {
       const path = url.split('?')[0];
       if (!validPath(path, authState)) {
         setAuthorized(false);
-        void router.push({ pathname: `/login`, query: { returnUrl: router.asPath } });
+        void router.push({ pathname: `${basePath}/login`, query: { returnUrl: router.asPath } });
       } else {
         setAuthorized(true);
       }
