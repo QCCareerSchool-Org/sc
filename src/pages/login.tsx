@@ -1,36 +1,64 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { ChangeEventHandler, FormEventHandler, useState } from 'react';
-import { basePath } from '../basePath';
+import React, { ChangeEventHandler, FormEvent, FormEventHandler, useEffect, useRef, useState } from 'react';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 
-import { useLogIn } from '../hooks/useLogIn';
+import { basePath } from '../basePath';
+import { loginService } from '../services';
+import { useAuthDispatch } from '@/hooks/useAuthDispatch';
+
+type LogInPayload = {
+  username: string;
+  password: string;
+  stayLoggedIn: boolean;
+};
 
 type Props = {
   returnUrl: string | null;
 };
 
 const LoginPage: NextPage<Props> = ({ returnUrl }) => {
-  const [ username, setUsername ] = useState('');
-  const [ password, setPassword ] = useState('');
-
-  const [ logIn, submitting ] = useLogIn();
   const router = useRouter();
+  const authDispatch = useAuthDispatch();
+  const [ usernameVal, setUsernameVal ] = useState('');
+  const [ passwordVal, setPasswordVal ] = useState('');
+  const [ submitting, setSubmitting ] = useState(false);
+
+  const logIn$ = useRef(new Subject<LogInPayload>());
+
+  useEffect(() => {
+    const destroy$ = new Subject<void>();
+
+    logIn$.current.pipe(
+      switchMap(({ username, password, stayLoggedIn }) => loginService.logIn(username, password, false)),
+      takeUntil(destroy$),
+    ).subscribe({
+      next: response => {
+        if (response.type === 'administrator') {
+          authDispatch({ type: 'ADMINISTRATOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+        } else if (response.type === 'tutor') {
+          authDispatch({ type: 'TUTOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+        } else if (response.type === 'student') {
+          authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+        }
+        void router.push(returnUrl ?? basePath);
+      },
+    });
+
+    return () => { destroy$.next(); destroy$.complete(); };
+  }, [ router, returnUrl, authDispatch ]);
 
   const formSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    void logIn(username, password).then(success => {
-      if (success) {
-        return router.push(returnUrl ?? basePath);
-      }
-    });
+    logIn$.current.next({ username: usernameVal, password: passwordVal, stayLoggedIn: false });
   };
 
   const usernameChange: ChangeEventHandler<HTMLInputElement> = e => {
-    setUsername(e.target.value);
+    setUsernameVal(e.target.value);
   };
 
   const passwordChange: ChangeEventHandler<HTMLInputElement> = e => {
-    setPassword(e.target.value);
+    setPasswordVal(e.target.value);
   };
 
   return (
@@ -42,11 +70,11 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
             <form onSubmit={formSubmit}>
               <div className="form-group">
                 <label htmlFor="username">Username / Student Number</label>
-                <input type="text" id="username" name="username" value={username} onChange={usernameChange} className="form-control" required />
+                <input type="text" id="username" name="username" value={usernameVal} onChange={usernameChange} className="form-control" required />
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input type="password" id="password" name="password" value={password} onChange={passwordChange} className="form-control" required />
+                <input type="password" id="password" name="password" value={passwordVal} onChange={passwordChange} className="form-control" required />
               </div>
               <button type="submit" className="btn btn-primary" disabled={submitting}>Log In</button>
             </form>

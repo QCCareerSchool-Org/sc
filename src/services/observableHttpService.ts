@@ -17,9 +17,9 @@ export class ObservableHttpServiceError extends Error {
 
 export interface IObservableHttpService {
   get: <T = unknown>(url: string, config?: Config) => Observable<T>;
-  post: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<T>;
+  post: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
   postFile: (url: string, body: unknown, config?: Config) => Observable<number>;
-  put: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<T>;
+  put: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
   putFile: (url: string, body: unknown, config?: Config) => Observable<number>;
   delete: <T = unknown>(url: string, config?: Config) => Observable<T>;
 }
