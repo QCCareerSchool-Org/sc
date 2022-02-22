@@ -1,4 +1,4 @@
-import { instance } from '../axiosInstance';
-import { AxiosHttpService } from './httpService';
+import { instance } from '../observableAxiosInstance';
+import { ObservableAxiosHttpService } from './observableHttpService';
 
-export const axiosHttpService = new AxiosHttpService(instance);
+export const observableAxiosHttpService = new ObservableAxiosHttpService(instance);

@@ -6,5 +6,8 @@ export type NewUploadSlot = {
   label: string;
   optional: boolean;
   order: number;
+  filename: string | null;
+  size: number | null;
+  mimeType: string | null;
   complete: boolean;
 };

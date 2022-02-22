@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import { ReactElement, useEffect } from 'react';
 
 import { DebugWindow } from '../components/DebugWindow';

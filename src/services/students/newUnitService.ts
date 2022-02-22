@@ -1,34 +1,36 @@
+import type { Observable } from 'rxjs';
+
 import { endpoint } from '../../basePath';
-import { HttpResponse, IHttpService } from '../httpService';
+import type { IObservableHttpService } from '../observableHttpService';
 import type { NewAssignment, NewUnit } from '@/domain/students';
 
-type Data = NewUnit & {
+export type NewUnitWithAssignments = NewUnit & {
   assignments: Array<NewAssignment>;
 };
 
 export interface INewUnitService {
-  getUnit: (studentId: number, unitId: string) => Promise<HttpResponse<Data>>;
-  submitUnit: (studentId: number, unitId: string) => Promise<HttpResponse<Data>>;
-  skipUnit: (studentId: number, unitId: string) => Promise<HttpResponse<Data>>;
+  getUnit: (studentId: number, unitId: string) => Observable<NewUnitWithAssignments>;
+  submitUnit: (studentId: number, unitId: string) => Observable<NewUnitWithAssignments>;
+  skipUnit: (studentId: number, unitId: string) => Observable<NewUnitWithAssignments>;
 }
 
 export class NewUnitService implements INewUnitService {
 
-  public constructor(private readonly httpService: IHttpService) { /* empty */ }
+  public constructor(private readonly httpService: IObservableHttpService) { /* empty */ }
 
-  public async getUnit(studentId: number, unitId: string): Promise<HttpResponse<Data>> {
+  public getUnit(studentId: number, unitId: string): Observable<NewUnitWithAssignments> {
     const url = this.getBaseUrl(studentId, unitId);
-    return this.httpService.get<Data>(url);
+    return this.httpService.get<NewUnitWithAssignments>(url);
   }
 
-  public async submitUnit(studentId: number, unitId: string): Promise<HttpResponse<Data>> {
+  public submitUnit(studentId: number, unitId: string): Observable<NewUnitWithAssignments> {
     const url = this.getBaseUrl(studentId, unitId) + '/submissions';
-    return this.httpService.post<Data>(url, {});
+    return this.httpService.post<NewUnitWithAssignments>(url, {});
   }
 
-  public async skipUnit(studentId: number, unitId: string): Promise<HttpResponse<Data>> {
+  public skipUnit(studentId: number, unitId: string): Observable<NewUnitWithAssignments> {
     const url = this.getBaseUrl(studentId, unitId) + '/skips';
-    return this.httpService.post<Data>(url, {});
+    return this.httpService.post<NewUnitWithAssignments>(url, {});
   }
 
   private getBaseUrl(studentId: number, unitId: string): string {

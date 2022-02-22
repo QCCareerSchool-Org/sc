@@ -2,7 +2,11 @@ import { AxiosInstance, AxiosResponse } from 'axios';
 import { AxiosOtherError, AxiosRefreshError } from '../axiosInstance';
 
 export type HttpResponse<T> = {
-  data?: T;
+  success: true;
+  data: T;
+  code: number;
+} | {
+  success: false;
   code?: number;
   refresh: boolean;
 };
@@ -33,18 +37,18 @@ export class AxiosHttpService implements IHttpService {
     try {
       const response = await request;
       return {
+        success: true,
         data: response.data,
         code: response.status,
-        refresh: false,
       };
     } catch (err) {
       if (err instanceof AxiosRefreshError) {
-        return { code: 400, refresh: true };
+        return { success: false, code: 400, refresh: true };
       }
       if (err instanceof AxiosOtherError) {
-        return { code: err.response?.status, refresh: false };
+        return { success: false, code: err.response?.status, refresh: false };
       }
-      return { refresh: false };
+      return { success: false, refresh: false };
     }
   }
 }
