@@ -1,7 +1,7 @@
 import type { Observable } from 'rxjs';
 
 import { endpoint } from '../basePath';
-import { IObservableHttpService } from './observableHttpService';
+import { IHttpService } from './httpService';
 import { AuthenticationPayload } from '@/domain/authenticationPayload';
 
 export interface ILoginService {
@@ -11,7 +11,7 @@ export interface ILoginService {
 
 export class LoginService implements ILoginService {
 
-  public constructor(private readonly httpService: IObservableHttpService) { /* empty */ }
+  public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
   public logIn(username: string, password: string, stayLoggedIn: boolean): Observable<AuthenticationPayload> {
     const url = this.getUrl() + '/login';

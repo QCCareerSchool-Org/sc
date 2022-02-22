@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { ChangeEventHandler, FormEvent, FormEventHandler, useEffect, useRef, useState } from 'react';
-import { Subject, switchMap, takeUntil } from 'rxjs';
+import React, { ChangeEventHandler, FormEventHandler, useEffect, useRef, useState } from 'react';
+import { map, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { basePath } from '../basePath';
 import { loginService } from '../services';
@@ -11,6 +11,7 @@ type LogInPayload = {
   username: string;
   password: string;
   stayLoggedIn: boolean;
+  returnUrl: string | null;
 };
 
 type Props = {
@@ -20,9 +21,10 @@ type Props = {
 const LoginPage: NextPage<Props> = ({ returnUrl }) => {
   const router = useRouter();
   const authDispatch = useAuthDispatch();
-  const [ usernameVal, setUsernameVal ] = useState('');
-  const [ passwordVal, setPasswordVal ] = useState('');
+  const [ username, setUsername ] = useState('');
+  const [ password, setPassword ] = useState('');
   const [ submitting, setSubmitting ] = useState(false);
+  const [ error, setError ] = useState(false);
 
   const logIn$ = useRef(new Subject<LogInPayload>());
 
@@ -30,10 +32,17 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
     const destroy$ = new Subject<void>();
 
     logIn$.current.pipe(
-      switchMap(({ username, password, stayLoggedIn }) => loginService.logIn(username, password, false)),
+      tap(() => {
+        setSubmitting(true);
+        setError(false);
+      }),
+      switchMap(({ username: u, password: p, stayLoggedIn: s, returnUrl: r }) => loginService.logIn(u, p, s).pipe(
+        map(response => ({ response, returnUrl: r })),
+      )),
       takeUntil(destroy$),
     ).subscribe({
-      next: response => {
+      next: ({ response, returnUrl: r }) => {
+        setSubmitting(false);
         if (response.type === 'administrator') {
           authDispatch({ type: 'ADMINISTRATOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
         } else if (response.type === 'tutor') {
@@ -41,24 +50,28 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
         } else if (response.type === 'student') {
           authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
         }
-        void router.push(returnUrl ?? basePath);
+        void router.push(r ?? basePath);
+      },
+      error: () => {
+        setSubmitting(false);
+        setError(true);
       },
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, returnUrl, authDispatch ]);
+  }, [ router, authDispatch ]);
 
   const formSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    logIn$.current.next({ username: usernameVal, password: passwordVal, stayLoggedIn: false });
+    logIn$.current.next({ username, password, stayLoggedIn: false, returnUrl });
   };
 
   const usernameChange: ChangeEventHandler<HTMLInputElement> = e => {
-    setUsernameVal(e.target.value);
+    setUsername(e.target.value);
   };
 
   const passwordChange: ChangeEventHandler<HTMLInputElement> = e => {
-    setPasswordVal(e.target.value);
+    setPassword(e.target.value);
   };
 
   return (
@@ -70,11 +83,11 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
             <form onSubmit={formSubmit}>
               <div className="form-group">
                 <label htmlFor="username">Username / Student Number</label>
-                <input type="text" id="username" name="username" value={usernameVal} onChange={usernameChange} className="form-control" required />
+                <input type="text" id="username" name="username" value={username} onChange={usernameChange} className="form-control" required />
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input type="password" id="password" name="password" value={passwordVal} onChange={passwordChange} className="form-control" required />
+                <input type="password" id="password" name="password" value={password} onChange={passwordChange} className="form-control" required />
               </div>
               <button type="submit" className="btn btn-primary" disabled={submitting}>Log In</button>
             </form>

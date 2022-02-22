@@ -1,7 +1,7 @@
 import type { Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
-import type { IObservableHttpService } from '../observableHttpService';
+import type { IHttpService } from '../httpService';
 import type { NewAssignment, NewUnit } from '@/domain/students';
 
 export type NewUnitWithAssignments = NewUnit & {
@@ -16,7 +16,7 @@ export interface INewUnitService {
 
 export class NewUnitService implements INewUnitService {
 
-  public constructor(private readonly httpService: IObservableHttpService) { /* empty */ }
+  public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
   public getUnit(studentId: number, unitId: string): Observable<NewUnitWithAssignments> {
     const url = this.getBaseUrl(studentId, unitId);

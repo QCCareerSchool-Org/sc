@@ -3,9 +3,8 @@ import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
-import { NewUnit } from '../../../../domain/students/newUnit';
-import { useAuthState } from '../../../../hooks/useAuthState';
-import { ObservableHttpServiceError } from '@/services/observableHttpService';
+import { useAuthState } from '@/hooks/useAuthState';
+import { HttpServiceError } from '@/services/httpService';
 import { newUnitService, NewUnitWithAssignments } from '@/services/students';
 
 type Props = {
@@ -24,7 +23,7 @@ const UnitViewPage: NextPage<Props> = ({ unitId }: Props) => {
   const subscription = useMemo(() => ({
     next: (data: NewUnitWithAssignments) => setUnit(data),
     error: (err: unknown) => {
-      if (err instanceof ObservableHttpServiceError) {
+      if (err instanceof HttpServiceError) {
         if (err.refresh) {
           return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
         }

@@ -1,6 +1,7 @@
-import { instance } from '../observableAxiosInstance';
+import { AxiosInstanceService } from './axiosInstanceService';
+import { AxiosHttpService } from './httpService';
 import { LoginService } from './loginService';
-import { ObservableAxiosHttpService } from './observableHttpService';
 
-export const observableAxiosHttpService = new ObservableAxiosHttpService(instance);
-export const loginService = new LoginService(observableAxiosHttpService);
+export const axiosInstanceService = new AxiosInstanceService();
+export const axiosHttpService = new AxiosHttpService(axiosInstanceService.getInstance());
+export const loginService = new LoginService(axiosHttpService);

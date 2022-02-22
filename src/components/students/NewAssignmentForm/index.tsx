@@ -2,11 +2,10 @@ import { useRouter } from 'next/router';
 import { MouseEventHandler, ReactElement, useCallback, useEffect, useReducer, useState } from 'react';
 import { Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
-import { ThemeProvider } from 'styled-components';
 import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { ObservableHttpServiceError } from '@/services/observableHttpService';
+import { HttpServiceError } from '@/services/httpService';
 import { newAssignmentService } from '@/services/students';
 
 export type UploadSlotFunction = (partId: string, uploadSlotId: string, file?: File) => Observable<any>;
@@ -37,7 +36,7 @@ export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): R
     ).subscribe({
       next: data => dispatch({ type: 'ASSIGNMENT_LOADED', payload: data }),
       error: err => {
-        if (err instanceof ObservableHttpServiceError) {
+        if (err instanceof HttpServiceError) {
           if (err.refresh) {
             return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
           }
@@ -54,7 +53,7 @@ export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): R
         tap({
           next: progress => dispatch({ type: 'FILE_UPLOAD_PROGRESSED', payload: { partId, uploadSlotId, progress } }),
           error: err => {
-            if (err instanceof ObservableHttpServiceError) {
+            if (err instanceof HttpServiceError) {
               if (err.refresh) {
                 return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
               }
@@ -72,7 +71,7 @@ export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): R
       return newAssignmentService.deleteFile(studentId, unitId, assignmentId, partId, uploadSlotId).pipe(
         tap({
           error: err => {
-            if (err instanceof ObservableHttpServiceError) {
+            if (err instanceof HttpServiceError) {
               if (err.refresh) {
                 return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
               }
@@ -91,7 +90,7 @@ export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): R
         tap({
           next: () => dispatch({ type: 'TEXT_SAVED', payload: { partId, textBoxId, text } }),
           error: err => {
-            if (err instanceof ObservableHttpServiceError) {
+            if (err instanceof HttpServiceError) {
               if (err.refresh) {
                 return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
               }

@@ -1,54 +1,126 @@
-import { AxiosInstance, AxiosResponse } from 'axios';
-import { AxiosOtherError, AxiosRefreshError } from '../axiosInstance';
+import type Axios from '@qccareerschool/axios-observable';
+import type { AxiosResponse } from 'axios';
+import { catchError, combineLatest, map, Observable, startWith, Subject, throwError } from 'rxjs';
 
-export type HttpResponse<T> = {
-  success: true;
-  data: T;
-  code: number;
-} | {
-  success: false;
-  code?: number;
-  refresh: boolean;
+import { AxiosOtherError, AxiosRefreshError } from './axiosInstanceService';
+
+type Config = {
+  params?: any;
+  headers?: Record<string, string | number | boolean>;
 };
 
+export class HttpServiceError extends Error {
+  public constructor(message: string, public readonly refresh: boolean, public readonly code?: number) {
+    super(message);
+  }
+}
+
 export interface IHttpService {
-  get: <T = unknown>(url: string, params?: Record<string, unknown>) => Promise<HttpResponse<T>>;
-  post: <T = unknown>(url: string, body: unknown, params?: Record<string, unknown>) => Promise<HttpResponse<T>>;
-  put: <T = unknown>(url: string, body: unknown, params?: Record<string, unknown>) => Promise<HttpResponse<T>>;
+  get: <T = unknown>(url: string, config?: Config) => Observable<T>;
+  post: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
+  postFile: (url: string, body: unknown, config?: Config) => Observable<number>;
+  put: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
+  putFile: (url: string, body: unknown, config?: Config) => Observable<number>;
+  delete: <T = unknown>(url: string, config?: Config) => Observable<T>;
 }
 
 export class AxiosHttpService implements IHttpService {
 
-  public constructor(private readonly instance: AxiosInstance) { /* */ }
+  public constructor(private readonly instance: Axios) { /* */ }
 
-  public async get<T>(url: string, params?: Record<string, unknown>): Promise<HttpResponse<T>> {
-    return this.handleResponse(this.instance.get<T>(url, { params }));
+  public get<T>(url: string, config?: Config): Observable<T> {
+    return this.instance.get<T>(url, config).pipe(
+      map((response, index) => this.handleResponse(response, index)),
+      catchError((err, caught) => this.handleError(err, caught)),
+    );
   }
 
-  public async post<T>(url: string, body: unknown, params?: Record<string, unknown>): Promise<HttpResponse<T>> {
-    return this.handleResponse(this.instance.post<T>(url, body, { params }));
+  public post<T>(url: string, body: unknown, config?: Config): Observable<T> {
+    return this.instance.post<T>(url, body, config).pipe(
+      map((response, index) => this.handleResponse(response, index)),
+      catchError((err, caught) => this.handleError(err, caught)),
+    );
   }
 
-  public async put<T>(url: string, body: unknown, params?: Record<string, unknown>): Promise<HttpResponse<T>> {
-    return this.handleResponse(this.instance.post<T>(url, body, { params }));
-  }
-
-  private async handleResponse<T>(request: Promise<AxiosResponse<T>>): Promise<HttpResponse<T>> {
-    try {
-      const response = await request;
-      return {
-        success: true,
-        data: response.data,
-        code: response.status,
-      };
-    } catch (err) {
-      if (err instanceof AxiosRefreshError) {
-        return { success: false, code: 400, refresh: true };
+  public postFile(url: string, body: unknown, config?: Config): Observable<number> {
+    const progress$ = new Subject<number>();
+    const onUploadProgress = (progressEvent: ProgressEvent): void => {
+      const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+      if (completed >= 100) {
+        progress$.next(100);
+        progress$.complete();
+      } else {
+        progress$.next(completed);
       }
-      if (err instanceof AxiosOtherError) {
-        return { success: false, code: err.response?.status, refresh: false };
+    };
+
+    const data = this.instance.post(url, body, { ...config, onUploadProgress }).pipe(
+      map((response, index) => this.handleResponse(response, index)),
+      catchError((err, caught) => this.handleError(err, caught)),
+    );
+
+    // combine the request with the progress observable created above
+    // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
+    return combineLatest([
+      data.pipe(startWith(undefined)),
+      progress$,
+    ]).pipe(
+      map(([ , progress ]) => progress), // we only care about the second observable
+    );
+  }
+
+  public put<T>(url: string, body: unknown, config?: Config): Observable<T> {
+    return this.instance.put<T>(url, body, config).pipe(
+      map((response, index) => this.handleResponse(response, index)),
+      catchError((err, caught) => this.handleError(err, caught)),
+    );
+  }
+
+  public putFile(url: string, body: unknown, config?: Config): Observable<number> {
+    const progress$ = new Subject<number>();
+    const onUploadProgress = (progressEvent: ProgressEvent): void => {
+      const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+      if (completed >= 100) {
+        progress$.next(100);
+        progress$.complete();
+      } else {
+        progress$.next(completed);
       }
-      return { success: false, refresh: false };
+    };
+
+    const data = this.instance.put(url, body, { ...config, onUploadProgress }).pipe(
+      map((response, index) => this.handleResponse(response, index)),
+      catchError((err, caught) => this.handleError(err, caught)),
+    );
+
+    // combine the request with the progress observable created above
+    // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
+    return combineLatest([
+      data.pipe(startWith(undefined)),
+      progress$,
+    ]).pipe(
+      map(([ , progress ]) => progress), // we only care about the second observable
+    );
+  }
+
+  public delete<T>(url: string, config?: Config): Observable<T> {
+    return this.instance.delete<T>(url, config).pipe(
+      map((response, index) => this.handleResponse(response, index)),
+      catchError((err, caught) => this.handleError(err, caught)),
+    );
+  }
+
+  private handleResponse<T>(response: AxiosResponse<T>, index: number): T {
+    return response.data;
+  }
+
+  private handleError<T>(err: Error, caught: Observable<T>): Observable<never> {
+    if (err instanceof AxiosRefreshError) {
+      return throwError(() => new HttpServiceError('', true));
     }
+    if (err instanceof AxiosOtherError) {
+      return throwError(() => new HttpServiceError('', false, err.response?.status));
+    }
+    return throwError(() => new HttpServiceError('', false));
   }
 }

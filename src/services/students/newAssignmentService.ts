@@ -2,7 +2,7 @@ import type { Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { NewAssignment, NewPart, NewTextBox, NewUploadSlot } from '../../domain/students';
-import { IObservableHttpService } from '../observableHttpService';
+import { IHttpService } from '../httpService';
 
 export type NewAssignmentWithChildren = NewAssignment & {
   parts: Array<NewPart & {
@@ -20,7 +20,7 @@ export interface INewAssignmentService {
 
 export class NewAssignmentService implements INewAssignmentService {
 
-  public constructor(private readonly httpService: IObservableHttpService) { /* empty */ }
+  public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
   public getAssignment(studentId: number, unitId: string, assignmentId: string): Observable<NewAssignmentWithChildren> {
     const url = this.getUrl(studentId, unitId, assignmentId);
