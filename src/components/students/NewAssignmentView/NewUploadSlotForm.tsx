@@ -1,5 +1,6 @@
-import { MouseEventHandler, ReactElement, ReactEventHandler } from 'react';
+import { MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef } from 'react';
 
+import { catchError, EMPTY, exhaustMap, Subject, takeUntil } from 'rxjs';
 import { UploadSlotFunction } from '.';
 import { ProgressBar } from '@/components/ProgressBar';
 import { UploadSlotState } from '@/components/students/NewAssignmentView/state';
@@ -25,7 +26,7 @@ export const NewUploadSlotForm = ({ uploadSlot, uploadFile, deleteFile, download
               : <div />
         }
         {uploadSlot.optional
-          ? <small className="text-danger">optional</small>
+          ? <small className="text-danger me-2">optional</small>
           : <div className="spacer" />
         }
       </div>
@@ -71,7 +72,7 @@ const EmptySlot = ({ uploadSlot, uploadFile }: EmptySlotProps): ReactElement => 
   return (
     <>
       <input onChange={onFileInputChange} type="file" accept={accept(uploadSlot.allowedTypes)} className="form-control" id={uploadSlot.uploadSlotId} />
-      {uploadSlot.saveState === 'save error' && <small className="text-danger">Error saving file</small>}
+      {uploadSlot.saveState === 'save error' && <small className="text-danger me-2">Error saving file</small>}
     </>
   );
 };
@@ -82,19 +83,40 @@ type FullSlotProps = {
   downloadFile: UploadSlotFunction;
 };
 const FullSlot = ({ uploadSlot, deleteFile, downloadFile }: FullSlotProps): ReactElement => {
-  const onDeleteButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
-    deleteFile(uploadSlot.partId, uploadSlot.uploadSlotId).subscribe({
+  const downloadClick$ = useRef(new Subject<void>());
+  const deleteClick$ = useRef(new Subject<void>());
+
+  useEffect(() => {
+    const destroy$ = new Subject<void>();
+
+    downloadClick$.current.pipe(
+      exhaustMap(() => downloadFile(uploadSlot.partId, uploadSlot.uploadSlotId)),
+      takeUntil(destroy$),
+    ).subscribe({
       next: () => { /* empty */ },
       error: () => { /* empty */ },
     });
+
+    deleteClick$.current.pipe(
+      exhaustMap(() => deleteFile(uploadSlot.partId, uploadSlot.uploadSlotId)),
+      catchError(() => EMPTY),
+      takeUntil(destroy$),
+    ).subscribe({
+      next: () => { /* empty */ },
+      error: () => { /* empty */ },
+    });
+
+    return () => { destroy$.next(); destroy$.complete(); };
+  }, [ downloadFile, deleteFile, uploadSlot.partId, uploadSlot.uploadSlotId ]);
+
+  const onDeleteButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
+    e.preventDefault();
+    deleteClick$.current.next();
   };
 
   const downloadClick: MouseEventHandler<HTMLAnchorElement> = e => {
     e.preventDefault();
-    downloadFile(uploadSlot.partId, uploadSlot.uploadSlotId).subscribe({
-      next: () => { /* empty */ },
-      error: () => { /* empty */ },
-    });
+    downloadClick$.current.next();
   };
 
   return (
@@ -108,7 +130,7 @@ const FullSlot = ({ uploadSlot, deleteFile, downloadFile }: FullSlotProps): Reac
         >{uploadSlot.saveState === 'deleting' ? <div className="spinner-border spinner-border-sm" /> : 'Delete'}</button>
         {uploadSlot.filename && <><a href="#" onClick={downloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.size && <>({humanReadablefilesize(uploadSlot.size)})</>}</>}
       </div>
-      {uploadSlot.saveState === 'delete error' && <small className="text-danger">Error deleting file</small>}
+      {uploadSlot.saveState === 'delete error' && <small className="text-danger me-2">Error deleting file</small>}
     </>
   );
 };
