@@ -3,11 +3,9 @@ import { debounceTime, exhaustMap, Subject, switchMap, takeUntil } from 'rxjs';
 
 import { TextBoxFunction } from '.';
 import { TextBoxState } from '@/components/students/NewAssignmentView/state';
-import { NewTextBox } from '@/domain/students';
 
 type Props = {
-  textBox: NewTextBox;
-  state: TextBoxState;
+  textBox: TextBoxState;
   update: TextBoxFunction;
   save: TextBoxFunction;
 };
@@ -17,7 +15,7 @@ const saveDelay = 1000;
 
 const maxLength = 65_535;
 
-export const NewTextBoxForm = ({ textBox, state, update, save }: Props): ReactElement => {
+export const NewTextBoxForm = ({ textBox, update, save }: Props): ReactElement => {
   const textChange$ = useRef(new Subject<string>());
 
   useEffect(() => {
@@ -69,15 +67,15 @@ export const NewTextBoxForm = ({ textBox, state, update, save }: Props): ReactEl
         <textarea maxLength={maxLength} onChange={onChange} value={textBox.text} id={textBox.textBoxId} className="form-control" rows={textBox.lines ?? 7} />
         <div className="row">
           <div className="col">
-            {state.formState === 'dirty' && (
+            {textBox.formState === 'dirty' && (
               <small className="me-1">
-                {state.saveState === 'saving'
+                {textBox.saveState === 'saving'
                   ? (
                     <span>saving <div className="spinner-border spinner-border-sm" style={{ width: 12, height: 12 }} /></span>
                   )
                   : (
                     <>
-                      {state.savedText === textBox.text ? 'saved' : 'unsaved'}{state.saveState === 'error' && (
+                      {textBox.savedText === textBox.text ? 'saved' : 'unsaved'}{textBox.saveState === 'error' && (
                         <span className="text-danger"> (error saving <a href="#" onClick={retrySave} className="link-primary">retry</a>)</span>
                       )}
                     </>

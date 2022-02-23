@@ -27,7 +27,7 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
   const [ deleteFile, setDeleteFile ] = useState<UploadSlotFunction>();
   const [ saveText, setSaveText ] = useState<TextBoxFunction>();
 
-  useWarnIfUnsavedChanges(state.assignmentState.formState !== 'pristine' && state.assignmentState.saveState !== 'saved');
+  useWarnIfUnsavedChanges(state.assignment && state.assignment?.formState !== 'pristine' && state.assignment?.saveState !== 'saved');
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -140,8 +140,17 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
           {state.assignment.description && <p className="lead">{state.assignment.description}</p>}
         </div>
       </section>
-      {state.assignment.parts.map((p, i) => (
-        <NewPartForm key={p.partId} studentId={studentId} unitId={unitId} part={p} state={state.assignmentState.partStates[i]} saveText={saveText} updateText={updateText} uploadFile={uploadFile} deleteFile={deleteFile} />
+      {state.assignment.parts.map(p => (
+        <NewPartForm
+          key={p.partId}
+          studentId={studentId}
+          unitId={unitId}
+          part={p}
+          saveText={saveText}
+          updateText={updateText}
+          uploadFile={uploadFile}
+          deleteFile={deleteFile}
+        />
       ))}
       <section className="bg-dark text-light">
         <div className="container">
@@ -149,7 +158,7 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
             ? <p className="lead">All mandatory answers are complete!</p>
             : <p className="lead">Some mandatory answers are incomplete</p>
           }
-          <button onClick={backButtonClick} className="btn btn-primary" disabled={state.assignmentState.saveState !== 'saved'}>Return to Unit Overview</button>
+          <button onClick={backButtonClick} className="btn btn-primary" disabled={state.assignment.saveState !== 'saved'}>Return to Unit Overview</button>
         </div>
       </section>
     </>

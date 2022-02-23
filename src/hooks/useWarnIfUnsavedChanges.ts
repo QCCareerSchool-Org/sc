@@ -10,7 +10,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 
-export const useWarnIfUnsavedChanges = (notSaved: boolean, message = 'Changes you made may not be saved.'): void => {
+export const useWarnIfUnsavedChanges = (notSaved?: boolean, message = 'Changes you made may not be saved.'): void => {
   const router = useRouter();
   const popStateAlreadyChecked = useRef(false);
   const lastHistory = useRef<History>();

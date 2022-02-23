@@ -1,48 +1,39 @@
+import { NewAssignment, NewPart, NewTextBox, NewUploadSlot } from '@/domain/students';
 import { NewAssignmentWithChildren } from '@/services/students';
 
-type SaveState = 'saved' | 'unsaved' | 'saving' | 'error';
 type FormState = 'pristine' | 'dirty';
 
-export type TextBoxState = {
-  textBoxId: string;
-  formState: FormState;
-  saveState: null | 'saving' | 'error'; // saved and unsaved states represented by whether savedText is the latest text
-  savedText: string;
-};
-
-export type UploadSlotState = {
-  uploadSlotId: string;
+export type UploadSlotState = NewUploadSlot & {
   formState: FormState;
   saveState: 'empty' | 'saved' | 'saving' | 'save error' | 'deleting' | 'delete error';
   progress: number;
 };
 
-export type PartState = {
-  partId: string;
+export type TextBoxState = NewTextBox & {
   formState: FormState;
-  saveState: SaveState;
-  textBoxStates: TextBoxState[];
-  uploadSlotStates: UploadSlotState[];
+  saveState: null | 'saving' | 'error';
+  savedText: string;
 };
 
-export type AssignmentState = {
+export type PartState = NewPart & {
   formState: FormState;
-  saveState: SaveState;
-  partStates: PartState[];
+  saveState: 'saved' | 'unsaved' | 'saving' | 'error';
+  textBoxes: TextBoxState[];
+  uploadSlots: UploadSlotState[];
+};
+
+export type AssignmentState = NewAssignment & {
+  formState: FormState;
+  saveState: 'saved' | 'unsaved' | 'saving' | 'error';
+  parts: PartState[];
 };
 
 export type State = {
-  assignment?: NewAssignmentWithChildren;
-  assignmentState: AssignmentState;
+  assignment?: AssignmentState;
   error: boolean;
 };
 
 export const initialState: State = {
-  assignmentState: {
-    formState: 'pristine',
-    saveState: 'saved',
-    partStates: [],
-  },
   error: false,
 };
 
@@ -92,29 +83,30 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
-const assignmentLoad = (state: State, assignment: NewAssignmentWithChildren): State => {
-  const assignmentState: AssignmentState = {
+const assignmentLoad = (state: State, assignmentWithChildren: NewAssignmentWithChildren): State => {
+  const assignment: AssignmentState = {
+    ...assignmentWithChildren,
     formState: 'pristine',
     saveState: 'saved',
-    partStates: assignment.parts.map(p => ({
-      partId: p.partId,
+    parts: assignmentWithChildren.parts.map(p => ({
+      ...p,
       formState: 'pristine',
       saveState: 'saved',
-      textBoxStates: p.textBoxes.map(t => ({
-        textBoxId: t.textBoxId,
+      textBoxes: p.textBoxes.map(t => ({
+        ...t,
         formState: 'pristine',
         saveState: null,
         savedText: t.text,
       })),
-      uploadSlotStates: p.uploadSlots.map(u => ({
-        uploadSlotId: u.uploadSlotId,
+      uploadSlots: p.uploadSlots.map(u => ({
+        ...u,
         formState: 'pristine',
         saveState: u.complete ? 'saved' : 'empty',
         progress: u.complete ? 100 : 0,
       })),
     })),
   };
-  return { ...state, assignment, assignmentState, error: false };
+  return { ...state, assignment, error: false };
 };
 
 /**
@@ -134,35 +126,19 @@ const textChanged = (state: State, partId: string, textBoxId: string, text: stri
     ...state,
     assignment: {
       ...state.assignment,
-      parts: state.assignment.parts.map(p => {
-        if (p.partId === partId) {
-          return {
-            ...p,
-            textBoxes: p.textBoxes.map(t => {
-              if (t.textBoxId === textBoxId) {
-                return { ...t, text };
-              }
-              return t;
-            }),
-          };
-        }
-        return p;
-      }),
-    },
-    assignmentState: {
-      ...state.assignmentState,
       formState: 'dirty',
       saveState: 'unsaved',
-      partStates: state.assignmentState.partStates.map(p => {
+      parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             formState: 'dirty',
             saveState: 'unsaved',
-            textBoxStates: p.textBoxStates.map(t => {
+            textBoxes: p.textBoxes.map(t => {
               if (t.textBoxId === textBoxId) {
                 return {
                   ...t,
+                  text,
                   formState: 'dirty',
                   saveState: null, // will be considered unsaved because savedText won't match current value
                 };
@@ -192,16 +168,15 @@ const textSaveRequested = (state: State, partId: string, textBoxId: string): Sta
 
   return {
     ...state,
-    // set the text box data state to pristine
-    assignmentState: {
-      ...state.assignmentState,
+    assignment: {
+      ...state.assignment,
       saveState: 'saving',
-      partStates: state.assignmentState.partStates.map(p => {
+      parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             saveState: 'saving',
-            textBoxStates: p.textBoxStates.map(t => {
+            textBoxes: p.textBoxes.map(t => {
               if (t.textBoxId === textBoxId) {
                 return { ...t, saveState: 'saving' };
               }
@@ -255,43 +230,33 @@ const textSaveSucceeded = (state: State, partId: string, textBoxId: string, text
     .every(p => p.complete);
   const assignmentComplete = (partComplete || part.optional) && otherPartsComplete;
 
-  const partState = state.assignmentState.partStates.find(p => p.partId === partId);
-  if (!partState) {
-    throw Error('part state not found');
-  }
-
   // for this part, check if all the other text boxes
-  // don't filter the array so that we'll have the correct index i to use for looking up the text value
-  const partAllTextBoxesSaved = partState.textBoxStates
-    .every((t, i) => {
-      if (t.textBoxId === textBoxId) {
-        return true; // don't count this one
-      }
-      return t.formState === 'pristine' || t.savedText === part.textBoxes[i].text;
-    });
-  const partAllUploadSlotsSavedOrEmpty = partState.uploadSlotStates
+  const partAllTextBoxesSaved = part.textBoxes
+    .filter(t => t.textBoxId !== textBoxId)
+    .every(t => t.formState === 'pristine' || t.savedText === t.text);
+  const partAllUploadSlotsSavedOrEmpty = part.uploadSlots
     .every(u => u.formState === 'pristine' || u.saveState === 'saved' || u.saveState === 'empty');
 
-  const partAnyTextBoxError = partState.textBoxStates
+  const partAnyTextBoxError = part.textBoxes
     .filter(t => t.textBoxId !== textBoxId)
     .some(t => t.saveState === 'error');
-  const partAnyUploadSlotError = partState.uploadSlotStates
+  const partAnyUploadSlotError = part.uploadSlots
     .some(u => u.saveState === 'save error' || u.saveState === 'delete error');
 
-  const partAnyTextBoxSaving = partState.textBoxStates
+  const partAnyTextBoxSaving = part.textBoxes
     .filter(t => t.textBoxId !== textBoxId)
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = part.uploadSlots
     .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
   // check the other parts
-  const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignmentState.partStates
+  const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignment.parts
     .filter(p => p.partId !== partId)
     .every(p => p.formState === 'pristine' || p.saveState === 'saved');
-  const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignmentState.partStates
+  const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'error');
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
@@ -307,39 +272,23 @@ const textSaveSucceeded = (state: State, partId: string, textBoxId: string, text
       ? 'error'
       : partAllTextBoxesSaved ? 'saved' : 'unsaved';
 
-  const newState: State = {
+  return {
     ...state,
     assignment: {
       ...state.assignment,
+      saveState: assignmentSaveState,
       complete: assignmentComplete,
       parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
+            saveState: partSaveState,
             complete: partComplete,
             textBoxes: p.textBoxes.map(t => {
               if (t.textBoxId === textBoxId) {
-                return { ...t, complete: textBoxComplete };
-              }
-              return t;
-            }),
-          };
-        }
-        return p;
-      }),
-    },
-    assignmentState: {
-      ...state.assignmentState,
-      saveState: assignmentSaveState,
-      partStates: state.assignmentState.partStates.map(p => {
-        if (p.partId === partId) {
-          return {
-            ...p,
-            saveState: partSaveState,
-            textBoxStates: p.textBoxStates.map(t => {
-              if (t.textBoxId === textBoxId) {
                 return {
                   ...t,
+                  complete: textBoxComplete,
                   saveState: null, // will be considered saved because saveText matches current value
                   savedText: text,
                 };
@@ -352,8 +301,6 @@ const textSaveSucceeded = (state: State, partId: string, textBoxId: string, text
       }),
     },
   };
-
-  return newState;
 };
 
 /**
@@ -369,18 +316,18 @@ const textSaveFailed = (state: State, partId: string, textBoxId: string): State 
     return state;
   }
 
-  const partState = state.assignmentState.partStates.find(p => p.partId === partId);
-  if (!partState) {
-    throw Error('part state not found');
+  const part = state.assignment.parts.find(p => p.partId === partId);
+  if (!part) {
+    throw Error('part not found');
   }
 
-  const partAnyTextBoxSaving = partState.textBoxStates
+  const partAnyTextBoxSaving = part.textBoxes
     .filter(t => t.textBoxId !== textBoxId)
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = part.uploadSlots
     .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
@@ -390,15 +337,15 @@ const textSaveFailed = (state: State, partId: string, textBoxId: string): State 
 
   return {
     ...state,
-    assignmentState: {
-      ...state.assignmentState,
+    assignment: {
+      ...state.assignment,
       saveState: assignmentSaveState,
-      partStates: state.assignmentState.partStates.map(p => {
+      parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             saveState: partSaveState,
-            textBoxStates: p.textBoxStates.map(t => {
+            textBoxes: p.textBoxes.map(t => {
               if (t.textBoxId === textBoxId) {
                 return { ...t, saveState: 'error' };
               }
@@ -419,17 +366,17 @@ const fileUploadStarted = (state: State, partId: string, uploadSlotId: string): 
 
   return {
     ...state,
-    assignmentState: {
-      ...state.assignmentState,
+    assignment: {
+      ...state.assignment,
       formState: 'dirty',
       saveState: 'saving',
-      partStates: state.assignmentState.partStates.map(p => {
+      parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             formState: 'dirty',
             saveState: 'saving',
-            uploadSlotStates: p.uploadSlotStates.map(u => {
+            uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
                 return {
                   ...u,
@@ -455,18 +402,15 @@ const fileUploadProgressed = (state: State, partId: string, uploadSlotId: string
 
   return {
     ...state,
-    assignmentState: {
-      ...state.assignmentState,
-      partStates: state.assignmentState.partStates.map(p => {
+    assignment: {
+      ...state.assignment,
+      parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
-            uploadSlotStates: p.uploadSlotStates.map(u => {
+            uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
-                return {
-                  ...u,
-                  progress,
-                };
+                return { ...u, progress };
               }
               return u;
             }),
@@ -510,38 +454,33 @@ const fileUploadSucceeded = (state: State, partId: string, uploadSlotId: string,
     .every(p => p.complete);
   const assignmentComplete = (partComplete || part.optional) && otherPartsComplete;
 
-  const partState = state.assignmentState.partStates.find(p => p.partId === partId);
-  if (!partState) {
-    throw Error('part state not found');
-  }
-
   // for this part, check if all text boxes and all upload slots (other than this one) are saved
-  const partAllTextBoxesSaved = partState.textBoxStates
-    .every((t, i) => t.formState === 'pristine' || t.savedText === part.textBoxes[i].text);
-  const partAllUploadSlotsSavedOrEmpty = partState.uploadSlotStates
+  const partAllTextBoxesSaved = part.textBoxes
+    .every(t => t.formState === 'pristine' || t.savedText === t.text);
+  const partAllUploadSlotsSavedOrEmpty = part.uploadSlots
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .every(u => u.formState === 'pristine' || u.saveState === 'saved' || u.saveState === 'empty');
 
-  const partAnyTextBoxError = partState.textBoxStates
+  const partAnyTextBoxError = part.textBoxes
     .some(t => t.saveState === 'error');
-  const partAnyUploadSlotError = partState.uploadSlotStates
+  const partAnyUploadSlotError = part.uploadSlots
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .some(u => u.saveState === 'save error' || u.saveState === 'delete error');
 
-  const partAnyTextBoxSaving = partState.textBoxStates
+  const partAnyTextBoxSaving = part.textBoxes
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = part.uploadSlots
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
   // check the other parts
-  const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignmentState.partStates
+  const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignment.parts
     .filter(p => p.partId !== partId)
     .every(p => p.formState === 'pristine' || p.saveState === 'saved');
-  const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignmentState.partStates
+  const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'error');
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
@@ -562,11 +501,13 @@ const fileUploadSucceeded = (state: State, partId: string, uploadSlotId: string,
     assignment: {
       ...state.assignment,
       complete: assignmentComplete,
+      saveState: assignmentSaveState,
       parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             complete: partComplete,
+            saveState: partSaveState,
             uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
                 return {
@@ -575,27 +516,6 @@ const fileUploadSucceeded = (state: State, partId: string, uploadSlotId: string,
                   size,
                   mimeType: null,
                   complete: uploadSlotComplete,
-                };
-              }
-              return u;
-            }),
-          };
-        }
-        return p;
-      }),
-    },
-    assignmentState: {
-      ...state.assignmentState,
-      saveState: assignmentSaveState,
-      partStates: state.assignmentState.partStates.map(p => {
-        if (p.partId === partId) {
-          return {
-            ...p,
-            saveState: partSaveState,
-            uploadSlotStates: p.uploadSlotStates.map(u => {
-              if (u.uploadSlotId === uploadSlotId) {
-                return {
-                  ...u,
                   saveState: 'saved',
                   progress: 100,
                 };
@@ -615,18 +535,18 @@ const fileUploadFailed = (state: State, partId: string, uploadSlotId: string): S
     return state;
   }
 
-  const partState = state.assignmentState.partStates.find(p => p.partId === partId);
-  if (!partState) {
-    throw Error('part state not found');
+  const part = state.assignment.parts.find(p => p.partId === partId);
+  if (!part) {
+    throw Error('part not found');
   }
 
-  const partAnyTextBoxSaving = partState.textBoxStates
+  const partAnyTextBoxSaving = part.textBoxes
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = part.uploadSlots
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
@@ -636,15 +556,15 @@ const fileUploadFailed = (state: State, partId: string, uploadSlotId: string): S
 
   return {
     ...state,
-    assignmentState: {
-      ...state.assignmentState,
+    assignment: {
+      ...state.assignment,
       saveState: assignmentSaveState,
-      partStates: state.assignmentState.partStates.map(p => {
+      parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             saveState: partSaveState,
-            uploadSlotStates: p.uploadSlotStates.map(u => {
+            uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
                 return { ...u, saveState: 'save error' };
               }
@@ -665,17 +585,17 @@ const fileDeleteStarted = (state: State, partId: string, uploadSlotId: string): 
 
   return {
     ...state,
-    assignmentState: {
-      ...state.assignmentState,
+    assignment: {
+      ...state.assignment,
       formState: 'dirty',
       saveState: 'saving',
-      partStates: state.assignmentState.partStates.map(p => {
+      parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             formState: 'dirty',
             saveState: 'saving',
-            uploadSlotStates: p.uploadSlotStates.map(u => {
+            uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
                 return {
                   ...u,
@@ -725,38 +645,33 @@ const fileDeleteSucceeded = (state: State, partId: string, uploadSlotId: string)
     .every(p => p.complete);
   const assignmentComplete = (partComplete || part.optional) && otherPartsComplete;
 
-  const partState = state.assignmentState.partStates.find(p => p.partId === partId);
-  if (!partState) {
-    throw Error('part state not found');
-  }
-
   // for this part, check if all text boxes and all upload slots (other than this one) are saved
-  const partAllTextBoxesSaved = partState.textBoxStates
-    .every((t, i) => t.formState === 'pristine' || t.savedText === part.textBoxes[i].text);
-  const partAllUploadSlotsSavedOrEmpty = partState.uploadSlotStates
+  const partAllTextBoxesSaved = part.textBoxes
+    .every(t => t.formState === 'pristine' || t.savedText === t.text);
+  const partAllUploadSlotsSavedOrEmpty = part.uploadSlots
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .every(u => u.formState === 'pristine' || u.saveState === 'saved' || u.saveState === 'empty');
 
-  const partAnyTextBoxError = partState.textBoxStates
+  const partAnyTextBoxError = part.textBoxes
     .some(t => t.saveState === 'error');
-  const partAnyUploadSlotError = partState.uploadSlotStates
+  const partAnyUploadSlotError = part.uploadSlots
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .some(u => u.saveState === 'save error' || u.saveState === 'delete error');
 
-  const partAnyTextBoxSaving = partState.textBoxStates
+  const partAnyTextBoxSaving = part.textBoxes
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = part.uploadSlots
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
   // check the other parts
-  const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignmentState.partStates
+  const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignment.parts
     .filter(p => p.partId !== partId)
     .every(p => p.formState === 'pristine' || p.saveState === 'saved');
-  const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignmentState.partStates
+  const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'error');
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
@@ -777,11 +692,13 @@ const fileDeleteSucceeded = (state: State, partId: string, uploadSlotId: string)
     assignment: {
       ...state.assignment,
       complete: assignmentComplete,
+      saveState: assignmentSaveState,
       parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             complete: partComplete,
+            saveState: partSaveState,
             uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
                 return {
@@ -790,27 +707,6 @@ const fileDeleteSucceeded = (state: State, partId: string, uploadSlotId: string)
                   size: null,
                   mimeType: null,
                   complete: uploadSlotComplete,
-                };
-              }
-              return u;
-            }),
-          };
-        }
-        return p;
-      }),
-    },
-    assignmentState: {
-      ...state.assignmentState,
-      saveState: assignmentSaveState,
-      partStates: state.assignmentState.partStates.map(p => {
-        if (p.partId === partId) {
-          return {
-            ...p,
-            saveState: partSaveState,
-            uploadSlotStates: p.uploadSlotStates.map(u => {
-              if (u.uploadSlotId === uploadSlotId) {
-                return {
-                  ...u,
                   saveState: 'empty',
                   progress: 0,
                 };
@@ -830,35 +726,35 @@ const fileDeleteFailed = (state: State, partId: string, uploadSlotId: string): S
     return state;
   }
 
-  const partState = state.assignmentState.partStates.find(p => p.partId === partId);
-  if (!partState) {
-    throw Error('part state not found');
+  const part = state.assignment.parts.find(p => p.partId === partId);
+  if (!part) {
+    throw Error('part not found');
   }
 
-  const partAnyTextBoxSaving = partState.textBoxStates
+  const partAnyTextBoxSaving = part.textBoxes
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = part.uploadSlots
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
   const partSaveState = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting ? 'saving' : 'error';
 
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignment.parts
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
   const assignmentSaveState = assignmentAnyPartSaving ? 'saving' : 'error';
 
   return {
     ...state,
-    assignmentState: {
-      ...state.assignmentState,
+    assignment: {
+      ...state.assignment,
       saveState: assignmentSaveState,
-      partStates: state.assignmentState.partStates.map(p => {
+      parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             saveState: partSaveState,
-            uploadSlotStates: p.uploadSlotStates.map(u => {
+            uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
                 return { ...u, saveState: 'delete error' };
               }

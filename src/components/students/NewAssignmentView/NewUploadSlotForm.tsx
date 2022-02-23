@@ -3,30 +3,28 @@ import { MouseEventHandler, ReactElement, ReactEventHandler } from 'react';
 import { UploadSlotFunction } from '.';
 import { ProgressBar } from '@/components/ProgressBar';
 import { UploadSlotState } from '@/components/students/NewAssignmentView/state';
-import { NewUploadSlot } from '@/domain/students';
 import { newAssignmentService } from '@/services/students';
 
 type Props = {
   studentId: number;
   unitId: string;
   assignmentId: string;
-  uploadSlot: NewUploadSlot;
-  state: UploadSlotState;
+  uploadSlot: UploadSlotState;
   uploadFile: UploadSlotFunction;
   deleteFile: UploadSlotFunction;
 };
 
-export const NewUploadSlotForm = ({ studentId, unitId, assignmentId, uploadSlot, state, uploadFile, deleteFile }: Props): ReactElement => {
+export const NewUploadSlotForm = ({ studentId, unitId, assignmentId, uploadSlot, uploadFile, deleteFile }: Props): ReactElement => {
   return (
     <>
       <div className="uploadSlot">
         <label htmlFor={uploadSlot.uploadSlotId} className="form-label"><span className="fw-bold">{uploadSlot.label}:</span> <small>(type: {formatList(uploadSlot.allowedTypes)})</small></label>
-        {state.saveState === 'saving'
-          ? <ProgressBar progress={state.progress}>{state.progress}%</ProgressBar>
-          : state.saveState === 'save error' || state.saveState === 'empty'
-            ? <EmptySlot uploadSlot={uploadSlot} state={state} uploadFile={uploadFile} />
-            : state.saveState === 'deleting' || state.saveState === 'delete error' || state.saveState === 'saved'
-              ? <FullSlot studentId={studentId} unitId={unitId} assignmentId={assignmentId} uploadSlot={uploadSlot} state={state} deleteFile={deleteFile} />
+        {uploadSlot.saveState === 'saving'
+          ? <ProgressBar progress={uploadSlot.progress}>{uploadSlot.progress}%</ProgressBar>
+          : uploadSlot.saveState === 'save error' || uploadSlot.saveState === 'empty'
+            ? <EmptySlot uploadSlot={uploadSlot} uploadFile={uploadFile} />
+            : uploadSlot.saveState === 'deleting' || uploadSlot.saveState === 'delete error' || uploadSlot.saveState === 'saved'
+              ? <FullSlot studentId={studentId} unitId={unitId} assignmentId={assignmentId} uploadSlot={uploadSlot} deleteFile={deleteFile} />
               : <div />
         }
         {uploadSlot.optional
@@ -50,11 +48,10 @@ export const NewUploadSlotForm = ({ studentId, unitId, assignmentId, uploadSlot,
 };
 
 type EmptySlotProps = {
-  uploadSlot: NewUploadSlot;
-  state: UploadSlotState;
+  uploadSlot: UploadSlotState;
   uploadFile: UploadSlotFunction;
 };
-const EmptySlot = ({ uploadSlot, state, uploadFile }: EmptySlotProps): ReactElement => {
+const EmptySlot = ({ uploadSlot, uploadFile }: EmptySlotProps): ReactElement => {
   const onFileInputChange: ReactEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
     const files = target.files;
@@ -77,7 +74,7 @@ const EmptySlot = ({ uploadSlot, state, uploadFile }: EmptySlotProps): ReactElem
   return (
     <>
       <input onChange={onFileInputChange} type="file" accept={accept(uploadSlot.allowedTypes)} className="form-control" id={uploadSlot.uploadSlotId} />
-      {state.saveState === 'save error' && <small className="text-danger">Error saving file</small>}
+      {uploadSlot.saveState === 'save error' && <small className="text-danger">Error saving file</small>}
     </>
   );
 };
@@ -86,11 +83,10 @@ type FullSlotProps = {
   studentId: number;
   unitId: string;
   assignmentId: string;
-  uploadSlot: NewUploadSlot;
-  state: UploadSlotState;
+  uploadSlot: UploadSlotState;
   deleteFile: UploadSlotFunction;
 };
-const FullSlot = ({ studentId, unitId, assignmentId, uploadSlot, state, deleteFile }: FullSlotProps): ReactElement => {
+const FullSlot = ({ studentId, unitId, assignmentId, uploadSlot, deleteFile }: FullSlotProps): ReactElement => {
   const onDeleteButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
     deleteFile(uploadSlot.partId, uploadSlot.uploadSlotId).subscribe({
       next: () => { /* empty */ },
@@ -110,11 +106,11 @@ const FullSlot = ({ studentId, unitId, assignmentId, uploadSlot, state, deleteFi
           onClick={onDeleteButtonClick}
           className="btn btn-danger me-3 mt-2 mt-md-0"
           style={{ width: 90 }} // fixed width so that the button doesn't change size when the text is replaced with a spinner
-          disabled={state.saveState === 'deleting'}
-        >{state.saveState === 'deleting' ? <div className="spinner-border spinner-border-sm" /> : 'Delete'}</button>
+          disabled={uploadSlot.saveState === 'deleting'}
+        >{uploadSlot.saveState === 'deleting' ? <div className="spinner-border spinner-border-sm" /> : 'Delete'}</button>
         {uploadSlot.filename && <><a href="#" onClick={downloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.size && <>({humanReadablefilesize(uploadSlot.size)})</>}</>}
       </div>
-      {state.saveState === 'delete error' && <small className="text-danger">Error deleting file</small>}
+      {uploadSlot.saveState === 'delete error' && <small className="text-danger">Error deleting file</small>}
     </>
   );
 };
