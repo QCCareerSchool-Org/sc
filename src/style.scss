@@ -1,7 +1,10 @@
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+// @import "~bootstrap/scss/functions";
 
+// 2. Include any default variable overrides here
 $body-color: #212529;
 
-$grid-gutter-width:           1.875rem; // to match old site (remove when old site is gone)
+$grid-gutter-width: 1.875rem; // to match old site (remove when old site is gone)
 
 $font-family-sans-serif: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
@@ -9,9 +12,58 @@ $navbar-nav-link-padding-x: 1rem;
 
 $dropdown-item-padding-x: 1.5rem;
 
-// $nav-link-color: rgba(0,244,0,.9);
+$theme-colors: (
+  "primary":   #0d6efd,
+  "secondary": #6c757d,
+  "success":   #198754,
+  "info":      #0dcaf0,
+  "warning":   #ffc107,
+  "danger":    #dc3545,
+  "light":     #f8f9fa,
+  "dark":      #212529,
+  "navy":      #2b2d42,
+);
 
-@import "../node_modules/bootstrap/scss/bootstrap";
+// 3. Include remainder of required Bootstrap stylesheets
+// @import "~bootstrap/scss/variables";
+// @import "~bootstrap/scss/mixins";
+
+// 4. Include any optional Bootstrap components as you like
+// @import "~bootstrap/scss/root";
+// @import "~bootstrap/scss/reboot";
+// @import "~bootstrap/scss/type";
+// @import "~bootstrap/scss/images";
+// @import "~bootstrap/scss/containers";
+// @import "~bootstrap/scss/grid";
+// @import "~bootstrap/scss/tables";
+// @import "~bootstrap/scss/forms";
+// @import "~bootstrap/scss/buttons";
+// @import "~bootstrap/scss/transitions";
+// @import "~bootstrap/scss/dropdown";
+// @import "~bootstrap/scss/button-group";
+// @import "~bootstrap/scss/nav";
+// @import "~bootstrap/scss/navbar";
+// @import "~bootstrap/scss/card";
+// @import "~bootstrap/scss/accordion";
+// @import "~bootstrap/scss/breadcrumb";
+// @import "~bootstrap/scss/pagination";
+// @import "~bootstrap/scss/badge";
+// @import "~bootstrap/scss/alert";
+// @import "~bootstrap/scss/progress";
+// @import "~bootstrap/scss/list-group";
+// @import "~bootstrap/scss/close";
+// @import "~bootstrap/scss/toasts";
+// @import "~bootstrap/scss/modal";
+// @import "~bootstrap/scss/tooltip";
+// @import "~bootstrap/scss/popover";
+// @import "~bootstrap/scss/carousel";
+// @import "~bootstrap/scss/spinners";
+// @import "~bootstrap/scss/offcanvas";
+// @import "~bootstrap/scss/placeholders";
+
+@import "~bootstrap/scss/bootstrap";
+
+// 5. Add additional custom code here
 
 body {
   overflow-y: scroll; /* Show scrollbars */

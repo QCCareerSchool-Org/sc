@@ -4,6 +4,7 @@ export type NewUploadSlot = {
   /** hex string */
   partId: string;
   label: string;
+  allowedTypes: string[];
   optional: boolean;
   order: number;
   filename: string | null;

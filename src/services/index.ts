@@ -1,7 +1,6 @@
-import { AxiosInstanceService } from './axiosInstanceService';
 import { AxiosHttpService } from './httpService';
 import { LoginService } from './loginService';
+import { instance } from 'src/axiosInstance';
 
-export const axiosInstanceService = new AxiosInstanceService();
-export const axiosHttpService = new AxiosHttpService(axiosInstanceService.getInstance());
+export const axiosHttpService = new AxiosHttpService(instance);
 export const loginService = new LoginService(axiosHttpService);

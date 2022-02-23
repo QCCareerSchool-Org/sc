@@ -2,7 +2,7 @@ import { MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef }
 import { debounceTime, exhaustMap, Subject, switchMap, takeUntil } from 'rxjs';
 
 import { TextBoxFunction } from '.';
-import { TextBoxState } from '@/components/students/NewAssignmentForm/state';
+import { TextBoxState } from '@/components/students/NewAssignmentView/state';
 import { NewTextBox } from '@/domain/students';
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 };
 
 /** amount of time to wait between calling save */
-const saveDelay = 300;
+const saveDelay = 1000;
 
 const maxLength = 65_535;
 

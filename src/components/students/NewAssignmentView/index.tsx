@@ -7,6 +7,7 @@ import { initialState, reducer } from './state';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { HttpServiceError } from '@/services/httpService';
 import { newAssignmentService } from '@/services/students';
+import { navigateToLogin } from 'src/navigateToLogin';
 
 export type UploadSlotFunction = (partId: string, uploadSlotId: string, file?: File) => Observable<any>;
 export type TextBoxFunction = (partId: string, textBoxId: string, text: string) => Observable<any>;
@@ -17,7 +18,7 @@ type Props = {
   assignmentId: string;
 };
 
-export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): ReactElement | null => {
+export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -38,7 +39,7 @@ export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): R
       error: err => {
         if (err instanceof HttpServiceError) {
           if (err.refresh) {
-            return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
+            return navigateToLogin(router);
           }
         }
         dispatch({ type: 'ASSIGNMENT_ERROR' });
@@ -49,53 +50,59 @@ export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): R
       if (!file) {
         return throwError(() => Error('file is not defined'));
       }
+      dispatch({ type: 'FILE_UPLOAD_STARTED', payload: { partId, uploadSlotId } });
       return newAssignmentService.uploadFile(studentId, unitId, assignmentId, partId, uploadSlotId, file).pipe(
         tap({
           next: progress => dispatch({ type: 'FILE_UPLOAD_PROGRESSED', payload: { partId, uploadSlotId, progress } }),
           error: err => {
+            let message = 'File upload failed';
             if (err instanceof HttpServiceError) {
               if (err.refresh) {
-                return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
               }
             }
-            dispatch({ type: 'FILE_ERRORED', payload: { partId, uploadSlotId } });
-            alert('File upload failed');
+            dispatch({ type: 'FILE_UPLOAD_FAILED', payload: { partId, uploadSlotId } });
+            alert(message);
           },
-          complete: () => dispatch({ type: 'FILE_UPLOADED', payload: { partId, uploadSlotId, filename: file.name, size: file.size } }),
+          complete: () => dispatch({ type: 'FILE_UPLOAD_SUCCEEDED', payload: { partId, uploadSlotId, filename: file.name, size: file.size } }),
         }),
         takeUntil(destroy$),
       );
     });
 
     setDeleteFile((): UploadSlotFunction => (partId, uploadSlotId) => {
+      dispatch({ type: 'FILE_DELETE_STARTED', payload: { partId, uploadSlotId } });
       return newAssignmentService.deleteFile(studentId, unitId, assignmentId, partId, uploadSlotId).pipe(
         tap({
           error: err => {
             if (err instanceof HttpServiceError) {
               if (err.refresh) {
-                return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
+                return navigateToLogin(router);
               }
             }
-            dispatch({ type: 'FILE_ERRORED', payload: { partId, uploadSlotId } });
+            dispatch({ type: 'FILE_DELETE_FAILED', payload: { partId, uploadSlotId } });
           },
-          complete: () => dispatch({ type: 'FILE_DELETED', payload: { partId, uploadSlotId } }),
+          complete: () => dispatch({ type: 'FILE_DELETE_SUCCEEDED', payload: { partId, uploadSlotId } }),
         }),
         takeUntil(destroy$),
       );
     });
 
     setSaveText((): TextBoxFunction => (partId, textBoxId, text) => {
-      dispatch({ type: 'TEXT_SAVE_REQUESTED', payload: { partId, textBoxId } });
+      dispatch({ type: 'TEXT_SAVE_STARTED', payload: { partId, textBoxId } });
       return newAssignmentService.saveText(studentId, unitId, assignmentId, partId, textBoxId, text).pipe(
         tap({
-          next: () => dispatch({ type: 'TEXT_SAVED', payload: { partId, textBoxId, text } }),
+          next: () => dispatch({ type: 'TEXT_SAVE_SUCCEEDED', payload: { partId, textBoxId, text } }),
           error: err => {
             if (err instanceof HttpServiceError) {
               if (err.refresh) {
-                return router.push({ pathname: '/login', query: { returnUrl: router.asPath } });
+                return navigateToLogin(router);
               }
             }
-            dispatch({ type: 'TEXT_ERRORED', payload: { partId, textBoxId } });
+            dispatch({ type: 'TEXT_SAVE_FAILED', payload: { partId, textBoxId } });
           },
         }),
         takeUntil(destroy$),
@@ -114,7 +121,7 @@ export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): R
   }, []);
 
   const backButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
-    void router.push(`/students/units/${unitId}`);
+    void router.push(`/students/units/${unitId}`, undefined, { scroll: false });
   };
 
   if (state.error) {
@@ -134,7 +141,7 @@ export const NewAssignmentForm = ({ studentId, unitId, assignmentId }: Props): R
         </div>
       </section>
       {state.assignment.parts.map((p, i) => (
-        <NewPartForm key={p.partId} part={p} state={state.assignmentState.partStates[i]} saveText={saveText} updateText={updateText} uploadFile={uploadFile} deleteFile={deleteFile} />
+        <NewPartForm key={p.partId} studentId={studentId} unitId={unitId} part={p} state={state.assignmentState.partStates[i]} saveText={saveText} updateText={updateText} uploadFile={uploadFile} deleteFile={deleteFile} />
       ))}
       <section className="bg-dark text-light">
         <div className="container">

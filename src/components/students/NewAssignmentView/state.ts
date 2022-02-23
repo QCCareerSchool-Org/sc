@@ -13,7 +13,7 @@ export type TextBoxState = {
 export type UploadSlotState = {
   uploadSlotId: string;
   formState: FormState;
-  saveState: 'empty' | 'saved' | 'saving' | 'error';
+  saveState: 'empty' | 'saved' | 'saving' | 'save error' | 'deleting' | 'delete error';
   progress: number;
 };
 
@@ -50,13 +50,16 @@ export type Action =
   | { type: 'ASSIGNMENT_LOADED'; payload: NewAssignmentWithChildren }
   | { type: 'ASSIGNMENT_ERROR' }
   | { type: 'TEXT_CHANGED'; payload: { partId: string; textBoxId: string; text: string } }
-  | { type: 'TEXT_SAVE_REQUESTED'; payload: { partId: string; textBoxId: string } }
-  | { type: 'TEXT_SAVED'; payload: { partId: string; textBoxId: string; text: string } }
-  | { type: 'TEXT_ERRORED'; payload: { partId: string; textBoxId: string } }
+  | { type: 'TEXT_SAVE_STARTED'; payload: { partId: string; textBoxId: string } }
+  | { type: 'TEXT_SAVE_SUCCEEDED'; payload: { partId: string; textBoxId: string; text: string } }
+  | { type: 'TEXT_SAVE_FAILED'; payload: { partId: string; textBoxId: string } }
+  | { type: 'FILE_UPLOAD_STARTED'; payload: { partId: string; uploadSlotId: string } }
   | { type: 'FILE_UPLOAD_PROGRESSED'; payload: { partId: string; uploadSlotId: string; progress: number } }
-  | { type: 'FILE_UPLOADED'; payload: { partId: string; uploadSlotId: string; filename: string; size: number } }
-  | { type: 'FILE_DELETED'; payload: { partId: string; uploadSlotId: string } }
-  | { type: 'FILE_ERRORED'; payload: { partId: string; uploadSlotId: string } };
+  | { type: 'FILE_UPLOAD_SUCCEEDED'; payload: { partId: string; uploadSlotId: string; filename: string; size: number } }
+  | { type: 'FILE_UPLOAD_FAILED'; payload: { partId: string; uploadSlotId: string } }
+  | { type: 'FILE_DELETE_STARTED'; payload: { partId: string; uploadSlotId: string } }
+  | { type: 'FILE_DELETE_SUCCEEDED'; payload: { partId: string; uploadSlotId: string } }
+  | { type: 'FILE_DELETE_FAILED'; payload: { partId: string; uploadSlotId: string } };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -65,21 +68,27 @@ export const reducer = (state: State, action: Action): State => {
     case 'ASSIGNMENT_ERROR':
       return { ...state, error: true };
     case 'TEXT_CHANGED':
-      return textBoxTextChange(state, action.payload.partId, action.payload.textBoxId, action.payload.text);
-    case 'TEXT_SAVE_REQUESTED':
-      return textBoxSaving(state, action.payload.partId, action.payload.textBoxId);
-    case 'TEXT_SAVED':
-      return textBoxSaved(state, action.payload.partId, action.payload.textBoxId, action.payload.text);
-    case 'TEXT_ERRORED':
-      return textBoxError(state, action.payload.partId, action.payload.textBoxId);
+      return textChanged(state, action.payload.partId, action.payload.textBoxId, action.payload.text);
+    case 'TEXT_SAVE_STARTED':
+      return textSaveRequested(state, action.payload.partId, action.payload.textBoxId);
+    case 'TEXT_SAVE_SUCCEEDED':
+      return textSaveSucceeded(state, action.payload.partId, action.payload.textBoxId, action.payload.text);
+    case 'TEXT_SAVE_FAILED':
+      return textSaveFailed(state, action.payload.partId, action.payload.textBoxId);
+    case 'FILE_UPLOAD_STARTED':
+      return fileUploadStarted(state, action.payload.partId, action.payload.uploadSlotId);
     case 'FILE_UPLOAD_PROGRESSED':
-      return uploadSlotProgress(state, action.payload.partId, action.payload.uploadSlotId, action.payload.progress);
-    case 'FILE_UPLOADED':
-      return uploadSlotSaved(state, action.payload.partId, action.payload.uploadSlotId, action.payload.filename, action.payload.size);
-    case 'FILE_DELETED':
-      return uploadSlotDeleted(state, action.payload.partId, action.payload.uploadSlotId);
-    case 'FILE_ERRORED':
-      return uploadSlotError(state, action.payload.partId, action.payload.uploadSlotId);
+      return fileUploadProgressed(state, action.payload.partId, action.payload.uploadSlotId, action.payload.progress);
+    case 'FILE_UPLOAD_SUCCEEDED':
+      return fileUploadSucceeded(state, action.payload.partId, action.payload.uploadSlotId, action.payload.filename, action.payload.size);
+    case 'FILE_UPLOAD_FAILED':
+      return fileUploadFailed(state, action.payload.partId, action.payload.uploadSlotId);
+    case 'FILE_DELETE_STARTED':
+      return fileDeleteStarted(state, action.payload.partId, action.payload.uploadSlotId);
+    case 'FILE_DELETE_SUCCEEDED':
+      return fileDeleteSucceeded(state, action.payload.partId, action.payload.uploadSlotId);
+    case 'FILE_DELETE_FAILED':
+      return fileDeleteFailed(state, action.payload.partId, action.payload.uploadSlotId);
   }
 };
 
@@ -116,7 +125,7 @@ const assignmentLoad = (state: State, assignment: NewAssignmentWithChildren): St
  * @param text the new text
  * @returns the new assignment data
  */
-const textBoxTextChange = (state: State, partId: string, textBoxId: string, text: string): State => {
+const textChanged = (state: State, partId: string, textBoxId: string, text: string): State => {
   if (!state.assignment) {
     return state;
   }
@@ -176,7 +185,7 @@ const textBoxTextChange = (state: State, partId: string, textBoxId: string, text
  * @param text the new text
  * @returns the new assignment data
  */
-const textBoxSaving = (state: State, partId: string, textBoxId: string): State => {
+const textSaveRequested = (state: State, partId: string, textBoxId: string): State => {
   if (!state.assignment) {
     return state;
   }
@@ -214,7 +223,7 @@ const textBoxSaving = (state: State, partId: string, textBoxId: string): State =
  * @param text the new text
  * @returns the new assignment data
  */
-const textBoxSaved = (state: State, partId: string, textBoxId: string, text: string): State => {
+const textSaveSucceeded = (state: State, partId: string, textBoxId: string, text: string): State => {
   if (!state.assignment) {
     return state;
   }
@@ -267,13 +276,13 @@ const textBoxSaved = (state: State, partId: string, textBoxId: string, text: str
     .filter(t => t.textBoxId !== textBoxId)
     .some(t => t.saveState === 'error');
   const partAnyUploadSlotError = partState.uploadSlotStates
-    .some(u => u.saveState === 'error');
+    .some(u => u.saveState === 'save error' || u.saveState === 'delete error');
 
   const partAnyTextBoxSaving = partState.textBoxStates
     .filter(t => t.textBoxId !== textBoxId)
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSaving = partState.uploadSlotStates
-    .some(u => u.saveState === 'saving');
+  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+    .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
   // check the other parts
   const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignmentState.partStates
@@ -282,7 +291,7 @@ const textBoxSaved = (state: State, partId: string, textBoxId: string, text: str
   const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignmentState.partStates
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'error');
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSaving || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
@@ -355,7 +364,7 @@ const textBoxSaved = (state: State, partId: string, textBoxId: string, text: str
  * @param text the new text
  * @returns the new assignment data
  */
-const textBoxError = (state: State, partId: string, textBoxId: string): State => {
+const textSaveFailed = (state: State, partId: string, textBoxId: string): State => {
   if (!state.assignment) {
     return state;
   }
@@ -368,16 +377,16 @@ const textBoxError = (state: State, partId: string, textBoxId: string): State =>
   const partAnyTextBoxSaving = partState.textBoxStates
     .filter(t => t.textBoxId !== textBoxId)
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSaving = partState.uploadSlotStates
-    .some(u => u.saveState === 'saving');
+  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+    .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSaving || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
   const assignmentSaveState = assignmentAnyPartSaving ? 'saving' : 'error';
 
-  const partSaveState = partAnyTextBoxSaving || partAnyUploadSlotSaving ? 'saving' : 'error';
+  const partSaveState = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting ? 'saving' : 'error';
 
   return {
     ...state,
@@ -403,7 +412,7 @@ const textBoxError = (state: State, partId: string, textBoxId: string): State =>
   };
 };
 
-const uploadSlotProgress = (state: State, partId: string, uploadSlotId: string, progress: number): State => {
+const fileUploadStarted = (state: State, partId: string, uploadSlotId: string): State => {
   if (!state.assignment) {
     return state;
   }
@@ -426,6 +435,36 @@ const uploadSlotProgress = (state: State, partId: string, uploadSlotId: string, 
                   ...u,
                   formState: 'dirty',
                   saveState: 'saving',
+                  progress: 0,
+                };
+              }
+              return u;
+            }),
+          };
+        }
+        return p;
+      }),
+    },
+  };
+};
+
+const fileUploadProgressed = (state: State, partId: string, uploadSlotId: string, progress: number): State => {
+  if (!state.assignment) {
+    return state;
+  }
+
+  return {
+    ...state,
+    assignmentState: {
+      ...state.assignmentState,
+      partStates: state.assignmentState.partStates.map(p => {
+        if (p.partId === partId) {
+          return {
+            ...p,
+            uploadSlotStates: p.uploadSlotStates.map(u => {
+              if (u.uploadSlotId === uploadSlotId) {
+                return {
+                  ...u,
                   progress,
                 };
               }
@@ -439,7 +478,7 @@ const uploadSlotProgress = (state: State, partId: string, uploadSlotId: string, 
   };
 };
 
-const uploadSlotSaved = (state: State, partId: string, uploadSlotId: string, filename: string, size: number): State => {
+const fileUploadSucceeded = (state: State, partId: string, uploadSlotId: string, filename: string, size: number): State => {
   if (!state.assignment) {
     return state;
   }
@@ -487,13 +526,13 @@ const uploadSlotSaved = (state: State, partId: string, uploadSlotId: string, fil
     .some(t => t.saveState === 'error');
   const partAnyUploadSlotError = partState.uploadSlotStates
     .filter(u => u.uploadSlotId !== uploadSlotId)
-    .some(u => u.saveState === 'error');
+    .some(u => u.saveState === 'save error' || u.saveState === 'delete error');
 
   const partAnyTextBoxSaving = partState.textBoxStates
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSaving = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
     .filter(u => u.uploadSlotId !== uploadSlotId)
-    .some(u => u.saveState === 'saving');
+    .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
   // check the other parts
   const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignmentState.partStates
@@ -502,7 +541,7 @@ const uploadSlotSaved = (state: State, partId: string, uploadSlotId: string, fil
   const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignmentState.partStates
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'error');
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSaving || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
@@ -571,7 +610,90 @@ const uploadSlotSaved = (state: State, partId: string, uploadSlotId: string, fil
   };
 };
 
-const uploadSlotDeleted = (state: State, partId: string, uploadSlotId: string): State => {
+const fileUploadFailed = (state: State, partId: string, uploadSlotId: string): State => {
+  if (!state.assignment) {
+    return state;
+  }
+
+  const partState = state.assignmentState.partStates.find(p => p.partId === partId);
+  if (!partState) {
+    throw Error('part state not found');
+  }
+
+  const partAnyTextBoxSaving = partState.textBoxStates
+    .some(t => t.saveState === 'saving');
+  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
+    .filter(u => u.uploadSlotId !== uploadSlotId)
+    .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
+
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
+    .filter(p => p.partId !== partId)
+    .some(p => p.saveState === 'saving');
+
+  const assignmentSaveState = assignmentAnyPartSaving ? 'saving' : 'error';
+
+  const partSaveState = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting ? 'saving' : 'error';
+
+  return {
+    ...state,
+    assignmentState: {
+      ...state.assignmentState,
+      saveState: assignmentSaveState,
+      partStates: state.assignmentState.partStates.map(p => {
+        if (p.partId === partId) {
+          return {
+            ...p,
+            saveState: partSaveState,
+            uploadSlotStates: p.uploadSlotStates.map(u => {
+              if (u.uploadSlotId === uploadSlotId) {
+                return { ...u, saveState: 'save error' };
+              }
+              return u;
+            }),
+          };
+        }
+        return p;
+      }),
+    },
+  };
+};
+
+const fileDeleteStarted = (state: State, partId: string, uploadSlotId: string): State => {
+  if (!state.assignment) {
+    return state;
+  }
+
+  return {
+    ...state,
+    assignmentState: {
+      ...state.assignmentState,
+      formState: 'dirty',
+      saveState: 'saving',
+      partStates: state.assignmentState.partStates.map(p => {
+        if (p.partId === partId) {
+          return {
+            ...p,
+            formState: 'dirty',
+            saveState: 'saving',
+            uploadSlotStates: p.uploadSlotStates.map(u => {
+              if (u.uploadSlotId === uploadSlotId) {
+                return {
+                  ...u,
+                  formState: 'dirty',
+                  saveState: 'deleting',
+                };
+              }
+              return u;
+            }),
+          };
+        }
+        return p;
+      }),
+    },
+  };
+};
+
+const fileDeleteSucceeded = (state: State, partId: string, uploadSlotId: string): State => {
   if (!state.assignment) {
     return state;
   }
@@ -619,13 +741,13 @@ const uploadSlotDeleted = (state: State, partId: string, uploadSlotId: string): 
     .some(t => t.saveState === 'error');
   const partAnyUploadSlotError = partState.uploadSlotStates
     .filter(u => u.uploadSlotId !== uploadSlotId)
-    .some(u => u.saveState === 'error');
+    .some(u => u.saveState === 'save error' || u.saveState === 'delete error');
 
   const partAnyTextBoxSaving = partState.textBoxStates
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSaving = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
     .filter(u => u.uploadSlotId !== uploadSlotId)
-    .some(u => u.saveState === 'saving');
+    .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
   // check the other parts
   const assignmentAllPartsSaved = partAllTextBoxesSaved && partAllUploadSlotsSavedOrEmpty && state.assignmentState.partStates
@@ -634,7 +756,7 @@ const uploadSlotDeleted = (state: State, partId: string, uploadSlotId: string): 
   const assignmentAnyPartError = partAnyTextBoxError || partAnyUploadSlotError || state.assignmentState.partStates
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'error');
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSaving || state.assignmentState.partStates
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
 
@@ -703,7 +825,7 @@ const uploadSlotDeleted = (state: State, partId: string, uploadSlotId: string): 
   };
 };
 
-const uploadSlotError = (state: State, partId: string, uploadSlotId: string): State => {
+const fileDeleteFailed = (state: State, partId: string, uploadSlotId: string): State => {
   if (!state.assignment) {
     return state;
   }
@@ -715,17 +837,16 @@ const uploadSlotError = (state: State, partId: string, uploadSlotId: string): St
 
   const partAnyTextBoxSaving = partState.textBoxStates
     .some(t => t.saveState === 'saving');
-  const partAnyUploadSlotSaving = partState.uploadSlotStates
+  const partAnyUploadSlotSavingOrDeleting = partState.uploadSlotStates
     .filter(u => u.uploadSlotId !== uploadSlotId)
-    .some(u => u.saveState === 'saving');
+    .some(u => u.saveState === 'saving' || u.saveState === 'deleting');
 
-  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSaving || state.assignmentState.partStates
+  const partSaveState = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting ? 'saving' : 'error';
+
+  const assignmentAnyPartSaving = partAnyTextBoxSaving || partAnyUploadSlotSavingOrDeleting || state.assignmentState.partStates
     .filter(p => p.partId !== partId)
     .some(p => p.saveState === 'saving');
-
   const assignmentSaveState = assignmentAnyPartSaving ? 'saving' : 'error';
-
-  const partSaveState = partAnyTextBoxSaving || partAnyUploadSlotSaving ? 'saving' : 'error';
 
   return {
     ...state,
@@ -739,7 +860,7 @@ const uploadSlotError = (state: State, partId: string, uploadSlotId: string): St
             saveState: partSaveState,
             uploadSlotStates: p.uploadSlotStates.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
-                return { ...u, saveState: 'error' };
+                return { ...u, saveState: 'delete error' };
               }
               return u;
             }),

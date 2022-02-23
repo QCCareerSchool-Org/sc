@@ -16,6 +16,7 @@ export interface INewAssignmentService {
   saveText: (studentId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, text: string) => Observable<NewTextBox>;
   uploadFile: (studentId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File) => Observable<number>;
   deleteFile: (studentId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
+  downloadFile: (studentId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
 }
 
 export class NewAssignmentService implements INewAssignmentService {
@@ -44,6 +45,11 @@ export class NewAssignmentService implements INewAssignmentService {
   public deleteFile(studentId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
     const url = this.getUrl(studentId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}`;
     return this.httpService.delete(url);
+  }
+
+  public downloadFile(studentId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
+    const url = this.getUrl(studentId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}`;
+    return this.httpService.download(url);
   }
 
   private getUrl(studentId: number, unitId: string, assignmentId: string): string {

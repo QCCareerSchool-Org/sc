@@ -1,8 +1,9 @@
 import type Axios from '@qccareerschool/axios-observable';
 import type { AxiosResponse } from 'axios';
-import { catchError, combineLatest, map, Observable, startWith, Subject, throwError } from 'rxjs';
+import { saveAs } from 'file-saver';
+import { catchError, combineLatest, map, mapTo, Observable, startWith, Subject, tap, throwError } from 'rxjs';
 
-import { AxiosOtherError, AxiosRefreshError } from './axiosInstanceService';
+import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError } from 'src/axiosInstance';
 
 type Config = {
   params?: any;
@@ -22,6 +23,7 @@ export interface IHttpService {
   put: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
   putFile: (url: string, body: unknown, config?: Config) => Observable<number>;
   delete: <T = unknown>(url: string, config?: Config) => Observable<T>;
+  download: (url: string, config?: Config) => Observable<void>;
 }
 
 export class AxiosHttpService implements IHttpService {
@@ -110,17 +112,32 @@ export class AxiosHttpService implements IHttpService {
     );
   }
 
+  public download(url: string, config?: Config): Observable<void> {
+    return this.instance.get(url, { ...config, responseType: 'blob' }).pipe(
+      tap(response => {
+        const filename = /filename="(.*)"/u.exec(response.headers['content-disposition'])?.[1];
+        saveAs(response.data, filename);
+      }),
+      mapTo(undefined),
+      catchError((err, caught) => this.handleError(err, caught)),
+    );
+  }
+
   private handleResponse<T>(response: AxiosResponse<T>, index: number): T {
     return response.data;
   }
 
   private handleError<T>(err: Error, caught: Observable<T>): Observable<never> {
-    if (err instanceof AxiosRefreshError) {
-      return throwError(() => new HttpServiceError('', true));
+    if (err instanceof AbstractAxiosError) {
+      const data = err.response?.data;
+      const message = typeof data === 'string' ? data : '';
+      if (err instanceof AxiosRefreshError) {
+        return throwError(() => new HttpServiceError(message, true));
+      }
+      if (err instanceof AxiosOtherError) {
+        return throwError(() => new HttpServiceError(message, false, err.response?.status));
+      }
     }
-    if (err instanceof AxiosOtherError) {
-      return throwError(() => new HttpServiceError('', false, err.response?.status));
-    }
-    return throwError(() => new HttpServiceError('', false));
+    return throwError(() => new HttpServiceError(err.message, false));
   }
 }
