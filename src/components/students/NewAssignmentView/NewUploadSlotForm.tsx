@@ -3,18 +3,15 @@ import { MouseEventHandler, ReactElement, ReactEventHandler } from 'react';
 import { UploadSlotFunction } from '.';
 import { ProgressBar } from '@/components/ProgressBar';
 import { UploadSlotState } from '@/components/students/NewAssignmentView/state';
-import { newAssignmentService } from '@/services/students';
 
 type Props = {
-  studentId: number;
-  unitId: string;
-  assignmentId: string;
   uploadSlot: UploadSlotState;
   uploadFile: UploadSlotFunction;
   deleteFile: UploadSlotFunction;
+  downloadFile: UploadSlotFunction;
 };
 
-export const NewUploadSlotForm = ({ studentId, unitId, assignmentId, uploadSlot, uploadFile, deleteFile }: Props): ReactElement => {
+export const NewUploadSlotForm = ({ uploadSlot, uploadFile, deleteFile, downloadFile }: Props): ReactElement => {
   return (
     <>
       <div className="uploadSlot">
@@ -24,7 +21,7 @@ export const NewUploadSlotForm = ({ studentId, unitId, assignmentId, uploadSlot,
           : uploadSlot.saveState === 'save error' || uploadSlot.saveState === 'empty'
             ? <EmptySlot uploadSlot={uploadSlot} uploadFile={uploadFile} />
             : uploadSlot.saveState === 'deleting' || uploadSlot.saveState === 'delete error' || uploadSlot.saveState === 'saved'
-              ? <FullSlot studentId={studentId} unitId={unitId} assignmentId={assignmentId} uploadSlot={uploadSlot} deleteFile={deleteFile} />
+              ? <FullSlot uploadSlot={uploadSlot} deleteFile={deleteFile} downloadFile={downloadFile} />
               : <div />
         }
         {uploadSlot.optional
@@ -80,13 +77,11 @@ const EmptySlot = ({ uploadSlot, uploadFile }: EmptySlotProps): ReactElement => 
 };
 
 type FullSlotProps = {
-  studentId: number;
-  unitId: string;
-  assignmentId: string;
   uploadSlot: UploadSlotState;
   deleteFile: UploadSlotFunction;
+  downloadFile: UploadSlotFunction;
 };
-const FullSlot = ({ studentId, unitId, assignmentId, uploadSlot, deleteFile }: FullSlotProps): ReactElement => {
+const FullSlot = ({ uploadSlot, deleteFile, downloadFile }: FullSlotProps): ReactElement => {
   const onDeleteButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
     deleteFile(uploadSlot.partId, uploadSlot.uploadSlotId).subscribe({
       next: () => { /* empty */ },
@@ -96,7 +91,10 @@ const FullSlot = ({ studentId, unitId, assignmentId, uploadSlot, deleteFile }: F
 
   const downloadClick: MouseEventHandler<HTMLAnchorElement> = e => {
     e.preventDefault();
-    newAssignmentService.downloadFile(studentId, unitId, assignmentId, uploadSlot.partId, uploadSlot.uploadSlotId).subscribe();
+    downloadFile(uploadSlot.partId, uploadSlot.uploadSlotId).subscribe({
+      next: () => { /* empty */ },
+      error: () => { /* empty */ },
+    });
   };
 
   return (

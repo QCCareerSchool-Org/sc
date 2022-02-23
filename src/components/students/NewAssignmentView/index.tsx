@@ -25,6 +25,7 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
   // we set these in the useEffect callback so that we have access to destroy$
   const [ uploadFile, setUploadFile ] = useState<UploadSlotFunction>();
   const [ deleteFile, setDeleteFile ] = useState<UploadSlotFunction>();
+  const [ downloadFile, setDownloadFile ] = useState<UploadSlotFunction>();
   const [ saveText, setSaveText ] = useState<TextBoxFunction>();
 
   useWarnIfUnsavedChanges(state.assignment && state.assignment?.formState !== 'pristine' && state.assignment?.saveState !== 'saved');
@@ -91,6 +92,26 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
       );
     });
 
+    setDownloadFile((): UploadSlotFunction => (partId, uploadSlotId) => {
+      return newAssignmentService.downloadFile(studentId, unitId, assignmentId, partId, uploadSlotId).pipe(
+        tap({
+          error: err => {
+            let message = 'File download failed';
+            if (err instanceof HttpServiceError) {
+              if (err.refresh) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
+            }
+            alert(message);
+          },
+        }),
+        takeUntil(destroy$),
+      );
+    });
+
     setSaveText((): TextBoxFunction => (partId, textBoxId, text) => {
       dispatch({ type: 'TEXT_SAVE_STARTED', payload: { partId, textBoxId } });
       return newAssignmentService.saveText(studentId, unitId, assignmentId, partId, textBoxId, text).pipe(
@@ -128,7 +149,7 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
     return <>{state.error}</>;
   }
 
-  if (!state.assignment || !saveText || !uploadFile || !deleteFile) {
+  if (!state.assignment || !saveText || !uploadFile || !deleteFile || !downloadFile) {
     return null;
   }
 
@@ -143,13 +164,12 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
       {state.assignment.parts.map(p => (
         <NewPartForm
           key={p.partId}
-          studentId={studentId}
-          unitId={unitId}
           part={p}
           saveText={saveText}
           updateText={updateText}
           uploadFile={uploadFile}
           deleteFile={deleteFile}
+          downloadFile={downloadFile}
         />
       ))}
       <section className="bg-dark text-light">

@@ -6,16 +6,15 @@ import { TextBoxFunction, UploadSlotFunction } from '.';
 import { PartState } from '@/components/students/NewAssignmentView/state';
 
 type Props = {
-  studentId: number;
-  unitId: string;
   part: PartState;
   saveText: TextBoxFunction;
   updateText: TextBoxFunction;
   uploadFile: UploadSlotFunction;
   deleteFile: UploadSlotFunction;
+  downloadFile: UploadSlotFunction;
 };
 
-export const NewPartForm = ({ studentId, unitId, part, saveText, updateText, uploadFile, deleteFile }: Props): ReactElement => {
+export const NewPartForm = ({ part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => {
   return (
     <section>
       <div className="container">
@@ -34,12 +33,10 @@ export const NewPartForm = ({ studentId, unitId, part, saveText, updateText, upl
             {part.uploadSlots.map(u => (
               <NewUploadSlotForm
                 key={u.uploadSlotId}
-                studentId={studentId}
-                unitId={unitId}
-                assignmentId={part.assignmentId}
                 uploadSlot={u}
                 uploadFile={uploadFile}
                 deleteFile={deleteFile}
+                downloadFile={downloadFile}
               />
             ))}
           </div>

@@ -1,9 +1,10 @@
 import type Axios from '@qccareerschool/axios-observable';
 import type { AxiosResponse } from 'axios';
 import { saveAs } from 'file-saver';
-import { catchError, combineLatest, map, mapTo, Observable, startWith, Subject, tap, throwError } from 'rxjs';
+import { catchError, combineLatest, from, map, mapTo, Observable, startWith, Subject, tap, throwError } from 'rxjs';
 
 import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError } from 'src/axiosInstance';
+import { endpoint } from 'src/basePath';
 
 type Config = {
   params?: any;
@@ -112,6 +113,14 @@ export class AxiosHttpService implements IHttpService {
     );
   }
 
+  /**
+   * Makes a get request and initiates a file download on the client side
+   *
+   * Note: because we're receiving a blob, we have to do extra processing to reconstruct error messages
+   * @param url the url to download from
+   * @param config the configuration options
+   * @returns A void Observable
+   */
   public download(url: string, config?: Config): Observable<void> {
     return this.instance.get(url, { ...config, responseType: 'blob' }).pipe(
       tap(response => {
@@ -119,7 +128,41 @@ export class AxiosHttpService implements IHttpService {
         saveAs(response.data, filename);
       }),
       mapTo(undefined),
-      catchError((err, caught) => this.handleError(err, caught)),
+      catchError((err, caught) => {
+        // for requests to third parties, do the standard error handling
+        if (!url.startsWith(endpoint)) {
+          return this.handleError(err, caught);
+        }
+
+        // otherwise try to use the blob response to reconstruct the error messsage
+
+        if (err instanceof AbstractAxiosError) {
+
+          // check if there's a response
+          const blob = err.response?.data;
+          if (typeof blob === 'undefined') {
+            return throwError(() => new HttpServiceError(err.message, false));
+          }
+
+          // turn the blob back into text
+          // because Blob.prototype.text returns a Promise, we conver it to an Observable
+          const errorMessage$ = from((blob as Blob).text());
+
+          // return the a new HttpServiceError
+          return errorMessage$.pipe(
+            map(message => {
+              if (err instanceof AxiosRefreshError) {
+                throw new HttpServiceError(message, true);
+              }
+              if (err instanceof AxiosOtherError) {
+                throw new HttpServiceError(message, false, err.response?.status);
+              }
+              throw new HttpServiceError(err.message, false);
+            }),
+          );
+        }
+        return throwError(() => new HttpServiceError(err.message, false));
+      }),
     );
   }
 
@@ -133,8 +176,7 @@ export class AxiosHttpService implements IHttpService {
       const message = typeof data === 'string' ? data : '';
       if (err instanceof AxiosRefreshError) {
         return throwError(() => new HttpServiceError(message, true));
-      }
-      if (err instanceof AxiosOtherError) {
+      } else if (err instanceof AxiosOtherError) {
         return throwError(() => new HttpServiceError(message, false, err.response?.status));
       }
     }
