@@ -8,7 +8,7 @@ import { toHaveNoViolations } from 'jest-axe';
 
 expect.extend(toHaveNoViolations);
 
-// See https://github.com/facebook/react/pull/20087
-Object.defineProperty(HTMLMediaElement.prototype, 'muted', {
-  set: () => { /* */ },
-});
+// // See https://github.com/facebook/react/pull/20087
+// Object.defineProperty(HTMLMediaElement.prototype, 'muted', {
+//   set: () => { /* */ },
+// });

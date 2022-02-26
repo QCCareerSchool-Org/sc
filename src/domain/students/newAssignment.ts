@@ -1,7 +1,7 @@
 export type NewAssignment = {
-  /** hex string */
+  /** uuid */
   assignmentId: string;
-  /** hex string */
+  /** uuid */
   unitId: string;
   assignmentNumber: number;
   title: string | null;
@@ -9,4 +9,18 @@ export type NewAssignment = {
   optional: boolean;
   complete: boolean;
   created: Date;
+};
+
+// what we get from the back end
+export type RawNewAssignment = {
+  /** uuid */
+  assignmentId: string;
+  /** uuid */
+  unitId: string;
+  assignmentNumber: number;
+  title: string | null;
+  description: string | null;
+  optional: boolean;
+  complete: boolean;
+  created: string;
 };

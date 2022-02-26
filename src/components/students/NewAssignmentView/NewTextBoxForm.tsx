@@ -2,6 +2,7 @@ import { MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef }
 import { debounceTime, exhaustMap, Subject, switchMap, takeUntil } from 'rxjs';
 
 import { TextBoxFunction } from '.';
+import { Spinner } from '@/components/Spinner';
 import { TextBoxState } from '@/components/students/NewAssignmentView/state';
 
 type Props = {
@@ -33,7 +34,6 @@ export const NewTextBoxForm = ({ textBox, update, save }: Props): ReactElement =
     // send the changes to the save function after a delay
     textChange$.current.pipe(
       debounceTime(saveDelay),
-      // throttleTime(saveDelay),
       // we can switch to the latest observable for saving
       switchMap(text => save(textBox.partId, textBox.textBoxId, text)),
       takeUntil(destroy$),
@@ -70,9 +70,7 @@ export const NewTextBoxForm = ({ textBox, update, save }: Props): ReactElement =
             {textBox.formState === 'dirty' && (
               <small className="me-1">
                 {textBox.saveState === 'saving'
-                  ? (
-                    <span>saving <div className="spinner-border spinner-border-sm" style={{ width: 12, height: 12 }} /></span>
-                  )
+                  ? <span>saving <Spinner size="sm" height={12} /></span>
                   : (
                     <>
                       {textBox.savedText === textBox.text ? 'saved' : 'unsaved'}{textBox.saveState === 'error' && (

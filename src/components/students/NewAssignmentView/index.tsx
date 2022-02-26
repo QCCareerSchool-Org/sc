@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
-import { MouseEventHandler, ReactElement, useCallback, useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
+import type { ReactElement } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
-import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
+import { View } from './View';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { HttpServiceError } from '@/services/httpService';
 import { newAssignmentService } from '@/services/students';
@@ -135,46 +136,16 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
     });
   }, []);
 
-  const backButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
-    void router.push(`/students/units/${unitId}`, undefined, { scroll: false });
-  };
-
   if (state.error) {
     return <>{state.error}</>;
   }
 
-  if (!state.assignment || !saveText || !uploadFile || !deleteFile || !downloadFile) {
-    return null;
-  }
-
-  return (
-    <>
-      <section>
-        <div className="container">
-          <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
-          {state.assignment.description && <p className="lead">{state.assignment.description}</p>}
-        </div>
-      </section>
-      {state.assignment.parts.map(p => (
-        <NewPartForm
-          key={p.partId}
-          part={p}
-          saveText={saveText}
-          updateText={updateText}
-          uploadFile={uploadFile}
-          deleteFile={deleteFile}
-          downloadFile={downloadFile}
-        />
-      ))}
-      <section className="bg-dark text-light">
-        <div className="container">
-          {state.assignment.complete
-            ? <p className="lead">All mandatory answers are complete!</p>
-            : <p className="lead">Some mandatory answers are incomplete</p>
-          }
-          <button onClick={backButtonClick} className="btn btn-primary" disabled={state.assignment.saveState !== 'saved'}>Return to Unit Overview</button>
-        </div>
-      </section>
-    </>
-  );
+  return <View
+    state={state}
+    updateText={updateText}
+    saveText={saveText}
+    uploadFile={uploadFile}
+    deleteFile={deleteFile}
+    downloadFile={downloadFile}
+  />;
 };

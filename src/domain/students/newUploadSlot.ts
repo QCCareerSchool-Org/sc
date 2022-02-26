@@ -1,7 +1,7 @@
 export type NewUploadSlot = {
-  /** hex string */
+  /** uuid */
   uploadSlotId: string;
-  /** hex string */
+  /** uuid */
   partId: string;
   label: string;
   allowedTypes: string[];

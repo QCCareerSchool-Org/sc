@@ -1,7 +1,7 @@
 export type NewTextBox = {
-  /** hex string */
+  /** uuid */
   textBoxId: string;
-  /** hex string */
+  /** uuid */
   partId: string;
   description: string | null;
   lines: number | null;

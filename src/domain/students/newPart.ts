@@ -1,7 +1,7 @@
 export type NewPart = {
-  /** hex string */
+  /** uuid */
   partId: string;
-  /** hex string */
+  /** uuid */
   assignmentId: string;
   partNumber: number;
   title: string | null;

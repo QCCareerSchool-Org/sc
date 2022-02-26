@@ -3,6 +3,7 @@ import { MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef }
 import { catchError, EMPTY, exhaustMap, Subject, takeUntil } from 'rxjs';
 import { UploadSlotFunction } from '.';
 import { ProgressBar } from '@/components/ProgressBar';
+import { Spinner } from '@/components/Spinner';
 import { UploadSlotState } from '@/components/students/NewAssignmentView/state';
 
 type Props = {
@@ -127,7 +128,7 @@ const FullSlot = ({ uploadSlot, deleteFile, downloadFile }: FullSlotProps): Reac
           className="btn btn-danger me-3 mt-2 mt-md-0"
           style={{ width: 90 }} // fixed width so that the button doesn't change size when the text is replaced with a spinner
           disabled={uploadSlot.saveState === 'deleting'}
-        >{uploadSlot.saveState === 'deleting' ? <div className="spinner-border spinner-border-sm" /> : 'Delete'}</button>
+        >{uploadSlot.saveState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}</button>
         {uploadSlot.filename && <><a href="#" onClick={downloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.size && <>({humanReadablefilesize(uploadSlot.size)})</>}</>}
       </div>
       {uploadSlot.saveState === 'delete error' && <small className="text-danger me-2">Error deleting file</small>}
