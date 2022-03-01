@@ -1,8 +1,6 @@
 import { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
-import { NewUnitList } from '@/components/administrators/NewUnitList';
-
 type Props = {
   studentId: number | null;
   courseId: number | null;
@@ -13,7 +11,7 @@ const NewUnitListPage: NextPage<Props> = ({ studentId, courseId }) => {
     return <Error statusCode={400} />;
   }
 
-  return <NewUnitList studentId={studentId} courseId={courseId} />;
+  return null;
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
