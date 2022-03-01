@@ -15,11 +15,12 @@ export type TextBoxFunction = (partId: string, textBoxId: string, text: string) 
 
 type Props = {
   studentId: number;
+  courseId: number;
   unitId: string;
   assignmentId: string;
 };
 
-export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): ReactElement | null => {
+export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -28,7 +29,7 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newAssignmentService.getAssignment(studentId, unitId, assignmentId).pipe(
+    newAssignmentService.getAssignment(studentId, courseId, unitId, assignmentId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: data => dispatch({ type: 'ASSIGNMENT_LOADED', payload: data }),
@@ -43,14 +44,14 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router ]);
 
   const uploadFile: UploadSlotFunction = useCallback((partId, uploadSlotId, file) => {
     if (!file) {
       return throwError(() => Error('file is not defined'));
     }
     dispatch({ type: 'FILE_UPLOAD_STARTED', payload: { partId, uploadSlotId } });
-    return newAssignmentService.uploadFile(studentId, unitId, assignmentId, partId, uploadSlotId, file).pipe(
+    return newAssignmentService.uploadFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId, file).pipe(
       tap({
         next: progress => dispatch({ type: 'FILE_UPLOAD_PROGRESSED', payload: { partId, uploadSlotId, progress } }),
         error: err => {
@@ -70,11 +71,11 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router ]);
 
   const deleteFile: UploadSlotFunction = useCallback((partId, uploadSlotId) => {
     dispatch({ type: 'FILE_DELETE_STARTED', payload: { partId, uploadSlotId } });
-    return newAssignmentService.deleteFile(studentId, unitId, assignmentId, partId, uploadSlotId).pipe(
+    return newAssignmentService.deleteFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
       tap({
         error: err => {
           if (err instanceof HttpServiceError) {
@@ -88,10 +89,10 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router ]);
 
   const downloadFile: UploadSlotFunction = useCallback((partId, uploadSlotId) => {
-    return newAssignmentService.downloadFile(studentId, unitId, assignmentId, partId, uploadSlotId).pipe(
+    return newAssignmentService.downloadFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
       tap({
         error: err => {
           let message = 'File download failed';
@@ -108,11 +109,11 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router ]);
 
   const saveText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
     dispatch({ type: 'TEXT_SAVE_STARTED', payload: { partId, textBoxId } });
-    return newAssignmentService.saveText(studentId, unitId, assignmentId, partId, textBoxId, text).pipe(
+    return newAssignmentService.saveText(studentId, courseId, unitId, assignmentId, partId, textBoxId, text).pipe(
       tap({
         next: () => dispatch({ type: 'TEXT_SAVE_SUCCEEDED', payload: { partId, textBoxId, text } }),
         error: err => {
@@ -126,7 +127,7 @@ export const NewAssignmentView = ({ studentId, unitId, assignmentId }: Props): R
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router ]);
 
   const updateText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
     return new Observable(obs => {

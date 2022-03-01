@@ -11,10 +11,11 @@ import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   studentId: number;
+  courseId: number;
   unitId: string;
 };
 
-export const NewUnitView = ({ studentId, unitId }: Props): ReactElement | null => {
+export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -39,7 +40,7 @@ export const NewUnitView = ({ studentId, unitId }: Props): ReactElement | null =
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newUnitService.getUnit(studentId, unitId).pipe(
+    newUnitService.getUnit(studentId, courseId, unitId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: unit => dispatch({ type: 'UNIT_LOAD_SUCEEDED', payload: unit }),
@@ -52,7 +53,7 @@ export const NewUnitView = ({ studentId, unitId }: Props): ReactElement | null =
     });
 
     filteredSubmit$.current.pipe(
-      exhaustMap(() => newUnitService.submitUnit(studentId, unitId).pipe(
+      exhaustMap(() => newUnitService.submitUnit(studentId, courseId, unitId).pipe(
         // handle errors here and return EMPTY to keep the subscription running
         catchError(err => {
           if (err instanceof HttpServiceError && err.refresh) {
@@ -70,7 +71,7 @@ export const NewUnitView = ({ studentId, unitId }: Props): ReactElement | null =
     });
 
     filteredSkips$.current.pipe(
-      exhaustMap(() => newUnitService.skipUnit(studentId, unitId).pipe(
+      exhaustMap(() => newUnitService.skipUnit(studentId, courseId, unitId).pipe(
         // handle errors here and return EMPTY to keep the subscription running
         catchError(err => {
           if (err instanceof HttpServiceError && err.refresh) {
@@ -87,7 +88,7 @@ export const NewUnitView = ({ studentId, unitId }: Props): ReactElement | null =
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentId, unitId, router ]);
+  }, [ studentId, courseId, unitId, router ]);
 
   if (state.error) {
     return <Error statusCode={500} />;

@@ -16,38 +16,38 @@ type RawNewUnitWithAssignments = RawNewUnit & {
 };
 
 export interface INewUnitService {
-  getUnit: (studentId: number, unitId: string) => Observable<NewUnitWithAssignments>;
-  submitUnit: (studentId: number, unitId: string) => Observable<NewUnitWithAssignments>;
-  skipUnit: (studentId: number, unitId: string) => Observable<NewUnitWithAssignments>;
+  getUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithAssignments>;
+  submitUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithAssignments>;
+  skipUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithAssignments>;
 }
 
 export class NewUnitService implements INewUnitService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getUnit(studentId: number, unitId: string): Observable<NewUnitWithAssignments> {
-    const url = this.getBaseUrl(studentId, unitId);
+  public getUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithAssignments> {
+    const url = this.getBaseUrl(studentId, courseId, unitId);
     return this.httpService.get<RawNewUnitWithAssignments>(url).pipe(
       map(u => this.unitMap(u)),
     );
   }
 
-  public submitUnit(studentId: number, unitId: string): Observable<NewUnitWithAssignments> {
-    const url = this.getBaseUrl(studentId, unitId) + '/submissions';
+  public submitUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithAssignments> {
+    const url = this.getBaseUrl(studentId, courseId, unitId) + '/submissions';
     return this.httpService.post<RawNewUnitWithAssignments>(url).pipe(
       map(u => this.unitMap(u)),
     );
   }
 
-  public skipUnit(studentId: number, unitId: string): Observable<NewUnitWithAssignments> {
-    const url = this.getBaseUrl(studentId, unitId) + '/skips';
+  public skipUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithAssignments> {
+    const url = this.getBaseUrl(studentId, courseId, unitId) + '/skips';
     return this.httpService.post<RawNewUnitWithAssignments>(url).pipe(
       map(u => this.unitMap(u)),
     );
   }
 
-  private getBaseUrl(studentId: number, unitId: string): string {
-    return `${endpoint}/students/${studentId}/newUnits/${unitId}`;
+  private getBaseUrl(studentId: number, courseId: number, unitId: string): string {
+    return `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}`;
   }
 
   private readonly unitMap = (unit: RawNewUnitWithAssignments): NewUnitWithAssignments => {

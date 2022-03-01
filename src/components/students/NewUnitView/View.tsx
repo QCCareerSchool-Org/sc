@@ -47,7 +47,7 @@ export const View = ({ state, submit$, skip$ }: Props): ReactElement | null => {
         </div>
       </section>
       {showAssignments && <AssignmentSection unit={state.unit} />}
-      {!state.unit.submitted && (
+      {!state.unit.submitted && !state.unit.skipped && (
         <>
           <SubmitSection unit={state.unit} submitState={state.submit} skipState={state.skip} submit$={submit$} errorMessage={state.submitErrorMessage} />
           {state.unit.optional && <SkipSection submitState={state.submit} skipState={state.skip} skip$={skip$} errorMessage={state.skipErrorMessage} />}

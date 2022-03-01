@@ -43,12 +43,15 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
     ).subscribe({
       next: ({ response, returnUrl: r }) => {
         setSubmitting(false);
-        if (response.type === 'administrator') {
+        if (response.type === 'admin') {
           authDispatch({ type: 'ADMINISTRATOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+          return void router.push(r ?? `${basePath}/administrators`);
         } else if (response.type === 'tutor') {
           authDispatch({ type: 'TUTOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+          return void router.push(r ?? `${basePath}/tutors`);
         } else if (response.type === 'student') {
           authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+          return void router.push(r ?? `${basePath}/students`);
         }
         void router.push(r ?? basePath);
       },

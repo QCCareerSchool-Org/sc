@@ -1,11 +1,11 @@
 import { ReactElement } from 'react';
-import { useNavState } from '../../hooks/useNavState';
+
+import { useNavState } from '@/hooks/useNavState';
 
 export const StudentNav = (): ReactElement => {
   const navState = useNavState();
 
-  let index = navState.type === 'student' ? navState.index : null;
-  index = 0;
+  const index = navState.type === 'student' ? navState.index : null;
 
   return (
     <>

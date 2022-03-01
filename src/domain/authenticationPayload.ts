@@ -3,6 +3,6 @@ export type AuthenticationPayload = {
   exp: number;
   id: number;
   studentType: 'general' | 'design' | 'event' | 'writing';
-  type: 'administrator' | 'tutor' | 'student';
+  type: 'admin' | 'tutor' | 'student';
   xsrf: string;
 };

@@ -4,4 +4,3 @@ export * from './newPart';
 export * from './newUploadSlot';
 export * from './newTextBox';
 export * from './enrollment';
-export * from './course';
