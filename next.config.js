@@ -2,10 +2,10 @@
 const nextConfig = {
   basePath: '/sc',
   reactStrictMode: true,
-  experimental: {
+  // experimental: {
     // Enables the styled-components SWC transform
     // styledComponents: true
-  },
+  // },
 };
 
 module.exports = nextConfig;

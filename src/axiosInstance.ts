@@ -29,9 +29,8 @@ instance.interceptors.response.use(undefined, async error => {
 
     // make a refresh request
     return firstValueFrom(instance.post(`${endpoint}/auth/refresh`).pipe(
-      switchMap(() => {
-        return instance.request(originalRequest);
-      }),
+      // then re-make the original request
+      switchMap(() => instance.request(originalRequest)),
     ));
   }
 

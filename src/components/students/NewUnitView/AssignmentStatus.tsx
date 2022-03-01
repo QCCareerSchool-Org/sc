@@ -44,7 +44,7 @@ export const AssignmentStatus = ({ unit }: Props): ReactElement | null => {
   return (
     <>
       <p className="lead">Your unit is currently in progress.</p>
-      <p>When you are ready, please submit your unit to your tutor using the button below.</p>
+      <p>Once the assignments below are complete, please submit your unit to your tutor using the &ldquo;Submit Unit&rdquo; button below.</p>
     </>
   );
 };
