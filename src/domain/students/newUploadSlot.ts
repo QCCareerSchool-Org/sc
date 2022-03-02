@@ -5,6 +5,8 @@ export type NewUploadSlot = {
   partId: string;
   label: string;
   allowedTypes: string[];
+  points: number;
+  mark: number | null;
   optional: boolean;
   order: number;
   filename: string | null;

@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
+import { CourseList } from './CourseList';
 import { initialState, reducer } from './state';
 import { schoolService } from '@/services/administrators';
 
@@ -35,39 +36,17 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
   }
 
   const courseRowClick = (e: MouseEvent<HTMLTableRowElement>, courseId: number): void => {
-    void router.push(`${router.asPath}/courses/${courseId}`);
+    void router.push(`${router.asPath}/courses/${courseId}`, undefined, { scroll: false });
   };
 
   return (
     <>
       <section>
         <div className="container">
-          <h1>{state.school.name}</h1>
-          <h4>Courses</h4>
-          <table id="coursesTable" className="table table-bordered table-hover w-auto">
-            <thead>
-              <tr>
-                <th className="text-center">Code</th>
-                <th>Name</th>
-                <th className="text-center">Version</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.school.courses.map(c => (
-                <tr key={c.courseId} onClick={e => courseRowClick(e, c.courseId)}>
-                  <td className="text-center">{c.code}</td>
-                  <td>{c.name}</td>
-                  <td className="text-center">{c.version}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <h1>School: {state.school.name}</h1>
+          <CourseList courses={state.school.courses} courseRowClick={courseRowClick} />
         </div>
       </section>
-
-      <style jsx>{`
-        #coursesTable tr { cursor: pointer }
-      `}</style>
     </>
   );
 };

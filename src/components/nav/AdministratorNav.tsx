@@ -1,8 +1,26 @@
-import { ReactElement } from 'react';
-import { useNavState } from '../../hooks/useNavState';
+import { ReactElement, useEffect, useState } from 'react';
 
-export const AdministratorNav = (): ReactElement => {
+import { useAuthState } from '@/hooks/useAuthState';
+import { useNavState } from '@/hooks/useNavState';
+
+export const AdministratorNav = (): ReactElement | null => {
+  const authState = useAuthState();
   const navState = useNavState();
+  const [ loaded, setLoaded ] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
+  // we only load the bootstrap javascript library on the client
+  // to prevent the server and client from rendering different outputs,
+  // we don't render this component on the server
+  if (!loaded) {
+    return null;
+  }
+
+  const tutorLoggedIn = typeof authState.tutorId !== 'undefined';
+  const studentLoggedIn = typeof authState.studentId !== 'undefined';
 
   const index = navState.type === 'administrator' ? navState.index : null;
 
@@ -15,6 +33,7 @@ export const AdministratorNav = (): ReactElement => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="adminNav">
+            {(tutorLoggedIn || studentLoggedIn) && <><strong>A:</strong>&nbsp;&nbsp;</>}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/administrators/index.bs.php">Home{index === 0 && <div className="active-indicator" />}</a>

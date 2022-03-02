@@ -30,9 +30,9 @@ export const SubmitSection = ({ unit, submitState, skipState, errorMessage, subm
           : <p>Your unit is not yet complete. Please complete all assignments before submitting your unit.</p>
         }
         <div className="d-flex align-items-center">
-          <button onClick={submitUnit} className="btn btn-primary me-2" disabled={buttonDisabled}>Submit Unit</button>
-          {submitState === 'processing' && <Spinner />}
-          {errorMessage && <span className="text-danger">Error: {errorMessage}</span>}
+          <button onClick={submitUnit} className="btn btn-primary" disabled={buttonDisabled}>Submit Unit</button>
+          {submitState === 'processing' && <div className="ms-2"><Spinner /></div>}
+          {errorMessage && <span className="text-danger ms-2">{errorMessage ? errorMessage : 'Error'}</span>}
         </div>
       </div>
     </section>

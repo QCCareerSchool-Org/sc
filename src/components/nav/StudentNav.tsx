@@ -1,9 +1,27 @@
-import { ReactElement } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 
+import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';
 
-export const StudentNav = (): ReactElement => {
+export const StudentNav = (): ReactElement | null => {
+  const authState = useAuthState();
   const navState = useNavState();
+  const [ loaded, setLoaded ] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
+  // we only load the bootstrap javascript library on the client
+  // to prevent the server and client from rendering different outputs,
+  // we don't render this component on the server
+  if (!loaded) {
+    return null;
+  }
+
+  const adminLoggedIn = typeof authState.administratorId !== 'undefined';
+  const tutorLoggedIn = typeof authState.tutorId !== 'undefined';
+  const otherNavPresent = adminLoggedIn || tutorLoggedIn;
 
   const index = navState.type === 'student' ? navState.index : null;
 
@@ -16,6 +34,7 @@ export const StudentNav = (): ReactElement => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="studentNav">
+            {otherNavPresent && <><strong>S:</strong>&nbsp;&nbsp;</>}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/students/course-materials/index.bs.php">Home{index === 0 && <div className="active-indicator" />}</a>
@@ -50,6 +69,12 @@ export const StudentNav = (): ReactElement => {
           </div>
         </div>
       </nav>
+
+      <style jsx>{`
+        .mainNav {
+          ${otherNavPresent && 'border-bottom: 1px solid #ccc;'}
+        }
+      `}</style>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import type { NewAssignmentTemplateWithParts } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentTemplateWithParts } from '@/services/administrators';
 
 export type State = {
   assignmentTemplate?: NewAssignmentTemplateWithParts;

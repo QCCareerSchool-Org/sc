@@ -3,6 +3,7 @@ import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
 import { initialState, reducer } from './state';
+import { UnitList } from './UnitList';
 import { courseService } from '@/services/administrators';
 
 type Props = {
@@ -37,14 +38,14 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
   }
 
   const unitRowClick = (e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
-    void router.push(`${router.asPath}/newUnitTemplates/${unitId}`);
+    void router.push(`${router.asPath}/newUnitTemplates/${unitId}`, undefined, { scroll: false });
   };
 
   return (
     <>
       <section>
         <div className="container">
-          <h1>{state.course.name}</h1>
+          <h1>Course: {state.course.name}</h1>
           <table className="table table-bordered w-auto">
             <tbody>
               <tr><th scope="row">Code</th><td>{state.course.code}</td></tr>
@@ -56,31 +57,14 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
               <tr><th scope="row">Unit Type</th><td>{state.course.unitType}</td></tr>
             </tbody>
           </table>
-          <h4>Units</h4>
-          <table id="unitsTable" className="table table-bordered table-hover w-auto">
-            <thead>
-              <tr>
-                <th className="text-center">#</th>
-                <th>Title</th>
-                <th className="text-center">Optional</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.course.newUnitTemplates.map(u => (
-                <tr key={u.unitId} onClick={e => unitRowClick(e, u.unitId)}>
-                  <td className="text-center">{u.unitLetter}</td>
-                  <td>{u.title}</td>
-                  <td className="text-center">{u.optional ? 'yes' : 'no'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </section>
-
-      <style jsx>{`
-        #unitsTable tr { cursor: pointer }
-      `}</style>
+      <section>
+        <div className="container">
+          <h2 className="h3">Units</h2>
+          <UnitList units={state.course.newUnitTemplates} unitRowClick={unitRowClick} />
+        </div>
+      </section>
     </>
   );
 };

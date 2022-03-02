@@ -25,7 +25,7 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
   public getAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentTemplateWithParts> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId);
     return this.httpService.get<RawNewAssignmentTemplateWithParts>(url).pipe(
-      map(this.mapNewUnitTemplate),
+      map(this.mapNewAssignmentTemplate),
     );
   }
 
@@ -33,7 +33,7 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}`;
   }
 
-  private mapNewUnitTemplate(assignment: RawNewAssignmentTemplateWithParts): NewAssignmentTemplateWithParts {
+  private mapNewAssignmentTemplate(assignment: RawNewAssignmentTemplateWithParts): NewAssignmentTemplateWithParts {
     return {
       ...assignment,
       created: new Date(assignment.created),

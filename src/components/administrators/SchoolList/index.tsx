@@ -35,7 +35,7 @@ export const SchoolList = ({ administratorId }: Props): ReactElement | null => {
   }
 
   const schoolRowClick = (e: MouseEvent<HTMLTableRowElement>, schoolId: number): void => {
-    void router.push(`${router.asPath}/${schoolId}`);
+    void router.push(`${router.asPath}/${schoolId}`, undefined, { scroll: false });
   };
 
   return (

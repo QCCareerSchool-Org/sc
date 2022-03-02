@@ -5,6 +5,8 @@ export type NewTextBox = {
   partId: string;
   description: string | null;
   lines: number | null;
+  points: number;
+  mark: number | null;
   optional: boolean;
   order: number;
   text: string;

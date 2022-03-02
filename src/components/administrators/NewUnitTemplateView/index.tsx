@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
+import { AssignmentList } from './AssignmentList';
 import { initialState, reducer } from './state';
 import { newUnitTemplateService } from '@/services/administrators';
 import { formatDateTime } from 'src/formatDate';
@@ -39,14 +41,14 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
   }
 
   const assignmentRowClick = (e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
-    void router.push(`${router.asPath}/assignments/${assignmentId}`);
+    void router.push(`${router.asPath}/assignments/${assignmentId}`, undefined, { scroll: false });
   };
 
   return (
     <>
       <section>
         <div className="container">
-          <h1>{state.unitTemplate.title}</h1>
+          <h1>Unit: {state.unitTemplate.title}</h1>
           {state.unitTemplate.description
             ? <p className="lead">{state.unitTemplate.description}</p>
             : <p>no description</p>
@@ -60,31 +62,22 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
               {state.unitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.unitTemplate.modified)}</td></tr>}
             </tbody>
           </table>
-          <h4>Assignments</h4>
-          <table id="assignmentsTable" className="table table-bordered table-hover w-auto">
-            <thead>
-              <tr>
-                <th className="text-center">#</th>
-                <th>Title</th>
-                <th className="text-center">Optional</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.unitTemplate.assignments.map(a => (
-                <tr key={a.unitId} onClick={e => assignmentRowClick(e, a.assignmentId)}>
-                  <td className="text-center">{a.assignmentNumber}</td>
-                  <td>{a.title}</td>
-                  <td className="text-center">{a.optional ? 'yes' : 'no'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Link href={`${router.asPath}/edit`} scroll={false}><a className="btn btn-primary">Edit Unit</a></Link>
         </div>
       </section>
-
-      <style jsx>{`
-        #assignmentsTable tr { cursor: pointer }
-      `}</style>
+      <section>
+        <div className="container">
+          <h2 className="h3">Assignments</h2>
+          <div className="row">
+            <div className="col-12 col-xxl-6">
+              <AssignmentList assignments={state.unitTemplate.assignments} assignmentRowClick={assignmentRowClick} />
+            </div>
+            <div className="col-12 col-xxl-6 mb-3 mb-xxl-0">
+              .
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 };

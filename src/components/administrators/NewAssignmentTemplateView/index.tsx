@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
+import { PartList } from './PartList';
 import { initialState, reducer } from './state';
 import { newAssignmentTemplateService } from '@/services/administrators';
 import { formatDateTime } from 'src/formatDate';
@@ -40,14 +42,14 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
   }
 
   const partRowClick = (e: MouseEvent<HTMLTableRowElement>, partId: string): void => {
-    void router.push(`${router.asPath}/parts/${partId}`);
+    void router.push(`${router.asPath}/parts/${partId}`, undefined, { scroll: false });
   };
 
   return (
     <>
       <section>
         <div className="container">
-          <h1>{state.assignmentTemplate.title}</h1>
+          <h1>Assignment: {state.assignmentTemplate.title}</h1>
           {state.assignmentTemplate.description
             ? <p className="lead">{state.assignmentTemplate.description}</p>
             : <p>no description</p>
@@ -61,31 +63,22 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
               {state.assignmentTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.assignmentTemplate.modified)}</td></tr>}
             </tbody>
           </table>
-          <h4>Parts</h4>
-          <table id="partsTable" className="table table-bordered table-hover w-auto">
-            <thead>
-              <tr>
-                <th className="text-center">#</th>
-                <th>Title</th>
-                <th className="text-center">Optional</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.assignmentTemplate.parts.map(p => (
-                <tr key={p.partId} onClick={e => partRowClick(e, p.partId)}>
-                  <td className="text-center">{p.partNumber}</td>
-                  <td>{p.title}</td>
-                  <td className="text-center">{p.optional ? 'yes' : 'no'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Link href={`${router.asPath}/edit`} scroll={false}><a className="btn btn-primary">Edit Assignment</a></Link>
         </div>
       </section>
-
-      <style jsx>{`
-        #partsTable tr { cursor: pointer }
-      `}</style>
+      <section>
+        <div className="container">
+          <h2 className="h3">Parts</h2>
+          <div className="row">
+            <div className="col-12 col-xxl-6">
+              <PartList parts={state.assignmentTemplate.parts} partRowClick={partRowClick} />
+            </div>
+            <div className="col-12 col-xxl-6 mb-3 mb-xxl-0">
+              .
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 };
