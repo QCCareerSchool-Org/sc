@@ -1,9 +1,13 @@
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
+
 import { CourseList } from './CourseList';
 import { initialState, reducer } from './state';
 import { schoolService } from '@/services/administrators';
+import { HttpServiceError } from '@/services/httpService';
+import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -20,16 +24,27 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
     schoolService.getSchool(administratorId, schoolId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: schools => {
-        dispatch({ type: 'SCHOOL_LOAD_SUCCEEDED', payload: schools });
+      next: school => {
+        dispatch({ type: 'SCHOOL_LOAD_SUCCEEDED', payload: school });
       },
       error: err => {
-        dispatch({ type: 'SCHOOL_LOAD_FAILED' });
+        let errorCode: number | undefined;
+        if (err instanceof HttpServiceError) {
+          if (err.refresh) {
+            return navigateToLogin(router);
+          }
+          errorCode = err.code;
+        }
+        dispatch({ type: 'SCHOOL_LOAD_FAILED', payload: errorCode });
       },
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, schoolId ]);
+  }, [ router, administratorId, schoolId ]);
+
+  if (state.error) {
+    return <NextError statusCode={state.errorCode ?? 500} />;
+  }
 
   if (!state.school) {
     return null;

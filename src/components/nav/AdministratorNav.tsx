@@ -12,9 +12,12 @@ export const AdministratorNav = (): ReactElement | null => {
     setLoaded(true);
   }, []);
 
-  // we only load the bootstrap javascript library on the client
-  // to prevent the server and client from rendering different outputs,
-  // we don't render this component on the server
+  // Loading the bootstrap javascript library on the server causes errors due
+  // to missing window, etc., so we only load it on the client in _app.tsx. The
+  // library causes changes to the navigation bar, meaning the server and
+  // client would render different outputs. To ensure the server and client
+  // render the same thing, initially render null and only render the nav bar
+  // after a re-render
   if (!loaded) {
     return null;
   }

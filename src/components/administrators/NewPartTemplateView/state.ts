@@ -1,5 +1,4 @@
-import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
-import { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
+import type { NewTextBoxTemplate, NewUploadSlotTemplate } from '@/domain/index';
 import type { NewPartTemplateWithInputs } from '@/services/administrators';
 
 export type State = {
@@ -7,13 +6,14 @@ export type State = {
   nextTextBoxOrder: number;
   nextUploadSlotOrder: number;
   error: boolean;
+  errorCode?: number;
 };
 
 type Action =
   | { type: 'PART_TEMPLATE_LOAD_SUCCEEDED'; payload: NewPartTemplateWithInputs }
-  | { type: 'PART_TEMPLATE_LOAD_FAILED' }
-  | { type: 'ADD_TEXT_BOX_SUCCESS'; payload: NewTextBoxTemplate }
-  | { type: 'ADD_UPLOAD_SLOT_SUCCESS'; payload: NewUploadSlotTemplate };
+  | { type: 'PART_TEMPLATE_LOAD_FAILED'; payload?: number }
+  | { type: 'ADD_TEXT_BOX_SUCCEEDED'; payload: NewTextBoxTemplate }
+  | { type: 'ADD_UPLOAD_SLOT_SUCCEEDED'; payload: NewUploadSlotTemplate };
 
 export const initialState: State = {
   nextTextBoxOrder: 0,
@@ -32,8 +32,8 @@ export const reducer = (state: State, action: Action): State => {
         error: false,
       };
     case 'PART_TEMPLATE_LOAD_FAILED':
-      return { ...state, error: true };
-    case 'ADD_TEXT_BOX_SUCCESS': {
+      return { ...state, error: true, errorCode: action.payload };
+    case 'ADD_TEXT_BOX_SUCCEEDED': {
       if (!state.partTemplate) {
         return state;
       }
@@ -52,7 +52,7 @@ export const reducer = (state: State, action: Action): State => {
         nextTextBoxOrder: Math.max(...textBoxes.map(t => t.order)) + 1,
       };
     }
-    case 'ADD_UPLOAD_SLOT_SUCCESS': {
+    case 'ADD_UPLOAD_SLOT_SUCCEEDED': {
       if (!state.partTemplate) {
         return state;
       }

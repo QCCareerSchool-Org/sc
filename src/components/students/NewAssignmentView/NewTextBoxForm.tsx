@@ -1,5 +1,5 @@
 import { MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef } from 'react';
-import { debounceTime, exhaustMap, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, exhaustMap, Subject, takeUntil } from 'rxjs';
 
 import { TextBoxFunction } from '.';
 import { Spinner } from '@/components/Spinner';
@@ -26,21 +26,14 @@ export const NewTextBoxForm = ({ textBox, update, save }: Props): ReactElement =
     textChange$.current.pipe(
       exhaustMap(text => update(textBox.partId, textBox.textBoxId, text)),
       takeUntil(destroy$),
-    ).subscribe({
-      next: () => { /* empty */ },
-      error: () => { /* empty */ },
-    });
+    ).subscribe(); // errors swallowed in inner observable
 
     // send the changes to the save function after a delay
     textChange$.current.pipe(
       debounceTime(saveDelay),
-      // we can switch to the latest observable for saving
-      switchMap(text => save(textBox.partId, textBox.textBoxId, text)),
+      exhaustMap(text => save(textBox.partId, textBox.textBoxId, text)),
       takeUntil(destroy$),
-    ).subscribe({
-      next: () => { /* empty */ },
-      error: () => { /* empty */ },
-    });
+    ).subscribe(); // errors swallowed in inner observable
 
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ save, update, textBox.partId, textBox.textBoxId ]);

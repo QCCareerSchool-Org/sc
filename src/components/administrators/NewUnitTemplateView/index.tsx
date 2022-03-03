@@ -1,3 +1,4 @@
+import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
@@ -6,7 +7,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { AssignmentList } from './AssignmentList';
 import { initialState, reducer } from './state';
 import { newUnitTemplateService } from '@/services/administrators';
+import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
+import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -25,16 +28,27 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
     newUnitTemplateService.getUnit(administratorId, schoolId, courseId, unitId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: schools => {
-        dispatch({ type: 'UNIT_TEMPLATE_LOAD_SUCCEEDED', payload: schools });
+      next: unitTemplate => {
+        dispatch({ type: 'UNIT_TEMPLATE_LOAD_SUCCEEDED', payload: unitTemplate });
       },
       error: err => {
-        dispatch({ type: 'UNIT_TEMPLATE_LOAD_FAILED' });
+        let errorCode: number | undefined;
+        if (err instanceof HttpServiceError) {
+          if (err.refresh) {
+            return navigateToLogin(router);
+          }
+          errorCode = err.code;
+        }
+        dispatch({ type: 'UNIT_TEMPLATE_LOAD_FAILED', payload: errorCode });
       },
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, schoolId, courseId, unitId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId ]);
+
+  if (state.error) {
+    return <NextError statusCode={state.errorCode ?? 500} />;
+  }
 
   if (!state.unitTemplate) {
     return null;

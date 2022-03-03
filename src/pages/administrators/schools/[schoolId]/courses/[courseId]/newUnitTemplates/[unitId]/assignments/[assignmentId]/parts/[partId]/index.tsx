@@ -12,7 +12,7 @@ type Props = {
   partId: string | null;
 };
 
-const NewUnitTemplateViewPage: NextPage<Props> = ({ schoolId, courseId, unitId, assignmentId, partId }) => {
+const NewPartTemplateViewPage: NextPage<Props> = ({ schoolId, courseId, unitId, assignmentId, partId }) => {
   const authState = useAuthState();
 
   if (typeof authState.administratorId === 'undefined') {
@@ -47,4 +47,4 @@ export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   return { props: { schoolId, courseId, unitId, assignmentId, partId } };
 };
 
-export default NewUnitTemplateViewPage;
+export default NewPartTemplateViewPage;

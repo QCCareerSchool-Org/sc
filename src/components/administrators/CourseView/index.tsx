@@ -1,3 +1,4 @@
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
@@ -5,6 +6,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { initialState, reducer } from './state';
 import { UnitList } from './UnitList';
 import { courseService } from '@/services/administrators';
+import { HttpServiceError } from '@/services/httpService';
+import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -26,12 +29,23 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
         dispatch({ type: 'COURSE_LOAD_SUCCEEDED', payload: schools });
       },
       error: err => {
-        dispatch({ type: 'COURSE_LOAD_FAILED' });
+        let errorCode: number | undefined;
+        if (err instanceof HttpServiceError) {
+          if (err.refresh) {
+            return navigateToLogin(router);
+          }
+          errorCode = err.code;
+        }
+        dispatch({ type: 'COURSE_LOAD_FAILED', payload: errorCode });
       },
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, schoolId, courseId ]);
+  }, [ router, administratorId, schoolId, courseId ]);
+
+  if (state.error) {
+    return <NextError statusCode={state.errorCode ?? 500} />;
+  }
 
   if (!state.course) {
     return null;
