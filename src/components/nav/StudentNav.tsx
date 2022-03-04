@@ -30,27 +30,27 @@ export const StudentNav = (): ReactElement | null => {
 
   return (
     <>
-      <nav className="navbar sticky-top navbar-expand-xl navbar-light bg-white mainNav shadow">
+      <nav className="navbar sticky-top navbar-expand-md navbar-light bg-white mainNav shadow">
         <div className="container">
-          <a className="d-xl-none navbar-brand" href="#">Student Menu</a>
+          <a className="d-md-none navbar-brand" href="#">Student Menu</a>
           <button className={`navbar-toggler collapsed`} type="button" data-bs-toggle="collapse" data-bs-target="#studentNav" aria-controls="studentNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="studentNav">
             {otherNavPresent && <><strong>S:</strong>&nbsp;&nbsp;</>}
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/students/course-materials/index.bs.php">Home{index === 0 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item">
-                <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/students/student-resources/vendors.bs.php">Preferred Partners</a>
+                <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/students/student-resources/vendors.bs.php"><span className="d-none d-xl-inline">Preferred </span>Partners{index === 1 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item">
-                <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/students/badges.bs.php">School Badges</a>
+                <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/students/badges.bs.php">{index === 2 && <div className="active-indicator" />}<span className="d-none d-xl-inline">School </span>Badges</a>
               </li>
               <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Professional Profile
+                  <span className="d-none d-xl-inline">Professional </span>Profile{index === 3 && <div className="active-indicator" />}
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a className="dropdown-item" href="/students/profiles/edit.php">Details</a></li>
@@ -63,10 +63,10 @@ export const StudentNav = (): ReactElement | null => {
                 </ul>
               </li>
               <li className="nav-item">
-                <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/forum">Student Forum</a>
+                <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/forum"><span className="d-none d-xl-inline">Student </span>Forum</a>
               </li>
               <li className="nav-item">
-                <a className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/accounts/view.bs.php">My Account</a>
+                <a className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/accounts/view.bs.php"><span className="d-none d-xl-inline">My </span>Account</a>
               </li>
             </ul>
           </div>
