@@ -39,13 +39,13 @@ export const AdministratorNav = (): ReactElement | null => {
             {(tutorLoggedIn || studentLoggedIn) && <><strong>A:</strong>&nbsp;&nbsp;</>}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/administrators/index.bs.php">Home{index === 0 && <div className="active-indicator" />}</a>
+                <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/administrators">Home{index === 0 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item">
-                <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/administrators/students/index.bs.php">Students</a>
+                <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/administrators/accounts">Students</a>
               </li>
               <li className="nav-item">
-                <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/administrators/tutors/index.bs.php">Tutors</a>
+                <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/administrators/tutors">Tutors</a>
               </li>
             </ul>
           </div>
