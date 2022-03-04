@@ -1,3 +1,4 @@
+import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewTextBoxTemplateWithPart } from '@/services/administrators';
 
 export type State = {
@@ -5,13 +6,21 @@ export type State = {
   form: {
     data: {
       description: string;
-      points: number;
+      points: string;
       lines: string;
-      order: number;
+      order: string;
       optional: boolean;
     };
-    saveState: 'idle' | 'processing' | 'error';
-    errorMessage?: string;
+    validationMessages: {
+      description?: string;
+      points?: string;
+      lines?: string;
+      order?: string;
+      optional?: string;
+    };
+    processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
+    saveErrorMessage?: string;
+    deleteErrorMessage?: string;
   };
   error: boolean;
   errorCode?: number;
@@ -21,24 +30,28 @@ type Action =
   | { type: 'TEXT_BOX_TEMPLATE_LOAD_SUCCEEDED'; payload: NewTextBoxTemplateWithPart }
   | { type: 'TEXT_BOX_TEMPLATE_LOAD_FAILED'; payload?: number }
   | { type: 'DESCRIPTION_UPDATED'; payload: string }
-  | { type: 'POINTS_UPDATED'; payload: number }
+  | { type: 'POINTS_UPDATED'; payload: string }
   | { type: 'LINES_UPDATED'; payload: string }
-  | { type: 'ORDER_UPDATED'; payload: number }
+  | { type: 'ORDER_UPDATED'; payload: string }
   | { type: 'OPTIONAL_UPDATED'; payload: boolean }
   | { type: 'TEXT_BOX_TEMPLATE_SAVE_STARTED' }
-  | { type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED'; payload: NewTextBoxTemplateWithPart }
-  | { type: 'TEXT_BOX_TEMPLATE_SAVE_FAILED'; payload?: string };
+  | { type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED'; payload: NewTextBoxTemplate }
+  | { type: 'TEXT_BOX_TEMPLATE_SAVE_FAILED'; payload?: string }
+  | { type: 'TEXT_BOX_TEMPLATE_DELETE_STARTED' }
+  | { type: 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED' }
+  | { type: 'TEXT_BOX_TEMPLATE_DELETE_FAILED'; payload?: string };
 
 export const initialState: State = {
   form: {
     data: {
       description: '',
-      points: 1,
+      points: '1',
       lines: '',
-      order: 0,
+      order: '0',
       optional: false,
     },
-    saveState: 'idle',
+    validationMessages: {},
+    processingState: 'idle',
   },
   error: false,
 };
@@ -52,12 +65,13 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           data: {
             description: action.payload.description ?? '',
-            points: action.payload.points,
+            points: action.payload.points.toString(),
             lines: action.payload.lines === null ? '' : action.payload.lines.toString(),
-            order: action.payload.order,
+            order: action.payload.order.toString(),
             optional: action.payload.optional,
           },
-          saveState: 'idle',
+          validationMessages: {},
+          processingState: 'idle',
         },
         error: false,
       };
@@ -73,7 +87,20 @@ export const reducer = (state: State, action: Action): State => {
           },
         },
       };
-    case 'POINTS_UPDATED':
+    case 'POINTS_UPDATED': {
+      let validationMessage: string | undefined;
+      if (!action.payload) {
+        validationMessage = 'Required';
+      } else {
+        const points = parseInt(action.payload, 10);
+        if (isNaN(points)) {
+          validationMessage = 'Invalid number';
+        } else if (points < 0) {
+          validationMessage = 'Cannot be less than zero';
+        } else if (points > 127) {
+          validationMessage = 'Cannot be greater than 127';
+        }
+      }
       return {
         ...state,
         form: {
@@ -81,9 +108,22 @@ export const reducer = (state: State, action: Action): State => {
           data: {
             ...state.form.data, points: action.payload,
           },
+          validationMessages: { ...state.form.validationMessages, points: validationMessage },
         },
       };
-    case 'LINES_UPDATED':
+    }
+    case 'LINES_UPDATED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const parsedLines = parseInt(action.payload, 10);
+        if (isNaN(parsedLines)) {
+          validationMessage = 'Invalid number';
+        } else if (parsedLines < 1) {
+          validationMessage = 'Cannot be less than one';
+        } else if (parsedLines > 127) {
+          validationMessage = 'Cannot be greater than 127';
+        }
+      }
       return {
         ...state,
         form: {
@@ -91,9 +131,24 @@ export const reducer = (state: State, action: Action): State => {
           data: {
             ...state.form.data, lines: action.payload,
           },
+          validationMessages: { ...state.form.validationMessages, lines: validationMessage },
         },
       };
-    case 'ORDER_UPDATED':
+    }
+    case 'ORDER_UPDATED': {
+      let validationMessage: string | undefined;
+      if (!action.payload) {
+        validationMessage = 'Required';
+      } else {
+        const points = parseInt(action.payload, 10);
+        if (isNaN(points)) {
+          validationMessage = 'Invalid number';
+        } else if (points < 0) {
+          validationMessage = 'Cannot be less than zero';
+        } else if (points > 127) {
+          validationMessage = 'Cannot be greater than 127';
+        }
+      }
       return {
         ...state,
         form: {
@@ -101,37 +156,43 @@ export const reducer = (state: State, action: Action): State => {
           data: {
             ...state.form.data, order: action.payload,
           },
+          validationMessages: { ...state.form.validationMessages, order: validationMessage },
         },
       };
+    }
     case 'OPTIONAL_UPDATED':
       return {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, optional: action.payload,
-          },
+          data: { ...state.form.data, optional: action.payload },
         },
       };
     case 'TEXT_BOX_TEMPLATE_SAVE_STARTED':
       return {
         ...state,
-        form: { ...state.form, saveState: 'processing' },
+        form: { ...state.form, processingState: 'saving', saveErrorMessage: undefined },
       };
     case 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED':
+      if (!state.textBoxTemplate) {
+        throw Error('textBoxTemplate is undefined');
+      }
       return {
         ...state,
-        textBoxTemplate: action.payload,
+        textBoxTemplate: {
+          ...state.textBoxTemplate,
+          ...action.payload,
+        },
         form: {
           ...state.form,
           data: {
             description: action.payload.description ?? '',
-            points: action.payload.points,
+            points: action.payload.points.toString(),
             lines: action.payload.lines === null ? '' : action.payload.lines.toString(),
-            order: action.payload.order,
+            order: action.payload.order.toString(),
             optional: action.payload.optional,
           },
-          saveState: 'idle',
+          processingState: 'idle',
         },
       };
     case 'TEXT_BOX_TEMPLATE_SAVE_FAILED':
@@ -139,8 +200,38 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: {
           ...state.form,
-          saveState: 'error',
-          errorMessage: action.payload,
+          processingState: 'save error',
+          saveErrorMessage: action.payload,
+        },
+      };
+    case 'TEXT_BOX_TEMPLATE_DELETE_STARTED':
+      return {
+        ...state,
+        form: { ...state.form, processingState: 'deleting', deleteErrorMessage: undefined },
+      };
+    case 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED':
+      return {
+        ...state,
+        textBoxTemplate: undefined,
+        form: {
+          ...state.form,
+          data: {
+            description: '',
+            points: '1',
+            lines: '',
+            order: '0',
+            optional: false,
+          },
+          processingState: 'idle',
+        },
+      };
+    case 'TEXT_BOX_TEMPLATE_DELETE_FAILED':
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          processingState: 'delete error',
+          deleteErrorMessage: action.payload,
         },
       };
   }

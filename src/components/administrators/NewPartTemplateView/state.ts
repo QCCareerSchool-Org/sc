@@ -1,5 +1,6 @@
 import type { NewTextBoxTemplate, NewUploadSlotTemplate } from '@/domain/index';
 import type { NewPartTemplateWithInputs } from '@/services/administrators';
+import { uuidService } from '@/services/index';
 
 export type State = {
   partTemplate?: NewPartTemplateWithInputs;
@@ -35,11 +36,11 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, error: true, errorCode: action.payload };
     case 'ADD_TEXT_BOX_SUCCEEDED': {
       if (!state.partTemplate) {
-        return state;
+        throw Error('partTemplate is undefined');
       }
       const textBoxes = [ ...state.partTemplate.textBoxes, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
-          return a.textBoxId.localeCompare(b.textBoxId);
+          return uuidService.compare(a.textBoxId, b.textBoxId);
         }
         return a.order - b.order;
       });
@@ -54,11 +55,11 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'ADD_UPLOAD_SLOT_SUCCEEDED': {
       if (!state.partTemplate) {
-        return state;
+        throw Error('partTemplate is undefined');
       }
       const uploadSlots = [ ...state.partTemplate.uploadSlots, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
-          return a.uploadSlotId.localeCompare(b.uploadSlotId);
+          return uuidService.compare(a.uploadSlotId, b.uploadSlotId);
         }
         return a.order - b.order;
       });

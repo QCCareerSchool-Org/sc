@@ -5,6 +5,7 @@ import { map, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { basePath } from '../basePath';
 import { loginService } from '../services';
+import { Spinner } from '@/components/Spinner';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 
 type LogInPayload = {
@@ -78,31 +79,40 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
   };
 
   return (
-    <section>
-      <div className="container">
-        <h1>Student Center Login</h1>
-        <div className="row">
-          <div className="col-6">
-            <form onSubmit={formSubmit}>
-              <div className="form-group">
-                <label htmlFor="username">Username / Student Number</label>
-                <input type="text" id="username" name="username" value={username} onChange={usernameChange} className="form-control" required />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input type="password" id="password" name="password" value={password} onChange={passwordChange} className="form-control" required />
-              </div>
-              <button type="submit" className="btn btn-primary" disabled={submitting}>Log In</button>
-            </form>
-          </div>
-          <div className="col-6">
-            <h2>Missing your username or password?</h2>
-            <p>You'll find your username and password in your welcome email from the School or call us at 1-833-600-3751 and one of our student support specialists will be happy to help.</p>
-            <button className="btn btn-primary">Forgot Your Password?</button>
+    <>
+      <section>
+        <div className="container">
+          <h1>Student Center Login</h1>
+          <div className="row">
+            <div className="col-6">
+              <form onSubmit={formSubmit}>
+                <div className="formGroup">
+                  <label htmlFor="username" className="form-label">Username / Student Number</label>
+                  <input type="text" id="username" name="username" value={username} onChange={usernameChange} className="form-control" required />
+                </div>
+                <div className="formGroup">
+                  <label htmlFor="password" className="form-label">Password</label>
+                  <input type="password" id="password" name="password" value={password} onChange={passwordChange} className="form-control" required />
+                </div>
+                <div className="d-flex align-items-center">
+                  <button type="submit" className="btn btn-primary" disabled={submitting}>Log In</button>
+                  {submitting && <div className="ms-2"><Spinner /></div>}
+                </div>
+              </form>
+            </div>
+            <div className="col-6">
+              <h2>Missing your username or password?</h2>
+              <p>You'll find your username and password in your welcome email from the School or call us at 1-833-600-3751 and one of our student support specialists will be happy to help.</p>
+              <button className="btn btn-primary">Forgot Your Password?</button>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <style jsx>{`
+        .formGroup { margin-bottom: 1rem; }
+      `}</style>
+    </>
   );
 };
 

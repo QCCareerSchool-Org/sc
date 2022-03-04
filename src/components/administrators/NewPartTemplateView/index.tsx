@@ -1,8 +1,8 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
-import { Subject, takeUntil } from 'rxjs';
+import { MouseEvent, ReactElement, useCallback, useEffect, useReducer } from 'react';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
@@ -11,35 +11,14 @@ import { TextBoxList } from './TextBoxList';
 import { UploadSlotList } from './UploadSlotList';
 import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
-import { newPartTemplateService } from '@/services/administrators';
+import { newPartTemplateService, NewTextBoxPayload, newTextBoxTemplateService, NewUploadSlotPayload, newUploadSlotTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
 
-type NewTextBoxSubmitPayload = {
-  description: string | null;
-  points: number;
-  lines: number | null;
-  order: number;
-  optional: boolean;
-};
+export type NewTextBoxSubmitFunction = (payload: NewTextBoxPayload) => Observable<NewTextBoxTemplate>;
 
-type NewUploadSlotSubmitPayload = {
-  label: string;
-  points: number;
-  allowedTypes: {
-    image: boolean;
-    pdf: boolean;
-    word: boolean;
-    excel: boolean;
-  };
-  order: number;
-  optional: boolean;
-};
-
-export type NewTextBoxSubmitFunction = (payload: NewTextBoxSubmitPayload) => Promise<void>;
-
-export type NewUploadSlotSubmitFunction = (payload: NewUploadSlotSubmitPayload) => Promise<void>;
+export type NewUploadSlotSubmitFunction = (payload: NewUploadSlotPayload) => Observable<NewUploadSlotTemplate>;
 
 type Props = {
   administratorId: number;
@@ -78,6 +57,22 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
 
+  const textBoxSubmit: NewTextBoxSubmitFunction = useCallback(payload => {
+    return newTextBoxTemplateService.addTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+      tap(newTextBoxTemplage => {
+        dispatch({ type: 'ADD_TEXT_BOX_SUCCEEDED', payload: newTextBoxTemplage });
+      }),
+    );
+  }, [ administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
+
+  const uploadSlotSubmit: NewUploadSlotSubmitFunction = useCallback(payload => {
+    return newUploadSlotTemplateService.addUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+      tap(newTextBoxTemplage => {
+        dispatch({ type: 'ADD_UPLOAD_SLOT_SUCCEEDED', payload: newTextBoxTemplage });
+      }),
+    );
+  }, [ administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
+
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
@@ -92,61 +87,6 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
 
   const uploadSlotRowClick = (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
     void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}/edit`);
-  };
-
-  const textBoxSubmit: NewTextBoxSubmitFunction = async payload => {
-    const fakeTexBoxPayload: NewTextBoxTemplate = {
-      textBoxId: Math.random().toString(32) + Math.random().toString(32) + Math.random().toString(32) + Math.random().toString(32),
-      partId,
-      description: payload.description,
-      lines: payload.lines,
-      points: payload.points,
-      optional: payload.optional,
-      order: payload.order,
-      created: new Date(),
-      modified: null,
-    };
-    await new Promise(resolve => {
-      setTimeout(resolve, 1000);
-    });
-    if (Math.random() > 0.825) {
-      throw Error('Oh no!');
-    }
-    dispatch({ type: 'ADD_TEXT_BOX_SUCCEEDED', payload: fakeTexBoxPayload });
-  };
-
-  const uploadSlotSubmit: NewUploadSlotSubmitFunction = async payload => {
-    const allowedTypes: string[] = [];
-    if (payload.allowedTypes.image) {
-      allowedTypes.push('image');
-    }
-    if (payload.allowedTypes.pdf) {
-      allowedTypes.push('pdf');
-    }
-    if (payload.allowedTypes.word) {
-      allowedTypes.push('word');
-    }
-    if (payload.allowedTypes.excel) {
-      allowedTypes.push('excel');
-    }
-    const fakeUploadSlotPayload: NewUploadSlotTemplate = {
-      uploadSlotId: Math.random().toString(32) + Math.random().toString(32) + Math.random().toString(32) + Math.random().toString(32),
-      partId,
-      label: payload.label,
-      allowedTypes,
-      points: payload.points,
-      optional: payload.optional,
-      order: payload.order,
-      created: new Date(),
-      modified: null,
-    };
-    await new Promise(resolve => {
-      setTimeout(resolve, 1000);
-    });
-    if (Math.random() > 0.825) {
-      throw Error('Oh no!');
-    }
-    dispatch({ type: 'ADD_UPLOAD_SLOT_SUCCEEDED', payload: fakeUploadSlotPayload });
   };
 
   const partDescriptionWarning = !state.partTemplate.description && (state.partTemplate.uploadSlots.length > 0 || state.partTemplate.textBoxes.filter(t => !t.description).length > 0);

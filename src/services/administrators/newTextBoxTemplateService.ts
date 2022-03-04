@@ -21,41 +21,55 @@ export type NewTextBoxPayload = {
 };
 
 export interface INewTextBoxTemplateService {
-  addTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxPayload) => Observable<NewTextBoxTemplateWithPart>;
+  addTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxPayload) => Observable<NewTextBoxTemplate>;
   getTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string) => Observable<NewTextBoxTemplateWithPart>;
-  saveTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxPayload) => Observable<NewTextBoxTemplateWithPart>;
+  saveTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxPayload) => Observable<NewTextBoxTemplate>;
+  deleteTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string) => Observable<void>;
 }
 
 export class NewTextBoxTemplateService implements INewTextBoxTemplateService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public addTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxPayload): Observable<NewTextBoxTemplateWithPart> {
+  public addTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxPayload): Observable<NewTextBoxTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId);
-    return this.httpService.post<RawNewTextBoxTemplateWithPart>(url, payload).pipe(
-      map(this.mapNewParTemplate),
+    return this.httpService.post<RawNewTextBoxTemplate>(url, payload).pipe(
+      map(this.mapNewTextBoxTemplate),
     );
   }
 
   public getTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string): Observable<NewTextBoxTemplateWithPart> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
     return this.httpService.get<RawNewTextBoxTemplateWithPart>(url).pipe(
-      map(this.mapNewParTemplate),
+      map(this.mapNewTextBoxTemplateWithPart),
     );
   }
 
-  public saveTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxPayload): Observable<NewTextBoxTemplateWithPart> {
+  public saveTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxPayload): Observable<NewTextBoxTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
-    return this.httpService.put<RawNewTextBoxTemplateWithPart>(url, payload).pipe(
-      map(this.mapNewParTemplate),
+    return this.httpService.put<RawNewTextBoxTemplate>(url, payload).pipe(
+      map(this.mapNewTextBoxTemplate),
     );
+  }
+
+  public deleteTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string): Observable<void> {
+    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
+    return this.httpService.delete<void>(url);
   }
 
   private getBaseUrl(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): string {
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts/${partId}/textBoxes`;
   }
 
-  private mapNewParTemplate(textBox: RawNewTextBoxTemplateWithPart): NewTextBoxTemplateWithPart {
+  private mapNewTextBoxTemplate(textBox: RawNewTextBoxTemplate): NewTextBoxTemplate {
+    return {
+      ...textBox,
+      created: new Date(textBox.created),
+      modified: textBox.modified === null ? null : new Date(textBox.modified),
+    };
+  }
+
+  private mapNewTextBoxTemplateWithPart(textBox: RawNewTextBoxTemplateWithPart): NewTextBoxTemplateWithPart {
     return {
       ...textBox,
       created: new Date(textBox.created),

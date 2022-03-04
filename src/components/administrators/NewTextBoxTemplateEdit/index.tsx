@@ -1,14 +1,16 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { FormEventHandler, ReactElement, useCallback, useEffect, useReducer } from 'react';
-import { catchError, EMPTY, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { FormEventHandler, MouseEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import { catchError, EMPTY, exhaustMap, Observable, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewTextBoxEditForm } from './NewTextBoxEditForm';
 import { initialState, reducer, State } from './state';
+import { Spinner } from '@/components/Spinner';
 import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { NewTextBoxPayload, newTextBoxTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
+import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
@@ -28,13 +30,13 @@ const changesPreset = (textBoxTemplate: NewTextBoxTemplate | undefined, formData
   if (textBoxTemplate.description !== (formData.description || null)) {
     return true;
   }
-  if (textBoxTemplate.points !== formData.points) {
+  if (textBoxTemplate.points !== parseInt(formData.points, 10)) {
     return true;
   }
   if (textBoxTemplate.lines !== (formData.lines === '' ? null : parseInt(formData.lines, 10))) {
     return true;
   }
-  if (textBoxTemplate.order !== formData.order) {
+  if (textBoxTemplate.order !== parseInt(formData.order, 10)) {
     return true;
   }
   if (textBoxTemplate.optional !== formData.optional) {
@@ -48,6 +50,8 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.textBoxTemplate, state.form.data));
+
+  const delete$ = useRef(new Subject<void>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -70,14 +74,41 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
       },
     });
 
+    delete$.current.pipe(
+      tap(() => dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_STARTED' })),
+      exhaustMap(() => newTextBoxTemplateService.deleteTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId)),
+      tap({
+        next: () => {
+          dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED' });
+          router.back();
+        },
+        error: err => {
+          let message = 'Delete failed';
+          if (err instanceof HttpServiceError) {
+            if (err.refresh) {
+              return navigateToLogin(router);
+            }
+            if (err.message) {
+              message = err.message;
+            }
+          }
+          dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_FAILED', payload: message });
+        },
+      }),
+      catchError(() => EMPTY),
+      takeUntil(destroy$),
+    ).subscribe();
+
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
 
   const saveTextBox = useCallback((payload: NewTextBoxPayload): Observable<NewTextBoxTemplate> => {
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_STARTED' });
     return newTextBoxTemplateService.saveTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, payload).pipe(
       tap({
         next: textBoxTemplate => {
           dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED', payload: textBoxTemplate });
+          router.back();
         },
         error: err => {
           let message = 'Save failed';
@@ -111,7 +142,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
 
   const pointsChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'POINTS_UPDATED', payload: Math.max(parseInt(target.value, 10), 1) });
+    dispatch({ type: 'POINTS_UPDATED', payload: target.value });
   };
 
   const linesChange: FormEventHandler<HTMLInputElement> = e => {
@@ -121,12 +152,18 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
 
   const orderChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'ORDER_UPDATED', payload: Math.max(parseInt(target.value, 10), 0) });
+    dispatch({ type: 'ORDER_UPDATED', payload: target.value });
   };
 
   const optionalChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
     dispatch({ type: 'OPTIONAL_UPDATED', payload: target.checked });
+  };
+
+  const deleteClick: MouseEventHandler<HTMLButtonElement> = e => {
+    if (confirm('Are you sure you want to delete this text box template?')) {
+      delete$.current.next();
+    }
   };
 
   return (
@@ -136,6 +173,25 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8 col-xl-6">
               <h1>Edit Text Box</h1>
+              <table className="table table-bordered w-auto">
+                <tbody>
+                  <tr><th scope="row">Created</th><td>{formatDateTime(state.textBoxTemplate.created)}</td></tr>
+                  {state.textBoxTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.textBoxTemplate.modified)}</td></tr>}
+                </tbody>
+              </table>
+              <div className="d-flex align-items-center">
+                <button onClick={deleteClick} className="btn btn-danger" disabled={state.form.processingState === 'saving' || state.form.processingState === 'deleting'}>Delete</button>
+                {state.form.processingState === 'deleting' && <div className="ms-2"><Spinner /></div>}
+                {state.form.processingState === 'delete error' && <span className="text-danger ms-2">{state.form.saveErrorMessage ? state.form.saveErrorMessage : 'Error'}</span>}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-md-10 col-lg-8 col-xl-6">
               <NewTextBoxEditForm
                 formState={state.form}
                 save={saveTextBox}
