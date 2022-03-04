@@ -191,25 +191,26 @@ export const NewUploadSlotForm = ({ nextOrder, submit }: Props): ReactElement =>
 
     submit$.current.pipe(
       tap(() => formDispatch({ type: 'SAVE_STARTED' })),
-      exhaustMap(payload => submit(payload)),
-      tap({
-        next: () => {
-          formDispatch({ type: 'SAVE_SUCCEEDED', payload: { nextOrder } });
-        },
-        error: err => {
-          let message = 'Insert failed';
-          if (err instanceof HttpServiceError) {
-            if (err.refresh) {
-              return navigateToLogin(router);
+      exhaustMap(payload => submit(payload).pipe(
+        tap({
+          next: () => {
+            formDispatch({ type: 'SAVE_SUCCEEDED', payload: { nextOrder } });
+          },
+          error: err => {
+            let message = 'Insert failed';
+            if (err instanceof HttpServiceError) {
+              if (err.refresh) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
             }
-            if (err.message) {
-              message = err.message;
-            }
-          }
-          formDispatch({ type: 'SAVE_FAILED', payload: message });
-        },
-      }),
-      catchError(() => EMPTY),
+            formDispatch({ type: 'SAVE_FAILED', payload: message });
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
       takeUntil(destroy$),
     ).subscribe();
 
@@ -314,7 +315,7 @@ export const NewUploadSlotForm = ({ nextOrder, submit }: Props): ReactElement =>
             <div className="formGroup validated">
               <div className="form-check">
                 <input onChange={imageChange} checked={formState.data.allowedTypes.image} type="checkbox" id="newUploadSlotImage" className={`form-check-input ${formState.validationMessages.allowedTypes ? 'is-invalid' : ''}`} />
-                <label htmlFor="newUploadSlotImage" className="form-check-label">image</label>
+                <label htmlFor="newUploadSlotImage" className="form-check-label">Image</label>
               </div>
               <div className="form-check">
                 <input onChange={pdfChange} checked={formState.data.allowedTypes.pdf} type="checkbox" id="newUploadSlotPDF" className={`form-check-input ${formState.validationMessages.allowedTypes ? 'is-invalid' : ''}`} />
@@ -322,11 +323,11 @@ export const NewUploadSlotForm = ({ nextOrder, submit }: Props): ReactElement =>
               </div>
               <div className="form-check">
                 <input onChange={wordChange} checked={formState.data.allowedTypes.word} type="checkbox" id="newUploadSlotWord" className={`form-check-input ${formState.validationMessages.allowedTypes ? 'is-invalid' : ''}`} />
-                <label htmlFor="newUploadSlotWord" className="form-check-label">Word Document</label>
+                <label htmlFor="newUploadSlotWord" className="form-check-label">Word document</label>
               </div>
               <div className="form-check">
                 <input onChange={excelChange} checked={formState.data.allowedTypes.excel} type="checkbox" id="newUploadSlotExcel" className={`form-check-input ${formState.validationMessages.allowedTypes ? 'is-invalid' : ''}`} />
-                <label htmlFor="newUploadSlotExcel" className="form-check-label">Excel Document</label>
+                <label htmlFor="newUploadSlotExcel" className="form-check-label">Excel document</label>
                 {formState.validationMessages.allowedTypes && <div className="invalid-feedback">{formState.validationMessages.allowedTypes}</div>}
               </div>
             </div>
@@ -338,7 +339,7 @@ export const NewUploadSlotForm = ({ nextOrder, submit }: Props): ReactElement =>
               </div>
             </div>
             <div className="d-flex align-items-center">
-              <button type="submit" className="btn btn-secondary" disabled={!valid || formState.saveState === 'processing'}>Add New Text Box</button>
+              <button type="submit" className="btn btn-primary" disabled={!valid || formState.saveState === 'processing'}>Add New Upload Slot</button>
               {formState.saveState === 'processing' && <div className="ms-2"><Spinner /></div>}
               {formState.saveState === 'error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
             </div>

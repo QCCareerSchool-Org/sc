@@ -24,8 +24,9 @@ export type NewUploadSlotPayload = {
 
 export interface INewUploadSlotTemplateService {
   addUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewUploadSlotPayload) => Observable<NewUploadSlotTemplate>;
-  getUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string) => Observable<NewUploadSlotTemplateWithPart>;
-  saveUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewUploadSlotPayload) => Observable<NewUploadSlotTemplate>;
+  getUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<NewUploadSlotTemplateWithPart>;
+  saveUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, payload: NewUploadSlotPayload) => Observable<NewUploadSlotTemplate>;
+  deleteUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
 }
 
 export class NewUploadSlotTemplateService implements INewUploadSlotTemplateService {
@@ -51,6 +52,11 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
     return this.httpService.put<RawNewUploadSlotTemplate>(url, payload).pipe(
       map(this.mapNewParTemplate),
     );
+  }
+
+  public deleteUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
+    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${uploadSlotId}`;
+    return this.httpService.delete<void>(url);
   }
 
   private getBaseUrl(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): string {

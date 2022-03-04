@@ -8,7 +8,7 @@ type Props = {
   children: ReactNode;
 };
 
-const StateProvider = ({ children }: Props): ReactElement => (
+export const StateProvider = ({ children }: Props): ReactElement => (
   <AuthStateProvider>
     <NavStateProvider>
       <ScreenWidthProvider>
@@ -17,5 +17,3 @@ const StateProvider = ({ children }: Props): ReactElement => (
     </NavStateProvider>
   </AuthStateProvider>
 );
-
-export default StateProvider;

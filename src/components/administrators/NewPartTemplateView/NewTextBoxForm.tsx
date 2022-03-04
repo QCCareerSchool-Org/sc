@@ -142,25 +142,26 @@ export const NewTextBoxForm = ({ nextOrder, submit }: Props): ReactElement => {
 
     submit$.current.pipe(
       tap(() => formDispatch({ type: 'SAVE_STARTED' })),
-      exhaustMap(payload => submit(payload)),
-      tap({
-        next: () => {
-          formDispatch({ type: 'SAVE_SUCCEEDED', payload: { nextOrder } });
-        },
-        error: err => {
-          let message = 'Insert failed';
-          if (err instanceof HttpServiceError) {
-            if (err.refresh) {
-              return navigateToLogin(router);
+      exhaustMap(payload => submit(payload).pipe(
+        tap({
+          next: () => {
+            formDispatch({ type: 'SAVE_SUCCEEDED', payload: { nextOrder } });
+          },
+          error: err => {
+            let message = 'Insert failed';
+            if (err instanceof HttpServiceError) {
+              if (err.refresh) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
             }
-            if (err.message) {
-              message = err.message;
-            }
-          }
-          formDispatch({ type: 'SAVE_FAILED', payload: message });
-        },
-      }),
-      catchError(() => EMPTY),
+            formDispatch({ type: 'SAVE_FAILED', payload: message });
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
       takeUntil(destroy$),
     ).subscribe();
 
@@ -254,7 +255,7 @@ export const NewTextBoxForm = ({ nextOrder, submit }: Props): ReactElement => {
               </div>
             </div>
             <div className="d-flex align-items-center">
-              <button type="submit" className="btn btn-primary" disabled={!valid || formState.saveState === 'processing'}>Save</button>
+              <button type="submit" className="btn btn-primary" disabled={!valid || formState.saveState === 'processing'}>Add New Text Box</button>
               {formState.saveState === 'processing' && <div className="ms-2"><Spinner /></div>}
               {formState.saveState === 'error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
             </div>

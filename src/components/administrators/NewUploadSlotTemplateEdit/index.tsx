@@ -3,12 +3,12 @@ import { useRouter } from 'next/router';
 import { FormEventHandler, MouseEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, Observable, Subject, takeUntil, tap } from 'rxjs';
 
-import { NewTextBoxEditForm } from './NewTextBoxEditForm';
+import { NewUploadSlotEditForm } from './NewUploadSlotEditForm';
 import { initialState, reducer, State } from './state';
 import { Spinner } from '@/components/Spinner';
-import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
+import { NewUploadSlotTemplate } from '@/domain/index';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { NewTextBoxPayload, newTextBoxTemplateService } from '@/services/administrators';
+import { NewUploadSlotPayload, newUploadSlotTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -20,47 +20,56 @@ type Props = {
   unitId: string;
   assignmentId: string;
   partId: string;
-  textBoxId: string;
+  uploadSlotId: string;
 };
 
-const changesPreset = (textBoxTemplate: NewTextBoxTemplate | undefined, formData: State['form']['data']): boolean => {
-  if (!textBoxTemplate) {
+const changesPreset = (uploadSlotTemplate: NewUploadSlotTemplate | undefined, formData: State['form']['data']): boolean => {
+  if (!uploadSlotTemplate) {
     return false;
   }
-  if (textBoxTemplate.description !== (formData.description || null)) {
+  if (uploadSlotTemplate.label !== (formData.label || null)) {
     return true;
   }
-  if (textBoxTemplate.points !== parseInt(formData.points, 10)) {
+  if (uploadSlotTemplate.allowedTypes.includes('image') !== formData.allowedTypes.image) {
     return true;
   }
-  if (textBoxTemplate.lines !== (formData.lines === '' ? null : parseInt(formData.lines, 10))) {
+  if (uploadSlotTemplate.allowedTypes.includes('pdf') !== formData.allowedTypes.pdf) {
     return true;
   }
-  if (textBoxTemplate.order !== parseInt(formData.order, 10)) {
+  if (uploadSlotTemplate.allowedTypes.includes('word') !== formData.allowedTypes.word) {
     return true;
   }
-  if (textBoxTemplate.optional !== formData.optional) {
+  if (uploadSlotTemplate.allowedTypes.includes('excel') !== formData.allowedTypes.excel) {
+    return true;
+  }
+  if (uploadSlotTemplate.points !== parseInt(formData.points, 10)) {
+    return true;
+  }
+  if (uploadSlotTemplate.order !== parseInt(formData.order, 10)) {
+    return true;
+  }
+  if (uploadSlotTemplate.optional !== formData.optional) {
     return true;
   }
   return false;
 };
 
-export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId }: Props): ReactElement | null => {
+export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.textBoxTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPreset(state.uploadSlotTemplate, state.form.data));
 
   const delete$ = useRef(new Subject<void>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newTextBoxTemplateService.getTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId).pipe(
+    newUploadSlotTemplateService.getUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: textBoxTemplate => {
-        dispatch({ type: 'TEXT_BOX_TEMPLATE_LOAD_SUCCEEDED', payload: textBoxTemplate });
+      next: uploadSlotTemplate => {
+        dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_LOAD_SUCCEEDED', payload: uploadSlotTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -70,16 +79,16 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'TEXT_BOX_TEMPLATE_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_LOAD_FAILED', payload: errorCode });
       },
     });
 
     delete$.current.pipe(
-      tap(() => dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_STARTED' })),
-      exhaustMap(() => newTextBoxTemplateService.deleteTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId).pipe(
+      tap(() => dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_DELETE_STARTED' })),
+      exhaustMap(() => newUploadSlotTemplateService.deleteUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
         tap({
           next: () => {
-            dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED' });
+            dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_DELETE_SUCCEEDED' });
             router.back();
           },
           error: err => {
@@ -92,23 +101,23 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
                 message = err.message;
               }
             }
-            dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_FAILED', payload: message });
+            dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_DELETE_FAILED', payload: message });
           },
         }),
+        catchError(() => EMPTY),
       )),
-      catchError(() => EMPTY),
       takeUntil(destroy$),
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId ]);
 
-  const saveTextBox = useCallback((payload: NewTextBoxPayload): Observable<NewTextBoxTemplate> => {
-    dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_STARTED' });
-    return newTextBoxTemplateService.saveTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, payload).pipe(
+  const saveUploadSlot = useCallback((payload: NewUploadSlotPayload): Observable<NewUploadSlotTemplate> => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_STARTED' });
+    return newUploadSlotTemplateService.saveUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, payload).pipe(
       tap({
-        next: textBoxTemplate => {
-          dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED', payload: textBoxTemplate });
+        next: uploadSlotTemplate => {
+          dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_SUCCEEDED', payload: uploadSlotTemplate });
           router.back();
         },
         error: err => {
@@ -121,24 +130,24 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
               message = err.message;
             }
           }
-          dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_FAILED', payload: message });
+          dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_FAILED', payload: message });
         },
       }),
       catchError(() => EMPTY),
     );
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.textBoxTemplate) {
+  if (!state.uploadSlotTemplate) {
     return null;
   }
 
-  const descriptionChange: FormEventHandler<HTMLTextAreaElement> = e => {
+  const labelChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'DESCRIPTION_UPDATED', payload: target.value });
+    dispatch({ type: 'LABEL_UPDATED', payload: target.value });
   };
 
   const pointsChange: FormEventHandler<HTMLInputElement> = e => {
@@ -146,9 +155,24 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
     dispatch({ type: 'POINTS_UPDATED', payload: target.value });
   };
 
-  const linesChange: FormEventHandler<HTMLInputElement> = e => {
+  const imageChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'LINES_UPDATED', payload: target.value });
+    dispatch({ type: 'IMAGE_UPDATED', payload: target.checked });
+  };
+
+  const pdfChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'PDF_UPDATED', payload: target.checked });
+  };
+
+  const wordChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'WORD_UPDATED', payload: target.checked });
+  };
+
+  const excelChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'EXCEL_UPDATED', payload: target.checked });
   };
 
   const orderChange: FormEventHandler<HTMLInputElement> = e => {
@@ -173,11 +197,11 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8 col-xl-6">
-              <h1>Edit Text Box</h1>
+              <h1>Edit Upload Slot</h1>
               <table className="table table-bordered w-auto">
                 <tbody>
-                  <tr><th scope="row">Created</th><td>{formatDateTime(state.textBoxTemplate.created)}</td></tr>
-                  {state.textBoxTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.textBoxTemplate.modified)}</td></tr>}
+                  <tr><th scope="row">Created</th><td>{formatDateTime(state.uploadSlotTemplate.created)}</td></tr>
+                  {state.uploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.uploadSlotTemplate.modified)}</td></tr>}
                 </tbody>
               </table>
               <div className="d-flex align-items-center">
@@ -193,12 +217,15 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8 col-xl-6">
-              <NewTextBoxEditForm
+              <NewUploadSlotEditForm
                 formState={state.form}
-                save={saveTextBox}
-                descriptionChange={descriptionChange}
+                save={saveUploadSlot}
+                labelChange={labelChange}
                 pointsChange={pointsChange}
-                linesChange={linesChange}
+                imageChange={imageChange}
+                pdfChange={pdfChange}
+                wordChange={wordChange}
+                excelChange={excelChange}
                 orderChange={orderChange}
                 optionalChange={optionalChange}
               />
