@@ -112,7 +112,7 @@ export const AdministratorNav = (): ReactElement | null => {
                   <li><a className="dropdown-item d-none d-md-block d-xl-none" href="/administrators/returned-units/index.php">Returned Units</a></li>
                   <li><a className="dropdown-item" href="/administrators/forum/login.php" onClick={() => { window.open('/administrators/forum/login.php'); return false; }}>Student Forum</a></li>
                   <li><a className="dropdown-item" href="/administrators/final-submissions/">Final Submissions</a></li>
-                  <li><a className="dropdown-item" href="/sc/administrators/schools">Edit</a></li>
+                  <li><a className="dropdown-item" href="/sc/administrators/course-development">Course Development</a></li>
                   <li><a className="dropdown-item" href="/administrators/materials/">Course Materials</a></li>
                   <li><a className="dropdown-item" href="/administrators/paths/">Course Material Paths</a></li>
                   <li><a className="dropdown-item" href="/administrators/showcases/index.php">Student Showcase</a></li>

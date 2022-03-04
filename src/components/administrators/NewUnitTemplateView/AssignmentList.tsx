@@ -22,7 +22,7 @@ export const AssignmentList = ({ assignments, assignmentRowClick }: Props): Reac
           </thead>
           <tbody>
             {assignments.map(a => (
-              <tr key={a.unitId} onClick={e => assignmentRowClick(e, a.assignmentId)}>
+              <tr key={a.assignmentId} onClick={e => assignmentRowClick(e, a.assignmentId)}>
                 <td className="text-center">{a.assignmentNumber}</td>
                 <td>{a.title}</td>
                 <td className="text-center">{a.optional ? 'yes' : 'no'}</td>

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
+import { SchoolList } from './SchoolList';
 import { initialState, reducer } from './state';
 import { schoolService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
@@ -12,7 +13,7 @@ type Props = {
   administratorId: number;
 };
 
-export const SchoolList = ({ administratorId }: Props): ReactElement | null => {
+export const CourseDevelopmentOverview = ({ administratorId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -49,34 +50,22 @@ export const SchoolList = ({ administratorId }: Props): ReactElement | null => {
   }
 
   const schoolRowClick = (e: MouseEvent<HTMLTableRowElement>, schoolId: number): void => {
-    void router.push(`${router.asPath}/${schoolId}`, undefined, { scroll: false });
+    void router.push(`/administrators/schools/${schoolId}`, undefined, { scroll: false });
   };
 
   return (
     <>
       <section>
         <div className="container">
-          <h1>School List</h1>
-          <table id="schoolTable" className="table table-bordered table-hover w-auto">
-            <thead>
-              <tr>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.schools.map(s => (
-                <tr key={s.schoolId} onClick={e => schoolRowClick(e, s.schoolId)}>
-                  <td>{s.name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <h1>Course Development</h1>
         </div>
       </section>
-
-      <style jsx>{`
-        #schoolTable tr { cursor: pointer }
-      `}</style>
+      <section>
+        <div className="container">
+          <h2 className="h3">Schools</h2>
+          <SchoolList schools={state.schools} schoolRowClick={schoolRowClick} />
+        </div>
+      </section>
     </>
   );
 };

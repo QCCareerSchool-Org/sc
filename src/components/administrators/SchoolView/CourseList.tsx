@@ -9,8 +9,7 @@ type Props = {
 
 export const CourseList = ({ courses, courseRowClick }: Props): ReactElement => (
   <>
-    <h4>Courses</h4>
-    <table id="coursesTable" className="table table-bordered table-hover w-auto">
+    <table id="coursesTable" className="table table-bordered table-hover w-auto bg-white">
       <thead>
         <tr>
           <th className="text-center">Code</th>
