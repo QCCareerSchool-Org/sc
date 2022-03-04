@@ -4,9 +4,9 @@ import { exhaustMap, Observable, Subject, takeUntil } from 'rxjs';
 import { State } from './state';
 import { Spinner } from '@/components/Spinner';
 import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
-import { NewTextBoxPayload } from '@/services/administrators';
+import { NewTextBoxTemplatePayload } from '@/services/administrators';
 
-type SaveFunction = (payload: NewTextBoxPayload) => Observable<NewTextBoxTemplate>;
+type SaveFunction = (payload: NewTextBoxTemplatePayload) => Observable<NewTextBoxTemplate>;
 
 type Props = {
   formState: State['form'];
@@ -20,7 +20,7 @@ type Props = {
 
 export const NewTextBoxEditForm = ({ formState, save, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
 
-  const submit$ = useRef(new Subject<NewTextBoxPayload>());
+  const submit$ = useRef(new Subject<NewTextBoxTemplatePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();

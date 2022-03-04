@@ -12,7 +12,7 @@ export type NewTextBoxTemplateWithPart = NewTextBoxTemplate & {
   part: NewPartTemplate;
 };
 
-export type NewTextBoxPayload = {
+export type NewTextBoxTemplatePayload = {
   description: string | null;
   points: number;
   lines: number | null;
@@ -21,9 +21,9 @@ export type NewTextBoxPayload = {
 };
 
 export interface INewTextBoxTemplateService {
-  addTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxPayload) => Observable<NewTextBoxTemplate>;
+  addTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxTemplatePayload) => Observable<NewTextBoxTemplate>;
   getTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string) => Observable<NewTextBoxTemplateWithPart>;
-  saveTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxPayload) => Observable<NewTextBoxTemplate>;
+  saveTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxTemplatePayload) => Observable<NewTextBoxTemplate>;
   deleteTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string) => Observable<void>;
 }
 
@@ -31,7 +31,7 @@ export class NewTextBoxTemplateService implements INewTextBoxTemplateService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public addTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxPayload): Observable<NewTextBoxTemplate> {
+  public addTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxTemplatePayload): Observable<NewTextBoxTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId);
     return this.httpService.post<RawNewTextBoxTemplate>(url, payload).pipe(
       map(this.mapNewTextBoxTemplate),
@@ -45,7 +45,7 @@ export class NewTextBoxTemplateService implements INewTextBoxTemplateService {
     );
   }
 
-  public saveTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxPayload): Observable<NewTextBoxTemplate> {
+  public saveTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxTemplatePayload): Observable<NewTextBoxTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
     return this.httpService.put<RawNewTextBoxTemplate>(url, payload).pipe(
       map(this.mapNewTextBoxTemplate),

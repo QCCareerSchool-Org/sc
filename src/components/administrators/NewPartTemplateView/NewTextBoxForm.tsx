@@ -4,7 +4,7 @@ import { FormEventHandler, ReactElement, useEffect, useReducer, useRef } from 'r
 import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
 import type { NewTextBoxSubmitFunction } from '.';
 import { Spinner } from '@/components/Spinner';
-import { NewTextBoxPayload } from '@/services/administrators';
+import { NewTextBoxTemplatePayload } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
@@ -135,7 +135,7 @@ export const NewTextBoxForm = ({ nextOrder, submit }: Props): ReactElement => {
     formDispatch({ type: 'ORDER_UPDATED', payload: nextOrder.toString() });
   }, [ nextOrder ]);
 
-  const submit$ = useRef(new Subject<NewTextBoxPayload>());
+  const submit$ = useRef(new Subject<NewTextBoxTemplatePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();

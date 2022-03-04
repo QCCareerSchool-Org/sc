@@ -14,7 +14,7 @@ export type NewUploadSlotTemplateWithPart = NewUploadSlotTemplate & {
 
 export type AllowedType = 'image' | 'pdf' | 'word' | 'excel';
 
-export type NewUploadSlotPayload = {
+export type NewUploadSlotTemplatePayload = {
   label: string;
   allowedTypes: AllowedType[];
   points: number;
@@ -23,9 +23,9 @@ export type NewUploadSlotPayload = {
 };
 
 export interface INewUploadSlotTemplateService {
-  addUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewUploadSlotPayload) => Observable<NewUploadSlotTemplate>;
+  addUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewUploadSlotTemplatePayload) => Observable<NewUploadSlotTemplate>;
   getUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<NewUploadSlotTemplateWithPart>;
-  saveUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, payload: NewUploadSlotPayload) => Observable<NewUploadSlotTemplate>;
+  saveUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, payload: NewUploadSlotTemplatePayload) => Observable<NewUploadSlotTemplate>;
   deleteUploadSlot: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
 }
 
@@ -33,7 +33,7 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public addUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewUploadSlotPayload): Observable<NewUploadSlotTemplate> {
+  public addUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewUploadSlotTemplatePayload): Observable<NewUploadSlotTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId);
     return this.httpService.post<RawNewUploadSlotTemplate>(url, payload).pipe(
       map(this.mapNewParTemplate),
@@ -47,7 +47,7 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
     );
   }
 
-  public saveUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, payload: NewUploadSlotPayload): Observable<NewUploadSlotTemplate> {
+  public saveUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, payload: NewUploadSlotTemplatePayload): Observable<NewUploadSlotTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${uploadSlotId}`;
     return this.httpService.put<RawNewUploadSlotTemplate>(url, payload).pipe(
       map(this.mapNewParTemplate),

@@ -4,9 +4,9 @@ import { exhaustMap, Observable, Subject, takeUntil } from 'rxjs';
 import { State } from './state';
 import { Spinner } from '@/components/Spinner';
 import { NewUploadSlotTemplate } from '@/domain/index';
-import { AllowedType, NewUploadSlotPayload } from '@/services/administrators';
+import { AllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators';
 
-type SaveFunction = (payload: NewUploadSlotPayload) => Observable<NewUploadSlotTemplate>;
+type SaveFunction = (payload: NewUploadSlotTemplatePayload) => Observable<NewUploadSlotTemplate>;
 
 type Props = {
   formState: State['form'];
@@ -23,7 +23,7 @@ type Props = {
 
 export const NewUploadSlotEditForm = ({ formState, save, labelChange, imageChange, pdfChange, wordChange, excelChange, pointsChange, orderChange, optionalChange }: Props): ReactElement => {
 
-  const submit$ = useRef(new Subject<NewUploadSlotPayload>());
+  const submit$ = useRef(new Subject<NewUploadSlotTemplatePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();

@@ -3,12 +3,12 @@ import { useRouter } from 'next/router';
 import { FormEventHandler, MouseEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, Observable, Subject, takeUntil, tap } from 'rxjs';
 
-import { NewTextBoxEditForm } from './NewTextBoxEditForm';
+import { NewPartEditForm } from './NewPartEditForm';
 import { initialState, reducer, State } from './state';
 import { Spinner } from '@/components/Spinner';
-import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
+import { NewPartTemplate } from '@/domain/index';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { NewTextBoxTemplatePayload, newTextBoxTemplateService } from '@/services/administrators';
+import { NewPartTemplatePayload, newPartTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -20,47 +20,43 @@ type Props = {
   unitId: string;
   assignmentId: string;
   partId: string;
-  textBoxId: string;
 };
 
-const changesPreset = (textBoxTemplate: NewTextBoxTemplate | undefined, formData: State['form']['data']): boolean => {
-  if (!textBoxTemplate) {
+const changesPreset = (partTemplate: NewPartTemplate | undefined, formData: State['form']['data']): boolean => {
+  if (!partTemplate) {
     return false;
   }
-  if (textBoxTemplate.description !== (formData.description || null)) {
+  if (partTemplate.title !== (formData.title || null)) {
     return true;
   }
-  if (textBoxTemplate.points !== parseInt(formData.points, 10)) {
+  if (partTemplate.description !== (formData.description || null)) {
     return true;
   }
-  if (textBoxTemplate.lines !== (formData.lines === '' ? null : parseInt(formData.lines, 10))) {
+  if (partTemplate.partNumber !== parseInt(formData.partNumber, 10)) {
     return true;
   }
-  if (textBoxTemplate.order !== parseInt(formData.order, 10)) {
-    return true;
-  }
-  if (textBoxTemplate.optional !== formData.optional) {
+  if (partTemplate.optional !== formData.optional) {
     return true;
   }
   return false;
 };
 
-export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId }: Props): ReactElement | null => {
+export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.textBoxTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPreset(state.partTemplate, state.form.data));
 
   const delete$ = useRef(new Subject<void>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newTextBoxTemplateService.getTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId).pipe(
+    newPartTemplateService.getPart(administratorId, schoolId, courseId, unitId, assignmentId, partId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: textBoxTemplate => {
-        dispatch({ type: 'TEXT_BOX_TEMPLATE_LOAD_SUCCEEDED', payload: textBoxTemplate });
+        dispatch({ type: 'PART_TEMPLATE_LOAD_SUCCEEDED', payload: textBoxTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -70,16 +66,16 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'TEXT_BOX_TEMPLATE_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'PART_TEMPLATE_LOAD_FAILED', payload: errorCode });
       },
     });
 
     delete$.current.pipe(
-      tap(() => dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_STARTED' })),
-      exhaustMap(() => newTextBoxTemplateService.deleteTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId).pipe(
+      tap(() => dispatch({ type: 'PART_TEMPLATE_DELETE_STARTED' })),
+      exhaustMap(() => newPartTemplateService.deletePart(administratorId, schoolId, courseId, unitId, assignmentId, partId).pipe(
         tap({
           next: () => {
-            dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED' });
+            dispatch({ type: 'PART_TEMPLATE_DELETE_SUCCEEDED' });
             router.back();
           },
           error: err => {
@@ -92,7 +88,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
                 message = err.message;
               }
             }
-            dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_FAILED', payload: message });
+            dispatch({ type: 'PART_TEMPLATE_DELETE_FAILED', payload: message });
           },
         }),
       )),
@@ -101,14 +97,14 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
 
-  const saveTextBox = useCallback((payload: NewTextBoxTemplatePayload): Observable<NewTextBoxTemplate> => {
-    dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_STARTED' });
-    return newTextBoxTemplateService.saveTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, payload).pipe(
+  const savePart = useCallback((payload: NewPartTemplatePayload): Observable<NewPartTemplate> => {
+    dispatch({ type: 'PART_TEMPLATE_SAVE_STARTED' });
+    return newPartTemplateService.savePart(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
       tap({
         next: textBoxTemplate => {
-          dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED', payload: textBoxTemplate });
+          dispatch({ type: 'PART_TEMPLATE_SAVE_SUCCEEDED', payload: textBoxTemplate });
           router.back();
         },
         error: err => {
@@ -121,39 +117,34 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
               message = err.message;
             }
           }
-          dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_FAILED', payload: message });
+          dispatch({ type: 'PART_TEMPLATE_SAVE_FAILED', payload: message });
         },
       }),
       catchError(() => EMPTY),
     );
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.textBoxTemplate) {
+  if (!state.partTemplate) {
     return null;
   }
+
+  const titleChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TITLE_UPDATED', payload: target.value });
+  };
 
   const descriptionChange: FormEventHandler<HTMLTextAreaElement> = e => {
     const target = e.target as HTMLTextAreaElement;
     dispatch({ type: 'DESCRIPTION_UPDATED', payload: target.value });
   };
 
-  const pointsChange: FormEventHandler<HTMLInputElement> = e => {
+  const partNumberChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'POINTS_UPDATED', payload: target.value });
-  };
-
-  const linesChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'LINES_UPDATED', payload: target.value });
-  };
-
-  const orderChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'ORDER_UPDATED', payload: target.value });
+    dispatch({ type: 'PART_NUMBER_UPDATED', payload: target.value });
   };
 
   const optionalChange: FormEventHandler<HTMLInputElement> = e => {
@@ -162,7 +153,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
   };
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = e => {
-    if (confirm('Are you sure you want to delete this text box template?')) {
+    if (confirm('Are you sure you want to delete this part template and all its children?')) {
       delete$.current.next();
     }
   };
@@ -173,11 +164,11 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8 col-xl-6">
-              <h1>Edit Text Box</h1>
+              <h1>Edit Part</h1>
               <table className="table table-bordered w-auto">
                 <tbody>
-                  <tr><th scope="row">Created</th><td>{formatDateTime(state.textBoxTemplate.created)}</td></tr>
-                  {state.textBoxTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.textBoxTemplate.modified)}</td></tr>}
+                  <tr><th scope="row">Created</th><td>{formatDateTime(state.partTemplate.created)}</td></tr>
+                  {state.partTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.partTemplate.modified)}</td></tr>}
                 </tbody>
               </table>
               <div className="d-flex align-items-center">
@@ -193,13 +184,12 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8 col-xl-6">
-              <NewTextBoxEditForm
+              <NewPartEditForm
                 formState={state.form}
-                save={saveTextBox}
+                save={savePart}
+                titleChange={titleChange}
                 descriptionChange={descriptionChange}
-                pointsChange={pointsChange}
-                linesChange={linesChange}
-                orderChange={orderChange}
+                partNumberChange={partNumberChange}
                 optionalChange={optionalChange}
               />
             </div>

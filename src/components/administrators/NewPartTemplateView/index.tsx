@@ -11,14 +11,14 @@ import { TextBoxList } from './TextBoxList';
 import { UploadSlotList } from './UploadSlotList';
 import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
-import { newPartTemplateService, NewTextBoxPayload, newTextBoxTemplateService, NewUploadSlotPayload, newUploadSlotTemplateService } from '@/services/administrators';
+import { newPartTemplateService, NewTextBoxTemplatePayload, newTextBoxTemplateService, NewUploadSlotTemplatePayload, newUploadSlotTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
 
-export type NewTextBoxSubmitFunction = (payload: NewTextBoxPayload) => Observable<NewTextBoxTemplate>;
+export type NewTextBoxSubmitFunction = (payload: NewTextBoxTemplatePayload) => Observable<NewTextBoxTemplate>;
 
-export type NewUploadSlotSubmitFunction = (payload: NewUploadSlotPayload) => Observable<NewUploadSlotTemplate>;
+export type NewUploadSlotSubmitFunction = (payload: NewUploadSlotTemplatePayload) => Observable<NewUploadSlotTemplate>;
 
 type Props = {
   administratorId: number;
@@ -112,7 +112,7 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
                   {state.partTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.partTemplate.modified)}</td></tr>}
                 </tbody>
               </table>
-              <Link href={`${router.asPath}/edit`}><a className="btn btn-primary">Edit Assignment</a></Link>
+              <Link href={`${router.asPath}/edit`}><a className="btn btn-primary">Edit Part</a></Link>
             </div>
             {(partDescriptionWarning || textBoxDescriptionWarning) && (
               <div className="col-12 col-lg-6 mt-3 mt-lg-0">

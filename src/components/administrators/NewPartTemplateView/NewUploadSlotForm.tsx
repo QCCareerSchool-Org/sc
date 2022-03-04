@@ -4,7 +4,7 @@ import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
 
 import type { NewUploadSlotSubmitFunction } from '.';
 import { Spinner } from '@/components/Spinner';
-import { AllowedType, NewUploadSlotPayload } from '@/services/administrators';
+import { AllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
@@ -184,7 +184,7 @@ export const NewUploadSlotForm = ({ nextOrder, submit }: Props): ReactElement =>
     formDispatch({ type: 'ORDER_UPDATED', payload: nextOrder.toString() });
   }, [ nextOrder ]);
 
-  const submit$ = useRef(new Subject<NewUploadSlotPayload>());
+  const submit$ = useRef(new Subject<NewUploadSlotTemplatePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();

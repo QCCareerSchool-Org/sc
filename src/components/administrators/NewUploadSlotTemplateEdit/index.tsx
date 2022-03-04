@@ -8,7 +8,7 @@ import { initialState, reducer, State } from './state';
 import { Spinner } from '@/components/Spinner';
 import { NewUploadSlotTemplate } from '@/domain/index';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { NewUploadSlotPayload, newUploadSlotTemplateService } from '@/services/administrators';
+import { NewUploadSlotTemplatePayload, newUploadSlotTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -112,7 +112,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId ]);
 
-  const saveUploadSlot = useCallback((payload: NewUploadSlotPayload): Observable<NewUploadSlotTemplate> => {
+  const saveUploadSlot = useCallback((payload: NewUploadSlotTemplatePayload): Observable<NewUploadSlotTemplate> => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_STARTED' });
     return newUploadSlotTemplateService.saveUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, payload).pipe(
       tap({
