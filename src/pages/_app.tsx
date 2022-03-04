@@ -10,9 +10,17 @@ import StateProvider from '../providers';
 import '../style.scss';
 
 const SCApp = ({ Component, pageProps }: AppProps): ReactElement => {
+  const router = useRouter();
+
   useEffect(() => {
     import('bootstrap');
-  }, []);
+
+    // stop Next.js's automatic scrolling to top when hitting the back button
+    router.beforePopState(state => {
+      state.options.scroll = false;
+      return true;
+    });
+  }, [ router ]);
 
   return (
     <StateProvider>
