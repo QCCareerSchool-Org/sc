@@ -1,202 +1,25 @@
-import { useRouter } from 'next/router';
-import { FormEventHandler, ReactElement, useEffect, useReducer, useRef } from 'react';
+import type { FormEventHandler, ReactElement } from 'react';
 
-import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
-import type { NewTextBoxSubmitFunction } from '.';
+import type { Subject } from 'rxjs';
+import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import { NewTextBoxTemplatePayload } from '@/services/administrators';
-import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
-
-type FormState = {
-  data: {
-    description: string;
-    points: string;
-    lines: string;
-    order: string;
-    optional: boolean;
-  };
-  validationMessages: {
-    description?: string;
-    points?: string;
-    lines?: string;
-    order?: string;
-    optional?: string;
-  };
-  saveState: 'idle' | 'processing' | 'error';
-  errorMessage?: string;
-};
-
-type FormAction =
-  | { type: 'DESCRIPTION_UPDATED'; payload: string }
-  | { type: 'POINTS_UPDATED'; payload: string }
-  | { type: 'LINES_UPDATED'; payload: string }
-  | { type: 'ORDER_UPDATED'; payload: string }
-  | { type: 'OPTIONAL_UPDATED'; payload: boolean }
-  | { type: 'SAVE_STARTED' }
-  | { type: 'SAVE_SUCCEEDED'; payload: { nextOrder: number } }
-  | { type: 'SAVE_FAILED'; payload: string };
-
-const formInitialState: FormState = {
-  data: {
-    description: '',
-    points: '1',
-    lines: '',
-    order: '0',
-    optional: false,
-  },
-  validationMessages: {},
-  saveState: 'idle',
-};
-
-const formReducer = (state: FormState, action: FormAction): FormState => {
-  switch (action.type) {
-    case 'DESCRIPTION_UPDATED':
-      return { ...state, data: { ...state.data, description: action.payload } };
-    case 'POINTS_UPDATED': {
-      let validationMessage: string | undefined;
-      if (!action.payload) {
-        validationMessage = 'Required';
-      } else {
-        const points = parseInt(action.payload, 10);
-        if (isNaN(points)) {
-          validationMessage = 'Invalid number';
-        } else if (points < 0) {
-          validationMessage = 'Cannot be less than zero';
-        } else if (points > 127) {
-          validationMessage = 'Cannot be greater than 127';
-        }
-      }
-      return {
-        ...state,
-        data: { ...state.data, points: action.payload },
-        validationMessages: { ...state.validationMessages, points: validationMessage },
-      };
-    }
-    case 'LINES_UPDATED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const parsedLines = parseInt(action.payload, 10);
-        if (isNaN(parsedLines)) {
-          validationMessage = 'Invalid number';
-        } else if (parsedLines < 1) {
-          validationMessage = 'Cannot be less than one';
-        } else if (parsedLines > 127) {
-          validationMessage = 'Cannot be greater than 127';
-        }
-      }
-      return {
-        ...state,
-        data: { ...state.data, lines: action.payload },
-        validationMessages: { ...state.validationMessages, lines: validationMessage },
-      };
-    }
-    case 'ORDER_UPDATED': {
-      let validationMessage: string | undefined;
-      if (!action.payload) {
-        validationMessage = 'Required';
-      } else {
-        const points = parseInt(action.payload, 10);
-        if (isNaN(points)) {
-          validationMessage = 'Invalid number';
-        } else if (points < 0) {
-          validationMessage = 'Cannot be less than zero';
-        } else if (points > 127) {
-          validationMessage = 'Cannot be greater than 127';
-        }
-      }
-      return {
-        ...state,
-        data: { ...state.data, order: action.payload },
-        validationMessages: { ...state.validationMessages, order: validationMessage },
-      };
-    }
-    case 'OPTIONAL_UPDATED':
-      return { ...state, data: { ...state.data, optional: action.payload } };
-    case 'SAVE_STARTED':
-      return { ...state, saveState: 'processing', errorMessage: undefined };
-    case 'SAVE_SUCCEEDED':
-      return { ...state, ...formInitialState, data: { ...formInitialState.data, order: action.payload.nextOrder.toString() } };
-    case 'SAVE_FAILED':
-      return { ...state, saveState: 'error', errorMessage: action.payload };
-  }
-};
+import type { NewTextBoxTemplatePayload } from '@/services/administrators';
 
 type Props = {
-  nextOrder: number;
-  submit: NewTextBoxSubmitFunction;
+  formState: State['textBoxForm'];
+  insert$: Subject<NewTextBoxTemplatePayload>;
+  descriptionChange: FormEventHandler<HTMLTextAreaElement>;
+  pointsChange: FormEventHandler<HTMLInputElement>;
+  linesChange: FormEventHandler<HTMLInputElement>;
+  orderChange: FormEventHandler<HTMLInputElement>;
+  optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewTextBoxForm = ({ nextOrder, submit }: Props): ReactElement => {
-  const router = useRouter();
-  const [ formState, formDispatch ] = useReducer(formReducer, { ...formInitialState, data: { ...formInitialState.data, order: nextOrder.toString() } });
-
-  useEffect(() => {
-    formDispatch({ type: 'ORDER_UPDATED', payload: nextOrder.toString() });
-  }, [ nextOrder ]);
-
-  const submit$ = useRef(new Subject<NewTextBoxTemplatePayload>());
-
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    submit$.current.pipe(
-      tap(() => formDispatch({ type: 'SAVE_STARTED' })),
-      exhaustMap(payload => submit(payload).pipe(
-        tap({
-          next: () => {
-            formDispatch({ type: 'SAVE_SUCCEEDED', payload: { nextOrder } });
-          },
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.refresh) {
-                return navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            formDispatch({ type: 'SAVE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, submit, nextOrder ]);
-
-  const descriptionChange: FormEventHandler<HTMLTextAreaElement> = e => {
-    const target = e.target as HTMLInputElement;
-    formDispatch({ type: 'DESCRIPTION_UPDATED', payload: target.value });
-  };
-
-  const pointsChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    formDispatch({ type: 'POINTS_UPDATED', payload: target.value });
-  };
-
-  const linesChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    formDispatch({ type: 'LINES_UPDATED', payload: target.value });
-  };
-
-  const orderChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    formDispatch({ type: 'ORDER_UPDATED', payload: target.value });
-  };
-
-  const optionalChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    formDispatch({ type: 'OPTIONAL_UPDATED', payload: target.checked });
-  };
-
+export const NewTextBoxForm = ({ formState, insert$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
-      const validationMessage = key as keyof FormState['validationMessages'];
+      const validationMessage = key as keyof State['textBoxForm']['validationMessages'];
       if (formState.validationMessages[validationMessage]) {
         valid = false;
       }
@@ -208,7 +31,7 @@ export const NewTextBoxForm = ({ nextOrder, submit }: Props): ReactElement => {
     if (!valid) {
       return;
     }
-    submit$.current.next({
+    insert$.next({
       description: formState.data.description || null,
       points: parseInt(formState.data.points, 10),
       lines: formState.data.lines ? parseInt(formState.data.lines, 10) : null,

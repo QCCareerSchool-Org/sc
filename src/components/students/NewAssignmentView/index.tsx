@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useReducer } from 'react';
-import type { ReactElement } from 'react';
+import { ReactElement, useCallback, useEffect, useReducer } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
 import { initialState, reducer } from './state';

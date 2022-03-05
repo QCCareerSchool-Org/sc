@@ -66,7 +66,7 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
         catchError(() => EMPTY),
       )),
       takeUntil(destroy$),
-    ).subscribe(); // errors swallowed in inner observable
+    ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId ]);

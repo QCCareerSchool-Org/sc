@@ -98,18 +98,29 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, form: { ...state.form, data: { ...state.form.data, optional: action.payload } } };
     case 'PART_ADD_STARTED':
       return { ...state, form: { ...state.form, saveState: 'processing', errorMessage: undefined } };
-    case 'PART_ADD_SUCCEEDED':
+    case 'PART_ADD_SUCCEEDED': {
       if (!state.assignmentTemplate) {
         throw Error('assignmentTemplate is undefined');
       }
+      const parts = [ ...state.assignmentTemplate.parts, action.payload ].sort((a, b) => a.partNumber - b.partNumber);
       return {
         ...state,
         assignmentTemplate: {
           ...state.assignmentTemplate,
-          parts: [ ...state.assignmentTemplate.parts, action.payload ].sort((a, b) => a.partNumber - b.partNumber),
+          parts,
         },
-        form: { ...state.form, saveState: 'idle' },
+        form: {
+          ...state.form,
+          data: {
+            title: '',
+            description: '',
+            partNumber: (Math.max(...parts.map(p => p.partNumber)) + 1).toString(),
+            optional: false,
+          },
+          saveState: 'idle',
+        },
       };
+    }
     case 'PART_ADD_FAILED':
       return { ...state, form: { ...state.form, saveState: 'error', errorMessage: action.payload } };
 

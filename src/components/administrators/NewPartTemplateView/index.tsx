@@ -1,24 +1,18 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { MouseEvent, ReactElement, useCallback, useEffect, useReducer } from 'react';
-import { Observable, Subject, takeUntil, tap } from 'rxjs';
+import { FormEventHandler, MouseEvent, ReactElement, useEffect, useReducer, useRef } from 'react';
+import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
 import { initialState, reducer } from './state';
 import { TextBoxList } from './TextBoxList';
 import { UploadSlotList } from './UploadSlotList';
-import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
-import { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import { newPartTemplateService, NewTextBoxTemplatePayload, newTextBoxTemplateService, NewUploadSlotTemplatePayload, newUploadSlotTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
-
-export type NewTextBoxSubmitFunction = (payload: NewTextBoxTemplatePayload) => Observable<NewTextBoxTemplate>;
-
-export type NewUploadSlotSubmitFunction = (payload: NewUploadSlotTemplatePayload) => Observable<NewUploadSlotTemplate>;
 
 type Props = {
   administratorId: number;
@@ -32,6 +26,9 @@ type Props = {
 export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+
+  const textBoxInsert$ = useRef(new Subject<NewTextBoxTemplatePayload>());
+  const uploadSlotInsert$ = useRef(new Subject<NewUploadSlotTemplatePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -54,24 +51,58 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
       },
     });
 
+    textBoxInsert$.current.pipe(
+      tap(() => dispatch({ type: 'ADD_TEXT_BOX_STARTED' })),
+      exhaustMap(payload => newTextBoxTemplateService.addTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+        tap({
+          next: insertedTextBox => {
+            dispatch({ type: 'ADD_TEXT_BOX_SUCCEEDED', payload: insertedTextBox });
+          },
+          error: err => {
+            let message = 'Insert failed';
+            if (err instanceof HttpServiceError) {
+              if (err.refresh) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
+            }
+            dispatch({ type: 'ADD_TEXT_BOX_FAILED', payload: message });
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
+      takeUntil(destroy$),
+    ).subscribe();
+
+    uploadSlotInsert$.current.pipe(
+      tap(() => dispatch({ type: 'ADD_UPLOAD_SLOT_STARTED' })),
+      exhaustMap(payload => newUploadSlotTemplateService.addUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+        tap({
+          next: insertedTextBox => {
+            dispatch({ type: 'ADD_UPLOAD_SLOT_SUCCEEDED', payload: insertedTextBox });
+          },
+          error: err => {
+            let message = 'Insert failed';
+            if (err instanceof HttpServiceError) {
+              if (err.refresh) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
+            }
+            dispatch({ type: 'ADD_UPLOAD_SLOT_FAILED', payload: message });
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
+      takeUntil(destroy$),
+    ).subscribe();
+
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
-
-  const textBoxSubmit: NewTextBoxSubmitFunction = useCallback(payload => {
-    return newTextBoxTemplateService.addTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
-      tap(newTextBoxTemplage => {
-        dispatch({ type: 'ADD_TEXT_BOX_SUCCEEDED', payload: newTextBoxTemplage });
-      }),
-    );
-  }, [ administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
-
-  const uploadSlotSubmit: NewUploadSlotSubmitFunction = useCallback(payload => {
-    return newUploadSlotTemplateService.addUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
-      tap(newTextBoxTemplage => {
-        dispatch({ type: 'ADD_UPLOAD_SLOT_SUCCEEDED', payload: newTextBoxTemplage });
-      }),
-    );
-  }, [ administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -87,6 +118,71 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
 
   const uploadSlotRowClick = (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
     void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}/edit`);
+  };
+
+  const textBoxDescriptionChange: FormEventHandler<HTMLTextAreaElement> = e => {
+    const target = e.target as HTMLTextAreaElement;
+    dispatch({ type: 'TEXT_BOX_DESCRIPTION_UPDATED', payload: target.value });
+  };
+
+  const textBoxPointsChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TEXT_BOX_POINTS_UPDATED', payload: target.value });
+  };
+
+  const textBoxLinesChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TEXT_BOX_LINES_UPDATED', payload: target.value });
+  };
+
+  const textBoxOrderChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TEXT_BOX_ORDER_UPDATED', payload: target.value });
+  };
+
+  const textBoxOptionalChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TEXT_BOX_OPTIONAL_UPDATED', payload: target.checked });
+  };
+
+  const uploadSlotLabelChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_LABEL_UPDATED', payload: target.value });
+  };
+
+  const uploadSlotPointsChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_POINTS_UPDATED', payload: target.value });
+  };
+
+  const uploadSlotOrderChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_ORDER_UPDATED', payload: target.value });
+  };
+
+  const uploadSlotImageChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_IMAGE_UPDATED', payload: target.checked });
+  };
+
+  const uploadSlotPdfChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_PDF_UPDATED', payload: target.checked });
+  };
+
+  const uploadSlotWordChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_WORD_UPDATED', payload: target.checked });
+  };
+
+  const uploadSlotExcelChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_EXCEL_UPDATED', payload: target.checked });
+  };
+
+  const uploadSlotOptionalChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_OPTIONAL_UPDATED', payload: target.checked });
   };
 
   const partDescriptionWarning = !state.partTemplate.description && (state.partTemplate.uploadSlots.length > 0 || state.partTemplate.textBoxes.filter(t => !t.description).length > 0);
@@ -141,7 +237,15 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
               <TextBoxList textBoxes={state.partTemplate.textBoxes} textBoxRowClick={textBoxRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
-              <NewTextBoxForm nextOrder={state.nextTextBoxOrder} submit={textBoxSubmit} />
+              <NewTextBoxForm
+                formState={state.textBoxForm}
+                insert$={textBoxInsert$.current}
+                descriptionChange={textBoxDescriptionChange}
+                pointsChange={textBoxPointsChange}
+                linesChange={textBoxLinesChange}
+                orderChange={textBoxOrderChange}
+                optionalChange={textBoxOptionalChange}
+              />
             </div>
           </div>
         </div>
@@ -154,7 +258,18 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
               <UploadSlotList uploadSlots={state.partTemplate.uploadSlots} uploadSlotRowClick={uploadSlotRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
-              <NewUploadSlotForm nextOrder={state.nextUploadSlotOrder} submit={uploadSlotSubmit} />
+              <NewUploadSlotForm
+                formState={state.uploadSlotForm}
+                insert$={uploadSlotInsert$.current}
+                labelChange={uploadSlotLabelChange}
+                pointsChange={uploadSlotPointsChange}
+                orderChange={uploadSlotOrderChange}
+                imageChange={uploadSlotImageChange}
+                pdfChange={uploadSlotPdfChange}
+                wordChange={uploadSlotWordChange}
+                excelChange={uploadSlotExcelChange}
+                optionalChange={uploadSlotOptionalChange}
+              />
             </div>
           </div>
         </div>
