@@ -11,7 +11,7 @@ type Props = {
   errorMessage?: string;
 };
 
-export const SubmitSection = ({ unitComplete, submit$, processingState, errorMessage }: Props): ReactElement | null => {
+export const SubmitSection = ({ submit$, unitComplete, processingState, errorMessage }: Props): ReactElement | null => {
   const submitUnit: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
     submit$.next(processingState);
