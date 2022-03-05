@@ -1,12 +1,13 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
-import { Subject, takeUntil } from 'rxjs';
+import { FormEventHandler, MouseEvent, ReactElement, useEffect, useReducer, useRef } from 'react';
+import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
 
+import { NewPartForm } from './NewPartForm';
 import { PartList } from './PartList';
 import { initialState, reducer } from './state';
-import { newAssignmentTemplateService } from '@/services/administrators';
+import { newAssignmentTemplateService, NewPartTemplatePayload, newPartTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -22,6 +23,8 @@ type Props = {
 export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+
+  const insert$ = useRef(new Subject<NewPartTemplatePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -44,6 +47,27 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
       },
     });
 
+    insert$.current.pipe(
+      tap(() => dispatch({ type: 'PART_ADD_STARTED' })),
+      exhaustMap(payload => newPartTemplateService.addPart(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
+        tap({
+          next: insertedPart => dispatch({ type: 'PART_ADD_SUCCEEDED', payload: insertedPart }),
+          error: err => {
+            let message = 'Insert failed';
+            if (err instanceof HttpServiceError) {
+              if (err.refresh) {
+                return navigateToLogin(router);
+              }
+              message = err.message;
+            }
+            dispatch({ type: 'PART_ADD_FAILED', payload: message });
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
+      takeUntil(destroy$),
+    ).subscribe(); // errors swallowed in inner observable
+
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId ]);
 
@@ -57,6 +81,26 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
 
   const partRowClick = (e: MouseEvent<HTMLTableRowElement>, partId: string): void => {
     void router.push(`${router.asPath}/parts/${partId}`, undefined, { scroll: false });
+  };
+
+  const titleChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TITLE_CHANGED', payload: target.value });
+  };
+
+  const descriptionChange: FormEventHandler<HTMLTextAreaElement> = e => {
+    const target = e.target as HTMLTextAreaElement;
+    dispatch({ type: 'DESCRIPTION_CHANGED', payload: target.value });
+  };
+
+  const partNumberChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'PART_NUMBER_CHANGED', payload: target.value });
+  };
+
+  const optionalChange: FormEventHandler<HTMLInputElement> = e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'OPTIONAL_CHANGED', payload: target.checked });
   };
 
   return (
@@ -88,7 +132,14 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
               <PartList parts={state.assignmentTemplate.parts} partRowClick={partRowClick} />
             </div>
             <div className="col-12 col-xxl-6 mb-3 mb-xxl-0">
-              .
+              <NewPartForm
+                formState={state.form}
+                insert$={insert$.current}
+                titleChange={titleChange}
+                descriptionChange={descriptionChange}
+                partNumberChange={partNumberChange}
+                optionalChange={optionalChange}
+              />
             </div>
           </div>
         </div>
