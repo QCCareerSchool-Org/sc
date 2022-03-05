@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { FormEventHandler, MouseEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, filter, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { FormEventHandler, MouseEventHandler, ReactElement, useEffect, useReducer, useRef } from 'react';
+import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewTextBoxEditForm } from './NewTextBoxEditForm';
 import { initialState, reducer, State } from './state';
