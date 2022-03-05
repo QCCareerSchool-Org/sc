@@ -8,7 +8,6 @@ type Props = {
 };
 
 export const Layout = ({ children }: Props): ReactElement => {
-  console.log('layout rendered');
   return (
     <div className="d-flex flex-column vh-100">
       <SiteHeader />

@@ -1,19 +1,16 @@
 import { NewUnitWithAssignments } from '@/services/students';
 
-type ProcessingState = 'idle' | 'processing' | 'success' | 'error';
-
 export type State = {
   unit?: NewUnitWithAssignments;
   error: boolean;
-  submit: ProcessingState;
-  submitErrorMessage?: string;
-  skip: ProcessingState;
-  skipErrorMessage?: string;
+  errorCode?: number;
+  processingState: 'idle' | 'submitting' | 'skipping' | 'submit error' | 'skip error';
+  errorMessage?: string;
 };
 
 export type Action =
   | { type: 'UNIT_LOAD_SUCEEDED'; payload: NewUnitWithAssignments }
-  | { type: 'UNIT_LOAD_FAILED' }
+  | { type: 'UNIT_LOAD_FAILED'; payload?: number }
   | { type: 'SUBMIT_STARTED' }
   | { type: 'SUBMIT_SUCCEEDED' }
   | { type: 'SUBMIT_FAILED'; payload: string }
@@ -24,69 +21,41 @@ export type Action =
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'UNIT_LOAD_SUCEEDED':
-      return {
-        ...state,
-        unit: action.payload,
-        error: false,
-      };
+      return { ...state, unit: action.payload, error: false };
     case 'UNIT_LOAD_FAILED':
-      return {
-        ...state,
-        error: true,
-      };
+      return { ...state, error: true, errorCode: action.payload };
     case 'SUBMIT_STARTED':
-      return {
-        ...state,
-        submit: 'processing',
-        submitErrorMessage: undefined,
-      };
+      return { ...state, processingState: 'submitting', errorMessage: undefined };
     case 'SUBMIT_SUCCEEDED':
       if (!state.unit) {
-        return state;
+        throw Error('unit is undefined');
       }
       return {
         ...state,
-        unit: {
-          ...state.unit,
-          submitted: new Date(),
-        },
-        submit: 'success',
+        unit: { ...state.unit, submitted: new Date() },
+        processingState: 'idle',
       };
     case 'SUBMIT_FAILED':
-      return {
-        ...state,
-        submit: 'error',
-        submitErrorMessage: action.payload,
-      };
+      return { ...state, processingState: 'submit error', errorMessage: action.payload };
     case 'SKIP_STARTED':
-      return {
-        ...state,
-        skip: 'processing',
-        skipErrorMessage: undefined,
-      };
+      return { ...state, processingState: 'skipping', errorMessage: undefined };
     case 'SKIP_SUCEEDED':
       if (!state.unit) {
-        return state;
+        throw Error('unit is undefined');
       }
       return {
         ...state,
-        unit: {
-          ...state.unit,
-          skipped: new Date(),
-        },
-        skip: 'success',
+        unit: { ...state.unit, skipped: new Date() },
+        processingState: 'idle',
       };
     case 'SKIP_FAILED':
       return {
-        ...state,
-        skip: 'error',
-        skipErrorMessage: action.payload,
+        ...state, processingState: 'skip error', errorMessage: action.payload,
       };
   }
 };
 
 export const initialState: State = {
   error: false,
-  submit: 'idle',
-  skip: 'idle',
+  processingState: 'idle',
 };

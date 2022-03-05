@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import { memo, MouseEvent, ReactElement } from 'react';
 
 import type { NewTextBoxTemplate } from '@/domain/index';
 
@@ -7,7 +7,7 @@ type Props = {
   textBoxRowClick: (e: MouseEvent<HTMLTableRowElement>, textBoxId: string) => void;
 };
 
-export const TextBoxList = ({ textBoxes, textBoxRowClick }: Props): ReactElement => (
+export const TextBoxList = memo(({ textBoxes, textBoxRowClick }: Props): ReactElement => (
   <>
     {textBoxes.length === 0
       ? <p>no text boxes</p>
@@ -41,7 +41,9 @@ export const TextBoxList = ({ textBoxes, textBoxRowClick }: Props): ReactElement
       #textBoxesTable tr { cursor: pointer }
     `}</style>
   </>
-);
+));
+
+TextBoxList.displayName = 'TextBoxList';
 
 const trimDescription = (description: string, maxLength = 48): string => {
   if (description.length <= maxLength) {

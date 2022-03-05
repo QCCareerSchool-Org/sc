@@ -209,8 +209,24 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'ADD_UPLOAD_SLOT_FAILED':
       return { ...state, uploadSlotForm: { ...state.uploadSlotForm, saveState: 'error', errorMessage: action.payload } };
-    case 'TEXT_BOX_DESCRIPTION_UPDATED':
-      return { ...state, textBoxForm: { ...state.textBoxForm, data: { ...state.textBoxForm.data, description: action.payload } } };
+    case 'TEXT_BOX_DESCRIPTION_UPDATED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        textBoxForm: {
+          ...state.textBoxForm,
+          data: { ...state.textBoxForm.data, description: action.payload },
+          validationMessages: { ...state.textBoxForm.validationMessages, description: validationMessage },
+        },
+      };
+    }
     case 'TEXT_BOX_POINTS_UPDATED': {
       let validationMessage: string | undefined;
       if (!action.payload) {

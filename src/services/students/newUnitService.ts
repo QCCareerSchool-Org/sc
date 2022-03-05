@@ -2,8 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
-import type { NewAssignment, NewUnit, RawNewAssignment, RawNewUnit } from '@/domain/students';
-import { Enrollment, RawEnrollment } from '@/domain/students/enrollment';
+import type { Enrollment, NewAssignment, NewUnit, RawEnrollment, RawNewAssignment, RawNewUnit } from '@/domain/students';
 
 export type NewUnitWithAssignments = NewUnit & {
   enrollment: Enrollment;
@@ -17,8 +16,8 @@ type RawNewUnitWithAssignments = RawNewUnit & {
 
 export interface INewUnitService {
   getUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithAssignments>;
-  submitUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithAssignments>;
-  skipUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithAssignments>;
+  submitUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnit>;
+  skipUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnit>;
 }
 
 export class NewUnitService implements INewUnitService {
@@ -28,21 +27,21 @@ export class NewUnitService implements INewUnitService {
   public getUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithAssignments> {
     const url = this.getBaseUrl(studentId, courseId, unitId);
     return this.httpService.get<RawNewUnitWithAssignments>(url).pipe(
-      map(u => this.unitMap(u)),
+      map(this.mapNewUnitWithAssignments),
     );
   }
 
-  public submitUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithAssignments> {
+  public submitUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnit> {
     const url = this.getBaseUrl(studentId, courseId, unitId) + '/submissions';
-    return this.httpService.post<RawNewUnitWithAssignments>(url).pipe(
-      map(u => this.unitMap(u)),
+    return this.httpService.post<RawNewUnit>(url).pipe(
+      map(this.mapNewUnit),
     );
   }
 
-  public skipUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithAssignments> {
+  public skipUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnit> {
     const url = this.getBaseUrl(studentId, courseId, unitId) + '/skips';
-    return this.httpService.post<RawNewUnitWithAssignments>(url).pipe(
-      map(u => this.unitMap(u)),
+    return this.httpService.post<RawNewUnit>(url).pipe(
+      map(this.mapNewUnit),
     );
   }
 
@@ -50,7 +49,18 @@ export class NewUnitService implements INewUnitService {
     return `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}`;
   }
 
-  private readonly unitMap = (unit: RawNewUnitWithAssignments): NewUnitWithAssignments => {
+  private readonly mapNewUnit = (unit: RawNewUnit): NewUnit => {
+    return {
+      ...unit,
+      submitted: unit.submitted === null ? null : new Date(unit.submitted),
+      skipped: unit.skipped === null ? null : new Date(unit.skipped),
+      transferred: unit.transferred === null ? null : new Date(unit.transferred),
+      marked: unit.marked === null ? null : new Date(unit.marked),
+      created: new Date(unit.created),
+    };
+  };
+
+  private readonly mapNewUnitWithAssignments = (unit: RawNewUnitWithAssignments): NewUnitWithAssignments => {
     return {
       ...unit,
       submitted: unit.submitted === null ? null : new Date(unit.submitted),

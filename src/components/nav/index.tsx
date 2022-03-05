@@ -6,7 +6,6 @@ import { TutorNav } from './TutorNav';
 
 export const SiteNav = (): ReactElement => {
   const authState = useAuthState();
-  console.log('nav rendered');
   return (
     <>
       {typeof authState.studentId !== 'undefined' && <StudentNav />}

@@ -29,6 +29,7 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
+    // load the initial data
     newAssignmentTemplateService.getAssignment(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
       takeUntil(destroy$),
     ).subscribe({
@@ -47,6 +48,7 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
       },
     });
 
+    // insert part
     insert$.current.pipe(
       tap(() => dispatch({ type: 'PART_ADD_STARTED' })),
       exhaustMap(payload => newPartTemplateService.addPart(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
@@ -58,7 +60,9 @@ export const NewAssignmentTemplateView = ({ administratorId, schoolId, courseId,
               if (err.refresh) {
                 return navigateToLogin(router);
               }
-              message = err.message;
+              if (err.message) {
+                message = err.message;
+              }
             }
             dispatch({ type: 'PART_ADD_FAILED', payload: message });
           },

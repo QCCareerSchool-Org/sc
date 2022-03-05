@@ -19,8 +19,7 @@ export type State = {
       optional?: string;
     };
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
-    saveErrorMessage?: string;
-    deleteErrorMessage?: string;
+    errorMessage?: string;
   };
   error: boolean;
   errorCode?: number;
@@ -171,7 +170,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'TEXT_BOX_TEMPLATE_SAVE_STARTED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'saving', saveErrorMessage: undefined },
+        form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED':
       if (!state.textBoxTemplate) {
@@ -201,13 +200,13 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           processingState: 'save error',
-          saveErrorMessage: action.payload,
+          errorMessage: action.payload,
         },
       };
     case 'TEXT_BOX_TEMPLATE_DELETE_STARTED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'deleting', deleteErrorMessage: undefined },
+        form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
     case 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED':
       return {
@@ -231,7 +230,7 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           processingState: 'delete error',
-          deleteErrorMessage: action.payload,
+          errorMessage: action.payload,
         },
       };
   }

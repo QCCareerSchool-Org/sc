@@ -1,16 +1,13 @@
-import { FormEventHandler, ReactElement, useEffect, useRef } from 'react';
-import { exhaustMap, Observable, Subject, takeUntil } from 'rxjs';
+import { FormEventHandler, ReactElement } from 'react';
+import type { Subject } from 'rxjs';
 
-import { State } from './state';
+import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import { NewUploadSlotTemplate } from '@/domain/index';
-import { AllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators';
-
-type SaveFunction = (payload: NewUploadSlotTemplatePayload) => Observable<NewUploadSlotTemplate>;
+import type { AllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators';
 
 type Props = {
   formState: State['form'];
-  save: SaveFunction;
+  save$: Subject<{ processingState: State['form']['processingState']; payload: NewUploadSlotTemplatePayload }>;
   labelChange: FormEventHandler<HTMLInputElement>;
   imageChange: FormEventHandler<HTMLInputElement>;
   pdfChange: FormEventHandler<HTMLInputElement>;
@@ -21,23 +18,9 @@ type Props = {
   optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewUploadSlotEditForm = ({ formState, save, labelChange, imageChange, pdfChange, wordChange, excelChange, pointsChange, orderChange, optionalChange }: Props): ReactElement => {
-
-  const submit$ = useRef(new Subject<NewUploadSlotTemplatePayload>());
-
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    // each time we get a submit, call the save function
-    submit$.current.pipe(
-      exhaustMap(payload => save(payload)),
-      takeUntil(destroy$),
-    ).subscribe(); // errors swallowed in inner observable
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ save ]);
-
+export const NewUploadSlotEditForm = ({ formState, save$, labelChange, imageChange, pdfChange, wordChange, excelChange, pointsChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
+  // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
       const validationMessage = key as keyof State['form']['validationMessages'];
@@ -52,18 +35,21 @@ export const NewUploadSlotEditForm = ({ formState, save, labelChange, imageChang
     if (!valid) {
       return;
     }
-    submit$.current.next({
-      label: formState.data.label,
-      allowedTypes: Object.keys(formState.data.allowedTypes).reduce<AllowedType[]>((prev, cur) => {
-        const key = cur as AllowedType;
-        if (formState.data.allowedTypes[key]) {
-          prev.push(key);
-        }
-        return prev;
-      }, []),
-      points: parseInt(formState.data.points, 10),
-      order: parseInt(formState.data.order, 10),
-      optional: formState.data.optional,
+    save$.next({
+      processingState: formState.processingState,
+      payload: {
+        label: formState.data.label,
+        allowedTypes: Object.keys(formState.data.allowedTypes).reduce<AllowedType[]>((prev, cur) => {
+          const key = cur as AllowedType;
+          if (formState.data.allowedTypes[key]) {
+            prev.push(key);
+          }
+          return prev;
+        }, []),
+        points: parseInt(formState.data.points, 10),
+        order: parseInt(formState.data.order, 10),
+        optional: formState.data.optional,
+      },
     });
   };
 
@@ -74,17 +60,17 @@ export const NewUploadSlotEditForm = ({ formState, save, labelChange, imageChang
           <form onSubmit={formSubmit}>
             <div className="formGroup">
               <label htmlFor="newUploadSlotLabel" className="form-label">Label <span className="text-danger">*</span></label>
-              <input onChange={labelChange} value={formState.data.label} type="text" id="newUploadSlotLabel" className={`form-control ${formState.validationMessages.label ? 'is-invalid' : ''}`} required />
+              <input onChange={labelChange} value={formState.data.label} type="text" id="newUploadSlotLabel" maxLength={191} className={`form-control ${formState.validationMessages.label ? 'is-invalid' : ''}`} required />
               {formState.validationMessages.label && <div className="invalid-feedback">{formState.validationMessages.label}</div>}
             </div>
             <div className="formGroup">
               <label htmlFor="newUploadSlotPoints" className="form-label">Points <span className="text-danger">*</span></label>
-              <input onChange={pointsChange} value={formState.data.points} type="number" id="newUploadSlotPoints" className={`form-control ${formState.validationMessages.points ? 'is-invalid' : ''}`} min={0} max={127} required />
+              <input onChange={pointsChange} value={formState.data.points} type="number" id="newUploadSlotPoints" min={0} max={127} className={`form-control ${formState.validationMessages.points ? 'is-invalid' : ''}`} required />
               {formState.validationMessages.points && <div className="invalid-feedback">{formState.validationMessages.points}</div>}
             </div>
             <div className="formGroup">
               <label htmlFor="newUploadSlotOrder" className="form-label">Order <span className="text-danger">*</span></label>
-              <input onChange={orderChange} value={formState.data.order} type="number" id="newUploadSlotOrder" className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} min={0} max={127} required />
+              <input onChange={orderChange} value={formState.data.order} type="number" id="newUploadSlotOrder" min={0} max={127} className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} required />
               {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
             </div>
             <div className="formGroup validated">
@@ -116,7 +102,7 @@ export const NewUploadSlotEditForm = ({ formState, save, labelChange, imageChang
             <div className="d-flex align-items-center">
               <button type="submit" className="btn btn-primary" disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>Save</button>
               {formState.processingState === 'saving' && <div className="ms-2"><Spinner /></div>}
-              {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.saveErrorMessage ? formState.saveErrorMessage : 'Error'}</span>}
+              {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Error'}</span>}
             </div>
           </form>
         </div>

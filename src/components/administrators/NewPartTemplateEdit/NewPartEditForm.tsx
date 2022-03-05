@@ -1,39 +1,22 @@
-import { FormEventHandler, ReactElement, useEffect, useRef } from 'react';
-import { exhaustMap, Observable, Subject, takeUntil } from 'rxjs';
+import type { FormEventHandler, ReactElement } from 'react';
+import type { Subject } from 'rxjs';
 
-import { State } from './state';
+import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import { NewPartTemplate } from '@/domain/index';
-import { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
-
-type SaveFunction = (payload: NewPartTemplatePayload) => Observable<NewPartTemplate>;
+import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 
 type Props = {
   formState: State['form'];
-  save: SaveFunction;
+  save$: Subject<{ processingState: State['form']['processingState']; payload: NewPartTemplatePayload }>;
   titleChange: FormEventHandler<HTMLInputElement>;
   descriptionChange: FormEventHandler<HTMLTextAreaElement>;
   partNumberChange: FormEventHandler<HTMLInputElement>;
   optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewPartEditForm = ({ formState, save, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
-
-  const submit$ = useRef(new Subject<NewPartTemplatePayload>());
-
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    // each time we get a submit, call the save function
-    submit$.current.pipe(
-      exhaustMap(payload => save(payload)),
-      takeUntil(destroy$),
-    ).subscribe(); // errors swallowed in inner observable
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ save ]);
-
+export const NewPartEditForm = ({ formState, save$, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
   let valid = true;
+  // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
       const validationMessage = key as keyof State['form']['validationMessages'];
@@ -48,11 +31,14 @@ export const NewPartEditForm = ({ formState, save, titleChange, descriptionChang
     if (!valid) {
       return;
     }
-    submit$.current.next({
-      title: formState.data.title || null,
-      description: formState.data.description || null,
-      partNumber: parseInt(formState.data.partNumber, 10),
-      optional: formState.data.optional,
+    save$.next({
+      processingState: formState.processingState,
+      payload: {
+        title: formState.data.title || null,
+        description: formState.data.description || null,
+        partNumber: parseInt(formState.data.partNumber, 10),
+        optional: formState.data.optional,
+      },
     });
   };
 
@@ -63,7 +49,7 @@ export const NewPartEditForm = ({ formState, save, titleChange, descriptionChang
           <form onSubmit={formSubmit}>
             <div className="formGroup">
               <label htmlFor="newPartTitle" className="form-label">Title</label>
-              <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTitle" className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTitleHelp" />
+              <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTitleHelp" />
               <div id="newPartTitleHelp" className="form-text">The title of this part (for internal use only)</div>
               {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
             </div>
@@ -75,7 +61,7 @@ export const NewPartEditForm = ({ formState, save, titleChange, descriptionChang
             </div>
             <div className="formGroup">
               <label htmlFor="newPartPartNumber" className="form-label">Part Number <span className="text-danger">*</span></label>
-              <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartPartNumber" className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} min={0} max={127} aria-describedby="newPartPartNumberHelp" required />
+              <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartPartNumber" min={1} max={127} className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} aria-describedby="newPartPartNumberHelp" required />
               <div id="newPartPartNumberHelp" className="form-text">The ordering for this part within an assignment</div>
               {formState.validationMessages.partNumber && <div className="invalid-feedback">{formState.validationMessages.partNumber}</div>}
             </div>
@@ -89,7 +75,7 @@ export const NewPartEditForm = ({ formState, save, titleChange, descriptionChang
             <div className="d-flex align-items-center">
               <button type="submit" className="btn btn-primary" disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>Save</button>
               {formState.processingState === 'saving' && <div className="ms-2"><Spinner /></div>}
-              {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.saveErrorMessage ? formState.saveErrorMessage : 'Error'}</span>}
+              {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Error'}</span>}
             </div>
           </form>
         </div>

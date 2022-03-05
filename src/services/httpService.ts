@@ -57,7 +57,7 @@ export class AxiosHttpService implements IHttpService {
       }
     };
 
-    const data = this.instance.post(url, body, { ...config, onUploadProgress }).pipe(
+    const data$ = this.instance.post(url, body, { ...config, onUploadProgress }).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
@@ -65,7 +65,7 @@ export class AxiosHttpService implements IHttpService {
     // combine the request with the progress observable created above
     // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
     return combineLatest([
-      data.pipe(startWith(undefined)),
+      data$.pipe(startWith(undefined)),
       progress$,
     ]).pipe(
       map(([ , progress ]) => progress), // we only care about the second observable
@@ -91,7 +91,7 @@ export class AxiosHttpService implements IHttpService {
       }
     };
 
-    const data = this.instance.put(url, body, { ...config, onUploadProgress }).pipe(
+    const data$ = this.instance.put(url, body, { ...config, onUploadProgress }).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
@@ -99,7 +99,7 @@ export class AxiosHttpService implements IHttpService {
     // combine the request with the progress observable created above
     // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
     return combineLatest([
-      data.pipe(startWith(undefined)),
+      data$.pipe(startWith(undefined)),
       progress$,
     ]).pipe(
       map(([ , progress ]) => progress), // we only care about the second observable

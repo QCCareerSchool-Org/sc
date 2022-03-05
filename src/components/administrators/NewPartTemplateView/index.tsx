@@ -1,12 +1,12 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FormEventHandler, MouseEvent, ReactElement, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
+import { FormEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
-import { initialState, reducer } from './state';
+import { initialState, reducer, State } from './state';
 import { TextBoxList } from './TextBoxList';
 import { UploadSlotList } from './UploadSlotList';
 import { newPartTemplateService, NewTextBoxTemplatePayload, newTextBoxTemplateService, NewUploadSlotTemplatePayload, newUploadSlotTemplateService } from '@/services/administrators';
@@ -27,8 +27,8 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  const textBoxInsert$ = useRef(new Subject<NewTextBoxTemplatePayload>());
-  const uploadSlotInsert$ = useRef(new Subject<NewUploadSlotTemplatePayload>());
+  const textBoxInsert$ = useRef(new Subject<{ saveState: State['textBoxForm']['saveState']; payload: NewTextBoxTemplatePayload }>());
+  const uploadSlotInsert$ = useRef(new Subject<{ saveState: State['uploadSlotForm']['saveState']; payload: NewUploadSlotTemplatePayload }>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -52,8 +52,9 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
     });
 
     textBoxInsert$.current.pipe(
+      filter(({ saveState }) => saveState !== 'processing'),
       tap(() => dispatch({ type: 'ADD_TEXT_BOX_STARTED' })),
-      exhaustMap(payload => newTextBoxTemplateService.addTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+      exhaustMap(({ payload }) => newTextBoxTemplateService.addTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
         tap({
           next: insertedTextBox => {
             dispatch({ type: 'ADD_TEXT_BOX_SUCCEEDED', payload: insertedTextBox });
@@ -77,8 +78,9 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
     ).subscribe();
 
     uploadSlotInsert$.current.pipe(
+      filter(({ saveState }) => saveState !== 'processing'),
       tap(() => dispatch({ type: 'ADD_UPLOAD_SLOT_STARTED' })),
-      exhaustMap(payload => newUploadSlotTemplateService.addUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+      exhaustMap(({ payload }) => newUploadSlotTemplateService.addUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
         tap({
           next: insertedTextBox => {
             dispatch({ type: 'ADD_UPLOAD_SLOT_SUCCEEDED', payload: insertedTextBox });
@@ -104,6 +106,79 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
 
+  const textBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
+    void router.push(`${router.asPath}/textBoxes/${textBoxId}/edit`);
+  }, [ router ]);
+
+  const uploadSlotRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
+    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}/edit`);
+  }, [ router ]);
+
+  const textBoxDescriptionChange: FormEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    const target = e.target as HTMLTextAreaElement;
+    dispatch({ type: 'TEXT_BOX_DESCRIPTION_UPDATED', payload: target.value });
+  }, []);
+
+  const textBoxPointsChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TEXT_BOX_POINTS_UPDATED', payload: target.value });
+  }, []);
+
+  const textBoxLinesChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TEXT_BOX_LINES_UPDATED', payload: target.value });
+  }, []);
+
+  const textBoxOrderChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TEXT_BOX_ORDER_UPDATED', payload: target.value });
+  }, []);
+
+  const textBoxOptionalChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'TEXT_BOX_OPTIONAL_UPDATED', payload: target.checked });
+  }, []);
+
+  const uploadSlotLabelChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_LABEL_UPDATED', payload: target.value });
+  }, []);
+
+  const uploadSlotPointsChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_POINTS_UPDATED', payload: target.value });
+  }, []);
+
+  const uploadSlotOrderChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_ORDER_UPDATED', payload: target.value });
+  }, []);
+
+  const uploadSlotImageChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_IMAGE_UPDATED', payload: target.checked });
+  }, []);
+
+  const uploadSlotPdfChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_PDF_UPDATED', payload: target.checked });
+  }, []);
+
+  const uploadSlotWordChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_WORD_UPDATED', payload: target.checked });
+  }, []);
+
+  const uploadSlotExcelChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_EXCEL_UPDATED', payload: target.checked });
+  }, []);
+
+  const uploadSlotOptionalChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
+    const target = e.target as HTMLInputElement;
+    dispatch({ type: 'UPLOAD_SLOT_OPTIONAL_UPDATED', payload: target.checked });
+  }, []);
+
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
@@ -111,79 +186,6 @@ export const NewPartTemplateView = ({ administratorId, schoolId, courseId, unitI
   if (!state.partTemplate) {
     return null;
   }
-
-  const textBoxRowClick = (e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
-    void router.push(`${router.asPath}/textBoxes/${textBoxId}/edit`);
-  };
-
-  const uploadSlotRowClick = (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
-    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}/edit`);
-  };
-
-  const textBoxDescriptionChange: FormEventHandler<HTMLTextAreaElement> = e => {
-    const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'TEXT_BOX_DESCRIPTION_UPDATED', payload: target.value });
-  };
-
-  const textBoxPointsChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_POINTS_UPDATED', payload: target.value });
-  };
-
-  const textBoxLinesChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_LINES_UPDATED', payload: target.value });
-  };
-
-  const textBoxOrderChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_ORDER_UPDATED', payload: target.value });
-  };
-
-  const textBoxOptionalChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_OPTIONAL_UPDATED', payload: target.checked });
-  };
-
-  const uploadSlotLabelChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_LABEL_UPDATED', payload: target.value });
-  };
-
-  const uploadSlotPointsChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_POINTS_UPDATED', payload: target.value });
-  };
-
-  const uploadSlotOrderChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_ORDER_UPDATED', payload: target.value });
-  };
-
-  const uploadSlotImageChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_IMAGE_UPDATED', payload: target.checked });
-  };
-
-  const uploadSlotPdfChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_PDF_UPDATED', payload: target.checked });
-  };
-
-  const uploadSlotWordChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_WORD_UPDATED', payload: target.checked });
-  };
-
-  const uploadSlotExcelChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_EXCEL_UPDATED', payload: target.checked });
-  };
-
-  const uploadSlotOptionalChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_OPTIONAL_UPDATED', payload: target.checked });
-  };
 
   const partDescriptionWarning = !state.partTemplate.description && (state.partTemplate.uploadSlots.length > 0 || state.partTemplate.textBoxes.filter(t => !t.description).length > 0);
   const textBoxDescriptionWarning = state.partTemplate.textBoxes.filter(t => !t.description).length > 1;

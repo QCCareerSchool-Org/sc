@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { FormEventHandler, MouseEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { FormEventHandler, MouseEventHandler, ReactElement, useEffect, useReducer, useRef } from 'react';
+import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewUploadSlotEditForm } from './NewUploadSlotEditForm';
 import { initialState, reducer, State } from './state';
@@ -60,7 +60,8 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
 
   useWarnIfUnsavedChanges(changesPreset(state.uploadSlotTemplate, state.form.data));
 
-  const delete$ = useRef(new Subject<void>());
+  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewUploadSlotTemplatePayload }>());
+  const delete$ = useRef(new Subject<State['form']['processingState']>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -83,7 +84,35 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
       },
     });
 
+    save$.current.pipe(
+      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
+      tap(() => dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_STARTED' })),
+      exhaustMap(({ payload }) => newUploadSlotTemplateService.saveUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, payload).pipe(
+        tap({
+          next: updatedUploadSlot => {
+            dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_SUCCEEDED', payload: updatedUploadSlot });
+            router.back();
+          },
+          error: err => {
+            let message = 'Save failed';
+            if (err instanceof HttpServiceError) {
+              if (err.refresh) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
+            }
+            dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_FAILED', payload: message });
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
+      takeUntil(destroy$),
+    ).subscribe();
+
     delete$.current.pipe(
+      filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_DELETE_STARTED' })),
       exhaustMap(() => newUploadSlotTemplateService.deleteUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
         tap({
@@ -110,31 +139,6 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId ]);
-
-  const saveUploadSlot = useCallback((payload: NewUploadSlotTemplatePayload): Observable<NewUploadSlotTemplate> => {
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_STARTED' });
-    return newUploadSlotTemplateService.saveUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, payload).pipe(
-      tap({
-        next: uploadSlotTemplate => {
-          dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_SUCCEEDED', payload: uploadSlotTemplate });
-          router.back();
-        },
-        error: err => {
-          let message = 'Save failed';
-          if (err instanceof HttpServiceError) {
-            if (err.refresh) {
-              return navigateToLogin(router);
-            }
-            if (err.message) {
-              message = err.message;
-            }
-          }
-          dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_FAILED', payload: message });
-        },
-      }),
-      catchError(() => EMPTY),
-    );
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId ]);
 
   if (state.error) {
@@ -185,9 +189,9 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
     dispatch({ type: 'OPTIONAL_UPDATED', payload: target.checked });
   };
 
-  const deleteClick: MouseEventHandler<HTMLButtonElement> = e => {
+  const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm('Are you sure you want to delete this text box template?')) {
-      delete$.current.next();
+      delete$.current.next(state.form.processingState);
     }
   };
 
@@ -207,7 +211,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
               <div className="d-flex align-items-center">
                 <button onClick={deleteClick} className="btn btn-danger" disabled={state.form.processingState === 'saving' || state.form.processingState === 'deleting'}>Delete</button>
                 {state.form.processingState === 'deleting' && <div className="ms-2"><Spinner /></div>}
-                {state.form.processingState === 'delete error' && <span className="text-danger ms-2">{state.form.saveErrorMessage ? state.form.saveErrorMessage : 'Error'}</span>}
+                {state.form.processingState === 'delete error' && <span className="text-danger ms-2">{state.form.errorMessage?.length ? state.form.errorMessage : 'Error'}</span>}
               </div>
             </div>
           </div>
@@ -219,7 +223,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
             <div className="col-12 col-md-10 col-lg-8 col-xl-6">
               <NewUploadSlotEditForm
                 formState={state.form}
-                save={saveUploadSlot}
+                save$={save$.current}
                 labelChange={labelChange}
                 pointsChange={pointsChange}
                 imageChange={imageChange}

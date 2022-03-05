@@ -1,9 +1,9 @@
-import { MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef } from 'react';
+import { memo, MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef } from 'react';
 import { debounceTime, exhaustMap, Subject, takeUntil } from 'rxjs';
 
-import { TextBoxFunction } from '.';
+import type { TextBoxFunction } from '.';
 import { Spinner } from '@/components/Spinner';
-import { TextBoxState } from '@/components/students/NewAssignmentView/state';
+import type { TextBoxState } from '@/components/students/NewAssignmentView/state';
 
 type Props = {
   textBox: TextBoxState;
@@ -16,7 +16,7 @@ const saveDelay = 1000;
 
 const maxLength = 65_535;
 
-export const NewTextBoxForm = ({ textBox, update, save }: Props): ReactElement => {
+export const NewTextBoxForm = memo(({ textBox, update, save }: Props): ReactElement => {
   const textChange$ = useRef(new Subject<string>());
 
   useEffect(() => {
@@ -90,4 +90,6 @@ export const NewTextBoxForm = ({ textBox, update, save }: Props): ReactElement =
       `}</style>
     </>
   );
-};
+});
+
+NewTextBoxForm.displayName = 'NewTextBoxForm';

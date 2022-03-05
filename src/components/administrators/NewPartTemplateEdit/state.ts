@@ -17,8 +17,7 @@ export type State = {
       optional?: string;
     };
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
-    saveErrorMessage?: string;
-    deleteErrorMessage?: string;
+    errorMessage?: string;
   };
   error: boolean;
   errorCode?: number;
@@ -72,26 +71,42 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'PART_TEMPLATE_LOAD_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'TITLE_UPDATED':
+    case 'TITLE_UPDATED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 191;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, title: action.payload,
-          },
+          data: { ...state.form.data, title: action.payload },
+          validationMessages: { ...state.form.validationMessages, title: validationMessage },
         },
       };
-    case 'DESCRIPTION_UPDATED':
+    }
+    case 'DESCRIPTION_UPDATED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, description: action.payload,
-          },
+          data: { ...state.form.data, description: action.payload },
+          validationMessages: { ...state.form.validationMessages, description: validationMessage },
         },
       };
+    }
     case 'PART_NUMBER_UPDATED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
@@ -110,9 +125,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, partNumber: action.payload,
-          },
+          data: { ...state.form.data, partNumber: action.payload },
           validationMessages: { ...state.form.validationMessages, partNumber: validationMessage },
         },
       };
@@ -128,7 +141,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'PART_TEMPLATE_SAVE_STARTED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'saving', saveErrorMessage: undefined },
+        form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'PART_TEMPLATE_SAVE_SUCCEEDED':
       if (!state.partTemplate) {
@@ -157,13 +170,13 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           processingState: 'save error',
-          saveErrorMessage: action.payload,
+          errorMessage: action.payload,
         },
       };
     case 'PART_TEMPLATE_DELETE_STARTED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'deleting', deleteErrorMessage: undefined },
+        form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
     case 'PART_TEMPLATE_DELETE_SUCCEEDED':
       return {
@@ -186,7 +199,7 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           processingState: 'delete error',
-          deleteErrorMessage: action.payload,
+          errorMessage: action.payload,
         },
       };
   }

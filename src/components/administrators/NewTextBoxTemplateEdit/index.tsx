@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import { FormEventHandler, MouseEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { catchError, EMPTY, exhaustMap, filter, Observable, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewTextBoxEditForm } from './NewTextBoxEditForm';
 import { initialState, reducer, State } from './state';
@@ -51,7 +51,8 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
 
   useWarnIfUnsavedChanges(changesPreset(state.textBoxTemplate, state.form.data));
 
-  const delete$ = useRef(new Subject<void>());
+  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewTextBoxTemplatePayload }>());
+  const delete$ = useRef(new Subject<State['form']['processingState']>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -74,7 +75,35 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
       },
     });
 
+    save$.current.pipe(
+      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
+      tap(() => dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_STARTED' })),
+      exhaustMap(({ payload }) => newTextBoxTemplateService.saveTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, payload).pipe(
+        tap({
+          next: updatedTextBox => {
+            dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED', payload: updatedTextBox });
+            router.back();
+          },
+          error: err => {
+            let message = 'Save failed';
+            if (err instanceof HttpServiceError) {
+              if (err.refresh) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
+            }
+            dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_FAILED', payload: message });
+          },
+        }),
+      )),
+      catchError(() => EMPTY),
+      takeUntil(destroy$),
+    ).subscribe();
+
     delete$.current.pipe(
+      filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_STARTED' })),
       exhaustMap(() => newTextBoxTemplateService.deleteTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId).pipe(
         tap({
@@ -101,31 +130,6 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
-
-  const saveTextBox = useCallback((payload: NewTextBoxTemplatePayload): Observable<NewTextBoxTemplate> => {
-    dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_STARTED' });
-    return newTextBoxTemplateService.saveTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, payload).pipe(
-      tap({
-        next: textBoxTemplate => {
-          dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED', payload: textBoxTemplate });
-          router.back();
-        },
-        error: err => {
-          let message = 'Save failed';
-          if (err instanceof HttpServiceError) {
-            if (err.refresh) {
-              return navigateToLogin(router);
-            }
-            if (err.message) {
-              message = err.message;
-            }
-          }
-          dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_FAILED', payload: message });
-        },
-      }),
-      catchError(() => EMPTY),
-    );
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
 
   if (state.error) {
@@ -161,9 +165,9 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
     dispatch({ type: 'OPTIONAL_UPDATED', payload: target.checked });
   };
 
-  const deleteClick: MouseEventHandler<HTMLButtonElement> = e => {
+  const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm('Are you sure you want to delete this text box template?')) {
-      delete$.current.next();
+      delete$.current.next(state.form.processingState);
     }
   };
 
@@ -183,7 +187,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
               <div className="d-flex align-items-center">
                 <button onClick={deleteClick} className="btn btn-danger" disabled={state.form.processingState === 'saving' || state.form.processingState === 'deleting'}>Delete</button>
                 {state.form.processingState === 'deleting' && <div className="ms-2"><Spinner /></div>}
-                {state.form.processingState === 'delete error' && <span className="text-danger ms-2">{state.form.saveErrorMessage ? state.form.saveErrorMessage : 'Error'}</span>}
+                {state.form.processingState === 'delete error' && <span className="text-danger ms-2">{state.form.errorMessage?.length ? state.form.errorMessage : 'Error'}</span>}
               </div>
             </div>
           </div>
@@ -195,7 +199,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
             <div className="col-12 col-md-10 col-lg-8 col-xl-6">
               <NewTextBoxEditForm
                 formState={state.form}
-                save={saveTextBox}
+                save$={save$.current}
                 descriptionChange={descriptionChange}
                 pointsChange={pointsChange}
                 linesChange={linesChange}

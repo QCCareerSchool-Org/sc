@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import { memo, MouseEvent, ReactElement } from 'react';
 
 import type { NewUploadSlotTemplate } from '@/domain/index';
 
@@ -7,7 +7,7 @@ type Props = {
   uploadSlotRowClick: (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string) => void;
 };
 
-export const UploadSlotList = ({ uploadSlots, uploadSlotRowClick }: Props): ReactElement => (
+export const UploadSlotList = memo(({ uploadSlots, uploadSlotRowClick }: Props): ReactElement => (
   <>
     {uploadSlots.length === 0
       ? <p>no upload slots</p>
@@ -41,7 +41,9 @@ export const UploadSlotList = ({ uploadSlots, uploadSlotRowClick }: Props): Reac
       #uploadSlotsTable tr { cursor: pointer }
     `}</style>
   </>
-);
+));
+
+UploadSlotList.displayName = 'UploadSlotList';
 
 const trimLabel = (label: string, maxLength = 32): string => {
   if (label.length <= maxLength) {

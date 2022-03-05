@@ -1,4 +1,4 @@
-import type { FormEventHandler, ReactElement } from 'react';
+import { FormEventHandler, memo, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
@@ -7,7 +7,7 @@ import type { AllowedType, NewUploadSlotTemplatePayload } from '@/services/admin
 
 type Props = {
   formState: State['uploadSlotForm'];
-  insert$: Subject<NewUploadSlotTemplatePayload>;
+  insert$: Subject<{ saveState: State['uploadSlotForm']['saveState']; payload: NewUploadSlotTemplatePayload }>;
   labelChange: FormEventHandler<HTMLInputElement>;
   pointsChange: FormEventHandler<HTMLInputElement>;
   orderChange: FormEventHandler<HTMLInputElement>;
@@ -18,8 +18,9 @@ type Props = {
   optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewUploadSlotForm = ({ formState, insert$, labelChange, pointsChange, orderChange, imageChange, pdfChange, wordChange, excelChange, optionalChange }: Props): ReactElement => {
+export const NewUploadSlotForm = memo(({ formState, insert$, labelChange, pointsChange, orderChange, imageChange, pdfChange, wordChange, excelChange, optionalChange }: Props): ReactElement => {
   let valid = true;
+  // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
       const validationMessage = key as keyof State['uploadSlotForm']['validationMessages'];
@@ -35,17 +36,20 @@ export const NewUploadSlotForm = ({ formState, insert$, labelChange, pointsChang
       return;
     }
     insert$.next({
-      label: formState.data.label,
-      points: parseInt(formState.data.points, 10),
-      allowedTypes: Object.keys(formState.data.allowedTypes).reduce<AllowedType[]>((prev, cur) => {
-        const key = cur as AllowedType;
-        if (formState.data.allowedTypes[key]) {
-          prev.push(key);
-        }
-        return prev;
-      }, []),
-      order: parseInt(formState.data.order, 10),
-      optional: formState.data.optional,
+      saveState: formState.saveState,
+      payload: {
+        label: formState.data.label,
+        points: parseInt(formState.data.points, 10),
+        allowedTypes: Object.keys(formState.data.allowedTypes).reduce<AllowedType[]>((prev, cur) => {
+          const key = cur as AllowedType;
+          if (formState.data.allowedTypes[key]) {
+            prev.push(key);
+          }
+          return prev;
+        }, []),
+        order: parseInt(formState.data.order, 10),
+        optional: formState.data.optional,
+      },
     });
   };
 
@@ -57,17 +61,17 @@ export const NewUploadSlotForm = ({ formState, insert$, labelChange, pointsChang
           <form onSubmit={formSubmit}>
             <div className="formGroup">
               <label htmlFor="newUploadSlotLabel" className="form-label">Label <span className="text-danger">*</span></label>
-              <input onChange={labelChange} value={formState.data.label} type="text" id="newUploadSlotLabel" className={`form-control ${formState.validationMessages.label ? 'is-invalid' : ''}`} maxLength={191} required />
+              <input onChange={labelChange} value={formState.data.label} type="text" id="newUploadSlotLabel" maxLength={191} className={`form-control ${formState.validationMessages.label ? 'is-invalid' : ''}`} required />
               {formState.validationMessages.label && <div className="invalid-feedback">{formState.validationMessages.label}</div>}
             </div>
             <div className="formGroup">
               <label htmlFor="newUploadSlotPoints" className="form-label">Points <span className="text-danger">*</span></label>
-              <input onChange={pointsChange} value={formState.data.points} type="number" id="newUploadSlotPoints" className={`form-control ${formState.validationMessages.points ? 'is-invalid' : ''}`} min={0} max={127} required />
+              <input onChange={pointsChange} value={formState.data.points} type="number" id="newUploadSlotPoints" min={0} max={127} className={`form-control ${formState.validationMessages.points ? 'is-invalid' : ''}`} required />
               {formState.validationMessages.points && <div className="invalid-feedback">{formState.validationMessages.points}</div>}
             </div>
             <div className="formGroup">
               <label htmlFor="newUploadSlotOrder" className="form-label">Order <span className="text-danger">*</span></label>
-              <input onChange={orderChange} value={formState.data.order} type="number" id="newUploadSlotOrder" className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} min={0} max={127} required />
+              <input onChange={orderChange} value={formState.data.order} type="number" id="newUploadSlotOrder" min={0} max={127} className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} required />
               {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
             </div>
             <div className="formGroup validated">
@@ -110,4 +114,6 @@ export const NewUploadSlotForm = ({ formState, insert$, labelChange, pointsChang
       `}</style>
     </>
   );
-};
+});
+
+NewUploadSlotForm.displayName = 'NewUploadSlotForm';

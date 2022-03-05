@@ -13,7 +13,9 @@ export const Spinner = ({ size, height }: Props): ReactElement => {
   } else if (size === 'lg') {
     className += ' spinner-border-lg';
   }
-  const style: CSSProperties = {};
+  const style: CSSProperties = {
+    lineHeight: '16px',
+  };
   if (typeof height !== 'undefined') {
     style.width = height;
     style.height = height;

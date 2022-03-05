@@ -11,8 +11,6 @@ const calculateLogoWidth = (height: number): number => {
 };
 
 export const SiteHeader = (): ReactElement => {
-  console.log('header render');
-
   const screenWidth = useScreenWidth();
   const lgOrGreater = screenWidth >= 992;
 

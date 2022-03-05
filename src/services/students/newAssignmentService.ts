@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
-import type { NewAssignment, NewPart, NewTextBox, NewUploadSlot } from '../../domain/students';
 import { IHttpService } from '../httpService';
+import type { NewAssignment, NewPart, NewTextBox, NewUploadSlot } from '@/domain/students';
 
 export type NewAssignmentWithChildren = NewAssignment & {
   parts: Array<NewPart & {

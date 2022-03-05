@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { ChangeEventHandler, FormEventHandler, useEffect, useRef, useState } from 'react';
-import { map, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { catchError, EMPTY, map, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { basePath } from '../basePath';
 import { loginService } from '../services';
@@ -38,29 +38,30 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
         setError(false);
       }),
       switchMap(({ username: u, password: p, stayLoggedIn: s, returnUrl: r }) => loginService.logIn(u, p, s).pipe(
-        map(response => ({ response, returnUrl: r })),
+        tap({
+          next: response => {
+            setSubmitting(false);
+            if (response.type === 'admin') {
+              authDispatch({ type: 'ADMINISTRATOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+              return void router.push(r ?? '/administrators');
+            } else if (response.type === 'tutor') {
+              authDispatch({ type: 'TUTOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+              return void router.push(r ?? '/tutors');
+            } else if (response.type === 'student') {
+              authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+              return void router.push(r ?? '/students');
+            }
+            void router.push(r ?? basePath);
+          },
+          error: () => {
+            setSubmitting(false);
+            setError(true);
+          },
+        }),
+        catchError(() => EMPTY),
       )),
       takeUntil(destroy$),
-    ).subscribe({
-      next: ({ response, returnUrl: r }) => {
-        setSubmitting(false);
-        if (response.type === 'admin') {
-          authDispatch({ type: 'ADMINISTRATOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
-          return void router.push(r ?? `${basePath}/administrators`);
-        } else if (response.type === 'tutor') {
-          authDispatch({ type: 'TUTOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
-          return void router.push(r ?? `${basePath}/tutors`);
-        } else if (response.type === 'student') {
-          authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
-          return void router.push(r ?? `${basePath}/students`);
-        }
-        void router.push(r ?? basePath);
-      },
-      error: () => {
-        setSubmitting(false);
-        setError(true);
-      },
-    });
+    ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, authDispatch ]);

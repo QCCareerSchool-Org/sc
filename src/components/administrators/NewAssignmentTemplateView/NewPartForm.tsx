@@ -15,8 +15,8 @@ type Props = {
 };
 
 export const NewPartForm = ({ formState, insert$, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
-
   let valid = true;
+  // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
       const validationMessage = key as keyof State['form']['validationMessages'];
@@ -46,7 +46,7 @@ export const NewPartForm = ({ formState, insert$, titleChange, descriptionChange
           <form onSubmit={formSubmit}>
             <div className="formGroup">
               <label htmlFor="newPartTitle" className="form-label">Title</label>
-              <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTitle" className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTitleHelp" />
+              <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTitleHelp" />
               <div id="newPartTitleHelp" className="form-text">The title of this part (for internal use only)</div>
               {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
             </div>
@@ -58,7 +58,7 @@ export const NewPartForm = ({ formState, insert$, titleChange, descriptionChange
             </div>
             <div className="formGroup">
               <label htmlFor="newPartPartNumber" className="form-label">Part Number <span className="text-danger">*</span></label>
-              <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartPartNumber" className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} min={0} max={127} aria-describedby="newPartPartNumberHelp" required />
+              <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartPartNumber" min={1} max={127} className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} aria-describedby="newPartPartNumberHelp" required />
               <div id="newPartPartNumberHelp" className="form-text">The ordering for this part within an assignment</div>
               {formState.validationMessages.partNumber && <div className="invalid-feedback">{formState.validationMessages.partNumber}</div>}
             </div>

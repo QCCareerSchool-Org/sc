@@ -24,8 +24,7 @@ export type State = {
       optional?: string;
     };
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
-    saveErrorMessage?: string;
-    deleteErrorMessage?: string;
+    errorMessage?: string;
   };
   error: boolean;
   errorCode?: number;
@@ -95,16 +94,24 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'UPLOAD_SLOT_TEMPLATE_LOAD_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'LABEL_UPDATED':
+    case 'LABEL_UPDATED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 191;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, label: action.payload,
-          },
+          data: { ...state.form.data, label: action.payload },
+          validationMessages: { ...state.form.validationMessages, label: validationMessage },
         },
       };
+    }
     case 'IMAGE_UPDATED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.form.data.allowedTypes.pdf && !state.form.data.allowedTypes.word && !state.form.data.allowedTypes.excel) {
@@ -222,7 +229,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'UPLOAD_SLOT_TEMPLATE_SAVE_STARTED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'saving', saveErrorMessage: undefined },
+        form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'UPLOAD_SLOT_TEMPLATE_SAVE_SUCCEEDED':
       if (!state.uploadSlotTemplate) {
@@ -257,13 +264,13 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           processingState: 'save error',
-          saveErrorMessage: action.payload,
+          errorMessage: action.payload,
         },
       };
     case 'UPLOAD_SLOT_TEMPLATE_DELETE_STARTED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'deleting', deleteErrorMessage: undefined },
+        form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
     case 'UPLOAD_SLOT_TEMPLATE_DELETE_SUCCEEDED':
       return {
@@ -292,7 +299,7 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           processingState: 'delete error',
-          deleteErrorMessage: action.payload,
+          errorMessage: action.payload,
         },
       };
   }

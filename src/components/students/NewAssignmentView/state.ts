@@ -31,6 +31,7 @@ export type AssignmentState = NewAssignment & {
 export type State = {
   assignment?: AssignmentState;
   error: boolean;
+  errorCode?: number;
 };
 
 export const initialState: State = {
@@ -38,8 +39,8 @@ export const initialState: State = {
 };
 
 export type Action =
-  | { type: 'ASSIGNMENT_LOADED'; payload: NewAssignmentWithChildren }
-  | { type: 'ASSIGNMENT_ERROR' }
+  | { type: 'ASSIGNMENT_LOAD_SUCCEEDED'; payload: NewAssignmentWithChildren }
+  | { type: 'ASSIGNMENT_LOAD_FAILED'; payload?: number }
   | { type: 'TEXT_CHANGED'; payload: { partId: string; textBoxId: string; text: string } }
   | { type: 'TEXT_SAVE_STARTED'; payload: { partId: string; textBoxId: string } }
   | { type: 'TEXT_SAVE_SUCCEEDED'; payload: { partId: string; textBoxId: string; text: string } }
@@ -54,10 +55,10 @@ export type Action =
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'ASSIGNMENT_LOADED':
+    case 'ASSIGNMENT_LOAD_SUCCEEDED':
       return assignmentLoad(state, action.payload);
-    case 'ASSIGNMENT_ERROR':
-      return { ...state, error: true };
+    case 'ASSIGNMENT_LOAD_FAILED':
+      return { ...state, error: true, errorCode: action.payload };
     case 'TEXT_CHANGED':
       return textChanged(state, action.payload.partId, action.payload.textBoxId, action.payload.text);
     case 'TEXT_SAVE_STARTED':
