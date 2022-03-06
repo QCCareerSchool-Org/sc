@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { ChangeEventHandler, FormEventHandler, useEffect, useRef, useState } from 'react';
-import { catchError, EMPTY, map, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { basePath } from '../basePath';
 import { loginService } from '../services';

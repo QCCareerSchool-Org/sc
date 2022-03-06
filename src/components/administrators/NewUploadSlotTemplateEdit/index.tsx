@@ -1,11 +1,10 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { FormEventHandler, MouseEventHandler, ReactElement, useEffect, useReducer, useRef } from 'react';
+import { FormEventHandler, ReactElement, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewUploadSlotEditForm } from './NewUploadSlotEditForm';
 import { initialState, reducer, State } from './state';
-import { Spinner } from '@/components/Spinner';
 import { NewUploadSlotTemplate } from '@/domain/index';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { NewUploadSlotTemplatePayload, newUploadSlotTemplateService } from '@/services/administrators';
