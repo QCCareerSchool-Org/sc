@@ -1,10 +1,11 @@
 import NextError from 'next/error';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
+import { MouseEvent, ReactElement, useCallback, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AssignmentList } from './AssignmentList';
+import { NewAssignmentAddForm } from './NewAssignmentAddForm';
+import { NewUnitEditForm } from './NewUnitEditForm';
 import { initialState, reducer } from './state';
 import { newUnitTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
@@ -34,7 +35,7 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
       error: err => {
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
-          if (err.refresh) {
+          if (err.login) {
             return navigateToLogin(router);
           }
           errorCode = err.code;
@@ -46,6 +47,10 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId ]);
 
+  const assignmentRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
+    void router.push(`${router.asPath}/assignments/${assignmentId}`, undefined, { scroll: false });
+  }, [ router ]);
+
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
@@ -54,40 +59,37 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
     return null;
   }
 
-  const assignmentRowClick = (e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
-    void router.push(`${router.asPath}/assignments/${assignmentId}`, undefined, { scroll: false });
-  };
-
   return (
     <>
       <section>
         <div className="container">
-          <h1>Unit: {state.unitTemplate.title}</h1>
-          {state.unitTemplate.description
-            ? <p className="lead">{state.unitTemplate.description}</p>
-            : <p>no description</p>
-          }
-          <table className="table table-bordered w-auto">
-            <tbody>
-              <tr><th scope="row">Unit Letter</th><td>{state.unitTemplate.unitLetter}</td></tr>
-              <tr><th scope="row">Course</th><td>{state.unitTemplate.course.name}</td></tr>
-              <tr><th scope="row">Optional</th><td>{state.unitTemplate.optional ? 'yes' : 'no'}</td></tr>
-              <tr><th scope="row">Created</th><td>{formatDateTime(state.unitTemplate.created)}</td></tr>
-              {state.unitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.unitTemplate.modified)}</td></tr>}
-            </tbody>
-          </table>
-          <Link href={`${router.asPath}/edit`} scroll={false}><a className="btn btn-primary">Edit Unit</a></Link>
+          <h1>Edit Unit</h1>
+          <div className="row justify-content-between">
+            <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
+              <NewUnitEditForm />
+            </div>
+            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
+              <table className="table table-bordered w-auto ms-lg-auto">
+                <tbody>
+                  <tr><th scope="row">Course</th><td>{state.unitTemplate.course.name}</td></tr>
+                  <tr><th scope="row">Assignments</th><td>{state.unitTemplate.assignments.length}</td></tr>
+                  <tr><th scope="row">Created</th><td>{formatDateTime(state.unitTemplate.created)}</td></tr>
+                  {state.unitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.unitTemplate.modified)}</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
       <section>
         <div className="container">
           <h2 className="h3">Assignments</h2>
           <div className="row">
-            <div className="col-12 col-xxl-6">
+            <div className="col-12 col-xl-6">
               <AssignmentList assignments={state.unitTemplate.assignments} assignmentRowClick={assignmentRowClick} />
             </div>
-            <div className="col-12 col-xxl-6 mb-3 mb-xxl-0">
-              .
+            <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
+              <NewAssignmentAddForm />
             </div>
           </div>
         </div>

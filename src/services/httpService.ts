@@ -3,7 +3,7 @@ import type { AxiosResponse } from 'axios';
 import { saveAs } from 'file-saver';
 import { catchError, combineLatest, from, map, mapTo, Observable, startWith, Subject, tap, throwError } from 'rxjs';
 
-import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError } from 'src/axiosInstance';
+import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError, AxiosUnauthorizedError } from 'src/axiosInstance';
 import { endpoint } from 'src/basePath';
 
 type Config = {
@@ -12,7 +12,7 @@ type Config = {
 };
 
 export class HttpServiceError extends Error {
-  public constructor(message: string, public readonly refresh: boolean, public readonly code?: number) {
+  public constructor(message: string, public readonly login: boolean, public readonly code?: number) {
     super(message);
   }
 }
@@ -174,7 +174,7 @@ export class AxiosHttpService implements IHttpService {
     if (err instanceof AbstractAxiosError) {
       const data = err.response?.data;
       const message = typeof data === 'string' ? data : '';
-      if (err instanceof AxiosRefreshError) {
+      if (err instanceof AxiosUnauthorizedError || err instanceof AxiosRefreshError) {
         return throwError(() => new HttpServiceError(message, true));
       } else if (err instanceof AxiosOtherError) {
         return throwError(() => new HttpServiceError(message, false, err.response?.status));

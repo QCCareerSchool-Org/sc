@@ -75,7 +75,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
       error: err => {
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
-          if (err.refresh) {
+          if (err.login) {
             return navigateToLogin(router);
           }
           errorCode = err.code;
@@ -91,12 +91,11 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
         tap({
           next: updatedUploadSlot => {
             dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_SUCCEEDED', payload: updatedUploadSlot });
-            router.back();
           },
           error: err => {
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
-              if (err.refresh) {
+              if (err.login) {
                 return navigateToLogin(router);
               }
               if (err.message) {
@@ -123,7 +122,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
           error: err => {
             let message = 'Delete failed';
             if (err instanceof HttpServiceError) {
-              if (err.refresh) {
+              if (err.login) {
                 return navigateToLogin(router);
               }
               if (err.message) {
@@ -189,41 +188,17 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
     dispatch({ type: 'OPTIONAL_UPDATED', payload: target.checked });
   };
 
-  const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm('Are you sure you want to delete this text box template?')) {
-      delete$.current.next(state.form.processingState);
-    }
-  };
-
   return (
     <>
       <section>
         <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-10 col-lg-8 col-xl-6">
-              <h1>Edit Upload Slot</h1>
-              <table className="table table-bordered w-auto">
-                <tbody>
-                  <tr><th scope="row">Created</th><td>{formatDateTime(state.uploadSlotTemplate.created)}</td></tr>
-                  {state.uploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.uploadSlotTemplate.modified)}</td></tr>}
-                </tbody>
-              </table>
-              <div className="d-flex align-items-center">
-                <button onClick={deleteClick} className="btn btn-danger" disabled={state.form.processingState === 'saving' || state.form.processingState === 'deleting'}>Delete</button>
-                {state.form.processingState === 'deleting' && <div className="ms-2"><Spinner /></div>}
-                {state.form.processingState === 'delete error' && <span className="text-danger ms-2">{state.form.errorMessage?.length ? state.form.errorMessage : 'Error'}</span>}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section>
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-10 col-lg-8 col-xl-6">
+          <h1>Edit Upload Slot</h1>
+          <div className="row justify-content-between">
+            <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewUploadSlotEditForm
                 formState={state.form}
                 save$={save$.current}
+                delete$={delete$.current}
                 labelChange={labelChange}
                 pointsChange={pointsChange}
                 imageChange={imageChange}
@@ -233,6 +208,15 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
                 orderChange={orderChange}
                 optionalChange={optionalChange}
               />
+            </div>
+            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
+              <table className="table table-bordered w-auto ms-lg-auto">
+                <tbody>
+                  <tr><th scope="row">Part</th><td>{state.uploadSlotTemplate.part.title ?? state.uploadSlotTemplate.part.partNumber}</td></tr>
+                  <tr><th scope="row">Created</th><td>{formatDateTime(state.uploadSlotTemplate.created)}</td></tr>
+                  {state.uploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.uploadSlotTemplate.modified)}</td></tr>}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

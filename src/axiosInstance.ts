@@ -18,6 +18,11 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(undefined, async error => {
   const originalRequest = error.config;
 
+  // handle unauthorized errors
+  if (error.response.status === 403) {
+    return Promise.reject(new AxiosUnauthorizedError(error));
+  }
+
   // handle refresh errors
   if (error.response.status === 400 && originalRequest.url === `${endpoint}/auth/refresh`) {
     return Promise.reject(new AxiosRefreshError(error));
@@ -60,4 +65,5 @@ export abstract class AbstractAxiosError<T = unknown, D = unknown> extends Error
 }
 
 export class AxiosRefreshError extends AbstractAxiosError { }
+export class AxiosUnauthorizedError extends AbstractAxiosError { }
 export class AxiosOtherError extends AbstractAxiosError { }

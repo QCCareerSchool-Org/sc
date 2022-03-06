@@ -31,7 +31,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
       error: err => {
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
-          if (err.refresh) {
+          if (err.login) {
             return navigateToLogin(router);
           }
           errorCode = err.code;

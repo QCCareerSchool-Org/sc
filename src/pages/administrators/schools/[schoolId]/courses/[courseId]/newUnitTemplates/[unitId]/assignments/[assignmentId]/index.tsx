@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
-import { NewAssignmentTemplateView } from '@/components/administrators/NewAssignmentTemplateView';
+import { NewAssignmentTemplateEdit } from '@/components/administrators/NewAssignmentTemplateEdit';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -22,7 +22,7 @@ const NewAssignmentTemplateViewPage: NextPage<Props> = ({ schoolId, courseId, un
     return <Error statusCode={400} />;
   }
 
-  return <NewAssignmentTemplateView
+  return <NewAssignmentTemplateEdit
     administratorId={authState.administratorId}
     schoolId={schoolId}
     courseId={courseId}

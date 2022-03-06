@@ -36,7 +36,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
       error: err => {
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
-          if (err.refresh) {
+          if (err.login) {
             return void navigateToLogin(router);
           }
           errorCode = err.code;
@@ -54,7 +54,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
           error: err => {
             let message = 'Submit failed';
             if (err instanceof HttpServiceError) {
-              if (err.refresh) {
+              if (err.login) {
                 return navigateToLogin(router);
               }
               if (err.message) {
@@ -78,7 +78,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
           error: err => {
             let message = 'Skip failed';
             if (err instanceof HttpServiceError) {
-              if (err.refresh) {
+              if (err.login) {
                 return navigateToLogin(router);
               }
               if (err.message) {

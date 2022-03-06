@@ -1,4 +1,4 @@
-import { FormEventHandler, ReactElement } from 'react';
+import { FormEventHandler, memo, ReactElement } from 'react';
 import { Subject } from 'rxjs';
 
 import { State } from './state';
@@ -6,20 +6,20 @@ import { Spinner } from '@/components/Spinner';
 import { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 
 type Props = {
-  formState: State['form'];
-  insert$: Subject<NewPartTemplatePayload>;
+  formState: State['partForm'];
+  insert$: Subject<{ processingState: State['partForm']['processingState']; payload: NewPartTemplatePayload }>;
   titleChange: FormEventHandler<HTMLInputElement>;
   descriptionChange: FormEventHandler<HTMLTextAreaElement>;
   partNumberChange: FormEventHandler<HTMLInputElement>;
   optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewPartForm = ({ formState, insert$, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
+export const NewPartAddForm = memo(({ formState, insert$, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
-      const validationMessage = key as keyof State['form']['validationMessages'];
+      const validationMessage = key as keyof State['partForm']['validationMessages'];
       if (formState.validationMessages[validationMessage]) {
         valid = false;
       }
@@ -32,10 +32,13 @@ export const NewPartForm = ({ formState, insert$, titleChange, descriptionChange
       return;
     }
     insert$.next({
-      title: formState.data.title || null,
-      description: formState.data.description || null,
-      partNumber: parseInt(formState.data.partNumber, 10),
-      optional: formState.data.optional,
+      processingState: formState.processingState,
+      payload: {
+        title: formState.data.title || null,
+        description: formState.data.description || null,
+        partNumber: parseInt(formState.data.partNumber, 10),
+        optional: formState.data.optional,
+      },
     });
   };
 
@@ -70,9 +73,10 @@ export const NewPartForm = ({ formState, insert$, titleChange, descriptionChange
               </div>
             </div>
             <div className="d-flex align-items-center">
-              <button type="submit" className="btn btn-primary" disabled={!valid || formState.saveState === 'processing'}>Save</button>
-              {formState.saveState === 'processing' && <div className="ms-2"><Spinner /></div>}
-              {formState.saveState === 'error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+              <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
+                {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
+              </button>
+              {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
             </div>
           </form>
         </div>
@@ -83,4 +87,6 @@ export const NewPartForm = ({ formState, insert$, titleChange, descriptionChange
       `}</style>
     </>
   );
-};
+});
+
+NewPartAddForm.displayName = 'NewPartAddForm';

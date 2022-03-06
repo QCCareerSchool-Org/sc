@@ -3,20 +3,21 @@ import type { Subject } from 'rxjs';
 
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { NewPartTemplatePayload, NewPartTemplateWithInputs } from '@/services/administrators/newPartTemplateService';
+import type { NewAssignmentTemplateWithParts } from '@/services/administrators';
+import { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
 
 type Props = {
-  partTemplate: NewPartTemplateWithInputs;
+  assignmentTemplate: NewAssignmentTemplateWithParts;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewPartTemplatePayload }>;
+  save$: Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>;
   delete$: Subject<State['form']['processingState']>;
   titleChange: FormEventHandler<HTMLInputElement>;
   descriptionChange: FormEventHandler<HTMLTextAreaElement>;
-  partNumberChange: FormEventHandler<HTMLInputElement>;
+  assignmentNumberChange: FormEventHandler<HTMLInputElement>;
   optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewPartEditForm = memo(({ partTemplate, formState, save$, delete$, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
+export const NewAssignmentEditForm = memo(({ assignmentTemplate, formState, save$, delete$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -38,14 +39,14 @@ export const NewPartEditForm = memo(({ partTemplate, formState, save$, delete$, 
       payload: {
         title: formState.data.title || null,
         description: formState.data.description || null,
-        partNumber: parseInt(formState.data.partNumber, 10),
+        assignmentNumber: parseInt(formState.data.assignmentNumber, 10),
         optional: formState.data.optional,
       },
     });
   };
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this part template and all its inputs?\n\ntext boxes: ${partTemplate?.textBoxes.length}\nupload slots: ${partTemplate?.uploadSlots.length}`)) {
+    if (confirm(`Are you sure you want to delete this assignment template and all its parts?\n\nparts: ${assignmentTemplate?.parts.length}`)) {
       delete$.next(formState.processingState);
     }
   };
@@ -54,27 +55,27 @@ export const NewPartEditForm = memo(({ partTemplate, formState, save$, delete$, 
     <>
       <form onSubmit={formSubmit}>
         <div className="formGroup">
-          <label htmlFor="newPartTitle" className="form-label">Title</label>
-          <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTitleHelp" />
-          <div id="newPartTitleHelp" className="form-text">The title of this part (for internal use only)</div>
+          <label htmlFor="newAssignmentTitle" className="form-label">Title</label>
+          <input onChange={titleChange} value={formState.data.title} type="text" id="newAssignment" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentTitleHelp" />
+          <div id="newAssignmentTitleHelp" className="form-text">The title of this part (for internal use only)</div>
           {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
         </div>
         <div className="formGroup">
-          <label htmlFor="newPartDescription" className="form-label">Description</label>
-          <textarea onChange={descriptionChange} value={formState.data.description} id="newPartDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartDescriptionHelp" />
-          <div id="newPartDescriptionHelp" className="form-text">A description of what should be enterered into the text box</div>
+          <label htmlFor="newAssignmentDescription" className="form-label">Description</label>
+          <textarea onChange={descriptionChange} value={formState.data.description} id="newAssignmentDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentDescriptionHelp" />
+          <div id="newAssignmentDescriptionHelp" className="form-text">A description of what should be enterered into the text box</div>
           {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
         </div>
         <div className="formGroup">
-          <label htmlFor="newPartPartNumber" className="form-label">Part Number <span className="text-danger">*</span></label>
-          <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartPartNumber" min={1} max={127} className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} aria-describedby="newPartPartNumberHelp" required />
-          <div id="newPartPartNumberHelp" className="form-text">The ordering for this part within its assignment</div>
-          {formState.validationMessages.partNumber && <div className="invalid-feedback">{formState.validationMessages.partNumber}</div>}
+          <label htmlFor="newAssignmentAssignmentNumber" className="form-label">Assignment Number <span className="text-danger">*</span></label>
+          <input onChange={assignmentNumberChange} value={formState.data.assignmentNumber} type="number" id="newAssignmentAssignmentNumber" min={1} max={127} className={`form-control ${formState.validationMessages.assignmentNumber ? 'is-invalid' : ''}`} aria-describedby="newAssignmentAssignmentNumberHelp" required />
+          <div id="newAssignmentAssignmentNumberHelp" className="form-text">The ordering for this assignment within its unit</div>
+          {formState.validationMessages.assignmentNumber && <div className="invalid-feedback">{formState.validationMessages.assignmentNumber}</div>}
         </div>
         <div className="formGroup">
           <div className="form-check">
-            <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newPartOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
-            <label htmlFor="newPartOptional" className="form-check-label">Optional</label>
+            <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newAssignmentOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
+            <label htmlFor="newAssignmentOptional" className="form-check-label">Optional</label>
             {formState.validationMessages.optional && <div className="invalid-feedback">{formState.validationMessages.optional}</div>}
           </div>
         </div>
@@ -97,4 +98,4 @@ export const NewPartEditForm = memo(({ partTemplate, formState, save$, delete$, 
   );
 });
 
-NewPartEditForm.displayName = 'NewPartEditForm';
+NewAssignmentEditForm.displayName = 'NewAssignmentEditForm';

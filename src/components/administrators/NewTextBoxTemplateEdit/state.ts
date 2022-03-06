@@ -51,6 +51,7 @@ export const initialState: State = {
     },
     validationMessages: {},
     processingState: 'idle',
+    errorMessage: undefined,
   },
   error: false,
 };
@@ -71,6 +72,7 @@ export const reducer = (state: State, action: Action): State => {
           },
           validationMessages: {},
           processingState: 'idle',
+          errorMessage: undefined,
         },
         error: false,
       };

@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import { memo, MouseEvent, ReactElement } from 'react';
 
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 
@@ -7,7 +7,7 @@ type Props = {
   assignmentRowClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
 };
 
-export const AssignmentList = ({ assignments, assignmentRowClick }: Props): ReactElement => (
+export const AssignmentList = memo(({ assignments, assignmentRowClick }: Props): ReactElement => (
   <>
     {assignments.length === 0
       ? <p>no assignments</p>
@@ -37,4 +37,6 @@ export const AssignmentList = ({ assignments, assignmentRowClick }: Props): Reac
       #assignmentsTable tr { cursor: pointer }
     `}</style>
   </>
-);
+));
+
+AssignmentList.displayName = 'AssignmentList';

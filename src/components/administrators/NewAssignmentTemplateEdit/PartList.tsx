@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import { memo, MouseEvent, ReactElement } from 'react';
 
 import type { NewPartTemplate } from '@/domain/index';
 
@@ -7,7 +7,7 @@ type Props = {
   partRowClick: (e: MouseEvent<HTMLTableRowElement>, partId: string) => void;
 };
 
-export const PartList = ({ parts, partRowClick }: Props): ReactElement => (
+export const PartList = memo(({ parts, partRowClick }: Props): ReactElement => (
   <>
     {parts.length === 0
       ? <p>no parts</p>
@@ -37,4 +37,6 @@ export const PartList = ({ parts, partRowClick }: Props): ReactElement => (
       #partsTable tr { cursor: pointer }
     `}</style>
   </>
-);
+));
+
+PartList.displayName = 'PartList';

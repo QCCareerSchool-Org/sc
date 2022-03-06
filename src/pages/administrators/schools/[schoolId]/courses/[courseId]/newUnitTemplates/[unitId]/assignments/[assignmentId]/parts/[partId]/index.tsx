@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
-import { NewPartTemplateView } from '@/components/administrators/NewPartTemplateView';
+import { NewPartTemplateEdit } from '@/components/administrators/NewPartTemplateEdit';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
   partId: string | null;
 };
 
-const NewPartTemplateViewPage: NextPage<Props> = ({ schoolId, courseId, unitId, assignmentId, partId }) => {
+const NewPartTemplateEditPage: NextPage<Props> = ({ schoolId, courseId, unitId, assignmentId, partId }) => {
   const authState = useAuthState();
 
   if (typeof authState.administratorId === 'undefined') {
@@ -23,7 +23,7 @@ const NewPartTemplateViewPage: NextPage<Props> = ({ schoolId, courseId, unitId, 
     return <Error statusCode={400} />;
   }
 
-  return <NewPartTemplateView
+  return <NewPartTemplateEdit
     administratorId={authState.administratorId}
     schoolId={schoolId}
     courseId={courseId}
@@ -47,4 +47,4 @@ export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   return { props: { schoolId, courseId, unitId, assignmentId, partId } };
 };
 
-export default NewPartTemplateViewPage;
+export default NewPartTemplateEditPage;

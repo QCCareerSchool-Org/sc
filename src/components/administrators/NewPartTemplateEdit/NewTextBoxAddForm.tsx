@@ -7,7 +7,7 @@ import type { NewTextBoxTemplatePayload } from '@/services/administrators';
 
 type Props = {
   formState: State['textBoxForm'];
-  insert$: Subject<{ saveState: State['textBoxForm']['saveState']; payload: NewTextBoxTemplatePayload }>;
+  insert$: Subject<{ processingState: State['textBoxForm']['processingState']; payload: NewTextBoxTemplatePayload }>;
   descriptionChange: FormEventHandler<HTMLTextAreaElement>;
   pointsChange: FormEventHandler<HTMLInputElement>;
   linesChange: FormEventHandler<HTMLInputElement>;
@@ -15,7 +15,7 @@ type Props = {
   optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewTextBoxForm = memo(({ formState, insert$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewTextBoxAddForm = memo(({ formState, insert$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -33,7 +33,7 @@ export const NewTextBoxForm = memo(({ formState, insert$, descriptionChange, poi
       return;
     }
     insert$.next({
-      saveState: formState.saveState,
+      processingState: formState.processingState,
       payload: {
         description: formState.data.description || null,
         points: parseInt(formState.data.points, 10),
@@ -82,9 +82,10 @@ export const NewTextBoxForm = memo(({ formState, insert$, descriptionChange, poi
               </div>
             </div>
             <div className="d-flex align-items-center">
-              <button type="submit" className="btn btn-primary" disabled={!valid || formState.saveState === 'processing'}>Add New Text Box</button>
-              {formState.saveState === 'processing' && <div className="ms-2"><Spinner /></div>}
-              {formState.saveState === 'error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+              <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
+                {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
+              </button>
+              {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
             </div>
           </form>
         </div>
@@ -98,4 +99,4 @@ export const NewTextBoxForm = memo(({ formState, insert$, descriptionChange, poi
   );
 });
 
-NewTextBoxForm.displayName = 'NewTextBoxForm';
+NewTextBoxAddForm.displayName = 'NewTextBoxAddForm';

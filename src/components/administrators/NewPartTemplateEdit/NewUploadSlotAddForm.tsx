@@ -7,7 +7,7 @@ import type { AllowedType, NewUploadSlotTemplatePayload } from '@/services/admin
 
 type Props = {
   formState: State['uploadSlotForm'];
-  insert$: Subject<{ saveState: State['uploadSlotForm']['saveState']; payload: NewUploadSlotTemplatePayload }>;
+  insert$: Subject<{ processingState: State['uploadSlotForm']['processingState']; payload: NewUploadSlotTemplatePayload }>;
   labelChange: FormEventHandler<HTMLInputElement>;
   pointsChange: FormEventHandler<HTMLInputElement>;
   orderChange: FormEventHandler<HTMLInputElement>;
@@ -18,7 +18,7 @@ type Props = {
   optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewUploadSlotForm = memo(({ formState, insert$, labelChange, pointsChange, orderChange, imageChange, pdfChange, wordChange, excelChange, optionalChange }: Props): ReactElement => {
+export const NewUploadSlotAddForm = memo(({ formState, insert$, labelChange, pointsChange, orderChange, imageChange, pdfChange, wordChange, excelChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -36,7 +36,7 @@ export const NewUploadSlotForm = memo(({ formState, insert$, labelChange, points
       return;
     }
     insert$.next({
-      saveState: formState.saveState,
+      processingState: formState.processingState,
       payload: {
         label: formState.data.label,
         points: parseInt(formState.data.points, 10),
@@ -101,9 +101,10 @@ export const NewUploadSlotForm = memo(({ formState, insert$, labelChange, points
               </div>
             </div>
             <div className="d-flex align-items-center">
-              <button type="submit" className="btn btn-primary" disabled={!valid || formState.saveState === 'processing'}>Add New Upload Slot</button>
-              {formState.saveState === 'processing' && <div className="ms-2"><Spinner /></div>}
-              {formState.saveState === 'error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+              <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
+                {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
+              </button>
+              {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
             </div>
           </form>
         </div>
@@ -116,4 +117,4 @@ export const NewUploadSlotForm = memo(({ formState, insert$, labelChange, points
   );
 });
 
-NewUploadSlotForm.displayName = 'NewUploadSlotForm';
+NewUploadSlotAddForm.displayName = 'NewUploadSlotAddForm';

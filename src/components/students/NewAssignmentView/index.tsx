@@ -36,7 +36,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       error: err => {
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
-          if (err.refresh) {
+          if (err.login) {
             return navigateToLogin(router);
           }
           errorCode = err.code;
@@ -59,7 +59,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         error: err => {
           let message = 'File upload failed';
           if (err instanceof HttpServiceError) {
-            if (err.refresh) {
+            if (err.login) {
               return navigateToLogin(router);
             }
             if (err.message) {
@@ -81,7 +81,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       tap({
         error: err => {
           if (err instanceof HttpServiceError) {
-            if (err.refresh) {
+            if (err.login) {
               return navigateToLogin(router);
             }
           }
@@ -99,7 +99,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         error: err => {
           let message = 'File download failed';
           if (err instanceof HttpServiceError) {
-            if (err.refresh) {
+            if (err.login) {
               return navigateToLogin(router);
             }
             if (err.message) {
@@ -120,7 +120,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         next: () => dispatch({ type: 'TEXT_SAVE_SUCCEEDED', payload: { partId, textBoxId, text } }),
         error: err => {
           if (err instanceof HttpServiceError) {
-            if (err.refresh) {
+            if (err.login) {
               return navigateToLogin(router);
             }
           }
