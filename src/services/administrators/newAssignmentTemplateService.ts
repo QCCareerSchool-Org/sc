@@ -22,7 +22,7 @@ export type NewAssignmentTemplateWithParts = NewAssignmentTemplate & {
 };
 
 export interface INewAssignmentTemplateService {
-  insertAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewAssignmentTemplatePayload) => Observable<NewAssignmentTemplate>;
+  addAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewAssignmentTemplatePayload) => Observable<NewAssignmentTemplate>;
   getAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string) => Observable<NewAssignmentTemplateWithParts>;
   saveAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentTemplatePayload) => Observable<NewAssignmentTemplate>;
   deleteAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string) => Observable<void>;
@@ -32,7 +32,7 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public insertAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewAssignmentTemplatePayload): Observable<NewAssignmentTemplate> {
+  public addAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewAssignmentTemplatePayload): Observable<NewAssignmentTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId);
     return this.httpService.post<RawNewAssignmentTemplate>(url, payload).pipe(
       map(this.mapNewAssignmentTemplate),

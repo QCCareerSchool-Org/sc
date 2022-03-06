@@ -36,7 +36,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
       takeUntil(destroy$),
     ).subscribe({
       next: assignmentTemplate => {
-        dispatch({ type: 'ASSIGNMENT_TEMPLATE_LOAD_SUCCEEDED', payload: assignmentTemplate });
+        dispatch({ type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: assignmentTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -46,17 +46,17 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'ASSIGNMENT_TEMPLATE_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED', payload: errorCode });
       },
     });
 
     save$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'ASSIGNMENT_TEMPLATE_SAVE_STARTED' })),
+      tap(() => dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_STARTED' })),
       exhaustMap(({ payload }) => newAssignmentTemplateService.saveAssignment(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
         tap({
           next: updatedAssignment => {
-            dispatch({ type: 'ASSIGNMENT_TEMPLATE_SAVE_SUCCEEDED', payload: updatedAssignment });
+            dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: updatedAssignment });
           },
           error: err => {
             let message = 'Save failed';
@@ -68,7 +68,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 message = err.message;
               }
             }
-            dispatch({ type: 'ASSIGNMENT_TEMPLATE_SAVE_FAILED', payload: message });
+            dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -78,11 +78,11 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
 
     delete$.current.pipe(
       filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'ASSIGNMENT_TEMPLATE_DELETE_STARTED' })),
+      tap(() => dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_STARTED' })),
       exhaustMap(() => newAssignmentTemplateService.deleteAssignment(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
         tap({
           next: () => {
-            dispatch({ type: 'ASSIGNMENT_TEMPLATE_DELETE_SUCCEEDED' });
+            dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_SUCCEEDED' });
             router.back();
           },
           error: err => {
@@ -95,7 +95,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 message = err.message;
               }
             }
-            dispatch({ type: 'ASSIGNMENT_TEMPLATE_DELETE_FAILED', payload: message });
+            dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -105,10 +105,10 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
 
     partInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_PART_STARTED' })),
+      tap(() => dispatch({ type: 'ADD_PART_TEMPLATE_STARTED' })),
       exhaustMap(({ payload }) => newPartTemplateService.addPart(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
         tap({
-          next: insertedPart => dispatch({ type: 'ADD_PART_SUCCEEDED', payload: insertedPart }),
+          next: insertedPart => dispatch({ type: 'ADD_PART_TEMPLATE_SUCCEEDED', payload: insertedPart }),
           error: err => {
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
@@ -119,7 +119,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 message = err.message;
               }
             }
-            dispatch({ type: 'ADD_PART_FAILED', payload: message });
+            dispatch({ type: 'ADD_PART_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -156,22 +156,22 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
 
   const partTitleChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'PART_TITLE_CHANGED', payload: target.value });
+    dispatch({ type: 'PART_TEMPLATE_TITLE_CHANGED', payload: target.value });
   }, []);
 
   const partDescriptionChange: FormEventHandler<HTMLTextAreaElement> = useCallback(e => {
     const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'PART_DESCRIPTION_CHANGED', payload: target.value });
+    dispatch({ type: 'PART_TEMPLATE_DESCRIPTION_CHANGED', payload: target.value });
   }, []);
 
   const partPartNumberChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'PART_PART_NUMBER_CHANGED', payload: target.value });
+    dispatch({ type: 'PART_TEMPLATE_PART_NUMBER_CHANGED', payload: target.value });
   }, []);
 
   const partOptionalChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'PART_OPTIONAL_CHANGED', payload: target.checked });
+    dispatch({ type: 'PART_TEMPLATE_OPTIONAL_CHANGED', payload: target.checked });
   }, []);
 
   if (state.error) {

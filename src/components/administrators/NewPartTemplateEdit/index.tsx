@@ -62,7 +62,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
       takeUntil(destroy$),
     ).subscribe({
       next: partTemplate => {
-        dispatch({ type: 'PART_TEMPLATE_LOAD_SUCCEEDED', payload: partTemplate });
+        dispatch({ type: 'LOAD_PART_TEMPLATE_SUCCEEDED', payload: partTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -72,17 +72,17 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'PART_TEMPLATE_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_PART_TEMPLATE_FAILED', payload: errorCode });
       },
     });
 
     save$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'PART_TEMPLATE_SAVE_STARTED' })),
+      tap(() => dispatch({ type: 'SAVE_PART_TEMPLATE_STARTED' })),
       exhaustMap(({ payload }) => newPartTemplateService.savePart(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
         tap({
           next: updatedPart => {
-            dispatch({ type: 'PART_TEMPLATE_SAVE_SUCCEEDED', payload: updatedPart });
+            dispatch({ type: 'SAVE_PART_TEMPLATE_SUCCEEDED', payload: updatedPart });
           },
           error: err => {
             let message = 'Save failed';
@@ -94,7 +94,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 message = err.message;
               }
             }
-            dispatch({ type: 'PART_TEMPLATE_SAVE_FAILED', payload: message });
+            dispatch({ type: 'SAVE_PART_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -104,11 +104,11 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
     delete$.current.pipe(
       filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'PART_TEMPLATE_DELETE_STARTED' })),
+      tap(() => dispatch({ type: 'DELETE_PART_TEMPLATE_STARTED' })),
       exhaustMap(() => newPartTemplateService.deletePart(administratorId, schoolId, courseId, unitId, assignmentId, partId).pipe(
         tap({
           next: () => {
-            dispatch({ type: 'PART_TEMPLATE_DELETE_SUCCEEDED' });
+            dispatch({ type: 'DELETE_PART_TEMPLATE_SUCCEEDED' });
             router.back();
           },
           error: err => {
@@ -121,7 +121,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 message = err.message;
               }
             }
-            dispatch({ type: 'PART_TEMPLATE_DELETE_FAILED', payload: message });
+            dispatch({ type: 'DELETE_PART_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -131,11 +131,11 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
     textBoxInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_TEXT_BOX_STARTED' })),
+      tap(() => dispatch({ type: 'ADD_TEXT_BOX_TEMPLATE_STARTED' })),
       exhaustMap(({ payload }) => newTextBoxTemplateService.addTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
         tap({
           next: insertedTextBox => {
-            dispatch({ type: 'ADD_TEXT_BOX_SUCCEEDED', payload: insertedTextBox });
+            dispatch({ type: 'ADD_TEXT_BOX_TEMPLATE_SUCCEEDED', payload: insertedTextBox });
           },
           error: err => {
             let message = 'Insert failed';
@@ -147,7 +147,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 message = err.message;
               }
             }
-            dispatch({ type: 'ADD_TEXT_BOX_FAILED', payload: message });
+            dispatch({ type: 'ADD_TEXT_BOX_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -157,11 +157,11 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
     uploadSlotInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_UPLOAD_SLOT_STARTED' })),
+      tap(() => dispatch({ type: 'ADD_UPLOAD_SLOT_TEMPLATE_STARTED' })),
       exhaustMap(({ payload }) => newUploadSlotTemplateService.addUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
         tap({
           next: insertedTextBox => {
-            dispatch({ type: 'ADD_UPLOAD_SLOT_SUCCEEDED', payload: insertedTextBox });
+            dispatch({ type: 'ADD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED', payload: insertedTextBox });
           },
           error: err => {
             let message = 'Insert failed';
@@ -173,7 +173,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 message = err.message;
               }
             }
-            dispatch({ type: 'ADD_UPLOAD_SLOT_FAILED', payload: message });
+            dispatch({ type: 'ADD_UPLOAD_SLOT_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -214,67 +214,67 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
   const textBoxDescriptionChange: FormEventHandler<HTMLTextAreaElement> = useCallback(e => {
     const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'TEXT_BOX_DESCRIPTION_UPDATED', payload: target.value });
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_DESCRIPTION_CHANGED', payload: target.value });
   }, []);
 
   const textBoxPointsChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_POINTS_UPDATED', payload: target.value });
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_POINTS_CHANGED', payload: target.value });
   }, []);
 
   const textBoxLinesChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_LINES_UPDATED', payload: target.value });
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_LINES_CHANGED', payload: target.value });
   }, []);
 
   const textBoxOrderChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_ORDER_UPDATED', payload: target.value });
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_ORDER_CHANGED', payload: target.value });
   }, []);
 
   const textBoxOptionalChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_OPTIONAL_UPDATED', payload: target.checked });
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_OPTIONAL_CHANGED', payload: target.checked });
   }, []);
 
   const uploadSlotLabelChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_LABEL_UPDATED', payload: target.value });
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_LABEL_CHANGED', payload: target.value });
   }, []);
 
   const uploadSlotPointsChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_POINTS_UPDATED', payload: target.value });
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_POINTS_CHANGED', payload: target.value });
   }, []);
 
   const uploadSlotOrderChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_ORDER_UPDATED', payload: target.value });
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_ORDER_CHANGED', payload: target.value });
   }, []);
 
   const uploadSlotImageChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_IMAGE_UPDATED', payload: target.checked });
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_IMAGE_CHANGED', payload: target.checked });
   }, []);
 
   const uploadSlotPdfChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_PDF_UPDATED', payload: target.checked });
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_PDF_CHANGED', payload: target.checked });
   }, []);
 
   const uploadSlotWordChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_WORD_UPDATED', payload: target.checked });
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_WORD_CHANGED', payload: target.checked });
   }, []);
 
   const uploadSlotExcelChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_EXCEL_UPDATED', payload: target.checked });
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_EXCEL_CHANGED', payload: target.checked });
   }, []);
 
   const uploadSlotOptionalChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_OPTIONAL_UPDATED', payload: target.checked });
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED', payload: target.checked });
   }, []);
 
   if (state.error) {

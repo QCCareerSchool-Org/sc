@@ -1,13 +1,13 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { MouseEvent, ReactElement, useCallback, useEffect, useReducer } from 'react';
+import { MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AssignmentList } from './AssignmentList';
 import { NewAssignmentAddForm } from './NewAssignmentAddForm';
 import { NewUnitEditForm } from './NewUnitEditForm';
-import { initialState, reducer } from './state';
-import { newUnitTemplateService } from '@/services/administrators';
+import { initialState, reducer, State } from './state';
+import { NewAssignmentTemplatePayload, NewUnitTemplatePayload, newUnitTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -23,6 +23,10 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
+  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewUnitTemplatePayload }>());
+  const delete$ = useRef(new Subject<State['form']['processingState']>());
+  const assignmentInsert$ = useRef(new Subject<{ processingState: State['assignmentForm']['processingState']; payload: NewAssignmentTemplatePayload }>());
+
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
@@ -30,7 +34,7 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
       takeUntil(destroy$),
     ).subscribe({
       next: unitTemplate => {
-        dispatch({ type: 'UNIT_TEMPLATE_LOAD_SUCCEEDED', payload: unitTemplate });
+        dispatch({ type: 'LOAD_UNIT_TEMPLATE_SUCCEEDED', payload: unitTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -40,7 +44,7 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'UNIT_TEMPLATE_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_UNIT_TEMPLATE_FAILED', payload: errorCode });
       },
     });
 
@@ -66,7 +70,10 @@ export const NewUnitTemplateView = ({ administratorId, schoolId, courseId, unitI
           <h1>Edit Unit</h1>
           <div className="row justify-content-between">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
-              <NewUnitEditForm />
+              <NewUnitEditForm
+                save$={save$.current}
+                delete$={delete$.current}
+              />
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
               <table className="table table-bordered w-auto ms-lg-auto">

@@ -66,37 +66,37 @@ export type State = {
 };
 
 type Action =
-  | { type: 'PART_TEMPLATE_LOAD_SUCCEEDED'; payload: NewPartTemplateWithInputs }
-  | { type: 'PART_TEMPLATE_LOAD_FAILED'; payload?: number }
+  | { type: 'LOAD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplateWithInputs }
+  | { type: 'LOAD_PART_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
   | { type: 'PART_NUMBER_CHANGED'; payload: string }
   | { type: 'OPTIONAL_CHANGED'; payload: boolean }
-  | { type: 'PART_TEMPLATE_SAVE_STARTED' }
-  | { type: 'PART_TEMPLATE_SAVE_SUCCEEDED'; payload: NewPartTemplate }
-  | { type: 'PART_TEMPLATE_SAVE_FAILED'; payload?: string }
-  | { type: 'PART_TEMPLATE_DELETE_STARTED' }
-  | { type: 'PART_TEMPLATE_DELETE_SUCCEEDED' }
-  | { type: 'PART_TEMPLATE_DELETE_FAILED'; payload?: string }
-  | { type: 'TEXT_BOX_DESCRIPTION_UPDATED'; payload: string }
-  | { type: 'TEXT_BOX_POINTS_UPDATED'; payload: string }
-  | { type: 'TEXT_BOX_LINES_UPDATED'; payload: string }
-  | { type: 'TEXT_BOX_ORDER_UPDATED'; payload: string }
-  | { type: 'TEXT_BOX_OPTIONAL_UPDATED'; payload: boolean }
-  | { type: 'ADD_TEXT_BOX_STARTED' }
-  | { type: 'ADD_TEXT_BOX_SUCCEEDED'; payload: NewTextBoxTemplate }
-  | { type: 'ADD_TEXT_BOX_FAILED'; payload?: string }
-  | { type: 'UPLOAD_SLOT_LABEL_UPDATED'; payload: string }
-  | { type: 'UPLOAD_SLOT_POINTS_UPDATED'; payload: string }
-  | { type: 'UPLOAD_SLOT_ORDER_UPDATED'; payload: string }
-  | { type: 'UPLOAD_SLOT_IMAGE_UPDATED'; payload: boolean }
-  | { type: 'UPLOAD_SLOT_PDF_UPDATED'; payload: boolean }
-  | { type: 'UPLOAD_SLOT_WORD_UPDATED'; payload: boolean }
-  | { type: 'UPLOAD_SLOT_EXCEL_UPDATED'; payload: boolean }
-  | { type: 'UPLOAD_SLOT_OPTIONAL_UPDATED'; payload: boolean }
-  | { type: 'ADD_UPLOAD_SLOT_STARTED' }
-  | { type: 'ADD_UPLOAD_SLOT_SUCCEEDED'; payload: NewUploadSlotTemplate }
-  | { type: 'ADD_UPLOAD_SLOT_FAILED'; payload?: string };
+  | { type: 'SAVE_PART_TEMPLATE_STARTED' }
+  | { type: 'SAVE_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplate }
+  | { type: 'SAVE_PART_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'DELETE_PART_TEMPLATE_STARTED' }
+  | { type: 'DELETE_PART_TEMPLATE_SUCCEEDED' }
+  | { type: 'DELETE_PART_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'TEXT_BOX_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
+  | { type: 'TEXT_BOX_TEMPLATE_POINTS_CHANGED'; payload: string }
+  | { type: 'TEXT_BOX_TEMPLATE_LINES_CHANGED'; payload: string }
+  | { type: 'TEXT_BOX_TEMPLATE_ORDER_CHANGED'; payload: string }
+  | { type: 'TEXT_BOX_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
+  | { type: 'ADD_TEXT_BOX_TEMPLATE_STARTED' }
+  | { type: 'ADD_TEXT_BOX_TEMPLATE_SUCCEEDED'; payload: NewTextBoxTemplate }
+  | { type: 'ADD_TEXT_BOX_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'UPLOAD_SLOT_TEMPLATE_LABEL_CHANGED'; payload: string }
+  | { type: 'UPLOAD_SLOT_TEMPLATE_POINTS_CHANGED'; payload: string }
+  | { type: 'UPLOAD_SLOT_TEMPLATE_ORDER_CHANGED'; payload: string }
+  | { type: 'UPLOAD_SLOT_TEMPLATE_IMAGE_CHANGED'; payload: boolean }
+  | { type: 'UPLOAD_SLOT_TEMPLATE_PDF_CHANGED'; payload: boolean }
+  | { type: 'UPLOAD_SLOT_TEMPLATE_WORD_CHANGED'; payload: boolean }
+  | { type: 'UPLOAD_SLOT_TEMPLATE_EXCEL_CHANGED'; payload: boolean }
+  | { type: 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
+  | { type: 'ADD_UPLOAD_SLOT_TEMPLATE_STARTED' }
+  | { type: 'ADD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED'; payload: NewUploadSlotTemplate }
+  | { type: 'ADD_UPLOAD_SLOT_TEMPLATE_FAILED'; payload?: string };
 
 export const initialState: State = {
   form: {
@@ -144,7 +144,7 @@ export const initialState: State = {
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'PART_TEMPLATE_LOAD_SUCCEEDED':
+    case 'LOAD_PART_TEMPLATE_SUCCEEDED':
       return {
         ...state,
         form: {
@@ -192,7 +192,7 @@ export const reducer = (state: State, action: Action): State => {
         },
         error: false,
       };
-    case 'PART_TEMPLATE_LOAD_FAILED':
+    case 'LOAD_PART_TEMPLATE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
     case 'TITLE_CHANGED': {
       let validationMessage: string | undefined;
@@ -261,12 +261,12 @@ export const reducer = (state: State, action: Action): State => {
           data: { ...state.form.data, optional: action.payload },
         },
       };
-    case 'PART_TEMPLATE_SAVE_STARTED':
+    case 'SAVE_PART_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
-    case 'PART_TEMPLATE_SAVE_SUCCEEDED':
+    case 'SAVE_PART_TEMPLATE_SUCCEEDED':
       if (!state.partTemplate) {
         throw Error('partTemplate is undefined');
       }
@@ -287,17 +287,17 @@ export const reducer = (state: State, action: Action): State => {
           processingState: 'idle',
         },
       };
-    case 'PART_TEMPLATE_SAVE_FAILED':
+    case 'SAVE_PART_TEMPLATE_FAILED':
       return {
         ...state,
         form: { ...state.form, processingState: 'save error', errorMessage: action.payload },
       };
-    case 'PART_TEMPLATE_DELETE_STARTED':
+    case 'DELETE_PART_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
-    case 'PART_TEMPLATE_DELETE_SUCCEEDED':
+    case 'DELETE_PART_TEMPLATE_SUCCEEDED':
       return {
         ...state,
         partTemplate: undefined,
@@ -309,15 +309,17 @@ export const reducer = (state: State, action: Action): State => {
             partNumber: '1',
             optional: false,
           },
+          validationMessages: {},
           processingState: 'idle',
+          errorMessage: undefined,
         },
       };
-    case 'PART_TEMPLATE_DELETE_FAILED':
+    case 'DELETE_PART_TEMPLATE_FAILED':
       return {
         ...state,
         form: { ...state.form, processingState: 'delete error', errorMessage: action.payload },
       };
-    case 'TEXT_BOX_DESCRIPTION_UPDATED': {
+    case 'TEXT_BOX_TEMPLATE_DESCRIPTION_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
@@ -335,7 +337,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'TEXT_BOX_POINTS_UPDATED': {
+    case 'TEXT_BOX_TEMPLATE_POINTS_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -358,7 +360,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'TEXT_BOX_LINES_UPDATED': {
+    case 'TEXT_BOX_TEMPLATE_LINES_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const parsedLines = parseInt(action.payload, 10);
@@ -379,7 +381,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'TEXT_BOX_ORDER_UPDATED': {
+    case 'TEXT_BOX_TEMPLATE_ORDER_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -402,17 +404,17 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'TEXT_BOX_OPTIONAL_UPDATED':
+    case 'TEXT_BOX_TEMPLATE_OPTIONAL_CHANGED':
       return {
         ...state,
         textBoxForm: { ...state.textBoxForm, data: { ...state.textBoxForm.data, optional: action.payload } },
       };
-    case 'ADD_TEXT_BOX_STARTED':
+    case 'ADD_TEXT_BOX_TEMPLATE_STARTED':
       return {
         ...state,
         textBoxForm: { ...state.textBoxForm, processingState: 'inserting', errorMessage: undefined },
       };
-    case 'ADD_TEXT_BOX_SUCCEEDED': {
+    case 'ADD_TEXT_BOX_TEMPLATE_SUCCEEDED': {
       if (!state.partTemplate) {
         throw Error('partTemplate is undefined');
       }
@@ -437,16 +439,18 @@ export const reducer = (state: State, action: Action): State => {
             order: (Math.max(...textBoxes.map(t => t.order)) + 1).toString(),
             optional: false,
           },
+          validationMessages: {},
           processingState: 'idle',
+          errorMessage: undefined,
         },
       };
     }
-    case 'ADD_TEXT_BOX_FAILED':
+    case 'ADD_TEXT_BOX_TEMPLATE_FAILED':
       return {
         ...state,
         textBoxForm: { ...state.textBoxForm, processingState: 'insert error', errorMessage: action.payload },
       };
-    case 'UPLOAD_SLOT_LABEL_UPDATED': {
+    case 'UPLOAD_SLOT_TEMPLATE_LABEL_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -466,7 +470,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'UPLOAD_SLOT_POINTS_UPDATED': {
+    case 'UPLOAD_SLOT_TEMPLATE_POINTS_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -489,7 +493,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'UPLOAD_SLOT_ORDER_UPDATED': {
+    case 'UPLOAD_SLOT_TEMPLATE_ORDER_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -512,7 +516,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'UPLOAD_SLOT_IMAGE_UPDATED': {
+    case 'UPLOAD_SLOT_TEMPLATE_IMAGE_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.uploadSlotForm.data.allowedTypes.pdf && !state.uploadSlotForm.data.allowedTypes.word && !state.uploadSlotForm.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
@@ -526,7 +530,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'UPLOAD_SLOT_PDF_UPDATED': {
+    case 'UPLOAD_SLOT_TEMPLATE_PDF_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.uploadSlotForm.data.allowedTypes.image && !state.uploadSlotForm.data.allowedTypes.word && !state.uploadSlotForm.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
@@ -540,7 +544,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'UPLOAD_SLOT_WORD_UPDATED': {
+    case 'UPLOAD_SLOT_TEMPLATE_WORD_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.uploadSlotForm.data.allowedTypes.image && !state.uploadSlotForm.data.allowedTypes.pdf && !state.uploadSlotForm.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
@@ -554,7 +558,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'UPLOAD_SLOT_EXCEL_UPDATED': {
+    case 'UPLOAD_SLOT_TEMPLATE_EXCEL_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.uploadSlotForm.data.allowedTypes.image && !state.uploadSlotForm.data.allowedTypes.pdf && !state.uploadSlotForm.data.allowedTypes.word) {
         validationMessage = 'At least one type required';
@@ -568,11 +572,11 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'UPLOAD_SLOT_OPTIONAL_UPDATED':
+    case 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED':
       return { ...state, uploadSlotForm: { ...state.uploadSlotForm, data: { ...state.uploadSlotForm.data, optional: action.payload } } };
-    case 'ADD_UPLOAD_SLOT_STARTED':
+    case 'ADD_UPLOAD_SLOT_TEMPLATE_STARTED':
       return { ...state, uploadSlotForm: { ...state.uploadSlotForm, processingState: 'inserting', errorMessage: undefined } };
-    case 'ADD_UPLOAD_SLOT_SUCCEEDED': {
+    case 'ADD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED': {
       if (!state.partTemplate) {
         throw Error('partTemplate is undefined');
       }
@@ -602,11 +606,13 @@ export const reducer = (state: State, action: Action): State => {
             order: (Math.max(...uploadSlots.map(u => u.order)) + 1).toString(),
             optional: false,
           },
+          validationMessages: {},
           processingState: 'idle',
+          errorMessage: undefined,
         },
       };
     }
-    case 'ADD_UPLOAD_SLOT_FAILED':
+    case 'ADD_UPLOAD_SLOT_TEMPLATE_FAILED':
       return {
         ...state,
         uploadSlotForm: { ...state.uploadSlotForm, processingState: 'insert error', errorMessage: action.payload },

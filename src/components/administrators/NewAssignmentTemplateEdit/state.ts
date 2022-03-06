@@ -41,25 +41,25 @@ export type State = {
 };
 
 type Action =
-  | { type: 'ASSIGNMENT_TEMPLATE_LOAD_SUCCEEDED'; payload: NewAssignmentTemplateWithParts }
-  | { type: 'ASSIGNMENT_TEMPLATE_LOAD_FAILED'; payload?: number }
+  | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithParts }
+  | { type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
   | { type: 'ASSIGNMENT_NUMBER_CHANGED'; payload: string }
   | { type: 'OPTIONAL_CHANGED'; payload: boolean }
-  | { type: 'ASSIGNMENT_TEMPLATE_SAVE_STARTED' }
-  | { type: 'ASSIGNMENT_TEMPLATE_SAVE_SUCCEEDED'; payload: NewAssignmentTemplate }
-  | { type: 'ASSIGNMENT_TEMPLATE_SAVE_FAILED'; payload?: string }
-  | { type: 'ASSIGNMENT_TEMPLATE_DELETE_STARTED' }
-  | { type: 'ASSIGNMENT_TEMPLATE_DELETE_SUCCEEDED' }
-  | { type: 'ASSIGNMENT_TEMPLATE_DELETE_FAILED'; payload?: string }
-  | { type: 'PART_TITLE_CHANGED'; payload: string }
-  | { type: 'PART_DESCRIPTION_CHANGED'; payload: string }
-  | { type: 'PART_PART_NUMBER_CHANGED'; payload: string }
-  | { type: 'PART_OPTIONAL_CHANGED'; payload: boolean }
-  | { type: 'ADD_PART_STARTED' }
-  | { type: 'ADD_PART_SUCCEEDED'; payload: NewPartTemplate }
-  | { type: 'ADD_PART_FAILED'; payload?: string };
+  | { type: 'SAVE_ASSIGNMENT_TEMPLATE_STARTED' }
+  | { type: 'SAVE_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplate }
+  | { type: 'SAVE_ASSIGNMENT_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'DELETE_ASSIGNMENT_TEMPLATE_STARTED' }
+  | { type: 'DELETE_ASSIGNMENT_TEMPLATE_SUCCEEDED' }
+  | { type: 'DELETE_ASSIGNMENT_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'PART_TEMPLATE_TITLE_CHANGED'; payload: string }
+  | { type: 'PART_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
+  | { type: 'PART_TEMPLATE_PART_NUMBER_CHANGED'; payload: string }
+  | { type: 'PART_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
+  | { type: 'ADD_PART_TEMPLATE_STARTED' }
+  | { type: 'ADD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplate }
+  | { type: 'ADD_PART_TEMPLATE_FAILED'; payload?: string };
 
 export const initialState: State = {
   form: {
@@ -87,7 +87,7 @@ export const initialState: State = {
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'ASSIGNMENT_TEMPLATE_LOAD_SUCCEEDED':
+    case 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
         assignmentTemplate: action.payload,
@@ -117,7 +117,7 @@ export const reducer = (state: State, action: Action): State => {
         },
         error: false,
       };
-    case 'ASSIGNMENT_TEMPLATE_LOAD_FAILED':
+    case 'LOAD_ASSIGNMENT_TEMPLATE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
     case 'TITLE_CHANGED':
       return {
@@ -157,12 +157,12 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: { ...state.form, data: { ...state.form.data, optional: action.payload } },
       };
-    case 'ASSIGNMENT_TEMPLATE_SAVE_STARTED':
+    case 'SAVE_ASSIGNMENT_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
-    case 'ASSIGNMENT_TEMPLATE_SAVE_SUCCEEDED':
+    case 'SAVE_ASSIGNMENT_TEMPLATE_SUCCEEDED':
       if (!state.assignmentTemplate) {
         throw Error('assignmentTemplate is undefined');
       }
@@ -183,17 +183,17 @@ export const reducer = (state: State, action: Action): State => {
           processingState: 'idle',
         },
       };
-    case 'ASSIGNMENT_TEMPLATE_SAVE_FAILED':
+    case 'SAVE_ASSIGNMENT_TEMPLATE_FAILED':
       return {
         ...state,
         form: { ...state.form, processingState: 'save error', errorMessage: action.payload },
       };
-    case 'ASSIGNMENT_TEMPLATE_DELETE_STARTED':
+    case 'DELETE_ASSIGNMENT_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
-    case 'ASSIGNMENT_TEMPLATE_DELETE_SUCCEEDED':
+    case 'DELETE_ASSIGNMENT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
         assignmentTemplate: undefined,
@@ -205,25 +205,27 @@ export const reducer = (state: State, action: Action): State => {
             assignmentNumber: '1',
             optional: false,
           },
+          validationMessages: {},
           processingState: 'idle',
+          errorMessage: undefined,
         },
       };
-    case 'ASSIGNMENT_TEMPLATE_DELETE_FAILED':
+    case 'DELETE_ASSIGNMENT_TEMPLATE_FAILED':
       return {
         ...state,
         form: { ...state.form, processingState: 'delete error', errorMessage: action.payload },
       };
-    case 'PART_TITLE_CHANGED':
+    case 'PART_TEMPLATE_TITLE_CHANGED':
       return {
         ...state,
         partForm: { ...state.partForm, data: { ...state.partForm.data, title: action.payload } },
       };
-    case 'PART_DESCRIPTION_CHANGED':
+    case 'PART_TEMPLATE_DESCRIPTION_CHANGED':
       return {
         ...state,
         partForm: { ...state.partForm, data: { ...state.partForm.data, description: action.payload } },
       };
-    case 'PART_PART_NUMBER_CHANGED': {
+    case 'PART_TEMPLATE_PART_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
         validationMessage = 'Required';
@@ -246,17 +248,17 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'PART_OPTIONAL_CHANGED':
+    case 'PART_TEMPLATE_OPTIONAL_CHANGED':
       return {
         ...state,
         partForm: { ...state.partForm, data: { ...state.partForm.data, optional: action.payload } },
       };
-    case 'ADD_PART_STARTED':
+    case 'ADD_PART_TEMPLATE_STARTED':
       return {
         ...state,
         partForm: { ...state.partForm, processingState: 'inserting', errorMessage: undefined },
       };
-    case 'ADD_PART_SUCCEEDED': {
+    case 'ADD_PART_TEMPLATE_SUCCEEDED': {
       if (!state.assignmentTemplate) {
         throw Error('assignmentTemplate is undefined');
       }
@@ -279,7 +281,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'ADD_PART_FAILED':
+    case 'ADD_PART_TEMPLATE_FAILED':
       return {
         ...state,
         partForm: { ...state.partForm, processingState: 'insert error', errorMessage: action.payload },

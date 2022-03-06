@@ -17,7 +17,7 @@ export const newUploadSlotTemplateService = new NewUploadSlotTemplateService(axi
 
 export type { SchoolWithCourses } from './schoolService';
 export type { CourseWithUnits } from './courseService';
-export type { NewUnitTemplateWithAssignments } from './newUnitTemplateService';
+export type { NewUnitTemplateWithAssignments, NewUnitTemplatePayload } from './newUnitTemplateService';
 export type { NewAssignmentTemplateWithParts, NewAssignmentTemplatePayload } from './newAssignmentTemplateService';
 export type { NewPartTemplateWithInputs, NewPartTemplatePayload } from './newPartTemplateService';
 export type { NewTextBoxTemplateWithPart, NewTextBoxTemplatePayload } from './newTextBoxTemplateService';

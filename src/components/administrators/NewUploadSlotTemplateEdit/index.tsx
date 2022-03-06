@@ -69,7 +69,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
       takeUntil(destroy$),
     ).subscribe({
       next: uploadSlotTemplate => {
-        dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_LOAD_SUCCEEDED', payload: uploadSlotTemplate });
+        dispatch({ type: 'LOAD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED', payload: uploadSlotTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -79,17 +79,17 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_UPLOAD_SLOT_TEMPLATE_FAILED', payload: errorCode });
       },
     });
 
     save$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_STARTED' })),
+      tap(() => dispatch({ type: 'SAVE_UPLOAD_SLOT_TEMPLATE_STARTED' })),
       exhaustMap(({ payload }) => newUploadSlotTemplateService.saveUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, payload).pipe(
         tap({
           next: updatedUploadSlot => {
-            dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_SUCCEEDED', payload: updatedUploadSlot });
+            dispatch({ type: 'SAVE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED', payload: updatedUploadSlot });
           },
           error: err => {
             let message = 'Save failed';
@@ -101,7 +101,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
                 message = err.message;
               }
             }
-            dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_SAVE_FAILED', payload: message });
+            dispatch({ type: 'SAVE_UPLOAD_SLOT_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -111,11 +111,11 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
 
     delete$.current.pipe(
       filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_DELETE_STARTED' })),
+      tap(() => dispatch({ type: 'DELETE_UPLOAD_SLOT_TEMPLATE_STARTED' })),
       exhaustMap(() => newUploadSlotTemplateService.deleteUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
         tap({
           next: () => {
-            dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_DELETE_SUCCEEDED' });
+            dispatch({ type: 'DELETE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED' });
             router.back();
           },
           error: err => {
@@ -128,7 +128,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
                 message = err.message;
               }
             }
-            dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_DELETE_FAILED', payload: message });
+            dispatch({ type: 'DELETE_UPLOAD_SLOT_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -149,42 +149,42 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
 
   const labelChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'LABEL_UPDATED', payload: target.value });
+    dispatch({ type: 'LABEL_CHANGED', payload: target.value });
   };
 
   const pointsChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'POINTS_UPDATED', payload: target.value });
+    dispatch({ type: 'POINTS_CHANGED', payload: target.value });
   };
 
   const imageChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'IMAGE_UPDATED', payload: target.checked });
+    dispatch({ type: 'IMAGE_CHANGED', payload: target.checked });
   };
 
   const pdfChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'PDF_UPDATED', payload: target.checked });
+    dispatch({ type: 'PDF_CHANGED', payload: target.checked });
   };
 
   const wordChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'WORD_UPDATED', payload: target.checked });
+    dispatch({ type: 'WORD_CHANGED', payload: target.checked });
   };
 
   const excelChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'EXCEL_UPDATED', payload: target.checked });
+    dispatch({ type: 'EXCEL_CHANGED', payload: target.checked });
   };
 
   const orderChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'ORDER_UPDATED', payload: target.value });
+    dispatch({ type: 'ORDER_CHANGED', payload: target.value });
   };
 
   const optionalChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'OPTIONAL_UPDATED', payload: target.checked });
+    dispatch({ type: 'OPTIONAL_CHANGED', payload: target.checked });
   };
 
   return (

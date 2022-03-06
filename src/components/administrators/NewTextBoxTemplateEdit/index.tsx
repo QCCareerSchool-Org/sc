@@ -60,7 +60,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
       takeUntil(destroy$),
     ).subscribe({
       next: textBoxTemplate => {
-        dispatch({ type: 'TEXT_BOX_TEMPLATE_LOAD_SUCCEEDED', payload: textBoxTemplate });
+        dispatch({ type: 'LOAD_TEXT_BOX_TEMPLATE_SUCCEEDED', payload: textBoxTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -70,17 +70,17 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'TEXT_BOX_TEMPLATE_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_TEXT_BOX_TEMPLATE_FAILED', payload: errorCode });
       },
     });
 
     save$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_STARTED' })),
+      tap(() => dispatch({ type: 'SAVE_TEXT_BOX_TEMPLATE_STARTED' })),
       exhaustMap(({ payload }) => newTextBoxTemplateService.saveTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, payload).pipe(
         tap({
           next: updatedTextBox => {
-            dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED', payload: updatedTextBox });
+            dispatch({ type: 'SAVE_TEXT_BOX_TEMPLATE_SUCCEEDED', payload: updatedTextBox });
           },
           error: err => {
             let message = 'Save failed';
@@ -92,7 +92,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
                 message = err.message;
               }
             }
-            dispatch({ type: 'TEXT_BOX_TEMPLATE_SAVE_FAILED', payload: message });
+            dispatch({ type: 'SAVE_TEXT_BOX_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -102,11 +102,11 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
 
     delete$.current.pipe(
       filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_STARTED' })),
+      tap(() => dispatch({ type: 'DELETE_TEXT_BOX_TEMPLATE_STARTED' })),
       exhaustMap(() => newTextBoxTemplateService.deleteTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId).pipe(
         tap({
           next: () => {
-            dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED' });
+            dispatch({ type: 'DELETE_TEXT_BOX_TEMPLATE_SUCCEEDED' });
             router.back();
           },
           error: err => {
@@ -119,7 +119,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
                 message = err.message;
               }
             }
-            dispatch({ type: 'TEXT_BOX_TEMPLATE_DELETE_FAILED', payload: message });
+            dispatch({ type: 'DELETE_TEXT_BOX_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -140,27 +140,27 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
 
   const descriptionChange: FormEventHandler<HTMLTextAreaElement> = e => {
     const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'DESCRIPTION_UPDATED', payload: target.value });
+    dispatch({ type: 'DESCRIPTION_CHANGED', payload: target.value });
   };
 
   const pointsChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'POINTS_UPDATED', payload: target.value });
+    dispatch({ type: 'POINTS_CHANGED', payload: target.value });
   };
 
   const linesChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'LINES_UPDATED', payload: target.value });
+    dispatch({ type: 'LINES_CHANGED', payload: target.value });
   };
 
   const orderChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'ORDER_UPDATED', payload: target.value });
+    dispatch({ type: 'ORDER_CHANGED', payload: target.value });
   };
 
   const optionalChange: FormEventHandler<HTMLInputElement> = e => {
     const target = e.target as HTMLInputElement;
-    dispatch({ type: 'OPTIONAL_UPDATED', payload: target.checked });
+    dispatch({ type: 'OPTIONAL_CHANGED', payload: target.checked });
   };
 
   return (

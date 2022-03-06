@@ -26,19 +26,19 @@ export type State = {
 };
 
 type Action =
-  | { type: 'TEXT_BOX_TEMPLATE_LOAD_SUCCEEDED'; payload: NewTextBoxTemplateWithPart }
-  | { type: 'TEXT_BOX_TEMPLATE_LOAD_FAILED'; payload?: number }
-  | { type: 'DESCRIPTION_UPDATED'; payload: string }
-  | { type: 'POINTS_UPDATED'; payload: string }
-  | { type: 'LINES_UPDATED'; payload: string }
-  | { type: 'ORDER_UPDATED'; payload: string }
-  | { type: 'OPTIONAL_UPDATED'; payload: boolean }
-  | { type: 'TEXT_BOX_TEMPLATE_SAVE_STARTED' }
-  | { type: 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED'; payload: NewTextBoxTemplate }
-  | { type: 'TEXT_BOX_TEMPLATE_SAVE_FAILED'; payload?: string }
-  | { type: 'TEXT_BOX_TEMPLATE_DELETE_STARTED' }
-  | { type: 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED' }
-  | { type: 'TEXT_BOX_TEMPLATE_DELETE_FAILED'; payload?: string };
+  | { type: 'LOAD_TEXT_BOX_TEMPLATE_SUCCEEDED'; payload: NewTextBoxTemplateWithPart }
+  | { type: 'LOAD_TEXT_BOX_TEMPLATE_FAILED'; payload?: number }
+  | { type: 'DESCRIPTION_CHANGED'; payload: string }
+  | { type: 'POINTS_CHANGED'; payload: string }
+  | { type: 'LINES_CHANGED'; payload: string }
+  | { type: 'ORDER_CHANGED'; payload: string }
+  | { type: 'OPTIONAL_CHANGED'; payload: boolean }
+  | { type: 'SAVE_TEXT_BOX_TEMPLATE_STARTED' }
+  | { type: 'SAVE_TEXT_BOX_TEMPLATE_SUCCEEDED'; payload: NewTextBoxTemplate }
+  | { type: 'SAVE_TEXT_BOX_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'DELETE_TEXT_BOX_TEMPLATE_STARTED' }
+  | { type: 'DELETE_TEXT_BOX_TEMPLATE_SUCCEEDED' }
+  | { type: 'DELETE_TEXT_BOX_TEMPLATE_FAILED'; payload?: string };
 
 export const initialState: State = {
   form: {
@@ -58,7 +58,7 @@ export const initialState: State = {
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'TEXT_BOX_TEMPLATE_LOAD_SUCCEEDED':
+    case 'LOAD_TEXT_BOX_TEMPLATE_SUCCEEDED':
       return {
         ...state,
         textBoxTemplate: action.payload,
@@ -76,9 +76,9 @@ export const reducer = (state: State, action: Action): State => {
         },
         error: false,
       };
-    case 'TEXT_BOX_TEMPLATE_LOAD_FAILED':
+    case 'LOAD_TEXT_BOX_TEMPLATE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'DESCRIPTION_UPDATED':
+    case 'DESCRIPTION_CHANGED':
       return {
         ...state,
         form: {
@@ -88,7 +88,7 @@ export const reducer = (state: State, action: Action): State => {
           },
         },
       };
-    case 'POINTS_UPDATED': {
+    case 'POINTS_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -113,7 +113,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'LINES_UPDATED': {
+    case 'LINES_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const parsedLines = parseInt(action.payload, 10);
@@ -136,7 +136,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'ORDER_UPDATED': {
+    case 'ORDER_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -161,7 +161,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'OPTIONAL_UPDATED':
+    case 'OPTIONAL_CHANGED':
       return {
         ...state,
         form: {
@@ -169,12 +169,12 @@ export const reducer = (state: State, action: Action): State => {
           data: { ...state.form.data, optional: action.payload },
         },
       };
-    case 'TEXT_BOX_TEMPLATE_SAVE_STARTED':
+    case 'SAVE_TEXT_BOX_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
-    case 'TEXT_BOX_TEMPLATE_SAVE_SUCCEEDED':
+    case 'SAVE_TEXT_BOX_TEMPLATE_SUCCEEDED':
       if (!state.textBoxTemplate) {
         throw Error('textBoxTemplate is undefined');
       }
@@ -193,10 +193,12 @@ export const reducer = (state: State, action: Action): State => {
             order: action.payload.order.toString(),
             optional: action.payload.optional,
           },
+          validationMessages: {},
           processingState: 'idle',
+          errorMessage: undefined,
         },
       };
-    case 'TEXT_BOX_TEMPLATE_SAVE_FAILED':
+    case 'SAVE_TEXT_BOX_TEMPLATE_FAILED':
       return {
         ...state,
         form: {
@@ -205,12 +207,12 @@ export const reducer = (state: State, action: Action): State => {
           errorMessage: action.payload,
         },
       };
-    case 'TEXT_BOX_TEMPLATE_DELETE_STARTED':
+    case 'DELETE_TEXT_BOX_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
-    case 'TEXT_BOX_TEMPLATE_DELETE_SUCCEEDED':
+    case 'DELETE_TEXT_BOX_TEMPLATE_SUCCEEDED':
       return {
         ...state,
         textBoxTemplate: undefined,
@@ -223,10 +225,12 @@ export const reducer = (state: State, action: Action): State => {
             order: '0',
             optional: false,
           },
+          validationMessages: {},
           processingState: 'idle',
+          errorMessage: undefined,
         },
       };
-    case 'TEXT_BOX_TEMPLATE_DELETE_FAILED':
+    case 'DELETE_TEXT_BOX_TEMPLATE_FAILED':
       return {
         ...state,
         form: {

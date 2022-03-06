@@ -31,22 +31,22 @@ export type State = {
 };
 
 type Action =
-  | { type: 'UPLOAD_SLOT_TEMPLATE_LOAD_SUCCEEDED'; payload: NewUploadSlotTemplateWithPart }
-  | { type: 'UPLOAD_SLOT_TEMPLATE_LOAD_FAILED'; payload?: number }
-  | { type: 'LABEL_UPDATED'; payload: string }
-  | { type: 'IMAGE_UPDATED'; payload: boolean }
-  | { type: 'PDF_UPDATED'; payload: boolean }
-  | { type: 'WORD_UPDATED'; payload: boolean }
-  | { type: 'EXCEL_UPDATED'; payload: boolean }
-  | { type: 'POINTS_UPDATED'; payload: string }
-  | { type: 'ORDER_UPDATED'; payload: string }
-  | { type: 'OPTIONAL_UPDATED'; payload: boolean }
-  | { type: 'UPLOAD_SLOT_TEMPLATE_SAVE_STARTED' }
-  | { type: 'UPLOAD_SLOT_TEMPLATE_SAVE_SUCCEEDED'; payload: NewUploadSlotTemplate }
-  | { type: 'UPLOAD_SLOT_TEMPLATE_SAVE_FAILED'; payload?: string }
-  | { type: 'UPLOAD_SLOT_TEMPLATE_DELETE_STARTED' }
-  | { type: 'UPLOAD_SLOT_TEMPLATE_DELETE_SUCCEEDED' }
-  | { type: 'UPLOAD_SLOT_TEMPLATE_DELETE_FAILED'; payload?: string };
+  | { type: 'LOAD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED'; payload: NewUploadSlotTemplateWithPart }
+  | { type: 'LOAD_UPLOAD_SLOT_TEMPLATE_FAILED'; payload?: number }
+  | { type: 'LABEL_CHANGED'; payload: string }
+  | { type: 'IMAGE_CHANGED'; payload: boolean }
+  | { type: 'PDF_CHANGED'; payload: boolean }
+  | { type: 'WORD_CHANGED'; payload: boolean }
+  | { type: 'EXCEL_CHANGED'; payload: boolean }
+  | { type: 'POINTS_CHANGED'; payload: string }
+  | { type: 'ORDER_CHANGED'; payload: string }
+  | { type: 'OPTIONAL_CHANGED'; payload: boolean }
+  | { type: 'SAVE_UPLOAD_SLOT_TEMPLATE_STARTED' }
+  | { type: 'SAVE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED'; payload: NewUploadSlotTemplate }
+  | { type: 'SAVE_UPLOAD_SLOT_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'DELETE_UPLOAD_SLOT_TEMPLATE_STARTED' }
+  | { type: 'DELETE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED' }
+  | { type: 'DELETE_UPLOAD_SLOT_TEMPLATE_FAILED'; payload?: string };
 
 export const initialState: State = {
   form: {
@@ -71,7 +71,7 @@ export const initialState: State = {
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'UPLOAD_SLOT_TEMPLATE_LOAD_SUCCEEDED':
+    case 'LOAD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
         uploadSlotTemplate: action.payload,
@@ -94,9 +94,9 @@ export const reducer = (state: State, action: Action): State => {
         },
         error: false,
       };
-    case 'UPLOAD_SLOT_TEMPLATE_LOAD_FAILED':
+    case 'LOAD_UPLOAD_SLOT_TEMPLATE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'LABEL_UPDATED': {
+    case 'LABEL_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
@@ -114,7 +114,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'IMAGE_UPDATED': {
+    case 'IMAGE_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.form.data.allowedTypes.pdf && !state.form.data.allowedTypes.word && !state.form.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
@@ -128,7 +128,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'PDF_UPDATED': {
+    case 'PDF_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.form.data.allowedTypes.image && !state.form.data.allowedTypes.word && !state.form.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
@@ -142,7 +142,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'WORD_UPDATED': {
+    case 'WORD_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.form.data.allowedTypes.image && !state.form.data.allowedTypes.pdf && !state.form.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
@@ -156,7 +156,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'EXCEL_UPDATED': {
+    case 'EXCEL_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload && !state.form.data.allowedTypes.image && !state.form.data.allowedTypes.pdf && !state.form.data.allowedTypes.word) {
         validationMessage = 'At least one type required';
@@ -170,7 +170,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'POINTS_UPDATED': {
+    case 'POINTS_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -195,7 +195,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'ORDER_UPDATED': {
+    case 'ORDER_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
         validationMessage = 'Required';
@@ -220,7 +220,7 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'OPTIONAL_UPDATED':
+    case 'OPTIONAL_CHANGED':
       return {
         ...state,
         form: {
@@ -228,12 +228,12 @@ export const reducer = (state: State, action: Action): State => {
           data: { ...state.form.data, optional: action.payload },
         },
       };
-    case 'UPLOAD_SLOT_TEMPLATE_SAVE_STARTED':
+    case 'SAVE_UPLOAD_SLOT_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
-    case 'UPLOAD_SLOT_TEMPLATE_SAVE_SUCCEEDED':
+    case 'SAVE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED':
       if (!state.uploadSlotTemplate) {
         throw Error('uploadSlotTemplate is undefined');
       }
@@ -260,7 +260,7 @@ export const reducer = (state: State, action: Action): State => {
           processingState: 'idle',
         },
       };
-    case 'UPLOAD_SLOT_TEMPLATE_SAVE_FAILED':
+    case 'SAVE_UPLOAD_SLOT_TEMPLATE_FAILED':
       return {
         ...state,
         form: {
@@ -269,12 +269,12 @@ export const reducer = (state: State, action: Action): State => {
           errorMessage: action.payload,
         },
       };
-    case 'UPLOAD_SLOT_TEMPLATE_DELETE_STARTED':
+    case 'DELETE_UPLOAD_SLOT_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
-    case 'UPLOAD_SLOT_TEMPLATE_DELETE_SUCCEEDED':
+    case 'DELETE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
         uploadSlotTemplate: undefined,
@@ -292,10 +292,12 @@ export const reducer = (state: State, action: Action): State => {
             order: '0',
             optional: false,
           },
+          validationMessages: {},
           processingState: 'idle',
+          errorMessage: undefined,
         },
       };
-    case 'UPLOAD_SLOT_TEMPLATE_DELETE_FAILED':
+    case 'DELETE_UPLOAD_SLOT_TEMPLATE_FAILED':
       return {
         ...state,
         form: {
