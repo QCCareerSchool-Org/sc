@@ -16,9 +16,9 @@ export const newTextBoxTemplateService = new NewTextBoxTemplateService(axiosHttp
 export const newUploadSlotTemplateService = new NewUploadSlotTemplateService(axiosHttpService);
 
 export type { SchoolWithCourses } from './schoolService';
-export type { CourseWithUnits } from './courseService';
-export type { NewUnitTemplateWithAssignments, NewUnitTemplatePayload } from './newUnitTemplateService';
-export type { NewAssignmentTemplateWithParts, NewAssignmentTemplatePayload } from './newAssignmentTemplateService';
-export type { NewPartTemplateWithInputs, NewPartTemplatePayload } from './newPartTemplateService';
+export type { CourseWithSchoolAndUnits } from './courseService';
+export type { NewUnitTemplateWithCourseAndAssignments, NewUnitTemplatePayload } from './newUnitTemplateService';
+export type { NewAssignmentTemplateWithUnitAndParts, NewAssignmentTemplatePayload } from './newAssignmentTemplateService';
+export type { NewPartTemplateWithAssignmentAndInputs, NewPartTemplatePayload } from './newPartTemplateService';
 export type { NewTextBoxTemplateWithPart, NewTextBoxTemplatePayload } from './newTextBoxTemplateService';
 export type { NewUploadSlotTemplateWithPart, NewUploadSlotTemplatePayload, AllowedType } from './newUploadSlotTemplateService';

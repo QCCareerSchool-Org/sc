@@ -195,8 +195,8 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
               <table className="table table-bordered w-auto ms-lg-auto">
                 <tbody>
-                  <tr><th scope="row">Unit</th><td>{state.assignmentTemplate.unit.title ?? state.assignmentTemplate.unit.unitLetter}</td></tr>
-                  <tr><th scope="row">Parts</th><td>{state.assignmentTemplate.parts.length}</td></tr>
+                  <tr><th scope="row">Unit</th><td>{state.assignmentTemplate.newUnitTemplate.title ?? state.assignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
+                  <tr><th scope="row">Parts</th><td>{state.assignmentTemplate.newPartTemplates.length}</td></tr>
                   <tr><th scope="row">Created</th><td>{formatDateTime(state.assignmentTemplate.created)}</td></tr>
                   {state.assignmentTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.assignmentTemplate.modified)}</td></tr>}
                 </tbody>
@@ -210,7 +210,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <h2 className="h3">Part Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewPartTemplateList parts={state.assignmentTemplate.parts} partRowClick={partRowClick} />
+              <NewPartTemplateList parts={state.assignmentTemplate.newPartTemplates} partRowClick={partRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewPartTemplateAddForm

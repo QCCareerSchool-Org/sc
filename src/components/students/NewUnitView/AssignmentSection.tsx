@@ -2,10 +2,10 @@ import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement } from 'react';
 
 import { basePath } from '../../../basePath';
-import type { NewUnitWithAssignments } from '@/services/students';
+import type { NewUnitWithCourseAndChildren } from '@/services/students';
 
 type Props = {
-  unit: NewUnitWithAssignments;
+  unit: NewUnitWithCourseAndChildren;
 };
 
 export const AssignmentSection = ({ unit }: Props): ReactElement | null => {
@@ -33,7 +33,7 @@ export const AssignmentSection = ({ unit }: Props): ReactElement | null => {
             </tr>
           </thead>
           <tbody>
-            {unit.assignments.map(a => (
+            {unit.newAssignments.map(a => (
               <tr key={a.assignmentId} onClick={e => assignmentClick(e, a.assignmentId)} style={{ cursor: 'pointer' }}>
                 <th scope="row">{a.assignmentNumber}</th>
                 <td>{a.title}{a.optional && <span className="ms-1 text-danger">*</span>}</td>
@@ -42,7 +42,7 @@ export const AssignmentSection = ({ unit }: Props): ReactElement | null => {
             ))}
           </tbody>
         </table>
-        {unit.assignments.some(a => a.optional) && <p><span className="ms-1 text-danger">*</span> Optional assignment</p>}
+        {unit.newAssignments.some(a => a.optional) && <p><span className="ms-1 text-danger">*</span> Optional assignment</p>}
       </div>
     </section>
   );

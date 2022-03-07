@@ -268,8 +268,8 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     return null;
   }
 
-  const partDescriptionWarning = !state.partTemplate.description && (state.partTemplate.uploadSlots.length > 0 || state.partTemplate.textBoxes.filter(t => !t.description).length > 0);
-  const textBoxDescriptionWarning = state.partTemplate.textBoxes.filter(t => !t.description).length > 1;
+  const partDescriptionWarning = !state.partTemplate.description && (state.partTemplate.newUploadSlotTemplates.length > 0 || state.partTemplate.newTextBoxTemplates.filter(t => !t.description).length > 0);
+  const textBoxDescriptionWarning = state.partTemplate.newTextBoxTemplates.length > 1 && state.partTemplate.newTextBoxTemplates.some(t => !t.description);
 
   return (
     <>
@@ -289,32 +289,34 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 optionalChange={optionalChange}
               />
             </div>
-            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
-              <table className="table table-bordered w-auto ms-lg-auto">
-                <tbody>
-                  <tr><th scope="row">Assignment</th><td>{state.partTemplate.assignment.title ?? state.partTemplate.assignment.assignmentNumber}</td></tr>
-                  <tr><th scope="row">Text Boxes</th><td>{state.partTemplate.textBoxes.length}</td></tr>
-                  <tr><th scope="row">Upload Slots</th><td>{state.partTemplate.uploadSlots.length}</td></tr>
-                  <tr><th scope="row">Created</th><td>{formatDateTime(state.partTemplate.created)}</td></tr>
-                  {state.partTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.partTemplate.modified)}</td></tr>}
-                </tbody>
-              </table>
-              {(partDescriptionWarning || textBoxDescriptionWarning) && (
-                <div className="col-12 col-lg-6 mt-3 mt-lg-0">
-                  {partDescriptionWarning && (
-                    <div className="alert alert-warning">
-                      <h6>Part Description Warning</h6>
-                      <p className="mb-0">A part can only omit a description if all its text boxes have descriptions and it has no upload slots.</p>
-                    </div>
-                  )}
-                  {textBoxDescriptionWarning && (
-                    <div className="alert alert-warning">
-                      <h6>Text Box Description Warning</h6>
-                      <p className="mb-0">A text box can only omit a description when it is the only text box for the part and the part has a description.</p>
-                    </div>
-                  )}
-                </div>
-              )}
+            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex">
+              <div className="d-flex flex-column justify-content-between">
+                <table className="table table-bordered w-auto ms-lg-auto">
+                  <tbody>
+                    <tr><th scope="row">Assignment</th><td>{state.partTemplate.newAssignmentTemplate.title ?? state.partTemplate.newAssignmentTemplate.assignmentNumber}</td></tr>
+                    <tr><th scope="row">Text Boxes</th><td>{state.partTemplate.newTextBoxTemplates.length}</td></tr>
+                    <tr><th scope="row">Upload Slots</th><td>{state.partTemplate.newUploadSlotTemplates.length}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.partTemplate.created)}</td></tr>
+                    {state.partTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.partTemplate.modified)}</td></tr>}
+                  </tbody>
+                </table>
+                {(partDescriptionWarning || textBoxDescriptionWarning) && (
+                  <div>
+                    {partDescriptionWarning && (
+                      <div className="alert alert-warning">
+                        <h6>Part Description Warning</h6>
+                        <p className="mb-0">A part should not omit a description if any of its text boxes are missing descriptions or if it has any upload slots.</p>
+                      </div>
+                    )}
+                    {textBoxDescriptionWarning && (
+                      <div className="alert alert-warning">
+                        <h6>Text Box Description Warning</h6>
+                        <p className="mb-0">When there are multiple text boxes, each text box should have a description.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -324,7 +326,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Text Box Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewTextBoxTemplateList textBoxes={state.partTemplate.textBoxes} textBoxRowClick={textBoxRowClick} />
+              <NewTextBoxTemplateList textBoxes={state.partTemplate.newTextBoxTemplates} textBoxRowClick={textBoxRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewTextBoxTemplateAddForm
@@ -345,7 +347,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Upload Slot Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewUploadSlotTemplateList uploadSlots={state.partTemplate.uploadSlots} uploadSlotRowClick={uploadSlotRowClick} />
+              <NewUploadSlotTemplateList uploadSlots={state.partTemplate.newUploadSlotTemplates} uploadSlotRowClick={uploadSlotRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewUploadSlotTemplateAddForm

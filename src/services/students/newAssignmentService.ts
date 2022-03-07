@@ -5,9 +5,9 @@ import { IHttpService } from '../httpService';
 import type { NewAssignment, NewPart, NewTextBox, NewUploadSlot } from '@/domain/students';
 
 export type NewAssignmentWithChildren = NewAssignment & {
-  parts: Array<NewPart & {
-    textBoxes: Array<NewTextBox>;
-    uploadSlots: Array<NewUploadSlot>;
+  newParts: Array<NewPart & {
+    newTextBoxes: Array<NewTextBox>;
+    newUploadSlots: Array<NewUploadSlot>;
   }>;
 };
 

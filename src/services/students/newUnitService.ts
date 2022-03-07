@@ -2,20 +2,30 @@ import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
-import type { Enrollment, NewAssignment, NewUnit, RawEnrollment, RawNewAssignment, RawNewUnit } from '@/domain/students';
+import type { Enrollment, NewAssignment, NewPart, NewTextBox, NewUnit, NewUploadSlot, RawEnrollment, RawNewAssignment, RawNewUnit } from '@/domain/students';
 
-export type NewUnitWithAssignments = NewUnit & {
+export type NewUnitWithCourseAndChildren = NewUnit & {
   enrollment: Enrollment;
-  assignments: Array<NewAssignment>;
+  newAssignments: Array<NewAssignment & {
+    newParts: Array<NewPart & {
+      newTextBoxes: NewTextBox[];
+      newUploadSlots: NewUploadSlot[];
+    }>;
+  }>;
 };
 
-type RawNewUnitWithAssignments = RawNewUnit & {
+type RawNewUnitWithCourseAndChildren = RawNewUnit & {
   enrollment: RawEnrollment;
-  assignments: Array<RawNewAssignment>;
+  newAssignments: Array<RawNewAssignment & {
+    newParts: Array<NewPart & {
+      newTextBoxes: NewTextBox[];
+      newUploadSlots: NewUploadSlot[];
+    }>;
+  }>;
 };
 
 export interface INewUnitService {
-  getUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithAssignments>;
+  getUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithCourseAndChildren>;
   submitUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnit>;
   skipUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnit>;
 }
@@ -24,10 +34,10 @@ export class NewUnitService implements INewUnitService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithAssignments> {
+  public getUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithCourseAndChildren> {
     const url = this.getBaseUrl(studentId, courseId, unitId);
-    return this.httpService.get<RawNewUnitWithAssignments>(url).pipe(
-      map(this.mapNewUnitWithAssignments),
+    return this.httpService.get<RawNewUnitWithCourseAndChildren>(url).pipe(
+      map(this.mapNewUnitWithCourseAndChildren),
     );
   }
 
@@ -60,7 +70,7 @@ export class NewUnitService implements INewUnitService {
     };
   };
 
-  private readonly mapNewUnitWithAssignments = (unit: RawNewUnitWithAssignments): NewUnitWithAssignments => {
+  private readonly mapNewUnitWithCourseAndChildren = (unit: RawNewUnitWithCourseAndChildren): NewUnitWithCourseAndChildren => {
     return {
       ...unit,
       submitted: unit.submitted === null ? null : new Date(unit.submitted),
@@ -68,7 +78,7 @@ export class NewUnitService implements INewUnitService {
       transferred: unit.transferred === null ? null : new Date(unit.transferred),
       marked: unit.marked === null ? null : new Date(unit.marked),
       created: new Date(unit.created),
-      assignments: unit.assignments.map(a => ({
+      newAssignments: unit.newAssignments.map(a => ({
         ...a,
         created: new Date(a.created),
       })),

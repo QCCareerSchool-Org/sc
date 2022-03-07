@@ -1,7 +1,7 @@
-import { NewUnitWithAssignments } from '@/services/students';
+import { NewUnitWithCourseAndChildren } from '@/services/students';
 
 export type State = {
-  unit?: NewUnitWithAssignments;
+  unit?: NewUnitWithCourseAndChildren;
   error: boolean;
   errorCode?: number;
   processingState: 'idle' | 'submitting' | 'skipping' | 'submit error' | 'skip error';
@@ -9,7 +9,7 @@ export type State = {
 };
 
 export type Action =
-  | { type: 'UNIT_LOAD_SUCEEDED'; payload: NewUnitWithAssignments }
+  | { type: 'UNIT_LOAD_SUCEEDED'; payload: NewUnitWithCourseAndChildren }
   | { type: 'UNIT_LOAD_FAILED'; payload?: number }
   | { type: 'SUBMIT_STARTED' }
   | { type: 'SUBMIT_SUCCEEDED' }

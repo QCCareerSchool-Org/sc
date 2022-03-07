@@ -11,19 +11,19 @@ export type NewUnitTemplatePayload = {
   optional: boolean;
 };
 
-type RawNewUnitTemplateWithAssignments = RawNewUnitTemplate & {
+type RawNewUnitTemplateWithCourseAndAssignments = RawNewUnitTemplate & {
   course: Course;
-  assignments: RawNewAssignmentTemplate[];
+  newAssignmentTemplates: RawNewAssignmentTemplate[];
 };
 
-export type NewUnitTemplateWithAssignments = NewUnitTemplate & {
+export type NewUnitTemplateWithCourseAndAssignments = NewUnitTemplate & {
   course: Course;
-  assignments: NewAssignmentTemplate[];
+  newAssignmentTemplates: NewAssignmentTemplate[];
 };
 
 export interface INewUnitTemplateService {
   addUnit: (administratorId: number, schoolId: number, courseId: number, payload: NewUnitTemplatePayload) => Observable<NewUnitTemplate>;
-  getUnit: (administratorId: number, schoolId: number, courseId: number, unitId: string) => Observable<NewUnitTemplateWithAssignments>;
+  getUnit: (administratorId: number, schoolId: number, courseId: number, unitId: string) => Observable<NewUnitTemplateWithCourseAndAssignments>;
   saveUnit: (administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewUnitTemplatePayload) => Observable<NewUnitTemplate>;
   deleteUnit: (administratorId: number, schoolId: number, courseId: number, unitId: string) => Observable<void>;
 }
@@ -39,10 +39,10 @@ export class NewUnitTemplateService implements INewUnitTemplateService {
     );
   }
 
-  public getUnit(administratorId: number, schoolId: number, courseId: number, unitId: string): Observable<NewUnitTemplateWithAssignments> {
+  public getUnit(administratorId: number, schoolId: number, courseId: number, unitId: string): Observable<NewUnitTemplateWithCourseAndAssignments> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId)}/${unitId}`;
-    return this.httpService.get<RawNewUnitTemplateWithAssignments>(url).pipe(
-      map(this.mapNewUnitTemplateWithAssignments),
+    return this.httpService.get<RawNewUnitTemplateWithCourseAndAssignments>(url).pipe(
+      map(this.mapNewUnitTemplateWithCourseAndAssignments),
     );
   }
 
@@ -70,12 +70,12 @@ export class NewUnitTemplateService implements INewUnitTemplateService {
     };
   }
 
-  private mapNewUnitTemplateWithAssignments(unit: RawNewUnitTemplateWithAssignments): NewUnitTemplateWithAssignments {
+  private mapNewUnitTemplateWithCourseAndAssignments(unit: RawNewUnitTemplateWithCourseAndAssignments): NewUnitTemplateWithCourseAndAssignments {
     return {
       ...unit,
       created: new Date(unit.created),
       modified: unit.modified === null ? null : new Date(unit.modified),
-      assignments: unit.assignments.map(a => ({
+      newAssignmentTemplates: unit.newAssignmentTemplates.map(a => ({
         ...a,
         created: new Date(a.created),
         modified: a.modified === null ? null : new Date(a.modified),

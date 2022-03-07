@@ -1,8 +1,8 @@
-import { NewUnitTemplate } from '@/domain/newUnitTemplate';
-import type { CourseWithUnits } from '@/services/administrators';
+import type { NewUnitTemplate } from '@/domain/index';
+import type { CourseWithSchoolAndUnits } from '@/services/administrators';
 
 export type State = {
-  course?: CourseWithUnits;
+  course?: CourseWithSchoolAndUnits;
   unitForm: {
     data: {
       title: string;
@@ -24,7 +24,7 @@ export type State = {
 };
 
 type Action =
-  | { type: 'LOAD_COURSE_SUCCEEDED'; payload: CourseWithUnits }
+  | { type: 'LOAD_COURSE_SUCCEEDED'; payload: CourseWithSchoolAndUnits }
   | { type: 'LOAD_COURSE_FAILED'; payload?: number }
   | { type: 'UNIT_TEMPLATE_TITLE_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }

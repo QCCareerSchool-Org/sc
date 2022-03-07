@@ -18,6 +18,7 @@ export const AccountIcon = (): ReactElement => (
         border-radius:28px;
         background:url('/students/portraits/view.php?thumbnail=64&amp;v=1590199169');
         background-size:cover;
+        margin-right: 1rem;
       }
     `}</style>
   </>

@@ -71,7 +71,7 @@ export const NewTextBoxTemplateAddForm = memo(({ formState, insert$, description
             <div className="formGroup">
               <label htmlFor="newTextBoxTemplateOrder" className="form-label">Order <span className="text-danger">*</span></label>
               <input onChange={orderChange} value={formState.data.order} type="number" id="newTextBoxTemplateOrder" min={0} max={127} className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} required aria-describedby="newTextBoxTemplateOrderHelp" />
-              <div id="newTextBoxTemplateOrderHelp" className="form-text">The order in which the text box should appear</div>
+              <div id="newTextBoxTemplateOrderHelp" className="form-text">The order in which the text box should appear within its part</div>
               {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
             </div>
             <div className="formGroup">

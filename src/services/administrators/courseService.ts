@@ -4,28 +4,28 @@ import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
 import type { Course, NewUnitTemplate, RawNewUnitTemplate, School } from '@/domain/index';
 
-type RawCourseWithUnits = Course & {
+type RawCourseWithSchoolAndUnits = Course & {
   school: School;
   newUnitTemplates: RawNewUnitTemplate[];
 };
 
-export type CourseWithUnits = Course & {
+export type CourseWithSchoolAndUnits = Course & {
   school: School;
   newUnitTemplates: NewUnitTemplate[];
 };
 
 export interface ICourseService {
-  getCourse: (administratorId: number, schoolId: number, courseId: number) => Observable<CourseWithUnits>;
+  getCourse: (administratorId: number, schoolId: number, courseId: number) => Observable<CourseWithSchoolAndUnits>;
 }
 
 export class CourseService implements ICourseService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getCourse(administratorId: number, schoolId: number, courseId: number): Observable<CourseWithUnits> {
+  public getCourse(administratorId: number, schoolId: number, courseId: number): Observable<CourseWithSchoolAndUnits> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId);
-    return this.httpService.get<RawCourseWithUnits>(url).pipe(
-      map(this.mapCourse),
+    return this.httpService.get<RawCourseWithSchoolAndUnits>(url).pipe(
+      map(this.mapCourseWithSchoolAndUnits),
     );
   }
 
@@ -33,7 +33,7 @@ export class CourseService implements ICourseService {
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}`;
   }
 
-  private mapCourse(course: RawCourseWithUnits): CourseWithUnits {
+  private mapCourseWithSchoolAndUnits(course: RawCourseWithSchoolAndUnits): CourseWithSchoolAndUnits {
     return {
       ...course,
       newUnitTemplates: course.newUnitTemplates.map(u => ({

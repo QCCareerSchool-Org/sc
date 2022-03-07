@@ -11,19 +11,19 @@ export type NewAssignmentTemplatePayload = {
   optional: boolean;
 };
 
-type RawNewAssignmentTemplateWithParts = RawNewAssignmentTemplate & {
-  unit: RawNewUnitTemplate;
-  parts: RawNewPartTemplate[];
+type RawNewAssignmentTemplateWithUnitAndParts = RawNewAssignmentTemplate & {
+  newUnitTemplate: RawNewUnitTemplate;
+  newPartTemplates: RawNewPartTemplate[];
 };
 
-export type NewAssignmentTemplateWithParts = NewAssignmentTemplate & {
-  unit: NewUnitTemplate;
-  parts: NewPartTemplate[];
+export type NewAssignmentTemplateWithUnitAndParts = NewAssignmentTemplate & {
+  newUnitTemplate: NewUnitTemplate;
+  newPartTemplates: NewPartTemplate[];
 };
 
 export interface INewAssignmentTemplateService {
   addAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewAssignmentTemplatePayload) => Observable<NewAssignmentTemplate>;
-  getAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string) => Observable<NewAssignmentTemplateWithParts>;
+  getAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string) => Observable<NewAssignmentTemplateWithUnitAndParts>;
   saveAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentTemplatePayload) => Observable<NewAssignmentTemplate>;
   deleteAssignment: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string) => Observable<void>;
 }
@@ -39,10 +39,10 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
     );
   }
 
-  public getAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentTemplateWithParts> {
+  public getAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentTemplateWithUnitAndParts> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
-    return this.httpService.get<RawNewAssignmentTemplateWithParts>(url).pipe(
-      map(this.mapNewAssignmentTemplateWithParts),
+    return this.httpService.get<RawNewAssignmentTemplateWithUnitAndParts>(url).pipe(
+      map(this.mapNewAssignmentTemplateWithUnitAndParts),
     );
   }
 
@@ -70,17 +70,17 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
     };
   }
 
-  private mapNewAssignmentTemplateWithParts(assignment: RawNewAssignmentTemplateWithParts): NewAssignmentTemplateWithParts {
+  private mapNewAssignmentTemplateWithUnitAndParts(assignment: RawNewAssignmentTemplateWithUnitAndParts): NewAssignmentTemplateWithUnitAndParts {
     return {
       ...assignment,
       created: new Date(assignment.created),
       modified: assignment.modified === null ? null : new Date(assignment.modified),
-      unit: {
-        ...assignment.unit,
-        created: new Date(assignment.unit.created),
-        modified: assignment.unit.modified === null ? null : new Date(assignment.unit.modified),
+      newUnitTemplate: {
+        ...assignment.newUnitTemplate,
+        created: new Date(assignment.newUnitTemplate.created),
+        modified: assignment.newUnitTemplate.modified === null ? null : new Date(assignment.newUnitTemplate.modified),
       },
-      parts: assignment.parts.map(p => ({
+      newPartTemplates: assignment.newPartTemplates.map(p => ({
         ...p,
         created: new Date(p.created),
         modified: p.modified === null ? null : new Date(p.modified),

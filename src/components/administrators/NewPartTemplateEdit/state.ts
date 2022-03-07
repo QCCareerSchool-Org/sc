@@ -1,9 +1,9 @@
 import type { NewPartTemplate, NewTextBoxTemplate, NewUploadSlotTemplate } from '@/domain/index';
-import type { NewPartTemplateWithInputs } from '@/services/administrators';
+import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators';
 import { uuidService } from '@/services/index';
 
 export type State = {
-  partTemplate?: NewPartTemplateWithInputs;
+  partTemplate?: NewPartTemplateWithAssignmentAndInputs;
   form: {
     data: {
       title: string;
@@ -66,7 +66,7 @@ export type State = {
 };
 
 type Action =
-  | { type: 'LOAD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplateWithInputs }
+  | { type: 'LOAD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplateWithAssignmentAndInputs }
   | { type: 'LOAD_PART_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
@@ -165,7 +165,7 @@ export const reducer = (state: State, action: Action): State => {
             description: '',
             points: '1',
             lines: '',
-            order: action.payload.textBoxes.length === 0 ? '0' : (Math.max(...action.payload.textBoxes.map(t => t.order)) + 1).toString(),
+            order: action.payload.newTextBoxTemplates.length === 0 ? '0' : (Math.max(...action.payload.newTextBoxTemplates.map(t => t.order)) + 1).toString(),
             optional: false,
           },
           validationMessages: {},
@@ -183,7 +183,7 @@ export const reducer = (state: State, action: Action): State => {
               word: false,
               excel: false,
             },
-            order: action.payload.uploadSlots.length === 0 ? '0' : (Math.max(...action.payload.uploadSlots.map(u => u.order)) + 1).toString(),
+            order: action.payload.newUploadSlotTemplates.length === 0 ? '0' : (Math.max(...action.payload.newUploadSlotTemplates.map(u => u.order)) + 1).toString(),
             optional: false,
           },
           validationMessages: {},
@@ -418,7 +418,7 @@ export const reducer = (state: State, action: Action): State => {
       if (!state.partTemplate) {
         throw Error('partTemplate is undefined');
       }
-      const textBoxes = [ ...state.partTemplate.textBoxes, action.payload ].sort((a, b) => {
+      const newTextBoxTemplates = [ ...state.partTemplate.newTextBoxTemplates, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
           return uuidService.compare(a.textBoxId, b.textBoxId);
         }
@@ -428,7 +428,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         partTemplate: {
           ...state.partTemplate,
-          textBoxes,
+          newTextBoxTemplates,
         },
         textBoxForm: {
           ...state.textBoxForm,
@@ -436,7 +436,7 @@ export const reducer = (state: State, action: Action): State => {
             description: '',
             points: '1',
             lines: '',
-            order: (Math.max(...textBoxes.map(t => t.order)) + 1).toString(),
+            order: (Math.max(...newTextBoxTemplates.map(t => t.order)) + 1).toString(),
             optional: false,
           },
           validationMessages: {},
@@ -580,7 +580,7 @@ export const reducer = (state: State, action: Action): State => {
       if (!state.partTemplate) {
         throw Error('partTemplate is undefined');
       }
-      const uploadSlots = [ ...state.partTemplate.uploadSlots, action.payload ].sort((a, b) => {
+      const newUploadSlotTemplates = [ ...state.partTemplate.newUploadSlotTemplates, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
           return uuidService.compare(a.uploadSlotId, b.uploadSlotId);
         }
@@ -590,7 +590,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         partTemplate: {
           ...state.partTemplate,
-          uploadSlots,
+          newUploadSlotTemplates,
         },
         uploadSlotForm: {
           ...state.uploadSlotForm,
@@ -603,7 +603,7 @@ export const reducer = (state: State, action: Action): State => {
               word: false,
               excel: false,
             },
-            order: (Math.max(...uploadSlots.map(u => u.order)) + 1).toString(),
+            order: (Math.max(...newUploadSlotTemplates.map(u => u.order)) + 1).toString(),
             optional: false,
           },
           validationMessages: {},

@@ -1,9 +1,9 @@
 import { ReactElement } from 'react';
 
-import type { NewUnitWithAssignments } from '@/services/students';
+import type { NewUnitWithCourseAndChildren } from '@/services/students';
 
 type Props = {
-  unit: NewUnitWithAssignments;
+  unit: NewUnitWithCourseAndChildren;
 };
 
 export const AssignmentStatus = ({ unit }: Props): ReactElement | null => {

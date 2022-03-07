@@ -1,9 +1,9 @@
 import { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
-import type { NewAssignmentTemplateWithParts } from '@/services/administrators';
+import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators';
 
 export type State = {
-  assignmentTemplate?: NewAssignmentTemplateWithParts;
+  assignmentTemplate?: NewAssignmentTemplateWithUnitAndParts;
   form: {
     data: {
       title: string;
@@ -41,7 +41,7 @@ export type State = {
 };
 
 type Action =
-  | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithParts }
+  | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithUnitAndParts }
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
@@ -108,7 +108,7 @@ export const reducer = (state: State, action: Action): State => {
           data: {
             title: '',
             description: '',
-            partNumber: action.payload.parts.length === 0 ? '1' : (Math.max(...action.payload.parts.map(p => p.partNumber)) + 1).toString(),
+            partNumber: action.payload.newPartTemplates.length === 0 ? '1' : (Math.max(...action.payload.newPartTemplates.map(p => p.partNumber)) + 1).toString(),
             optional: false,
           },
           validationMessages: {},
@@ -262,19 +262,19 @@ export const reducer = (state: State, action: Action): State => {
       if (!state.assignmentTemplate) {
         throw Error('assignmentTemplate is undefined');
       }
-      const parts = [ ...state.assignmentTemplate.parts, action.payload ].sort((a, b) => a.partNumber - b.partNumber);
+      const newPartTemplates = [ ...state.assignmentTemplate.newPartTemplates, action.payload ].sort((a, b) => a.partNumber - b.partNumber);
       return {
         ...state,
         assignmentTemplate: {
           ...state.assignmentTemplate,
-          parts,
+          newPartTemplates,
         },
         partForm: {
           ...state.partForm,
           data: {
             title: '',
             description: '',
-            partNumber: (Math.max(...parts.map(p => p.partNumber)) + 1).toString(),
+            partNumber: (Math.max(...newPartTemplates.map(p => p.partNumber)) + 1).toString(),
             optional: false,
           },
           processingState: 'idle',

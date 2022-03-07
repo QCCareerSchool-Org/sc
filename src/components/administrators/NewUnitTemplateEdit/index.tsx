@@ -195,7 +195,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
               <table className="table table-bordered w-auto ms-lg-auto">
                 <tbody>
                   <tr><th scope="row">Course</th><td>{state.unitTemplate.course.name}</td></tr>
-                  <tr><th scope="row">Assignments</th><td>{state.unitTemplate.assignments.length}</td></tr>
+                  <tr><th scope="row">Assignments</th><td>{state.unitTemplate.newAssignmentTemplates.length}</td></tr>
                   <tr><th scope="row">Created</th><td>{formatDateTime(state.unitTemplate.created)}</td></tr>
                   {state.unitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.unitTemplate.modified)}</td></tr>}
                 </tbody>
@@ -209,7 +209,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Assignment Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewAssignmentTemplateList assignments={state.unitTemplate.assignments} assignmentRowClick={assignmentRowClick} />
+              <NewAssignmentTemplateList assignments={state.unitTemplate.newAssignmentTemplates} assignmentRowClick={assignmentRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentTemplateAddForm

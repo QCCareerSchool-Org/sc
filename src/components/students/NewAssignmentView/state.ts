@@ -84,30 +84,33 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
-const assignmentLoad = (state: State, assignmentWithChildren: NewAssignmentWithChildren): State => {
-  const assignment: AssignmentState = {
-    ...assignmentWithChildren,
-    formState: 'pristine',
-    saveState: 'saved',
-    parts: assignmentWithChildren.parts.map(p => ({
-      ...p,
+const assignmentLoad = (state: State, assignment: NewAssignmentWithChildren): State => {
+  return {
+    ...state,
+    assignment: {
+      ...assignment,
       formState: 'pristine',
       saveState: 'saved',
-      textBoxes: p.textBoxes.map(t => ({
-        ...t,
+      parts: assignment.newParts.map(p => ({
+        ...p,
         formState: 'pristine',
-        saveState: null,
-        savedText: t.text,
+        saveState: 'saved',
+        textBoxes: p.newTextBoxes.map(t => ({
+          ...t,
+          formState: 'pristine',
+          saveState: null,
+          savedText: t.text,
+        })),
+        uploadSlots: p.newUploadSlots.map(u => ({
+          ...u,
+          formState: 'pristine',
+          saveState: u.complete ? 'saved' : 'empty',
+          progress: u.complete ? 100 : 0,
+        })),
       })),
-      uploadSlots: p.uploadSlots.map(u => ({
-        ...u,
-        formState: 'pristine',
-        saveState: u.complete ? 'saved' : 'empty',
-        progress: u.complete ? 100 : 0,
-      })),
-    })),
+    },
+    error: false,
   };
-  return { ...state, assignment, error: false };
 };
 
 /**

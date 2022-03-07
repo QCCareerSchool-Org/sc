@@ -3,10 +3,10 @@ import type { Subject } from 'rxjs';
 
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { NewUnitTemplatePayload, NewUnitTemplateWithAssignments } from '@/services/administrators';
+import type { NewUnitTemplatePayload, NewUnitTemplateWithCourseAndAssignments } from '@/services/administrators';
 
 type Props = {
-  unitTemplate: NewUnitTemplateWithAssignments;
+  unitTemplate: NewUnitTemplateWithCourseAndAssignments;
   formState: State['form'];
   save$: Subject<{ processingState: State['form']['processingState']; payload: NewUnitTemplatePayload }>;
   delete$: Subject<State['form']['processingState']>;
@@ -45,7 +45,7 @@ export const NewUnitTemplateEditForm = memo(({ unitTemplate, formState, save$, d
   };
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this unit template and all its assignments?\n\nassignments: ${unitTemplate?.assignments.length}`)) {
+    if (confirm(`Are you sure you want to delete this unit template and all its assignments?\n\nassignments: ${unitTemplate?.newAssignmentTemplates.length}`)) {
       delete$.next(formState.processingState);
     }
   };

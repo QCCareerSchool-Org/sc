@@ -11,21 +11,21 @@ export type NewPartTemplatePayload = {
   optional: boolean;
 };
 
-type RawNewPartTemplateWithInputs = RawNewPartTemplate & {
-  assignment: RawNewAssignmentTemplate;
-  textBoxes: RawNewTextBoxTemplate[];
-  uploadSlots: RawNewUploadSlotTemplate[];
+type RawNewPartTemplateWithAssignmentAndInputs = RawNewPartTemplate & {
+  newAssignmentTemplate: RawNewAssignmentTemplate;
+  newTextBoxTemplates: RawNewTextBoxTemplate[];
+  newUploadSlotTemplates: RawNewUploadSlotTemplate[];
 };
 
-export type NewPartTemplateWithInputs = NewPartTemplate & {
-  assignment: NewAssignmentTemplate;
-  textBoxes: NewTextBoxTemplate[];
-  uploadSlots: NewUploadSlotTemplate[];
+export type NewPartTemplateWithAssignmentAndInputs = NewPartTemplate & {
+  newAssignmentTemplate: NewAssignmentTemplate;
+  newTextBoxTemplates: NewTextBoxTemplate[];
+  newUploadSlotTemplates: NewUploadSlotTemplate[];
 };
 
 export interface INewPartTemplateService {
   addPart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, data: NewPartTemplatePayload) => Observable<NewPartTemplate>;
-  getPart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string) => Observable<NewPartTemplateWithInputs>;
+  getPart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string) => Observable<NewPartTemplateWithAssignmentAndInputs>;
   savePart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, data: NewPartTemplatePayload) => Observable<NewPartTemplate>;
   deletePart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string) => Observable<void>;
 }
@@ -41,10 +41,10 @@ export class NewPartTemplateService implements INewPartTemplateService {
     );
   }
 
-  public getPart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): Observable<NewPartTemplateWithInputs> {
+  public getPart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): Observable<NewPartTemplateWithAssignmentAndInputs> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${partId}`;
-    return this.httpService.get<RawNewPartTemplateWithInputs>(url).pipe(
-      map(this.mapNewParTemplateWithInputs),
+    return this.httpService.get<RawNewPartTemplateWithAssignmentAndInputs>(url).pipe(
+      map(this.mapNewParTemplateWithAssignmentAndInputs),
     );
   }
 
@@ -72,22 +72,22 @@ export class NewPartTemplateService implements INewPartTemplateService {
     };
   }
 
-  private mapNewParTemplateWithInputs(part: RawNewPartTemplateWithInputs): NewPartTemplateWithInputs {
+  private mapNewParTemplateWithAssignmentAndInputs(part: RawNewPartTemplateWithAssignmentAndInputs): NewPartTemplateWithAssignmentAndInputs {
     return {
       ...part,
       created: new Date(part.created),
       modified: part.modified === null ? null : new Date(part.modified),
-      assignment: {
-        ...part.assignment,
-        created: new Date(part.assignment.created),
-        modified: part.assignment.modified === null ? null : new Date(part.assignment.modified),
+      newAssignmentTemplate: {
+        ...part.newAssignmentTemplate,
+        created: new Date(part.newAssignmentTemplate.created),
+        modified: part.newAssignmentTemplate.modified === null ? null : new Date(part.newAssignmentTemplate.modified),
       },
-      textBoxes: part.textBoxes.map(t => ({
+      newTextBoxTemplates: part.newTextBoxTemplates.map(t => ({
         ...t,
         created: new Date(t.created),
         modified: t.modified === null ? null : new Date(t.modified),
       })),
-      uploadSlots: part.uploadSlots.map(u => ({
+      newUploadSlotTemplates: part.newUploadSlotTemplates.map(u => ({
         ...u,
         created: new Date(u.created),
         modified: u.modified === null ? null : new Date(u.modified),

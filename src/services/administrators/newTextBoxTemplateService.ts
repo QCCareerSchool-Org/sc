@@ -5,11 +5,11 @@ import type { IHttpService } from '../httpService';
 import type { NewPartTemplate, NewTextBoxTemplate, RawNewPartTemplate, RawNewTextBoxTemplate } from '@/domain/index';
 
 type RawNewTextBoxTemplateWithPart = RawNewTextBoxTemplate & {
-  part: RawNewPartTemplate;
+  newPartTemplate: RawNewPartTemplate;
 };
 
 export type NewTextBoxTemplateWithPart = NewTextBoxTemplate & {
-  part: NewPartTemplate;
+  newPartTemplate: NewPartTemplate;
 };
 
 export type NewTextBoxTemplatePayload = {
@@ -74,10 +74,10 @@ export class NewTextBoxTemplateService implements INewTextBoxTemplateService {
       ...textBox,
       created: new Date(textBox.created),
       modified: textBox.modified === null ? null : new Date(textBox.modified),
-      part: {
-        ...textBox.part,
-        created: new Date(textBox.part.created),
-        modified: textBox.part.modified === null ? null : new Date(textBox.part.modified),
+      newPartTemplate: {
+        ...textBox.newPartTemplate,
+        created: new Date(textBox.newPartTemplate.created),
+        modified: textBox.newPartTemplate.modified === null ? null : new Date(textBox.newPartTemplate.modified),
       },
     };
   }

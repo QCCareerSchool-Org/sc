@@ -3,10 +3,10 @@ import type { Subject } from 'rxjs';
 
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { NewPartTemplatePayload, NewPartTemplateWithInputs } from '@/services/administrators/newPartTemplateService';
+import type { NewPartTemplatePayload, NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
 
 type Props = {
-  partTemplate: NewPartTemplateWithInputs;
+  partTemplate: NewPartTemplateWithAssignmentAndInputs;
   formState: State['form'];
   save$: Subject<{ processingState: State['form']['processingState']; payload: NewPartTemplatePayload }>;
   delete$: Subject<State['form']['processingState']>;
@@ -45,7 +45,7 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
   };
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this part template and all its inputs?\n\ntext boxes: ${partTemplate?.textBoxes.length}\nupload slots: ${partTemplate?.uploadSlots.length}`)) {
+    if (confirm(`Are you sure you want to delete this part template and all its inputs?\n\ntext boxes: ${partTemplate?.newTextBoxTemplates.length}\nupload slots: ${partTemplate?.newUploadSlotTemplates.length}`)) {
       delete$.next(formState.processingState);
     }
   };

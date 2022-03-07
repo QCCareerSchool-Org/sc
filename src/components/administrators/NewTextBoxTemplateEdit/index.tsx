@@ -179,7 +179,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
             <div className="col-12 col-lg-4 col-xl-6 order-0 order-lg-1">
               <table className="table table-bordered w-auto ms-lg-auto">
                 <tbody>
-                  <tr><th scope="row">Part</th><td>{state.textBoxTemplate.part.title ?? state.textBoxTemplate.part.partNumber}</td></tr>
+                  <tr><th scope="row">Part</th><td>{state.textBoxTemplate.newPartTemplate.title ?? state.textBoxTemplate.newPartTemplate.partNumber}</td></tr>
                   <tr><th scope="row">Created</th><td>{formatDateTime(state.textBoxTemplate.created)}</td></tr>
                   {state.textBoxTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.textBoxTemplate.modified)}</td></tr>}
                 </tbody>

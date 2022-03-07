@@ -1,9 +1,9 @@
 import { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { NewUnitTemplate } from '@/domain/newUnitTemplate';
-import type { NewUnitTemplateWithAssignments } from '@/services/administrators';
+import type { NewUnitTemplateWithCourseAndAssignments } from '@/services/administrators';
 
 export type State = {
-  unitTemplate?: NewUnitTemplateWithAssignments;
+  unitTemplate?: NewUnitTemplateWithCourseAndAssignments;
   form: {
     data: {
       title: string;
@@ -41,7 +41,7 @@ export type State = {
 };
 
 type Action =
-  | { type: 'LOAD_UNIT_TEMPLATE_SUCCEEDED'; payload: NewUnitTemplateWithAssignments }
+  | { type: 'LOAD_UNIT_TEMPLATE_SUCCEEDED'; payload: NewUnitTemplateWithCourseAndAssignments }
   | { type: 'LOAD_UNIT_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
@@ -108,7 +108,7 @@ export const reducer = (state: State, action: Action): State => {
           data: {
             title: '',
             description: '',
-            assignmentNumber: action.payload.assignments.length === 0 ? '1' : (Math.max(...action.payload.assignments.map(a => a.assignmentNumber)) + 1).toString(),
+            assignmentNumber: action.payload.newAssignmentTemplates.length === 0 ? '1' : (Math.max(...action.payload.newAssignmentTemplates.map(a => a.assignmentNumber)) + 1).toString(),
             optional: false,
           },
           validationMessages: {},
@@ -317,19 +317,19 @@ export const reducer = (state: State, action: Action): State => {
       if (!state.unitTemplate) {
         throw Error('unitTemplate is undefined');
       }
-      const assignments = [ ...state.unitTemplate.assignments, action.payload ].sort((a, b) => a.assignmentNumber - b.assignmentNumber);
+      const newAssignmentTemplates = [ ...state.unitTemplate.newAssignmentTemplates, action.payload ].sort((a, b) => a.assignmentNumber - b.assignmentNumber);
       return {
         ...state,
         unitTemplate: {
           ...state.unitTemplate,
-          assignments,
+          newAssignmentTemplates,
         },
         assignmentForm: {
           ...state.assignmentForm,
           data: {
             title: '',
             description: '',
-            assignmentNumber: (Math.max(...assignments.map(a => a.assignmentNumber)) + 1).toString(),
+            assignmentNumber: (Math.max(...newAssignmentTemplates.map(a => a.assignmentNumber)) + 1).toString(),
             optional: false,
           },
           validationMessages: {},

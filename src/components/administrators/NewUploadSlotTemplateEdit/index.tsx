@@ -203,7 +203,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
               <table className="table table-bordered w-auto ms-lg-auto">
                 <tbody>
-                  <tr><th scope="row">Part</th><td>{state.uploadSlotTemplate.part.title ?? state.uploadSlotTemplate.part.partNumber}</td></tr>
+                  <tr><th scope="row">Part</th><td>{state.uploadSlotTemplate.newPartTemplate.title ?? state.uploadSlotTemplate.newPartTemplate.partNumber}</td></tr>
                   <tr><th scope="row">Created</th><td>{formatDateTime(state.uploadSlotTemplate.created)}</td></tr>
                   {state.uploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.uploadSlotTemplate.modified)}</td></tr>}
                 </tbody>

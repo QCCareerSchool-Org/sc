@@ -5,11 +5,11 @@ import type { IHttpService } from '../httpService';
 import type { NewPartTemplate, NewUploadSlotTemplate, RawNewPartTemplate, RawNewUploadSlotTemplate } from '@/domain/index';
 
 type RawNewUploadSlotTemplateWithPart = RawNewUploadSlotTemplate & {
-  part: RawNewPartTemplate;
+  newPartTemplate: RawNewPartTemplate;
 };
 
 export type NewUploadSlotTemplateWithPart = NewUploadSlotTemplate & {
-  part: NewPartTemplate;
+  newPartTemplate: NewPartTemplate;
 };
 
 export type AllowedType = 'image' | 'pdf' | 'word' | 'excel';
@@ -76,10 +76,10 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
       ...textBox,
       created: new Date(textBox.created),
       modified: textBox.modified === null ? null : new Date(textBox.modified),
-      part: {
-        ...textBox.part,
-        created: new Date(textBox.part.created),
-        modified: textBox.part.modified === null ? null : new Date(textBox.part.modified),
+      newPartTemplate: {
+        ...textBox.newPartTemplate,
+        created: new Date(textBox.newPartTemplate.created),
+        modified: textBox.newPartTemplate.modified === null ? null : new Date(textBox.newPartTemplate.modified),
       },
     };
   }
