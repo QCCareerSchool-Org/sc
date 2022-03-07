@@ -147,7 +147,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: {
           ...state.form,
-          data: { ...state.form.data, description: action.payload },
+          data: { ...state.form.data, assignmentNumber: action.payload },
           validationMessages: { ...state.form.validationMessages, assignmentNumber: validationMessage },
         },
       };
@@ -243,7 +243,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         partForm: {
           ...state.partForm,
-          data: { ...state.partForm.data, description: action.payload },
+          data: { ...state.partForm.data, partNumber: action.payload },
           validationMessages: { ...state.form.validationMessages, partNumber: validationMessage },
         },
       };

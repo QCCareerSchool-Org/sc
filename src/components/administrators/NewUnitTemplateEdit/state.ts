@@ -48,6 +48,7 @@ type Action =
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
   | { type: 'UNIT_LETTER_CHANGED'; payload: string }
+  | { type: 'ORDER_CHANGED'; payload: string }
   | { type: 'OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'SAVE_UNIT_TEMPLATE_STARTED' }
   | { type: 'SAVE_UNIT_TEMPLATE_SUCCEEDED'; payload: NewUnitTemplate }
@@ -165,8 +166,8 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Required';
       } else if (action.payload.length > 1) {
         validationMessage = 'Maximum of one character allowed';
-      } else if (!/[a-z]/iu.test(action.payload)) {
-        validationMessage = 'Only letters A to Z are allowed';
+      } else if (!/[a-z0-9]/iu.test(action.payload)) {
+        validationMessage = 'Only letters A to Z and number 0 to 9 are allowed';
       }
       return {
         ...state,
@@ -174,6 +175,29 @@ export const reducer = (state: State, action: Action): State => {
           ...state.form,
           data: { ...state.form.data, unitLetter: action.payload.toUpperCase() },
           validationMessages: { ...state.form.validationMessages, unitLetter: validationMessage },
+        },
+      };
+    }
+    case 'ORDER_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        const order = parseInt(action.payload, 10);
+        if (isNaN(order)) {
+          validationMessage = 'Invalid number';
+        } else if (order < 0) {
+          validationMessage = 'Cannot be less than zero';
+        } else if (order > 127) {
+          validationMessage = 'Cannot be greater than 127';
+        }
+      }
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          data: { ...state.form.data, order: action.payload },
+          validationMessages: { ...state.form.validationMessages, order: validationMessage },
         },
       };
     }

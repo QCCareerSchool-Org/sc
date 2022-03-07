@@ -307,13 +307,13 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                   <div>
                     {partDescriptionWarning && (
                       <div className="alert alert-warning">
-                        <h6>Part Description Warning</h6>
+                        <h3 className="h6">Part Description Warning</h3>
                         <p className="mb-0">A part should not omit a description if any of its text boxes are missing descriptions or if it has any upload slots.</p>
                       </div>
                     )}
                     {textBoxDescriptionWarning && (
                       <div className="alert alert-warning">
-                        <h6>Text Box Description Warning</h6>
+                        <h3 className="h6">Text Box Description Warning</h3>
                         <p className="mb-0">When there are multiple text boxes, each text box should have a description.</p>
                       </div>
                     )}

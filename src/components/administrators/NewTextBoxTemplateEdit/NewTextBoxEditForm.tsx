@@ -1,4 +1,4 @@
-import { FormEventHandler, memo, MouseEventHandler, ReactElement } from 'react';
+import { ChangeEventHandler, FormEventHandler, memo, MouseEventHandler, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
@@ -9,11 +9,11 @@ type Props = {
   formState: State['form'];
   save$: Subject<{ processingState: State['form']['processingState']; payload: NewTextBoxTemplatePayload }>;
   delete$: Subject<State['form']['processingState']>;
-  descriptionChange: FormEventHandler<HTMLTextAreaElement>;
-  pointsChange: FormEventHandler<HTMLInputElement>;
-  linesChange: FormEventHandler<HTMLInputElement>;
-  orderChange: FormEventHandler<HTMLInputElement>;
-  optionalChange: FormEventHandler<HTMLInputElement>;
+  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  pointsChange: ChangeEventHandler<HTMLInputElement>;
+  linesChange: ChangeEventHandler<HTMLInputElement>;
+  orderChange: ChangeEventHandler<HTMLInputElement>;
+  optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
 export const NewTextBoxEditForm = memo(({ formState, save$, delete$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {

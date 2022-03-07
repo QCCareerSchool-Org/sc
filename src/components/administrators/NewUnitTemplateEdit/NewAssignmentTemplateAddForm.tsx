@@ -85,6 +85,7 @@ export const NewAssignmentTemplateAddForm = memo(({ formState, insert$, titleCha
 
       <style jsx>{`
         .formGroup { margin-bottom: 1rem; }
+        .form-text { font-size: 0.75rem; }
       `}</style>
     </>
   );

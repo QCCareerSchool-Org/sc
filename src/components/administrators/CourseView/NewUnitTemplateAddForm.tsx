@@ -11,10 +11,11 @@ type Props = {
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   unitLetterChange: ChangeEventHandler<HTMLInputElement>;
+  orderChange: ChangeEventHandler<HTMLInputElement>;
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUnitTemplateAddForm = memo(({ formState, insert$, titleChange, descriptionChange, unitLetterChange, optionalChange }: Props): ReactElement => {
+export const NewUnitTemplateAddForm = memo(({ formState, insert$, titleChange, descriptionChange, unitLetterChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -64,8 +65,14 @@ export const NewUnitTemplateAddForm = memo(({ formState, insert$, titleChange, d
             <div className="formGroup">
               <label htmlFor="newUnitTemplateUnitLetter" className="form-label">Unit Letter <span className="text-danger">*</span></label>
               <input onChange={unitLetterChange} value={formState.data.unitLetter} type="text" id="newUnitTemplateUnitLetter" maxLength={1} className={`form-control ${formState.validationMessages.unitLetter ? 'is-invalid' : ''}`} aria-describedby="newUnitTemplateUnitLetterHelp" required />
-              <div id="newUnitTemplateUnitLetterHelp" className="form-text">The ordering for this unit within its course (must be unique)</div>
+              <div id="newUnitTemplateUnitLetterHelp" className="form-text">The letter for this unit (must be unique)</div>
               {formState.validationMessages.unitLetter && <div className="invalid-feedback">{formState.validationMessages.unitLetter}</div>}
+            </div>
+            <div className="formGroup">
+              <label htmlFor="newUnitOrder" className="form-label">Order <span className="text-danger">*</span></label>
+              <input onChange={orderChange} value={formState.data.order} type="number" id="newUnitOrder" min={0} max={127} className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} required aria-describedby="newUnitOrderHelp" />
+              <div id="newUnitOrderHelp" className="form-text">The order in which the unit should appear within its course</div>
+              {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
             </div>
             <div className="formGroup">
               <div className="form-check">
@@ -86,6 +93,7 @@ export const NewUnitTemplateAddForm = memo(({ formState, insert$, titleChange, d
 
       <style jsx>{`
         .formGroup { margin-bottom: 1rem; }
+        .form-text { font-size: 0.75rem; }
       `}</style>
     </>
   );

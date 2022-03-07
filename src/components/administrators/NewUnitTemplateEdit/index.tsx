@@ -7,6 +7,8 @@ import { NewAssignmentTemplateAddForm } from './NewAssignmentTemplateAddForm';
 import { NewAssignmentTemplateList } from './NewAssignmentTemplateList';
 import { NewUnitTemplateEditForm } from './NewUnitTemplateEditForm';
 import { initialState, reducer, State } from './state';
+import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
+import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentTemplateService, newUnitTemplateService } from '@/services/administrators';
 import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
 import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
@@ -21,9 +23,30 @@ type Props = {
   unitId: string;
 };
 
+const changesPreset = (unitTemplate: NewUnitTemplate | undefined, formData: State['form']['data']): boolean => {
+  if (!unitTemplate) {
+    return false;
+  }
+  if (unitTemplate.title !== (formData.title || null)) {
+    return true;
+  }
+  if (unitTemplate.description !== (formData.description || null)) {
+    return true;
+  }
+  if (unitTemplate.unitLetter !== formData.unitLetter) {
+    return true;
+  }
+  if (unitTemplate.optional !== formData.optional) {
+    return true;
+  }
+  return false;
+};
+
 export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+
+  useWarnIfUnsavedChanges(changesPreset(state.unitTemplate, state.form.data));
 
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewUnitTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
@@ -143,6 +166,10 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     dispatch({ type: 'UNIT_LETTER_CHANGED', payload: e.target.value });
   }, []);
 
+  const orderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ORDER_CHANGED', payload: e.target.value });
+  }, []);
+
   const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
@@ -190,6 +217,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
                 unitLetterChange={unitLetterChange}
+                orderChange={orderChange}
                 optionalChange={optionalChange}
               />
             </div>

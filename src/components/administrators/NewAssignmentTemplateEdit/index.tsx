@@ -7,6 +7,8 @@ import { NewAssignmentTemplateEditForm } from './NewAssignmentTemplateEditForm';
 import { NewPartTemplateAddForm } from './NewPartTemplateAddForm';
 import { NewPartTemplateList } from './NewPartTemplateList';
 import { initialState, reducer, State } from './state';
+import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
 import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
 import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
@@ -22,9 +24,30 @@ type Props = {
   assignmentId: string;
 };
 
+const changesPreset = (assignmentTemplate: NewAssignmentTemplate | undefined, formData: State['form']['data']): boolean => {
+  if (!assignmentTemplate) {
+    return false;
+  }
+  if (assignmentTemplate.title !== (formData.title || null)) {
+    return true;
+  }
+  if (assignmentTemplate.description !== (formData.description || null)) {
+    return true;
+  }
+  if (assignmentTemplate.assignmentNumber !== parseInt(formData.assignmentNumber, 10)) {
+    return true;
+  }
+  if (assignmentTemplate.optional !== formData.optional) {
+    return true;
+  }
+  return false;
+};
+
 export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+
+  useWarnIfUnsavedChanges(changesPreset(state.assignmentTemplate, state.form.data));
 
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());

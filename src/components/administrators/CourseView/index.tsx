@@ -80,15 +80,19 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
   }, []);
 
   const unitDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
-    dispatch({ type: 'UNIT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
+    dispatch({ type: 'UNIT_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
   const unitUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'UNIT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
+    dispatch({ type: 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED', payload: e.target.value });
+  }, []);
+
+  const unitOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UNIT_TEMPLATE_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
   const unitOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'UNIT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
+    dispatch({ type: 'UNIT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
   if (state.error) {
@@ -124,6 +128,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
             <div className="row">
               <div className="col-12 col-xl-6">
                 <NewUnitTemplateList units={state.course.newUnitTemplates} unitRowClick={unitRowClick} />
+                <div className="alert alert-info"><h3 className="h6">Unit Ordering</h3>Units are ordered by &ldquo;order&rdquo; then &ldquo;unit letter&rdquo;. As long as you follow a standard unit lettering scheme (e.g., &ldquo;A, B, C, ...&rdquo; or &ldquo;1, 2, 3, ...&rdquo;), you can leave each unit's &ldquo;order&rdquo; value set to 0.</div>
               </div>
               <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
                 <NewUnitTemplateAddForm
@@ -132,6 +137,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
                   titleChange={unitTitleChange}
                   descriptionChange={unitDescriptionChange}
                   unitLetterChange={unitUnitLetterChange}
+                  orderChange={unitOrderChange}
                   optionalChange={unitOptionalChange}
                 />
               </div>

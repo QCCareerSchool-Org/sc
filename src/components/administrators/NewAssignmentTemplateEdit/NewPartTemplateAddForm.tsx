@@ -85,6 +85,7 @@ export const NewPartTemplateAddForm = memo(({ formState, insert$, titleChange, d
 
       <style jsx>{`
         .formGroup { margin-bottom: 1rem; }
+        .form-text { font-size: 0.75rem; }
       `}</style>
     </>
   );

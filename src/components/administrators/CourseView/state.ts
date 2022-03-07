@@ -31,6 +31,7 @@ type Action =
   | { type: 'UNIT_TEMPLATE_TITLE_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED'; payload: string }
+  | { type: 'UNIT_TEMPLATE_ORDER_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'ADD_UNIT_TEMPLATE_STARTED' }
   | { type: 'ADD_UNIT_TEMPLATE_SUCCEEDED'; payload: NewUnitTemplate }
@@ -124,8 +125,8 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Required';
       } else if (action.payload.length > 1) {
         validationMessage = 'Maximum of one character allowed';
-      } else if (!/[a-z]/iu.test(action.payload)) {
-        validationMessage = 'Only letters A to Z are allowed';
+      } else if (!/[a-z0-9]/iu.test(action.payload)) {
+        validationMessage = 'Only letters A to Z and numbers 0 to 9 are allowed';
       }
       return {
         ...state,
@@ -133,6 +134,29 @@ export const reducer = (state: State, action: Action): State => {
           ...state.unitForm,
           data: { ...state.unitForm.data, unitLetter: action.payload.toUpperCase() },
           validationMessages: { ...state.unitForm.validationMessages, unitLetter: validationMessage },
+        },
+      };
+    }
+    case 'UNIT_TEMPLATE_ORDER_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        const order = parseInt(action.payload, 10);
+        if (isNaN(order)) {
+          validationMessage = 'Invalid number';
+        } else if (order < 0) {
+          validationMessage = 'Cannot be less than zero';
+        } else if (order > 127) {
+          validationMessage = 'Cannot be greater than 127';
+        }
+      }
+      return {
+        ...state,
+        unitForm: {
+          ...state.unitForm,
+          data: { ...state.unitForm.data, order: action.payload },
+          validationMessages: { ...state.unitForm.validationMessages, order: validationMessage },
         },
       };
     }
@@ -151,7 +175,12 @@ export const reducer = (state: State, action: Action): State => {
       if (!state.course) {
         throw Error('course is undefined');
       }
-      const newUnitTemplates = [ ...state.course.newUnitTemplates, action.payload ].sort((a, b) => a.unitLetter.localeCompare(b.unitLetter));
+      const newUnitTemplates = [ ...state.course.newUnitTemplates, action.payload ].sort((a, b) => {
+        if (a.order === b.order) {
+          return a.unitLetter.localeCompare(b.unitLetter);
+        }
+        return a.order - b.order;
+      });
       let unitLetter = 'A';
       const nextLetter = String.fromCharCode(Math.max(...newUnitTemplates.map(u => u.unitLetter.charCodeAt(0))) + 1);
       if (nextLetter < 'Z') {
