@@ -1,11 +1,12 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
-import { Subject, takeUntil } from 'rxjs';
+import { ChangeEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { initialState, reducer } from './state';
-import { UnitList } from './UnitList';
-import { courseService } from '@/services/administrators';
+import { NewUnitTemplateAddForm } from './NewUnitTemplateAddForm';
+import { NewUnitTemplateList } from './NewUnitTemplateList';
+import { initialState, reducer, State } from './state';
+import { courseService, NewUnitTemplatePayload, newUnitTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
@@ -19,6 +20,8 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
+  const unitInsert$ = useRef(new Subject<{ processingState: State['unitForm']['processingState']; payload: NewUnitTemplatePayload }>());
+
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
@@ -26,7 +29,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
       takeUntil(destroy$),
     ).subscribe({
       next: schools => {
-        dispatch({ type: 'COURSE_LOAD_SUCCEEDED', payload: schools });
+        dispatch({ type: 'LOAD_COURSE_SUCCEEDED', payload: schools });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -36,12 +39,56 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'COURSE_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_COURSE_FAILED', payload: errorCode });
       },
     });
 
+    unitInsert$.current.pipe(
+      filter(({ processingState }) => processingState !== 'inserting'),
+      tap(() => dispatch({ type: 'ADD_UNIT_TEMPLATE_STARTED' })),
+      exhaustMap(({ payload }) => newUnitTemplateService.addUnit(administratorId, schoolId, courseId, payload).pipe(
+        tap({
+          next: insertedUnit => dispatch({ type: 'ADD_UNIT_TEMPLATE_SUCCEEDED', payload: insertedUnit }),
+          error: err => {
+            let message = 'Insert failed';
+            if (err instanceof HttpServiceError) {
+              if (err.login) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
+            }
+            dispatch({ type: 'ADD_UNIT_TEMPLATE_FAILED', payload: message });
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
+      takeUntil(destroy$),
+    ).subscribe();
+
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId ]);
+
+  const unitRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
+    void router.push(`${router.asPath}/newUnitTemplates/${unitId}`, undefined, { scroll: false });
+  }, [ router ]);
+
+  const unitTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UNIT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
+  }, []);
+
+  const unitDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'UNIT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
+  }, []);
+
+  const unitUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UNIT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
+  }, []);
+
+  const unitOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UNIT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
+  }, []);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -51,10 +98,6 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
     return null;
   }
 
-  const unitRowClick = (e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
-    void router.push(`${router.asPath}/newUnitTemplates/${unitId}`, undefined, { scroll: false });
-  };
-
   return (
     <>
       <section>
@@ -62,23 +105,39 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
           <h1>Course: {state.course.name}</h1>
           <table className="table table-bordered w-auto">
             <tbody>
+              <tr><th scope="row">School</th><td>{state.course.school.name}</td></tr>
               <tr><th scope="row">Code</th><td>{state.course.code}</td></tr>
               <tr><th scope="row">Version</th><td>{state.course.version}</td></tr>
-              <tr><th scope="row">School</th><td>{state.course.school.name}</td></tr>
               <tr><th scope="row">Course Guide</th><td>{state.course.courseGuide ? 'yes' : 'no'}</td></tr>
               <tr><th scope="row">Quizzes Enabled</th><td>{state.course.quizzesEnabled ? 'yes' : 'no'}</td></tr>
               <tr><th scope="row">No Tutor</th><td>{state.course.noTutor ? 'yes' : 'no'}</td></tr>
-              <tr><th scope="row">Unit Type</th><td>{state.course.unitType}</td></tr>
+              <tr><th scope="row">Unit Type</th><td>{state.course.unitType === 0 ? 'old' : state.course.unitType === 1 ? 'new' : 'unknown'}</td></tr>
             </tbody>
           </table>
         </div>
       </section>
-      <section>
-        <div className="container">
-          <h2 className="h3">Units</h2>
-          <UnitList units={state.course.newUnitTemplates} unitRowClick={unitRowClick} />
-        </div>
-      </section>
+      {state.course.unitType === 1 && (
+        <section>
+          <div className="container">
+            <h2 className="h3">Unit Templates</h2>
+            <div className="row">
+              <div className="col-12 col-xl-6">
+                <NewUnitTemplateList units={state.course.newUnitTemplates} unitRowClick={unitRowClick} />
+              </div>
+              <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
+                <NewUnitTemplateAddForm
+                  formState={state.unitForm}
+                  insert$={unitInsert$.current}
+                  titleChange={unitTitleChange}
+                  descriptionChange={unitDescriptionChange}
+                  unitLetterChange={unitUnitLetterChange}
+                  optionalChange={unitOptionalChange}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 };

@@ -1,9 +1,9 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { FormEventHandler, ReactElement, useEffect, useReducer, useRef } from 'react';
+import { ChangeEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { NewUploadSlotEditForm } from './NewUploadSlotEditForm';
+import { NewUploadSlotTemplateEditForm } from './NewUploadSlotTemplateEditForm';
 import { initialState, reducer, State } from './state';
 import { NewUploadSlotTemplate } from '@/domain/index';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
@@ -139,6 +139,38 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId ]);
 
+  const labelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'LABEL_CHANGED', payload: e.target.value });
+  }, []);
+
+  const pointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'POINTS_CHANGED', payload: e.target.value });
+  }, []);
+
+  const imageChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'IMAGE_CHANGED', payload: e.target.checked });
+  }, []);
+
+  const pdfChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'PDF_CHANGED', payload: e.target.checked });
+  }, []);
+
+  const wordChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'WORD_CHANGED', payload: e.target.checked });
+  }, []);
+
+  const excelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'EXCEL_CHANGED', payload: e.target.checked });
+  }, []);
+
+  const orderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ORDER_CHANGED', payload: e.target.value });
+  }, []);
+
+  const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
+  }, []);
+
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
@@ -147,54 +179,14 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
     return null;
   }
 
-  const labelChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'LABEL_CHANGED', payload: target.value });
-  };
-
-  const pointsChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'POINTS_CHANGED', payload: target.value });
-  };
-
-  const imageChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'IMAGE_CHANGED', payload: target.checked });
-  };
-
-  const pdfChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'PDF_CHANGED', payload: target.checked });
-  };
-
-  const wordChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'WORD_CHANGED', payload: target.checked });
-  };
-
-  const excelChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'EXCEL_CHANGED', payload: target.checked });
-  };
-
-  const orderChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'ORDER_CHANGED', payload: target.value });
-  };
-
-  const optionalChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'OPTIONAL_CHANGED', payload: target.checked });
-  };
-
   return (
     <>
       <section>
         <div className="container">
-          <h1>Edit Upload Slot</h1>
+          <h1>Edit Upload Slot Template</h1>
           <div className="row justify-content-between">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
-              <NewUploadSlotEditForm
+              <NewUploadSlotTemplateEditForm
                 formState={state.form}
                 save$={save$.current}
                 delete$={delete$.current}

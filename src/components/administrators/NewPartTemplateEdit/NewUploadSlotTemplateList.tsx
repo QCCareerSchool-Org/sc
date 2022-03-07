@@ -7,12 +7,12 @@ type Props = {
   uploadSlotRowClick: (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string) => void;
 };
 
-export const UploadSlotList = memo(({ uploadSlots, uploadSlotRowClick }: Props): ReactElement => (
+export const NewUploadSlotTemplateList = memo(({ uploadSlots, uploadSlotRowClick }: Props): ReactElement => (
   <>
     {uploadSlots.length === 0
       ? <p>no upload slots</p>
       : (
-        <table id="uploadSlotsTable" className="table table-bordered table-hover w-auto bg-white">
+        <table id="newUploadSlotTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th>Label</th>
@@ -38,12 +38,12 @@ export const UploadSlotList = memo(({ uploadSlots, uploadSlotRowClick }: Props):
     }
 
     <style jsx>{`
-      #uploadSlotsTable tr { cursor: pointer }
+      #newUploadSlotTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));
 
-UploadSlotList.displayName = 'UploadSlotList';
+NewUploadSlotTemplateList.displayName = 'NewUploadSlotTemplateList';
 
 const trimLabel = (label: string, maxLength = 32): string => {
   if (label.length <= maxLength) {

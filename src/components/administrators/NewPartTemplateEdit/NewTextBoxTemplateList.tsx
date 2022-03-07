@@ -7,12 +7,12 @@ type Props = {
   textBoxRowClick: (e: MouseEvent<HTMLTableRowElement>, textBoxId: string) => void;
 };
 
-export const TextBoxList = memo(({ textBoxes, textBoxRowClick }: Props): ReactElement => (
+export const NewTextBoxTemplateList = memo(({ textBoxes, textBoxRowClick }: Props): ReactElement => (
   <>
     {textBoxes.length === 0
       ? <p>no text boxes</p>
       : (
-        <table id="textBoxesTable" className="table table-bordered table-hover w-auto bg-white">
+        <table id="newTextBoxTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th>Description</th>
@@ -38,12 +38,12 @@ export const TextBoxList = memo(({ textBoxes, textBoxRowClick }: Props): ReactEl
     }
 
     <style jsx>{`
-      #textBoxesTable tr { cursor: pointer }
+      #newTextBoxTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));
 
-TextBoxList.displayName = 'TextBoxList';
+NewTextBoxTemplateList.displayName = 'NewTextBoxTemplateList';
 
 const trimDescription = (description: string, maxLength = 48): string => {
   if (description.length <= maxLength) {

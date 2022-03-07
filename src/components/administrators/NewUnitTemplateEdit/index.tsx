@@ -3,11 +3,11 @@ import { useRouter } from 'next/router';
 import { ChangeEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { NewAssignmentTemplateEditForm } from './NewAssignmentTemplateEditForm';
-import { NewPartTemplateAddForm } from './NewPartTemplateAddForm';
-import { NewPartTemplateList } from './NewPartTemplateList';
+import { NewAssignmentTemplateAddForm } from './NewAssignmentTemplateAddForm';
+import { NewAssignmentTemplateList } from './NewAssignmentTemplateList';
+import { NewUnitTemplateEditForm } from './NewUnitTemplateEditForm';
 import { initialState, reducer, State } from './state';
-import { NewAssignmentTemplatePayload, newAssignmentTemplateService, NewPartTemplatePayload, newPartTemplateService } from '@/services/administrators';
+import { NewAssignmentTemplatePayload, newAssignmentTemplateService, NewUnitTemplatePayload, newUnitTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -17,26 +17,25 @@ type Props = {
   schoolId: number;
   courseId: number;
   unitId: string;
-  assignmentId: string;
 };
 
-export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
+export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>());
+  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewUnitTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
-  const partInsert$ = useRef(new Subject<{ processingState: State['partForm']['processingState']; payload: NewPartTemplatePayload }>());
+  const assignmentInsert$ = useRef(new Subject<{ processingState: State['assignmentForm']['processingState']; payload: NewAssignmentTemplatePayload }>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
     // load the initial data
-    newAssignmentTemplateService.getAssignment(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
+    newUnitTemplateService.getUnit(administratorId, schoolId, courseId, unitId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: assignmentTemplate => {
-        dispatch({ type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: assignmentTemplate });
+      next: unitTemplate => {
+        dispatch({ type: 'LOAD_UNIT_TEMPLATE_SUCCEEDED', payload: unitTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -46,17 +45,17 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_UNIT_TEMPLATE_FAILED', payload: errorCode });
       },
     });
 
     save$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newAssignmentTemplateService.saveAssignment(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
+      tap(() => dispatch({ type: 'SAVE_UNIT_TEMPLATE_STARTED' })),
+      exhaustMap(({ payload }) => newUnitTemplateService.saveUnit(administratorId, schoolId, courseId, unitId, payload).pipe(
         tap({
           next: updatedAssignment => {
-            dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: updatedAssignment });
+            dispatch({ type: 'SAVE_UNIT_TEMPLATE_SUCCEEDED', payload: updatedAssignment });
           },
           error: err => {
             let message = 'Save failed';
@@ -68,7 +67,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 message = err.message;
               }
             }
-            dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_FAILED', payload: message });
+            dispatch({ type: 'SAVE_UNIT_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -78,11 +77,11 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
 
     delete$.current.pipe(
       filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_STARTED' })),
-      exhaustMap(() => newAssignmentTemplateService.deleteAssignment(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
+      tap(() => dispatch({ type: 'DELETE_UNIT_TEMPLATE_STARTED' })),
+      exhaustMap(() => newUnitTemplateService.deleteUnit(administratorId, schoolId, courseId, unitId).pipe(
         tap({
           next: () => {
-            dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_SUCCEEDED' });
+            dispatch({ type: 'DELETE_UNIT_TEMPLATE_SUCCEEDED' });
             router.back();
           },
           error: err => {
@@ -95,7 +94,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 message = err.message;
               }
             }
-            dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_FAILED', payload: message });
+            dispatch({ type: 'DELETE_UNIT_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -103,12 +102,12 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
       takeUntil(destroy$),
     ).subscribe();
 
-    partInsert$.current.pipe(
+    assignmentInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_PART_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newPartTemplateService.addPart(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
+      tap(() => dispatch({ type: 'ADD_ASSIGNMENT_TEMPLATE_STARTED' })),
+      exhaustMap(({ payload }) => newAssignmentTemplateService.addAssignment(administratorId, schoolId, courseId, unitId, payload).pipe(
         tap({
-          next: insertedPart => dispatch({ type: 'ADD_PART_TEMPLATE_SUCCEEDED', payload: insertedPart }),
+          next: insertedAssignment => dispatch({ type: 'ADD_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: insertedAssignment }),
           error: err => {
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
@@ -119,7 +118,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 message = err.message;
               }
             }
-            dispatch({ type: 'ADD_PART_TEMPLATE_FAILED', payload: message });
+            dispatch({ type: 'ADD_ASSIGNMENT_TEMPLATE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -128,7 +127,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId ]);
 
   const titleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TITLE_CHANGED', payload: e.target.value });
@@ -138,39 +137,39 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'ASSIGNMENT_NUMBER_CHANGED', payload: e.target.value });
+  const unitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UNIT_LETTER_CHANGED', payload: e.target.value });
   }, []);
 
   const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const partRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, partId: string): void => {
-    void router.push(`${router.asPath}/parts/${partId}`, undefined, { scroll: false });
+  const assignmentRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
+    void router.push(`${router.asPath}/assignments/${assignmentId}`, undefined, { scroll: false });
   }, [ router ]);
 
-  const partTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'PART_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
+  const assignmentTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const partDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
-    dispatch({ type: 'PART_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
+  const assignmentDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const partPartNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'PART_TEMPLATE_PART_NUMBER_CHANGED', payload: e.target.value });
+  const assignmentAssignmentNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_TEMPLATE_ASSIGNMENT_NUMBER_CHANGED', payload: e.target.value });
   }, []);
 
-  const partOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'PART_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
+  const assignmentOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.assignmentTemplate) {
+  if (!state.unitTemplate) {
     return null;
   }
 
@@ -178,27 +177,27 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
     <>
       <section>
         <div className="container">
-          <h1>Edit Assignment Template</h1>
+          <h1>Edit Unit Template</h1>
           <div className="row justify-content-between">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
-              <NewAssignmentTemplateEditForm
-                assignmentTemplate={state.assignmentTemplate}
+              <NewUnitTemplateEditForm
+                unitTemplate={state.unitTemplate}
                 formState={state.form}
                 save$={save$.current}
                 delete$={delete$.current}
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
-                assignmentNumberChange={assignmentNumberChange}
+                unitLetterChange={unitLetterChange}
                 optionalChange={optionalChange}
               />
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
               <table className="table table-bordered w-auto ms-lg-auto">
                 <tbody>
-                  <tr><th scope="row">Unit</th><td>{state.assignmentTemplate.unit.title ?? state.assignmentTemplate.unit.unitLetter}</td></tr>
-                  <tr><th scope="row">Parts</th><td>{state.assignmentTemplate.parts.length}</td></tr>
-                  <tr><th scope="row">Created</th><td>{formatDateTime(state.assignmentTemplate.created)}</td></tr>
-                  {state.assignmentTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.assignmentTemplate.modified)}</td></tr>}
+                  <tr><th scope="row">Course</th><td>{state.unitTemplate.course.name}</td></tr>
+                  <tr><th scope="row">Assignments</th><td>{state.unitTemplate.assignments.length}</td></tr>
+                  <tr><th scope="row">Created</th><td>{formatDateTime(state.unitTemplate.created)}</td></tr>
+                  {state.unitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.unitTemplate.modified)}</td></tr>}
                 </tbody>
               </table>
             </div>
@@ -207,19 +206,19 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
       </section>
       <section>
         <div className="container">
-          <h2 className="h3">Part Templates</h2>
+          <h2 className="h3">Assignment Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewPartTemplateList parts={state.assignmentTemplate.parts} partRowClick={partRowClick} />
+              <NewAssignmentTemplateList assignments={state.unitTemplate.assignments} assignmentRowClick={assignmentRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
-              <NewPartTemplateAddForm
-                formState={state.partForm}
-                insert$={partInsert$.current}
-                titleChange={partTitleChange}
-                descriptionChange={partDescriptionChange}
-                partNumberChange={partPartNumberChange}
-                optionalChange={partOptionalChange}
+              <NewAssignmentTemplateAddForm
+                formState={state.assignmentForm}
+                insert$={assignmentInsert$.current}
+                titleChange={assignmentTitleChange}
+                descriptionChange={assignmentDescriptionChange}
+                assignmentNumberChange={assignmentAssignmentNumberChange}
+                optionalChange={assignmentOptionalChange}
               />
             </div>
           </div>

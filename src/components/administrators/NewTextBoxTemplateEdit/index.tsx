@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { FormEventHandler, ReactElement, useEffect, useReducer, useRef } from 'react';
+import { ChangeEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewTextBoxEditForm } from './NewTextBoxEditForm';
@@ -130,6 +130,26 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
 
+  const descriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
+  }, []);
+
+  const pointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'POINTS_CHANGED', payload: e.target.value });
+  }, []);
+
+  const linesChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'LINES_CHANGED', payload: e.target.value });
+  }, []);
+
+  const orderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ORDER_CHANGED', payload: e.target.value });
+  }, []);
+
+  const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
+  }, []);
+
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
@@ -138,36 +158,11 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
     return null;
   }
 
-  const descriptionChange: FormEventHandler<HTMLTextAreaElement> = e => {
-    const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'DESCRIPTION_CHANGED', payload: target.value });
-  };
-
-  const pointsChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'POINTS_CHANGED', payload: target.value });
-  };
-
-  const linesChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'LINES_CHANGED', payload: target.value });
-  };
-
-  const orderChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'ORDER_CHANGED', payload: target.value });
-  };
-
-  const optionalChange: FormEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'OPTIONAL_CHANGED', payload: target.checked });
-  };
-
   return (
     <>
       <section>
         <div className="container">
-          <h1>Edit Text Box</h1>
+          <h1>Edit Text Box Template</h1>
           <div className="row justify-content-between">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewTextBoxEditForm

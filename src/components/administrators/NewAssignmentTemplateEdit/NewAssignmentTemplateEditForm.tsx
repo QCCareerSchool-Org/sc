@@ -1,23 +1,22 @@
-import { FormEventHandler, memo, MouseEventHandler, ReactElement } from 'react';
+import { ChangeEventHandler, FormEventHandler, memo, MouseEventHandler, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { NewAssignmentTemplateWithParts } from '@/services/administrators';
-import { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentTemplatePayload, NewAssignmentTemplateWithParts } from '@/services/administrators';
 
 type Props = {
   assignmentTemplate: NewAssignmentTemplateWithParts;
   formState: State['form'];
   save$: Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>;
   delete$: Subject<State['form']['processingState']>;
-  titleChange: FormEventHandler<HTMLInputElement>;
-  descriptionChange: FormEventHandler<HTMLTextAreaElement>;
-  assignmentNumberChange: FormEventHandler<HTMLInputElement>;
-  optionalChange: FormEventHandler<HTMLInputElement>;
+  titleChange: ChangeEventHandler<HTMLInputElement>;
+  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  assignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
+  optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentEditForm = memo(({ assignmentTemplate, formState, save$, delete$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
+export const NewAssignmentTemplateEditForm = memo(({ assignmentTemplate, formState, save$, delete$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -55,27 +54,27 @@ export const NewAssignmentEditForm = memo(({ assignmentTemplate, formState, save
     <>
       <form onSubmit={formSubmit}>
         <div className="formGroup">
-          <label htmlFor="newAssignmentTitle" className="form-label">Title</label>
-          <input onChange={titleChange} value={formState.data.title} type="text" id="newAssignment" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentTitleHelp" />
-          <div id="newAssignmentTitleHelp" className="form-text">The title of this part (for internal use only)</div>
+          <label htmlFor="newAssignmentTemplateTitle" className="form-label">Title</label>
+          <input onChange={titleChange} value={formState.data.title} type="text" id="newAssignmentTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentTemplateTitleHelp" />
+          <div id="newAssignmentTemplateTitleHelp" className="form-text">The title of this assignment</div>
           {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
         </div>
         <div className="formGroup">
-          <label htmlFor="newAssignmentDescription" className="form-label">Description</label>
-          <textarea onChange={descriptionChange} value={formState.data.description} id="newAssignmentDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentDescriptionHelp" />
-          <div id="newAssignmentDescriptionHelp" className="form-text">A description of what should be enterered into the text box</div>
+          <label htmlFor="newAssignmentTemplateDescription" className="form-label">Description</label>
+          <textarea onChange={descriptionChange} value={formState.data.description} id="newAssignmentTemplateDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentTemplateDescriptionHelp" />
+          <div id="newAssignmentTemplateDescriptionHelp" className="form-text">The description of this assignment</div>
           {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
         </div>
         <div className="formGroup">
-          <label htmlFor="newAssignmentAssignmentNumber" className="form-label">Assignment Number <span className="text-danger">*</span></label>
-          <input onChange={assignmentNumberChange} value={formState.data.assignmentNumber} type="number" id="newAssignmentAssignmentNumber" min={1} max={127} className={`form-control ${formState.validationMessages.assignmentNumber ? 'is-invalid' : ''}`} aria-describedby="newAssignmentAssignmentNumberHelp" required />
-          <div id="newAssignmentAssignmentNumberHelp" className="form-text">The ordering for this assignment within its unit</div>
+          <label htmlFor="newAssignmentTemplateAssignmentNumber" className="form-label">Assignment Number <span className="text-danger">*</span></label>
+          <input onChange={assignmentNumberChange} value={formState.data.assignmentNumber} type="number" id="newAssignmentTemplateAssignmentNumber" min={1} max={127} className={`form-control ${formState.validationMessages.assignmentNumber ? 'is-invalid' : ''}`} aria-describedby="newAssignmentTemplateAssignmentNumberHelp" required />
+          <div id="newAssignmentTemplateAssignmentNumberHelp" className="form-text">The ordering for this assignment within its unit (must be unique)</div>
           {formState.validationMessages.assignmentNumber && <div className="invalid-feedback">{formState.validationMessages.assignmentNumber}</div>}
         </div>
         <div className="formGroup">
           <div className="form-check">
-            <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newAssignmentOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
-            <label htmlFor="newAssignmentOptional" className="form-check-label">Optional</label>
+            <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newAssignmentTemplateOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
+            <label htmlFor="newAssignmentTemplateOptional" className="form-check-label">Optional</label>
             {formState.validationMessages.optional && <div className="invalid-feedback">{formState.validationMessages.optional}</div>}
           </div>
         </div>
@@ -93,9 +92,10 @@ export const NewAssignmentEditForm = memo(({ assignmentTemplate, formState, save
 
       <style jsx>{`
         .formGroup { margin-bottom: 1rem; }
+        .form-text { font-size: 0.75rem; }
       `}</style>
     </>
   );
 });
 
-NewAssignmentEditForm.displayName = 'NewAssignmentEditForm';
+NewAssignmentTemplateEditForm.displayName = 'NewAssignmentTemplateEditForm';

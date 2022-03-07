@@ -1,4 +1,4 @@
-import { memo, MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef } from 'react';
+import { ChangeEventHandler, memo, MouseEventHandler, ReactElement, useEffect, useRef } from 'react';
 import { exhaustMap, filter, Subject, takeUntil } from 'rxjs';
 
 import type { UploadSlotFunction } from '.';
@@ -82,9 +82,8 @@ type EmptySlotProps = {
 };
 
 const EmptySlot = ({ uploadSlot, upload$ }: EmptySlotProps): ReactElement => {
-  const onFileInputChange: ReactEventHandler<HTMLInputElement> = e => {
-    const target = e.target as HTMLInputElement;
-    const files = target.files;
+  const onFileInputChange: ChangeEventHandler<HTMLInputElement> = e => {
+    const files = e.target.files;
     if (files?.length !== 1) {
       return;
     }

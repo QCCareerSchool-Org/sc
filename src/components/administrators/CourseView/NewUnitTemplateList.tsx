@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import { memo, MouseEvent, ReactElement } from 'react';
 
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 
@@ -7,12 +7,12 @@ type Props = {
   unitRowClick: (e: MouseEvent<HTMLTableRowElement>, unitId: string) => void;
 };
 
-export const UnitList = ({ units, unitRowClick }: Props): ReactElement => (
+export const NewUnitTemplateList = memo(({ units, unitRowClick }: Props): ReactElement => (
   <>
     {units.length === 0
       ? <p>no units</p>
       : (
-        <table id="unitsTable" className="table table-bordered table-hover w-auto bg-white">
+        <table id="newUnitTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th className="text-center">#</th>
@@ -34,7 +34,9 @@ export const UnitList = ({ units, unitRowClick }: Props): ReactElement => (
     }
 
     <style jsx>{`
-      #unitsTable tr { cursor: pointer }
+      #newUnitTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
-);
+));
+
+NewUnitTemplateList.displayName = 'NewUnitTemplateList';

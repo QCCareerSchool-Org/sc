@@ -1,4 +1,4 @@
-import { FormEventHandler, MouseEventHandler, ReactElement } from 'react';
+import { ChangeEventHandler, FormEventHandler, memo, MouseEventHandler, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
@@ -9,17 +9,17 @@ type Props = {
   formState: State['form'];
   save$: Subject<{ processingState: State['form']['processingState']; payload: NewUploadSlotTemplatePayload }>;
   delete$: Subject<State['form']['processingState']>;
-  labelChange: FormEventHandler<HTMLInputElement>;
-  imageChange: FormEventHandler<HTMLInputElement>;
-  pdfChange: FormEventHandler<HTMLInputElement>;
-  wordChange: FormEventHandler<HTMLInputElement>;
-  excelChange: FormEventHandler<HTMLInputElement>;
-  pointsChange: FormEventHandler<HTMLInputElement>;
-  orderChange: FormEventHandler<HTMLInputElement>;
-  optionalChange: FormEventHandler<HTMLInputElement>;
+  labelChange: ChangeEventHandler<HTMLInputElement>;
+  imageChange: ChangeEventHandler<HTMLInputElement>;
+  pdfChange: ChangeEventHandler<HTMLInputElement>;
+  wordChange: ChangeEventHandler<HTMLInputElement>;
+  excelChange: ChangeEventHandler<HTMLInputElement>;
+  pointsChange: ChangeEventHandler<HTMLInputElement>;
+  orderChange: ChangeEventHandler<HTMLInputElement>;
+  optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUploadSlotEditForm = ({ formState, save$, delete$, labelChange, imageChange, pdfChange, wordChange, excelChange, pointsChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewUploadSlotTemplateEditForm = memo(({ formState, save$, delete$, labelChange, imageChange, pdfChange, wordChange, excelChange, pointsChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -118,7 +118,10 @@ export const NewUploadSlotEditForm = ({ formState, save$, delete$, labelChange, 
 
       <style jsx>{`
         .formGroup { margin-bottom: 1rem; }
+        .form-text { font-size: 0.75rem; }
       `}</style>
     </>
   );
-};
+});
+
+NewUploadSlotTemplateEditForm.displayName = 'NewUploadSlotTemplateEditForm';

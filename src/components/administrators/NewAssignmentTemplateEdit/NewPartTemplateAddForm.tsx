@@ -1,20 +1,20 @@
-import { FormEventHandler, memo, ReactElement } from 'react';
-import { Subject } from 'rxjs';
+import { ChangeEventHandler, FormEventHandler, memo, ReactElement } from 'react';
+import type { Subject } from 'rxjs';
 
-import { State } from './state';
+import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
+import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 
 type Props = {
   formState: State['partForm'];
   insert$: Subject<{ processingState: State['partForm']['processingState']; payload: NewPartTemplatePayload }>;
-  titleChange: FormEventHandler<HTMLInputElement>;
-  descriptionChange: FormEventHandler<HTMLTextAreaElement>;
-  partNumberChange: FormEventHandler<HTMLInputElement>;
-  optionalChange: FormEventHandler<HTMLInputElement>;
+  titleChange: ChangeEventHandler<HTMLInputElement>;
+  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  partNumberChange: ChangeEventHandler<HTMLInputElement>;
+  optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartAddForm = memo(({ formState, insert$, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
+export const NewPartTemplateAddForm = memo(({ formState, insert$, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -46,29 +46,30 @@ export const NewPartAddForm = memo(({ formState, insert$, titleChange, descripti
     <>
       <div className="card">
         <div className="card-body">
+          <h3 className="h5">New Part Template</h3>
           <form onSubmit={formSubmit}>
             <div className="formGroup">
-              <label htmlFor="newPartTitle" className="form-label">Title</label>
-              <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTitleHelp" />
-              <div id="newPartTitleHelp" className="form-text">The title of this part (for internal use only)</div>
+              <label htmlFor="newPartTemplateTitle" className="form-label">Title</label>
+              <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTemplateTitleHelp" />
+              <div id="newPartTemplateTitleHelp" className="form-text">The title of this part (for internal use only)</div>
               {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
             </div>
             <div className="formGroup">
-              <label htmlFor="newPartDescription" className="form-label">Description</label>
-              <textarea onChange={descriptionChange} value={formState.data.description} id="newPartDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartDescriptionHelp" />
-              <div id="newPartDescriptionHelp" className="form-text">A description of what should be enterered into the text box</div>
+              <label htmlFor="newPartTemplateDescription" className="form-label">Description</label>
+              <textarea onChange={descriptionChange} value={formState.data.description} id="newPartTemplateDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTemplateDescriptionHelp" />
+              <div id="newPartTemplateDescriptionHelp" className="form-text">The description of this part</div>
               {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
             </div>
             <div className="formGroup">
-              <label htmlFor="newPartPartNumber" className="form-label">Part Number <span className="text-danger">*</span></label>
-              <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartPartNumber" min={1} max={127} className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} aria-describedby="newPartPartNumberHelp" required />
-              <div id="newPartPartNumberHelp" className="form-text">The ordering for this part within an assignment</div>
+              <label htmlFor="newPartTemplatePartNumber" className="form-label">Part Number <span className="text-danger">*</span></label>
+              <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartTemplatePartNumber" min={1} max={127} className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} aria-describedby="newPartTemplatePartNumberHelp" required />
+              <div id="newPartTemplatePartNumberHelp" className="form-text">The ordering for this part within its assignment (must be unique)</div>
               {formState.validationMessages.partNumber && <div className="invalid-feedback">{formState.validationMessages.partNumber}</div>}
             </div>
             <div className="formGroup">
               <div className="form-check">
-                <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newPartOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
-                <label htmlFor="newPartOptional" className="form-check-label">Optional</label>
+                <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newPartTemplateOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
+                <label htmlFor="newPartTemplateOptional" className="form-check-label">Optional</label>
                 {formState.validationMessages.optional && <div className="invalid-feedback">{formState.validationMessages.optional}</div>}
               </div>
             </div>
@@ -89,4 +90,4 @@ export const NewPartAddForm = memo(({ formState, insert$, titleChange, descripti
   );
 });
 
-NewPartAddForm.displayName = 'NewPartAddForm';
+NewPartTemplateAddForm.displayName = 'NewPartTemplateAddForm';

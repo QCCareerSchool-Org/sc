@@ -1,14 +1,14 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { FormEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import { ChangeEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { NewPartEditForm } from './NewPartEditForm';
-import { NewTextBoxAddForm } from './NewTextBoxAddForm';
-import { NewUploadSlotAddForm } from './NewUploadSlotAddForm';
+import { NewPartTemplateEditForm } from './NewPartTemplateEditForm';
+import { NewTextBoxTemplateAddForm } from './NewTextBoxTemplateAddForm';
+import { NewTextBoxTemplateList } from './NewTextBoxTemplateList';
+import { NewUploadSlotTemplateAddForm } from './NewUploadSlotTemplateAddForm';
+import { NewUploadSlotTemplateList } from './NewUploadSlotTemplateList';
 import { initialState, reducer, State } from './state';
-import { TextBoxList } from './TextBoxList';
-import { UploadSlotList } from './UploadSlotList';
 import { NewPartTemplate } from '@/domain/newPartTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { NewPartTemplatePayload, newPartTemplateService, NewTextBoxTemplatePayload, newTextBoxTemplateService, NewUploadSlotTemplatePayload, newUploadSlotTemplateService } from '@/services/administrators';
@@ -184,24 +184,20 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
 
-  const titleChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TITLE_CHANGED', payload: target.value });
+  const titleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const descriptionChange: FormEventHandler<HTMLTextAreaElement> = useCallback(e => {
-    const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'DESCRIPTION_CHANGED', payload: target.value });
+  const descriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const partNumberChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'PART_NUMBER_CHANGED', payload: target.value });
+  const partNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'PART_NUMBER_CHANGED', payload: e.target.value });
   }, []);
 
-  const optionalChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'OPTIONAL_CHANGED', payload: target.checked });
+  const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
   const textBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
@@ -212,69 +208,56 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}/edit`);
   }, [ router ]);
 
-  const textBoxDescriptionChange: FormEventHandler<HTMLTextAreaElement> = useCallback(e => {
-    const target = e.target as HTMLTextAreaElement;
-    dispatch({ type: 'TEXT_BOX_TEMPLATE_DESCRIPTION_CHANGED', payload: target.value });
+  const textBoxDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxPointsChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_TEMPLATE_POINTS_CHANGED', payload: target.value });
+  const textBoxPointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_POINTS_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxLinesChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_TEMPLATE_LINES_CHANGED', payload: target.value });
+  const textBoxLinesChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_LINES_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxOrderChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_TEMPLATE_ORDER_CHANGED', payload: target.value });
+  const textBoxOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxOptionalChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'TEXT_BOX_TEMPLATE_OPTIONAL_CHANGED', payload: target.checked });
+  const textBoxOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'TEXT_BOX_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotLabelChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_LABEL_CHANGED', payload: target.value });
+  const uploadSlotLabelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_LABEL_CHANGED', payload: e.target.value });
   }, []);
 
-  const uploadSlotPointsChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_POINTS_CHANGED', payload: target.value });
+  const uploadSlotPointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_POINTS_CHANGED', payload: e.target.value });
   }, []);
 
-  const uploadSlotOrderChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_ORDER_CHANGED', payload: target.value });
+  const uploadSlotOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const uploadSlotImageChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_IMAGE_CHANGED', payload: target.checked });
+  const uploadSlotImageChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_IMAGE_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotPdfChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_PDF_CHANGED', payload: target.checked });
+  const uploadSlotPdfChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_PDF_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotWordChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_WORD_CHANGED', payload: target.checked });
+  const uploadSlotWordChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_WORD_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotExcelChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_EXCEL_CHANGED', payload: target.checked });
+  const uploadSlotExcelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_EXCEL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotOptionalChange: FormEventHandler<HTMLInputElement> = useCallback(e => {
-    const target = e.target as HTMLInputElement;
-    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED', payload: target.checked });
+  const uploadSlotOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
   if (state.error) {
@@ -292,10 +275,10 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     <>
       <section>
         <div className="container">
-          <h1>Edit Part</h1>
+          <h1>Edit Part Template</h1>
           <div className="row justify-content-between">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
-              <NewPartEditForm
+              <NewPartTemplateEditForm
                 partTemplate={state.partTemplate}
                 formState={state.form}
                 save$={save$.current}
@@ -338,13 +321,13 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
       </section>
       <section>
         <div className="container">
-          <h2 className="h3">Text Boxes</h2>
+          <h2 className="h3">Text Box Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <TextBoxList textBoxes={state.partTemplate.textBoxes} textBoxRowClick={textBoxRowClick} />
+              <NewTextBoxTemplateList textBoxes={state.partTemplate.textBoxes} textBoxRowClick={textBoxRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
-              <NewTextBoxAddForm
+              <NewTextBoxTemplateAddForm
                 formState={state.textBoxForm}
                 insert$={textBoxInsert$.current}
                 descriptionChange={textBoxDescriptionChange}
@@ -359,13 +342,13 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
       </section>
       <section>
         <div className="container">
-          <h2 className="h3">Upload Slots</h2>
+          <h2 className="h3">Upload Slot Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <UploadSlotList uploadSlots={state.partTemplate.uploadSlots} uploadSlotRowClick={uploadSlotRowClick} />
+              <NewUploadSlotTemplateList uploadSlots={state.partTemplate.uploadSlots} uploadSlotRowClick={uploadSlotRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
-              <NewUploadSlotAddForm
+              <NewUploadSlotTemplateAddForm
                 formState={state.uploadSlotForm}
                 insert$={uploadSlotInsert$.current}
                 labelChange={uploadSlotLabelChange}

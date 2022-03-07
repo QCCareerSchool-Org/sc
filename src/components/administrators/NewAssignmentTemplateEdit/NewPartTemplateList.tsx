@@ -7,12 +7,12 @@ type Props = {
   partRowClick: (e: MouseEvent<HTMLTableRowElement>, partId: string) => void;
 };
 
-export const PartList = memo(({ parts, partRowClick }: Props): ReactElement => (
+export const NewPartTemplateList = memo(({ parts, partRowClick }: Props): ReactElement => (
   <>
     {parts.length === 0
       ? <p>no parts</p>
       : (
-        <table id="partsTable" className="table table-bordered table-hover w-auto bg-white">
+        <table id="hewPartTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th className="text-center">#</th>
@@ -34,9 +34,9 @@ export const PartList = memo(({ parts, partRowClick }: Props): ReactElement => (
     }
 
     <style jsx>{`
-      #partsTable tr { cursor: pointer }
+      #hewPartTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));
 
-PartList.displayName = 'PartList';
+NewPartTemplateList.displayName = 'NewPartTemplateList';

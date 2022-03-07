@@ -1,6 +1,6 @@
-import { FormEventHandler, memo, ReactElement } from 'react';
-
+import { ChangeEventHandler, FormEventHandler, memo, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
+
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
 import type { NewTextBoxTemplatePayload } from '@/services/administrators';
@@ -8,14 +8,14 @@ import type { NewTextBoxTemplatePayload } from '@/services/administrators';
 type Props = {
   formState: State['textBoxForm'];
   insert$: Subject<{ processingState: State['textBoxForm']['processingState']; payload: NewTextBoxTemplatePayload }>;
-  descriptionChange: FormEventHandler<HTMLTextAreaElement>;
-  pointsChange: FormEventHandler<HTMLInputElement>;
-  linesChange: FormEventHandler<HTMLInputElement>;
-  orderChange: FormEventHandler<HTMLInputElement>;
-  optionalChange: FormEventHandler<HTMLInputElement>;
+  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  pointsChange: ChangeEventHandler<HTMLInputElement>;
+  linesChange: ChangeEventHandler<HTMLInputElement>;
+  orderChange: ChangeEventHandler<HTMLInputElement>;
+  optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewTextBoxAddForm = memo(({ formState, insert$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewTextBoxTemplateAddForm = memo(({ formState, insert$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -48,36 +48,36 @@ export const NewTextBoxAddForm = memo(({ formState, insert$, descriptionChange, 
     <>
       <div id="newTextBoxCard" className="card">
         <div className="card-body">
-          <h3 className="h5">New Text Box</h3>
+          <h3 className="h5">New Text Box Template</h3>
           <form onSubmit={formSubmit}>
             <div className="formGroup">
-              <label htmlFor="newTextBoxDescription" className="form-label">Description</label>
-              <textarea onChange={descriptionChange} value={formState.data.description} id="newTextBoxDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newTextBoxDescriptionHelp" />
-              <div id="newTextBoxDescriptionHelp" className="form-text">A description of what should be enterered into the text box</div>
+              <label htmlFor="newTextBoxTemplateDescription" className="form-label">Description</label>
+              <textarea onChange={descriptionChange} value={formState.data.description} id="newTextBoxTemplateDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newTextBoxTemplateDescriptionHelp" />
+              <div id="newTextBoxTemplateDescriptionHelp" className="form-text">A description of what should be enterered into the text box</div>
               {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
             </div>
             <div className="formGroup">
-              <label htmlFor="newTextBoxPoints" className="form-label">Points <span className="text-danger">*</span></label>
-              <input onChange={pointsChange} value={formState.data.points} type="number" id="newTextBoxPoints" min={0} max={127} className={`form-control ${formState.validationMessages.points ? 'is-invalid' : ''}`} aria-describedby="newTextBoxPointsHelp" required />
-              <div id="newTextBoxPointsHelp" className="form-text">The maximum mark for the text box</div>
+              <label htmlFor="newTextBoxTemplatePoints" className="form-label">Points <span className="text-danger">*</span></label>
+              <input onChange={pointsChange} value={formState.data.points} type="number" id="newTextBoxTemplatePoints" min={0} max={127} className={`form-control ${formState.validationMessages.points ? 'is-invalid' : ''}`} aria-describedby="newTextBoxTemplatePointsHelp" required />
+              <div id="newTextBoxTemplatePointsHelp" className="form-text">The maximum mark for the text box</div>
               {formState.validationMessages.points && <div className="invalid-feedback">{formState.validationMessages.points}</div>}
             </div>
             <div className="formGroup">
-              <label htmlFor="newTextBoxLines" className="form-label">Lines</label>
-              <input onChange={linesChange} value={formState.data.lines} type="number" id="newTextBoxLines" min={1} max={127} className={`form-control ${formState.validationMessages.lines ? 'is-invalid' : ''}`} placeholder="(default)" aria-describedby="newTextBoxLinesHelp" />
-              <div id="newTextBoxLinesHelp" className="form-text">The size of the text box (for display purposes only)</div>
+              <label htmlFor="newTextBoxTemplateLines" className="form-label">Lines</label>
+              <input onChange={linesChange} value={formState.data.lines} type="number" id="newTextBoxTemplateLines" min={1} max={127} className={`form-control ${formState.validationMessages.lines ? 'is-invalid' : ''}`} placeholder="(default)" aria-describedby="newTextBoxTemplateLinesHelp" />
+              <div id="newTextBoxTemplateLinesHelp" className="form-text">The size of the text box (for display purposes only)</div>
               {formState.validationMessages.lines && <div className="invalid-feedback">{formState.validationMessages.lines}</div>}
             </div>
             <div className="formGroup">
-              <label htmlFor="newTextBoxOrder" className="form-label">Order <span className="text-danger">*</span></label>
-              <input onChange={orderChange} value={formState.data.order} type="number" id="newTextBoxOrder" min={0} max={127} className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} required aria-describedby="newTextBoxOrderHelp" />
-              <div id="newTextBoxOrderHelp" className="form-text">The order in which the text box should appear</div>
+              <label htmlFor="newTextBoxTemplateOrder" className="form-label">Order <span className="text-danger">*</span></label>
+              <input onChange={orderChange} value={formState.data.order} type="number" id="newTextBoxTemplateOrder" min={0} max={127} className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} required aria-describedby="newTextBoxTemplateOrderHelp" />
+              <div id="newTextBoxTemplateOrderHelp" className="form-text">The order in which the text box should appear</div>
               {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
             </div>
             <div className="formGroup">
               <div className="form-check">
-                <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newTextBoxOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
-                <label htmlFor="newTextBoxOptional" className="form-check-label">Optional</label>
+                <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newTextBoxTemplateOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
+                <label htmlFor="newTextBoxTemplateOptional" className="form-check-label">Optional</label>
                 {formState.validationMessages.optional && <div className="invalid-feedback">{formState.validationMessages.optional}</div>}
               </div>
             </div>
@@ -99,4 +99,4 @@ export const NewTextBoxAddForm = memo(({ formState, insert$, descriptionChange, 
   );
 });
 
-NewTextBoxAddForm.displayName = 'NewTextBoxAddForm';
+NewTextBoxTemplateAddForm.displayName = 'NewTextBoxTemplateAddForm';

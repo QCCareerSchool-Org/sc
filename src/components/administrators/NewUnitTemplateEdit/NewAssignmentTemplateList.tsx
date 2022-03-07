@@ -7,12 +7,12 @@ type Props = {
   assignmentRowClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
 };
 
-export const AssignmentList = memo(({ assignments, assignmentRowClick }: Props): ReactElement => (
+export const NewAssignmentTemplateList = memo(({ assignments, assignmentRowClick }: Props): ReactElement => (
   <>
     {assignments.length === 0
       ? <p>no assignments</p>
       : (
-        <table id="assignmentsTable" className="table table-bordered table-hover w-auto bg-white">
+        <table id="newAssignmentTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th className="text-center">#</th>
@@ -34,9 +34,9 @@ export const AssignmentList = memo(({ assignments, assignmentRowClick }: Props):
     }
 
     <style jsx>{`
-      #assignmentsTable tr { cursor: pointer }
+      #newAssignmentTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));
 
-AssignmentList.displayName = 'AssignmentList';
+NewAssignmentTemplateList.displayName = 'NewAssignmentTemplateList';

@@ -24,6 +24,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
   const authDispatch = useAuthDispatch();
   const [ username, setUsername ] = useState('');
   const [ password, setPassword ] = useState('');
+  const [ stayLoggedIn, setStayLoggedIn ] = useState(false);
   const [ submitting, setSubmitting ] = useState(false);
   const [ error, setError ] = useState(false);
 
@@ -68,7 +69,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
 
   const formSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    logIn$.current.next({ username, password, stayLoggedIn: false, returnUrl });
+    logIn$.current.next({ username, password, stayLoggedIn, returnUrl });
   };
 
   const usernameChange: ChangeEventHandler<HTMLInputElement> = e => {
@@ -77,6 +78,10 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
 
   const passwordChange: ChangeEventHandler<HTMLInputElement> = e => {
     setPassword(e.target.value);
+  };
+
+  const stayLoggedInChange: ChangeEventHandler<HTMLInputElement> = e => {
+    setStayLoggedIn(e.target.checked);
   };
 
   return (
@@ -95,9 +100,17 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
                   <label htmlFor="password" className="form-label">Password</label>
                   <input type="password" id="password" name="password" value={password} onChange={passwordChange} className="form-control" required />
                 </div>
+                <div className="formGroup">
+                  <div className="form-check">
+                    <input onChange={stayLoggedInChange} checked={stayLoggedIn} type="checkbox" id="stayLoggedIn" className="form-check-input" />
+                    <label htmlFor="stayLoggedIn" className="form-check-label">Stay Logged In</label>
+                  </div>
+                </div>
                 <div className="d-flex align-items-center">
-                  <button type="submit" className="btn btn-primary" disabled={submitting}>Log In</button>
-                  {submitting && <div className="ms-2"><Spinner /></div>}
+                  <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={submitting}>
+                    {submitting ? <Spinner size="sm" /> : 'Log In'}
+                  </button>
+                  {error && <span className="text-danger ms-2">Error</span>}
                 </div>
               </form>
             </div>

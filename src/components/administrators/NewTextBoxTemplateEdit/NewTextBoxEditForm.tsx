@@ -1,4 +1,4 @@
-import type { FormEventHandler, MouseEventHandler, ReactElement } from 'react';
+import { FormEventHandler, memo, MouseEventHandler, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
@@ -16,7 +16,7 @@ type Props = {
   optionalChange: FormEventHandler<HTMLInputElement>;
 };
 
-export const NewTextBoxEditForm = ({ formState, save$, delete$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewTextBoxEditForm = memo(({ formState, save$, delete$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -99,7 +99,10 @@ export const NewTextBoxEditForm = ({ formState, save$, delete$, descriptionChang
 
       <style jsx>{`
         .formGroup { margin-bottom: 1rem; }
+        .form-text { font-size: 0.75rem; }
       `}</style>
     </>
   );
-};
+});
+
+NewTextBoxEditForm.displayName = 'NewTextBoxEditForm';

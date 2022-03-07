@@ -161,12 +161,14 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Required';
       } else if (action.payload.length > 1) {
         validationMessage = 'Maximum of one character allowed';
+      } else if (!/[a-z]/iu.test(action.payload)) {
+        validationMessage = 'Only letters A to Z are allowed';
       }
       return {
         ...state,
         form: {
           ...state.form,
-          data: { ...state.form.data, unitLetter: action.payload },
+          data: { ...state.form.data, unitLetter: action.payload.toUpperCase() },
           validationMessages: { ...state.form.validationMessages, unitLetter: validationMessage },
         },
       };

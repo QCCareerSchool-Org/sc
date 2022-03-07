@@ -1,4 +1,4 @@
-import { memo, MouseEventHandler, ReactElement, ReactEventHandler, useEffect, useRef } from 'react';
+import { ChangeEventHandler, memo, MouseEventHandler, ReactElement, useEffect, useRef } from 'react';
 import { debounceTime, exhaustMap, Subject, takeUntil } from 'rxjs';
 
 import type { TextBoxFunction } from '.';
@@ -40,11 +40,10 @@ export const NewTextBoxForm = memo(({ textBox, update, save }: Props): ReactElem
 
   const characters = (new TextEncoder().encode(textBox.text).length);
 
-  const onChange: ReactEventHandler<HTMLTextAreaElement> = e => {
-    const target = e.target as HTMLTextAreaElement;
-    const newLength = (new TextEncoder().encode(target.value).length);
+  const onChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
+    const newLength = (new TextEncoder().encode(e.target.value).length);
     if (newLength <= maxLength) {
-      textChange$.current.next(target.value);
+      textChange$.current.next(e.target.value);
     }
   };
 
