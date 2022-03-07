@@ -1,13 +1,23 @@
-import type { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
-import { IHttpService } from '../httpService';
-import type { NewAssignment, NewPart, NewTextBox, NewUploadSlot } from '@/domain/students';
+import type { IHttpService } from '../httpService';
+import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
+import type { NewPart, RawNewPart } from '@/domain/newPart';
+import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
+import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
 
 export type NewAssignmentWithChildren = NewAssignment & {
   newParts: Array<NewPart & {
     newTextBoxes: Array<NewTextBox>;
     newUploadSlots: Array<NewUploadSlot>;
+  }>;
+};
+
+type RawNewAssignmentWithChildren = RawNewAssignment & {
+  newParts: Array<RawNewPart & {
+    newTextBoxes: Array<RawNewTextBox>;
+    newUploadSlots: Array<RawNewUploadSlot>;
   }>;
 };
 
@@ -25,13 +35,21 @@ export class NewAssignmentService implements INewAssignmentService {
 
   public getAssignment(studentId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentWithChildren> {
     const url = this.getUrl(studentId, courseId, unitId, assignmentId);
-    return this.httpService.get<NewAssignmentWithChildren>(url);
+    return this.httpService.get<RawNewAssignmentWithChildren>(url).pipe(
+      map(this.mapNewAssignmentWithChildren),
+    );
   }
 
   public saveText(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, text: string): Observable<NewTextBox> {
     const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/textBoxes/${textBoxId}`;
     const body = { text };
-    return this.httpService.put<NewTextBox>(url, body);
+    return this.httpService.put<RawNewTextBox>(url, body).pipe(
+      map(t => ({
+        ...t,
+        created: new Date(t.created),
+        modified: t.modified === null ? null : new Date(t.modified),
+      })),
+    );
   }
 
   public uploadFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File): Observable<number> {
@@ -54,5 +72,28 @@ export class NewAssignmentService implements INewAssignmentService {
 
   private getUrl(studentId: number, courseId: number, unitId: string, assignmentId: string): string {
     return `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}`;
+  }
+
+  private mapNewAssignmentWithChildren(newAssignment: RawNewAssignmentWithChildren): NewAssignmentWithChildren {
+    return {
+      ...newAssignment,
+      created: new Date(newAssignment.created),
+      modified: newAssignment.modified === null ? null : new Date(newAssignment.modified),
+      newParts: newAssignment.newParts.map(p => ({
+        ...p,
+        created: new Date(p.created),
+        modified: p.modified === null ? null : new Date(p.modified),
+        newTextBoxes: p.newTextBoxes.map(t => ({
+          ...t,
+          created: new Date(t.created),
+          modified: t.modified === null ? null : new Date(t.modified),
+        })),
+        newUploadSlots: p.newUploadSlots.map(u => ({
+          ...u,
+          created: new Date(u.created),
+          modified: u.modified === null ? null : new Date(u.modified),
+        })),
+      })),
+    };
   }
 }

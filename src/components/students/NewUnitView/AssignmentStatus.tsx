@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-import type { NewUnitWithCourseAndChildren } from '@/services/students';
+import type { NewUnitWithCourseAndChildren } from '@/services/students/newUnitService';
 
 type Props = {
   unit: NewUnitWithCourseAndChildren;

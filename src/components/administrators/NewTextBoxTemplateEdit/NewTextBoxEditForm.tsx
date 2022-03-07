@@ -3,7 +3,7 @@ import type { Subject } from 'rxjs';
 
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { NewTextBoxTemplatePayload } from '@/services/administrators';
+import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
 
 type Props = {
   formState: State['form'];

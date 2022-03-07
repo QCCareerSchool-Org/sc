@@ -3,7 +3,7 @@ import type { Subject } from 'rxjs';
 
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { AllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators';
+import type { NewUploadSlotAllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
 
 type Props = {
   formState: State['uploadSlotForm'];
@@ -40,8 +40,8 @@ export const NewUploadSlotTemplateAddForm = memo(({ formState, insert$, labelCha
       payload: {
         label: formState.data.label,
         points: parseInt(formState.data.points, 10),
-        allowedTypes: Object.keys(formState.data.allowedTypes).reduce<AllowedType[]>((prev, cur) => {
-          const key = cur as AllowedType;
+        allowedTypes: Object.keys(formState.data.allowedTypes).reduce<NewUploadSlotAllowedType[]>((prev, cur) => {
+          const key = cur as NewUploadSlotAllowedType;
           if (formState.data.allowedTypes[key]) {
             prev.push(key);
           }

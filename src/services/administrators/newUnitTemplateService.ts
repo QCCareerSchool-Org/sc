@@ -2,12 +2,15 @@ import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
-import type { Course, NewAssignmentTemplate, NewUnitTemplate, RawNewAssignmentTemplate, RawNewUnitTemplate } from '@/domain/index';
+import type { Course } from '@/domain/course';
+import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
 
 export type NewUnitTemplatePayload = {
   title: string | null;
   description: string | null;
   unitLetter: string;
+  order: number;
   optional: boolean;
 };
 

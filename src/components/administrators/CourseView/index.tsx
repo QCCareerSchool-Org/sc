@@ -6,7 +6,8 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import { NewUnitTemplateAddForm } from './NewUnitTemplateAddForm';
 import { NewUnitTemplateList } from './NewUnitTemplateList';
 import { initialState, reducer, State } from './state';
-import { courseService, NewUnitTemplatePayload, newUnitTemplateService } from '@/services/administrators';
+import { courseService, newUnitTemplateService } from '@/services/administrators';
+import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 

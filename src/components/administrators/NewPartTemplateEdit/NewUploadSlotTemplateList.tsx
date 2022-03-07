@@ -1,6 +1,6 @@
 import { memo, MouseEvent, ReactElement } from 'react';
 
-import type { NewUploadSlotTemplate } from '@/domain/index';
+import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 
 type Props = {
   uploadSlots: NewUploadSlotTemplate[];

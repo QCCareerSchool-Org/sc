@@ -3,7 +3,7 @@ import type { Subject } from 'rxjs';
 
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { NewUnitTemplatePayload } from '@/services/administrators';
+import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
 
 type Props = {
   formState: State['unitForm'];
@@ -37,6 +37,7 @@ export const NewUnitTemplateAddForm = memo(({ formState, insert$, titleChange, d
         title: formState.data.title || null,
         description: formState.data.description || null,
         unitLetter: formState.data.unitLetter,
+        order: parseInt(formState.data.order, 10),
         optional: formState.data.optional,
       },
     });

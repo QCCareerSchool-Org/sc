@@ -1,5 +1,8 @@
-import { NewAssignment, NewPart, NewTextBox, NewUploadSlot } from '@/domain/students';
-import { NewAssignmentWithChildren } from '@/services/students';
+import type { NewAssignment } from '@/domain/newAssignment';
+import type { NewPart } from '@/domain/newPart';
+import type { NewTextBox } from '@/domain/newTextBox';
+import type { NewUploadSlot } from '@/domain/newUploadSlot';
+import type { NewAssignmentWithChildren } from '@/services/students/newAssignmentService';
 
 type FormState = 'pristine' | 'dirty';
 
@@ -23,6 +26,7 @@ export type PartState = NewPart & {
 };
 
 export type AssignmentState = NewAssignment & {
+  complete: boolean;
   formState: FormState;
   saveState: 'saved' | 'unsaved' | 'saving' | 'error';
   parts: PartState[];
@@ -95,18 +99,26 @@ const assignmentLoad = (state: State, assignment: NewAssignmentWithChildren): St
         ...p,
         formState: 'pristine',
         saveState: 'saved',
-        textBoxes: p.newTextBoxes.map(t => ({
-          ...t,
-          formState: 'pristine',
-          saveState: null,
-          savedText: t.text,
-        })),
-        uploadSlots: p.newUploadSlots.map(u => ({
-          ...u,
-          formState: 'pristine',
-          saveState: u.complete ? 'saved' : 'empty',
-          progress: u.complete ? 100 : 0,
-        })),
+        textBoxes: p.newTextBoxes.map(t => {
+          const complete = t.text.length > 0;
+          return {
+            ...t,
+            complete,
+            formState: 'pristine',
+            saveState: null,
+            savedText: t.text,
+          };
+        }),
+        uploadSlots: p.newUploadSlots.map(u => {
+          const complete = u.filename !== null;
+          return {
+            ...u,
+            complete,
+            formState: 'pristine',
+            saveState: complete ? 'saved' : 'empty',
+            progress: complete ? 100 : 0,
+          };
+        }),
       })),
     },
     error: false,

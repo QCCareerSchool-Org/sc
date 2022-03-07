@@ -1,5 +1,5 @@
 import type { MouseEvent, ReactElement } from 'react';
-import type { School } from '@/domain/index';
+import type { School } from '@/domain/school';
 
 type Props = {
   schools: School[];

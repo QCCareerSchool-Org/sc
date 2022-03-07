@@ -2,7 +2,10 @@ import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
-import type { NewAssignmentTemplate, NewPartTemplate, NewTextBoxTemplate, NewUploadSlotTemplate, RawNewAssignmentTemplate, RawNewPartTemplate, RawNewTextBoxTemplate, RawNewUploadSlotTemplate } from '@/domain/index';
+import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
+import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
+import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 
 export type NewPartTemplatePayload = {
   title: string | null;

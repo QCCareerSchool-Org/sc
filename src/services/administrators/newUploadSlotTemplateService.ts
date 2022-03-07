@@ -2,7 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
-import type { NewPartTemplate, NewUploadSlotTemplate, RawNewPartTemplate, RawNewUploadSlotTemplate } from '@/domain/index';
+import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
+import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 
 type RawNewUploadSlotTemplateWithPart = RawNewUploadSlotTemplate & {
   newPartTemplate: RawNewPartTemplate;
@@ -12,11 +13,11 @@ export type NewUploadSlotTemplateWithPart = NewUploadSlotTemplate & {
   newPartTemplate: NewPartTemplate;
 };
 
-export type AllowedType = 'image' | 'pdf' | 'word' | 'excel';
+export type NewUploadSlotAllowedType = 'image' | 'pdf' | 'word' | 'excel';
 
 export type NewUploadSlotTemplatePayload = {
   label: string;
-  allowedTypes: AllowedType[];
+  allowedTypes: NewUploadSlotAllowedType[];
   points: number;
   order: number;
   optional: boolean;

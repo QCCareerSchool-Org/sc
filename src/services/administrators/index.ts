@@ -14,11 +14,3 @@ export const newAssignmentTemplateService = new NewAssignmentTemplateService(axi
 export const newPartTemplateService = new NewPartTemplateService(axiosHttpService);
 export const newTextBoxTemplateService = new NewTextBoxTemplateService(axiosHttpService);
 export const newUploadSlotTemplateService = new NewUploadSlotTemplateService(axiosHttpService);
-
-export type { SchoolWithCourses } from './schoolService';
-export type { CourseWithSchoolAndUnits } from './courseService';
-export type { NewUnitTemplateWithCourseAndAssignments, NewUnitTemplatePayload } from './newUnitTemplateService';
-export type { NewAssignmentTemplateWithUnitAndParts, NewAssignmentTemplatePayload } from './newAssignmentTemplateService';
-export type { NewPartTemplateWithAssignmentAndInputs, NewPartTemplatePayload } from './newPartTemplateService';
-export type { NewTextBoxTemplateWithPart, NewTextBoxTemplatePayload } from './newTextBoxTemplateService';
-export type { NewUploadSlotTemplateWithPart, NewUploadSlotTemplatePayload, AllowedType } from './newUploadSlotTemplateService';

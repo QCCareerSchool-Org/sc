@@ -1,25 +1,27 @@
-export type NewUnitTemplate = {
+export type NewPart = {
   /** uuid */
-  unitId: string;
-  courseId: number;
-  unitLetter: string;
+  partId: string;
+  /** uuid */
+  assignmentId: string;
+  partNumber: number;
   title: string | null;
   description: string | null;
   optional: boolean;
-  order: number;
+  complete: boolean;
   created: Date;
   modified: Date | null;
 };
 
-export type RawNewUnitTemplate = {
+export type RawNewPart = {
   /** uuid */
-  unitId: string;
-  courseId: number;
-  unitLetter: string;
+  partId: string;
+  /** uuid */
+  assignmentId: string;
+  partNumber: number;
   title: string | null;
   description: string | null;
   optional: boolean;
-  order: number;
+  complete: boolean;
   /** date string */
   created: string;
   /** date string */

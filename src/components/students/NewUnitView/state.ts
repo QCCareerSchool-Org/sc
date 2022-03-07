@@ -1,4 +1,4 @@
-import { NewUnitWithCourseAndChildren } from '@/services/students';
+import type { NewUnitWithCourseAndChildren } from '@/services/students/newUnitService';
 
 export type State = {
   unit?: NewUnitWithCourseAndChildren;

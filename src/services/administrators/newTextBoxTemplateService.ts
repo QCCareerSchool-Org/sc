@@ -2,7 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
-import type { NewPartTemplate, NewTextBoxTemplate, RawNewPartTemplate, RawNewTextBoxTemplate } from '@/domain/index';
+import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
+import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 
 type RawNewTextBoxTemplateWithPart = RawNewTextBoxTemplate & {
   newPartTemplate: RawNewPartTemplate;

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { MouseEvent, ReactElement } from 'react';
 
 import { basePath } from '../../../basePath';
-import type { NewUnitWithCourseAndChildren } from '@/services/students';
+import type { NewUnitWithCourseAndChildren } from '@/services/students/newUnitService';
 
 type Props = {
   unit: NewUnitWithCourseAndChildren;

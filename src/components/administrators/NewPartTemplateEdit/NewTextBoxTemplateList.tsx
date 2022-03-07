@@ -1,6 +1,6 @@
 import { memo, MouseEvent, ReactElement } from 'react';
 
-import type { NewTextBoxTemplate } from '@/domain/index';
+import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 
 type Props = {
   textBoxes: NewTextBoxTemplate[];

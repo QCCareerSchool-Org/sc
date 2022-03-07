@@ -2,7 +2,8 @@ import type { Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
-import type { Course, School } from '@/domain/index';
+import type { Course } from '@/domain/course';
+import type { School } from '@/domain/school';
 
 export type SchoolWithCourses = School & {
   courses: Course[];

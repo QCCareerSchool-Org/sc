@@ -1,5 +1,7 @@
-import type { NewPartTemplate, NewTextBoxTemplate, NewUploadSlotTemplate } from '@/domain/index';
-import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators';
+import type { NewPartTemplate } from '@/domain/newPartTemplate';
+import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
+import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
+import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
 import { uuidService } from '@/services/index';
 
 export type State = {

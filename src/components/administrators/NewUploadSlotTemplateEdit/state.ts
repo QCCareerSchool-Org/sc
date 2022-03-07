@@ -1,5 +1,5 @@
-import type { NewUploadSlotTemplate } from '@/domain/index';
-import type { NewUploadSlotTemplateWithPart } from '@/services/administrators';
+import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
+import type { NewUploadSlotTemplateWithPart } from '@/services/administrators/newUploadSlotTemplateService';
 
 export type State = {
   uploadSlotTemplate?: NewUploadSlotTemplateWithPart;

@@ -1,6 +1,6 @@
 import { memo, MouseEvent, ReactElement } from 'react';
 
-import type { NewPartTemplate } from '@/domain/index';
+import type { NewPartTemplate } from '@/domain/newPartTemplate';
 
 type Props = {
   parts: NewPartTemplate[];

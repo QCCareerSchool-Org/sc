@@ -1,5 +1,5 @@
-import type { NewUnitTemplate } from '@/domain/index';
-import type { CourseWithSchoolAndUnits } from '@/services/administrators';
+import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
+import type { CourseWithSchoolAndUnits } from '@/services/administrators/courseService';
 
 export type State = {
   course?: CourseWithSchoolAndUnits;
@@ -8,12 +8,14 @@ export type State = {
       title: string;
       description: string;
       unitLetter: string;
+      order: string;
       optional: boolean;
     };
     validationMessages: {
       title?: string;
       description?: string;
       unitLetter?: string;
+      order?: string;
       optional?: string;
     };
     processingState: 'idle' | 'inserting' | 'insert error';
@@ -40,6 +42,7 @@ export const initialState: State = {
       title: '',
       description: '',
       unitLetter: 'A',
+      order: '0',
       optional: false,
     },
     validationMessages: {},
@@ -67,6 +70,7 @@ export const reducer = (state: State, action: Action): State => {
             title: '',
             description: '',
             unitLetter,
+            order: action.payload.newUnitTemplates.length === 0 ? '0' : Math.max(...action.payload.newUnitTemplates.map(u => u.order)).toString(),
             optional: false,
           },
           validationMessages: {},
@@ -165,6 +169,7 @@ export const reducer = (state: State, action: Action): State => {
             title: '',
             description: '',
             unitLetter,
+            order: Math.max(...newUnitTemplates.map(u => u.order)).toString(),
             optional: false,
           },
           validationMessages: {},

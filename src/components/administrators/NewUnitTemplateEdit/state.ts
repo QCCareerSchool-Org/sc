@@ -1,6 +1,6 @@
-import { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
-import { NewUnitTemplate } from '@/domain/newUnitTemplate';
-import type { NewUnitTemplateWithCourseAndAssignments } from '@/services/administrators';
+import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
+import type { NewUnitTemplateWithCourseAndAssignments } from '@/services/administrators/newUnitTemplateService';
 
 export type State = {
   unitTemplate?: NewUnitTemplateWithCourseAndAssignments;
@@ -9,12 +9,14 @@ export type State = {
       title: string;
       description: string;
       unitLetter: string;
+      order: string;
       optional: boolean;
     };
     validationMessages: {
       title?: string;
       description?: string;
       unitLetter?: string;
+      order?: string;
       optional?: string;
     };
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
@@ -67,6 +69,7 @@ export const initialState: State = {
       title: '',
       description: '',
       unitLetter: 'A',
+      order: '0',
       optional: false,
     },
     validationMessages: {},
@@ -98,6 +101,7 @@ export const reducer = (state: State, action: Action): State => {
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
             unitLetter: action.payload.unitLetter,
+            order: action.payload.order.toString(),
             optional: action.payload.optional,
           },
           validationMessages: {},
@@ -199,6 +203,7 @@ export const reducer = (state: State, action: Action): State => {
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
             unitLetter: action.payload.unitLetter,
+            order: action.payload.order.toString(),
             optional: action.payload.optional,
           },
           validationMessages: {},
@@ -230,6 +235,7 @@ export const reducer = (state: State, action: Action): State => {
             title: '',
             description: '',
             unitLetter: 'A',
+            order: '0',
             optional: false,
           },
           validationMessages: {},

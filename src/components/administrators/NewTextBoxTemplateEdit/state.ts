@@ -1,5 +1,5 @@
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
-import type { NewTextBoxTemplateWithPart } from '@/services/administrators';
+import type { NewTextBoxTemplateWithPart } from '@/services/administrators/newTextBoxTemplateService';
 
 export type State = {
   textBoxTemplate?: NewTextBoxTemplateWithPart;

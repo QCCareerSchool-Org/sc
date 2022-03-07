@@ -2,7 +2,12 @@ import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
-import type { Enrollment, NewAssignment, NewPart, NewTextBox, NewUnit, NewUploadSlot, RawEnrollment, RawNewAssignment, RawNewUnit } from '@/domain/students';
+import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
+import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
+import type { NewPart, RawNewPart } from '@/domain/newPart';
+import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
+import type { NewUnit, RawNewUnit } from '@/domain/newUnit';
+import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
 
 export type NewUnitWithCourseAndChildren = NewUnit & {
   enrollment: Enrollment;
@@ -17,9 +22,9 @@ export type NewUnitWithCourseAndChildren = NewUnit & {
 type RawNewUnitWithCourseAndChildren = RawNewUnit & {
   enrollment: RawEnrollment;
   newAssignments: Array<RawNewAssignment & {
-    newParts: Array<NewPart & {
-      newTextBoxes: NewTextBox[];
-      newUploadSlots: NewUploadSlot[];
+    newParts: Array<RawNewPart & {
+      newTextBoxes: RawNewTextBox[];
+      newUploadSlots: RawNewUploadSlot[];
     }>;
   }>;
 };
@@ -59,33 +64,51 @@ export class NewUnitService implements INewUnitService {
     return `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}`;
   }
 
-  private readonly mapNewUnit = (unit: RawNewUnit): NewUnit => {
+  private readonly mapNewUnit = (newUnit: RawNewUnit): NewUnit => {
     return {
-      ...unit,
-      submitted: unit.submitted === null ? null : new Date(unit.submitted),
-      skipped: unit.skipped === null ? null : new Date(unit.skipped),
-      transferred: unit.transferred === null ? null : new Date(unit.transferred),
-      marked: unit.marked === null ? null : new Date(unit.marked),
-      created: new Date(unit.created),
+      ...newUnit,
+      submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
+      skipped: newUnit.skipped === null ? null : new Date(newUnit.skipped),
+      transferred: newUnit.transferred === null ? null : new Date(newUnit.transferred),
+      marked: newUnit.marked === null ? null : new Date(newUnit.marked),
+      created: new Date(newUnit.created),
+      modified: newUnit.modified === null ? null : new Date(newUnit.modified),
     };
   };
 
-  private readonly mapNewUnitWithCourseAndChildren = (unit: RawNewUnitWithCourseAndChildren): NewUnitWithCourseAndChildren => {
+  private readonly mapNewUnitWithCourseAndChildren = (newUnit: RawNewUnitWithCourseAndChildren): NewUnitWithCourseAndChildren => {
     return {
-      ...unit,
-      submitted: unit.submitted === null ? null : new Date(unit.submitted),
-      skipped: unit.skipped === null ? null : new Date(unit.skipped),
-      transferred: unit.transferred === null ? null : new Date(unit.transferred),
-      marked: unit.marked === null ? null : new Date(unit.marked),
-      created: new Date(unit.created),
-      newAssignments: unit.newAssignments.map(a => ({
+      ...newUnit,
+      submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
+      skipped: newUnit.skipped === null ? null : new Date(newUnit.skipped),
+      transferred: newUnit.transferred === null ? null : new Date(newUnit.transferred),
+      marked: newUnit.marked === null ? null : new Date(newUnit.marked),
+      created: new Date(newUnit.created),
+      modified: newUnit.modified === null ? null : new Date(newUnit.modified),
+      enrollment: {
+        ...newUnit.enrollment,
+        enrollmentDate: newUnit.enrollment.enrollmentDate === null ? null : new Date(newUnit.enrollment.enrollmentDate),
+      },
+      newAssignments: newUnit.newAssignments.map(a => ({
         ...a,
         created: new Date(a.created),
+        modified: a.modified === null ? null : new Date(a.modified),
+        newParts: a.newParts.map(p => ({
+          ...p,
+          created: new Date(p.created),
+          modified: p.modified === null ? null : new Date(p.modified),
+          newTextBoxes: p.newTextBoxes.map(t => ({
+            ...t,
+            created: new Date(t.created),
+            modified: t.modified === null ? null : new Date(t.modified),
+          })),
+          newUploadSlots: p.newUploadSlots.map(u => ({
+            ...u,
+            created: new Date(u.created),
+            modified: u.modified === null ? null : new Date(u.modified),
+          })),
+        })),
       })),
-      enrollment: {
-        ...unit.enrollment,
-        enrollmentDate: unit.enrollment.enrollmentDate === null ? null : new Date(unit.enrollment.enrollmentDate),
-      },
     };
   };
 }

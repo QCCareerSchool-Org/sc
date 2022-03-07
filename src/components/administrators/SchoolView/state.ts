@@ -1,4 +1,4 @@
-import type { SchoolWithCourses } from '@/services/administrators';
+import type { SchoolWithCourses } from '@/services/administrators/schoolService';
 
 export type State = {
   school?: SchoolWithCourses;

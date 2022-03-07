@@ -5,9 +5,10 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 
 import { NewUploadSlotTemplateEditForm } from './NewUploadSlotTemplateEditForm';
 import { initialState, reducer, State } from './state';
-import { NewUploadSlotTemplate } from '@/domain/index';
+import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { NewUploadSlotTemplatePayload, newUploadSlotTemplateService } from '@/services/administrators';
+import { newUploadSlotTemplateService } from '@/services/administrators';
+import type { NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';

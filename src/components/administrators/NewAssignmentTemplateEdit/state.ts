@@ -1,6 +1,6 @@
-import { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
-import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators';
+import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
 
 export type State = {
   assignmentTemplate?: NewAssignmentTemplateWithUnitAndParts;
