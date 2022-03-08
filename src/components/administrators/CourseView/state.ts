@@ -127,6 +127,8 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Maximum of one character allowed';
       } else if (!/[a-z0-9]/iu.test(action.payload)) {
         validationMessage = 'Only letters A to Z and numbers 0 to 9 are allowed';
+      } else if (state.course?.newUnitTemplates.some(u => u.unitLetter === action.payload.toUpperCase())) {
+        validationMessage = 'Another unit already has this unit letter';
       }
       return {
         ...state,

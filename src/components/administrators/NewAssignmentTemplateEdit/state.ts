@@ -292,6 +292,8 @@ export const reducer = (state: State, action: Action): State => {
           validationMessage = 'Cannot be less than zero';
         } else if (partNumber > 127) {
           validationMessage = 'Cannot be greater than 127';
+        } else if (state.assignmentTemplate?.newPartTemplates.some(p => p.partNumber === partNumber)) {
+          validationMessage = 'Another part already has this part number';
         }
       }
       return {

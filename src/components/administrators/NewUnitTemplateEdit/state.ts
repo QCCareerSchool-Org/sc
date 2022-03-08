@@ -314,13 +314,15 @@ export const reducer = (state: State, action: Action): State => {
       if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
-        const partNumber = parseInt(action.payload, 10);
-        if (isNaN(partNumber)) {
+        const assignmentNumber = parseInt(action.payload, 10);
+        if (isNaN(assignmentNumber)) {
           validationMessage = 'Invalid number';
-        } else if (partNumber < 0) {
+        } else if (assignmentNumber < 0) {
           validationMessage = 'Cannot be less than zero';
-        } else if (partNumber > 127) {
+        } else if (assignmentNumber > 127) {
           validationMessage = 'Cannot be greater than 127';
+        } else if (state.unitTemplate?.newAssignmentTemplates.some(a => a.assignmentNumber === assignmentNumber)) {
+          validationMessage = 'Another assignment already has this assignment number';
         }
       }
       return {
