@@ -15,6 +15,7 @@ export const CourseList = ({ courses, courseRowClick }: Props): ReactElement => 
           <th className="text-center">Code</th>
           <th>Name</th>
           <th className="text-center">Version</th>
+          <th className="text-center">Unit Type</th>
         </tr>
       </thead>
       <tbody>
@@ -23,6 +24,7 @@ export const CourseList = ({ courses, courseRowClick }: Props): ReactElement => 
             <td className="text-center">{c.code}</td>
             <td>{c.name}</td>
             <td className="text-center">{c.version}</td>
+            <td className="text-center">{c.unitType === 0 ? 'old' : c.unitType === 1 ? 'new' : 'unknown' }</td>
           </tr>
         ))}
       </tbody>
