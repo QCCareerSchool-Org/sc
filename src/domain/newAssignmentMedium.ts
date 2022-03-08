@@ -7,7 +7,7 @@ export type NewAssignmentMedium = {
   assignmentTemplateId: string | null;
   mimeTypeId: string;
   type: NewMediumType;
-  caption: string | null;
+  caption: string;
   externalData: string | null;
   order: number;
   created: Date;
@@ -21,7 +21,8 @@ export type RawNewAssignmentMedium = {
   assignmentTemplateId: string | null;
   mimeTypeId: string;
   type: NewMediumType;
-  caption: string | null;
+  filename: string;
+  caption: string;
   externalData: string | null;
   order: number;
   /** string date */

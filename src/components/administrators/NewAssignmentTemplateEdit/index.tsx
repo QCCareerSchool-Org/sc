@@ -11,8 +11,9 @@ import { NewPartTemplateList } from './NewPartTemplateList';
 import { initialState, reducer, State } from './state';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
+import { newAssignmentMediumService, newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
 import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
+import { NewAssignmentMediumPayload } from '@/services/administrators/newAssignmentTemplateService copy';
 import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
@@ -54,7 +55,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
   const partInsert$ = useRef(new Subject<{ processingState: State['partForm']['processingState']; payload: NewPartTemplatePayload }>());
-  const mediumInsert$ = useRef(new Subject<{ processingState: State['assignmentMediaForm']['processingState']; payload: undefined }>());
+  const mediumInsert$ = useRef(new Subject<{ processingState: State['assignmentMediaForm']['processingState']; payload: NewAssignmentMediumPayload }>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -155,6 +156,37 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
       takeUntil(destroy$),
     ).subscribe();
 
+    mediumInsert$.current.pipe(
+      filter(({ processingState }) => processingState !== 'inserting'),
+      tap(() => dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_STARTED' })),
+      exhaustMap(({ payload }) => newAssignmentMediumService.addAssignmentMedium(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
+        tap({
+          next: progressResponse => {
+            if (progressResponse.type === 'progress') {
+              dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_PROGRESSED', payload: progressResponse.value });
+            } else if (progressResponse.type === 'data') {
+              dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_SUCCEEDED', payload: progressResponse.value });
+            }
+          },
+          error: err => {
+            let message = 'Insert failed';
+            if (err instanceof HttpServiceError) {
+              if (err.login) {
+                return navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
+            }
+            dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_FAILED', payload: message });
+            console.log(err);
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
+      takeUntil(destroy$),
+    ).subscribe();
+
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId ]);
 
@@ -216,10 +248,6 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
 
   const assignmentMediumExternalDataChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_MEDIA_EXTERNAL_DATA_CHANGED', payload: e.target.value });
-  }, []);
-
-  const assignmentMediumTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'ASSIGNMENT_MEDIA_TYPE_CHANGED', payload: e.target.value });
   }, []);
 
   if (state.error) {
@@ -292,12 +320,11 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
               <NewAssignmentMediumAddForm
                 formState={state.assignmentMediaForm}
                 insert$={mediumInsert$.current}
+                dataSourceChange={assignmentMediumDataSourceChange}
                 captionChange={assignmentMediumCaptionChange}
                 orderChange={assignmentMediumOrderChange}
-                dataSourceChange={assignmentMediumDataSourceChange}
                 fileChange={assignmentMediumFileChange}
                 externalDataChange={assignmentMediumExternalDataChange}
-                typeChange={assignmentMediumTypeChange}
               />
             </div>
           </div>

@@ -1,6 +1,8 @@
+import { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
+import { uuidService } from '@/services/index';
 
 export type State = {
   assignmentTemplate?: NewAssignmentTemplateWithUnitAndParts;
@@ -38,21 +40,21 @@ export type State = {
   };
   assignmentMediaForm: {
     data: {
+      dataSource: 'file upload' | 'url';
       caption: string;
       order: string;
-      dataSource: 'file upload' | 'url';
-      type: string;
       file: File | null;
       externalData: string;
     };
     validationMessages: {
-      caption?: string;
       dataSource?: string;
-      type?: string;
+      caption?: string;
+      order?: string;
       file?: string;
       externalData?: string;
     };
     processingState: 'idle' | 'inserting' | 'insert error';
+    progress: number;
     errorMessage?: string;
   };
   error: boolean;
@@ -84,7 +86,10 @@ type Action =
   | { type: 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED'; payload: 'file upload' | 'url' }
   | { type: 'ASSIGNMENT_MEDIA_FILE_CHANGED'; payload: File | null }
   | { type: 'ASSIGNMENT_MEDIA_EXTERNAL_DATA_CHANGED'; payload: string }
-  | { type: 'ASSIGNMENT_MEDIA_TYPE_CHANGED'; payload: string };
+  | { type: 'ADD_ASSIGNMENT_MEDIUM_STARTED' }
+  | { type: 'ADD_ASSIGNMENT_MEDIUM_PROGRESSED'; payload: number }
+  | { type: 'ADD_ASSIGNMENT_MEDIUM_SUCCEEDED'; payload: NewAssignmentMedium }
+  | { type: 'ADD_ASSIGNMENT_MEDIUM_FAILED'; payload?: string };
 
 export const initialState: State = {
   form: {
@@ -112,12 +117,12 @@ export const initialState: State = {
       caption: '',
       order: '0',
       dataSource: 'file upload',
-      type: 'image',
       file: null,
       externalData: '',
     },
     validationMessages: {},
     processingState: 'idle',
+    progress: 0,
   },
   error: false,
 };
@@ -155,15 +160,15 @@ export const reducer = (state: State, action: Action): State => {
         assignmentMediaForm: {
           ...state.assignmentMediaForm,
           data: {
-            caption: '',
-            order: '0',
             dataSource: 'file upload',
-            type: 'image',
+            caption: '',
+            order: action.payload.newAssignmentMedia.length === 0 ? '0' : Math.max(...action.payload.newAssignmentMedia.map(m => m.order)).toString(),
             file: null,
             externalData: '',
           },
           validationMessages: {},
           processingState: 'idle',
+          progress: 0,
         },
         error: false,
       };
@@ -336,70 +341,153 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         partForm: { ...state.partForm, processingState: 'insert error', errorMessage: action.payload },
       };
-    case 'ASSIGNMENT_MEDIA_CAPTION_CHANGED':
+    case 'ASSIGNMENT_MEDIA_CAPTION_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        const maxLength = 191;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
         assignmentMediaForm: {
           ...state.assignmentMediaForm,
-          data: {
-            ...state.assignmentMediaForm.data,
-            caption: action.payload,
-          },
+          data: { ...state.assignmentMediaForm.data, caption: action.payload },
+          validationMessages: { ...state.assignmentMediaForm.validationMessages, caption: validationMessage },
         },
       };
-    case 'ASSIGNMENT_MEDIA_ORDER_CHANGED':
+    }
+    case 'ASSIGNMENT_MEDIA_ORDER_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        const order = parseInt(action.payload, 10);
+        if (isNaN(order)) {
+          validationMessage = 'Invalid number';
+        } else if (order < 0) {
+          validationMessage = 'Cannot be less than zero';
+        } else if (order > 127) {
+          validationMessage = 'Cannot be greater than 127';
+        }
+      }
       return {
         ...state,
         assignmentMediaForm: {
           ...state.assignmentMediaForm,
-          data: {
-            ...state.assignmentMediaForm.data,
-            order: action.payload,
-          },
+          data: { ...state.assignmentMediaForm.data, order: action.payload },
+          validationMessages: { ...state.assignmentMediaForm.validationMessages, order: validationMessage },
         },
       };
-    case 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED':
+    }
+    case 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else if (![ 'file upload', 'url' ].includes(action.payload)) {
+        validationMessage = 'Invalid';
+      }
       return {
         ...state,
         assignmentMediaForm: {
           ...state.assignmentMediaForm,
-          data: {
-            ...state.assignmentMediaForm.data,
-            dataSource: action.payload,
-          },
+          data: { ...state.assignmentMediaForm.data, dataSource: action.payload },
+          validationMessages: { ...state.assignmentMediaForm.validationMessages, dataSource: validationMessage },
         },
       };
-    case 'ASSIGNMENT_MEDIA_TYPE_CHANGED':
+    }
+    case 'ASSIGNMENT_MEDIA_FILE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        if (action.payload.size >= 33_554_432) {
+          validationMessage = 'Maximum file size of 32 MB exceeded';
+        }
+      }
       return {
         ...state,
         assignmentMediaForm: {
           ...state.assignmentMediaForm,
-          data: {
-            ...state.assignmentMediaForm.data,
-            type: action.payload,
-          },
+          data: { ...state.assignmentMediaForm.data, file: action.payload },
+          validationMessages: { ...state.assignmentMediaForm.validationMessages, file: validationMessage },
         },
       };
-    case 'ASSIGNMENT_MEDIA_FILE_CHANGED':
+    }
+    case 'ASSIGNMENT_MEDIA_EXTERNAL_DATA_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        if (!action.payload.startsWith('https://')) {
+          validationMessage = 'Must start with https://';
+        }
+      }
       return {
         ...state,
         assignmentMediaForm: {
           ...state.assignmentMediaForm,
-          data: {
-            ...state.assignmentMediaForm.data,
-            file: action.payload,
-          },
+          data: { ...state.assignmentMediaForm.data, externalData: action.payload },
+          validationMessages: { ...state.assignmentMediaForm.validationMessages, externalData: validationMessage },
         },
       };
-    case 'ASSIGNMENT_MEDIA_EXTERNAL_DATA_CHANGED':
+    }
+    case 'ADD_ASSIGNMENT_MEDIUM_STARTED':
       return {
         ...state,
         assignmentMediaForm: {
           ...state.assignmentMediaForm,
+          processingState: 'inserting',
+          progress: 0,
+          errorMessage: undefined,
+        },
+      };
+    case 'ADD_ASSIGNMENT_MEDIUM_PROGRESSED':
+      return {
+        ...state,
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          progress: action.payload,
+        },
+      };
+    case 'ADD_ASSIGNMENT_MEDIUM_SUCCEEDED': {
+      if (!state.assignmentTemplate) {
+        throw Error('assignmentTemplate is undefined');
+      }
+      const newAssignmentMedia = [ ...state.assignmentTemplate.newAssignmentMedia, action.payload ].sort((a, b) => {
+        if (a.order === b.order) {
+          return uuidService.compare(a.assignmentMediumId, b.assignmentMediumId);
+        }
+        return a.order - b.order;
+      });
+      return {
+        ...state,
+        assignmentTemplate: {
+          ...state.assignmentTemplate,
+          newAssignmentMedia,
+        },
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
           data: {
             ...state.assignmentMediaForm.data,
-            externalData: action.payload,
+            caption: '',
+            order: Math.max(...newAssignmentMedia.map(m => m.order)).toString(),
+            file: null,
+            externalData: '',
           },
+          processingState: 'idle',
+          progress: 100,
+        },
+      };
+    }
+    case 'ADD_ASSIGNMENT_MEDIUM_FAILED':
+      return {
+        ...state,
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          processingState: 'insert error',
+          progress: 0,
+          errorMessage: action.payload,
         },
       };
   }

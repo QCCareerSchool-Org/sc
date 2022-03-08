@@ -1,7 +1,7 @@
 import type Axios from '@qccareerschool/axios-observable';
 import type { AxiosResponse } from 'axios';
 import { saveAs } from 'file-saver';
-import { catchError, combineLatest, from, map, mapTo, Observable, startWith, Subject, tap, throwError } from 'rxjs';
+import { catchError, combineLatest, from, map, mapTo, merge, Observable, startWith, Subject, tap, throwError } from 'rxjs';
 
 import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError, AxiosUnauthorizedError } from 'src/axiosInstance';
 import { endpoint } from 'src/basePath';
@@ -17,10 +17,12 @@ export class HttpServiceError extends Error {
   }
 }
 
+export type ProgressResponse<T> = { type: 'progress'; value: number } | { type: 'data'; value: T };
+
 export interface IHttpService {
   get: <T = unknown>(url: string, config?: Config) => Observable<T>;
   post: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
-  postFile: (url: string, body: unknown, config?: Config) => Observable<number>;
+  postFile: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<ProgressResponse<T>>;
   put: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
   putFile: (url: string, body: unknown, config?: Config) => Observable<number>;
   delete: <T = unknown>(url: string, config?: Config) => Observable<T>;
@@ -45,7 +47,7 @@ export class AxiosHttpService implements IHttpService {
     );
   }
 
-  public postFile(url: string, body: unknown, config?: Config): Observable<number> {
+  public postFile<T>(url: string, body: unknown, config?: Config): Observable<ProgressResponse<T>> {
     const progress$ = new Subject<number>();
     const onUploadProgress = (progressEvent: ProgressEvent): void => {
       const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
@@ -57,19 +59,24 @@ export class AxiosHttpService implements IHttpService {
       }
     };
 
-    const data$ = this.instance.post(url, body, { ...config, onUploadProgress }).pipe(
+    const data$ = this.instance.post<T>(url, body, { ...config, onUploadProgress }).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
 
-    // combine the request with the progress observable created above
-    // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
-    return combineLatest([
-      data$.pipe(startWith(undefined)),
-      progress$,
-    ]).pipe(
-      map(([ , progress ]) => progress), // we only care about the second observable
+    return merge(
+      data$.pipe(map(value => ({ type: 'data', value } as const))),
+      progress$.pipe(map(value => ({ type: 'progress', value } as const))),
     );
+
+    // // combine the request with the progress observable created above
+    // // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
+    // return combineLatest([
+    //   data$.pipe(startWith(undefined)),
+    //   progress$,
+    // ]).pipe(
+    //   map(([ , progress ]) => progress), // we only care about the second observable
+    // );
   }
 
   public put<T>(url: string, body: unknown, config?: Config): Observable<T> {

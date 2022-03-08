@@ -23,7 +23,7 @@ export const NewAssignmentMediumList = memo(({ media, mediumRowClick }: Props): 
           <tbody>
             {media.map(m => (
               <tr key={m.assignmentMediumId} onClick={e => mediumRowClick(e, m.assignmentMediumId)}>
-                <td>{m.caption ?? '(none)'}</td>
+                <td>{m.caption}</td>
                 <td>{m.type}</td>
                 <td className="text-center">{m.order}</td>
               </tr>

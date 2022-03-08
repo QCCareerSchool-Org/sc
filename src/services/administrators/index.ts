@@ -1,6 +1,7 @@
 import { axiosHttpService } from '..';
 import { CourseService } from './courseService';
 import { NewAssignmentTemplateService } from './newAssignmentTemplateService';
+import { NewAssignmentMediumService } from './newAssignmentTemplateService copy';
 import { NewPartTemplateService } from './newPartTemplateService';
 import { NewTextBoxTemplateService } from './newTextBoxTemplateService';
 import { NewUnitTemplateService } from './newUnitTemplateService';
@@ -11,6 +12,7 @@ export const schoolService = new SchoolService(axiosHttpService);
 export const courseService = new CourseService(axiosHttpService);
 export const newUnitTemplateService = new NewUnitTemplateService(axiosHttpService);
 export const newAssignmentTemplateService = new NewAssignmentTemplateService(axiosHttpService);
+export const newAssignmentMediumService = new NewAssignmentMediumService(axiosHttpService);
 export const newPartTemplateService = new NewPartTemplateService(axiosHttpService);
 export const newTextBoxTemplateService = new NewTextBoxTemplateService(axiosHttpService);
 export const newUploadSlotTemplateService = new NewUploadSlotTemplateService(axiosHttpService);
