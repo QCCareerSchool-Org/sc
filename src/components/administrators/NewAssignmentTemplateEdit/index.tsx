@@ -263,7 +263,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
       <section>
         <div className="container">
           <h1>Edit Assignment Template</h1>
-          <div className="row justify-content-between">
+          <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewAssignmentTemplateEditForm
                 assignmentTemplate={state.assignmentTemplate}
@@ -276,15 +276,17 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 optionalChange={optionalChange}
               />
             </div>
-            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
-              <table className="table table-bordered w-auto ms-lg-auto">
-                <tbody>
-                  <tr><th scope="row">Unit</th><td>{state.assignmentTemplate.newUnitTemplate.title ?? state.assignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
-                  <tr><th scope="row">Parts</th><td>{state.assignmentTemplate.newPartTemplates.length}</td></tr>
-                  <tr><th scope="row">Created</th><td>{formatDateTime(state.assignmentTemplate.created)}</td></tr>
-                  {state.assignmentTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.assignmentTemplate.modified)}</td></tr>}
-                </tbody>
-              </table>
+            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
+              <div>
+                <table className="table table-bordered w-auto ms-lg-auto">
+                  <tbody>
+                    <tr><th scope="row">Unit</th><td>{state.assignmentTemplate.newUnitTemplate.title ?? state.assignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
+                    <tr><th scope="row">Parts</th><td>{state.assignmentTemplate.newPartTemplates.length}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.assignmentTemplate.created)}</td></tr>
+                    {state.assignmentTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.assignmentTemplate.modified)}</td></tr>}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

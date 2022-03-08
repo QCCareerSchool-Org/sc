@@ -185,7 +185,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
       <section>
         <div className="container">
           <h1>Edit Upload Slot Template</h1>
-          <div className="row justify-content-between">
+          <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewUploadSlotTemplateEditForm
                 formState={state.form}
@@ -201,14 +201,16 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
                 optionalChange={optionalChange}
               />
             </div>
-            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1">
-              <table className="table table-bordered w-auto ms-lg-auto">
-                <tbody>
-                  <tr><th scope="row">Part</th><td>{state.uploadSlotTemplate.newPartTemplate.title ?? state.uploadSlotTemplate.newPartTemplate.partNumber}</td></tr>
-                  <tr><th scope="row">Created</th><td>{formatDateTime(state.uploadSlotTemplate.created)}</td></tr>
-                  {state.uploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.uploadSlotTemplate.modified)}</td></tr>}
-                </tbody>
-              </table>
+            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
+              <div>
+                <table className="table table-bordered w-auto ms-lg-auto">
+                  <tbody>
+                    <tr><th scope="row">Part</th><td>{state.uploadSlotTemplate.newPartTemplate.title ?? state.uploadSlotTemplate.newPartTemplate.partNumber}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.uploadSlotTemplate.created)}</td></tr>
+                    {state.uploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.uploadSlotTemplate.modified)}</td></tr>}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

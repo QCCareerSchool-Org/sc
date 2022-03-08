@@ -279,7 +279,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
       <section>
         <div className="container">
           <h1>Edit Part Template</h1>
-          <div className="row justify-content-between">
+          <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewPartTemplateEditForm
                 partTemplate={state.partTemplate}
@@ -292,8 +292,8 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 optionalChange={optionalChange}
               />
             </div>
-            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex">
-              <div className="d-flex flex-column justify-content-between">
+            <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
+              <div>
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
                     <tr><th scope="row">Assignment</th><td>{state.partTemplate.newAssignmentTemplate.title ?? state.partTemplate.newAssignmentTemplate.assignmentNumber}</td></tr>
@@ -303,23 +303,23 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                     {state.partTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.partTemplate.modified)}</td></tr>}
                   </tbody>
                 </table>
-                {(partDescriptionWarning || textBoxDescriptionWarning) && (
-                  <div>
-                    {partDescriptionWarning && (
-                      <div className="alert alert-warning">
-                        <h3 className="h6">Part Description Warning</h3>
-                        <p className="mb-0">A part should not omit a description if any of its text boxes are missing descriptions or if it has any upload slots.</p>
-                      </div>
-                    )}
-                    {textBoxDescriptionWarning && (
-                      <div className="alert alert-warning">
-                        <h3 className="h6">Text Box Description Warning</h3>
-                        <p className="mb-0">When there are multiple text boxes, each text box should have a description.</p>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
+              {(partDescriptionWarning || textBoxDescriptionWarning) && (
+                <div>
+                  {partDescriptionWarning && (
+                    <div className="alert alert-warning">
+                      <h3 className="h6">Part Description Warning</h3>
+                      <p className="mb-0">A part should not omit a description if any of its text boxes are missing descriptions or if it has any upload slots.</p>
+                    </div>
+                  )}
+                  {textBoxDescriptionWarning && (
+                    <div className="alert alert-warning">
+                      <h3 className="h6">Text Box Description Warning</h3>
+                      <p className="mb-0">When there are multiple text boxes, each text box should have a description.</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
