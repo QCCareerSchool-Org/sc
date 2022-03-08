@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import { ChangeEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { NewAssignmentMediumAddForm } from './NewAssignmentMediumAddForm';
+import { NewAssignmentMediumList } from './NewAssignmentMediumList';
 import { NewAssignmentTemplateEditForm } from './NewAssignmentTemplateEditForm';
 import { NewPartTemplateAddForm } from './NewPartTemplateAddForm';
 import { NewPartTemplateList } from './NewPartTemplateList';
@@ -52,6 +54,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
   const partInsert$ = useRef(new Subject<{ processingState: State['partForm']['processingState']; payload: NewPartTemplatePayload }>());
+  const mediumInsert$ = useRef(new Subject<{ processingState: State['assignmentMediaForm']['processingState']; payload: undefined }>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -175,6 +178,10 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
     void router.push(`${router.asPath}/parts/${partId}`, undefined, { scroll: false });
   }, [ router ]);
 
+  const mediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
+    void router.push(`${router.asPath}/media/${mediumId}`, undefined, { scroll: false });
+  }, [ router ]);
+
   const partTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
   }, []);
@@ -189,6 +196,30 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
 
   const partOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
+  }, []);
+
+  const assignmentMediumCaptionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_MEDIA_CAPTION_CHANGED', payload: e.target.value });
+  }, []);
+
+  const assignmentMediumOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_MEDIA_ORDER_CHANGED', payload: e.target.value });
+  }, []);
+
+  const assignmentMediumDataSourceChange = useCallback((dataSource: 'file upload' | 'url'): void => {
+    dispatch({ type: 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED', payload: dataSource });
+  }, []);
+
+  const assignmentMediumFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_MEDIA_FILE_CHANGED', payload: e.target.files?.[0] ?? null });
+  }, []);
+
+  const assignmentMediumExternalDataChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_MEDIA_EXTERNAL_DATA_CHANGED', payload: e.target.value });
+  }, []);
+
+  const assignmentMediumTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_MEDIA_TYPE_CHANGED', payload: e.target.value });
   }, []);
 
   if (state.error) {
@@ -245,6 +276,28 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 descriptionChange={partDescriptionChange}
                 partNumberChange={partPartNumberChange}
                 optionalChange={partOptionalChange}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div className="container">
+          <h2 className="h3">Assignment Media</h2>
+          <div className="row">
+            <div className="col-12 col-xl-6">
+              <NewAssignmentMediumList media={state.assignmentTemplate.newAssignmentMedia} mediumRowClick={mediumRowClick} />
+            </div>
+            <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
+              <NewAssignmentMediumAddForm
+                formState={state.assignmentMediaForm}
+                insert$={mediumInsert$.current}
+                captionChange={assignmentMediumCaptionChange}
+                orderChange={assignmentMediumOrderChange}
+                dataSourceChange={assignmentMediumDataSourceChange}
+                fileChange={assignmentMediumFileChange}
+                externalDataChange={assignmentMediumExternalDataChange}
+                typeChange={assignmentMediumTypeChange}
               />
             </div>
           </div>

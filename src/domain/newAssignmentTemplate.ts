@@ -1,8 +1,8 @@
 export type NewAssignmentTemplate = {
   /** uuid */
-  assignmentId: string;
+  assignmentTemplateId: string;
   /** uuid */
-  unitId: string;
+  unitTemplateId: string;
   assignmentNumber: number;
   title: string | null;
   description: string | null;
@@ -13,9 +13,9 @@ export type NewAssignmentTemplate = {
 
 export type RawNewAssignmentTemplate = {
   /** uuid */
-  assignmentId: string;
+  assignmentTemplateId: string;
   /** uuid */
-  unitId: string;
+  unitTemplateId: string;
   assignmentNumber: number;
   title: string | null;
   description: string | null;

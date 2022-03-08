@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
+import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
@@ -16,11 +17,13 @@ export type NewAssignmentTemplatePayload = {
 type RawNewAssignmentTemplateWithUnitAndParts = RawNewAssignmentTemplate & {
   newUnitTemplate: RawNewUnitTemplate;
   newPartTemplates: RawNewPartTemplate[];
+  newAssignmentMedia: RawNewAssignmentMedium[];
 };
 
 export type NewAssignmentTemplateWithUnitAndParts = NewAssignmentTemplate & {
   newUnitTemplate: NewUnitTemplate;
   newPartTemplates: NewPartTemplate[];
+  newAssignmentMedia: NewAssignmentMedium[];
 };
 
 export interface INewAssignmentTemplateService {
@@ -86,6 +89,11 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
         ...p,
         created: new Date(p.created),
         modified: p.modified === null ? null : new Date(p.modified),
+      })),
+      newAssignmentMedia: assignment.newAssignmentMedia.map(m => ({
+        ...m,
+        created: new Date(m.created),
+        modified: m.modified === null ? null : new Date(m.modified),
       })),
     };
   }

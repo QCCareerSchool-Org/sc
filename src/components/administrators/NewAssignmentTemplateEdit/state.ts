@@ -36,6 +36,25 @@ export type State = {
     processingState: 'idle' | 'inserting' | 'insert error';
     errorMessage?: string;
   };
+  assignmentMediaForm: {
+    data: {
+      caption: string;
+      order: string;
+      dataSource: 'file upload' | 'url';
+      type: string;
+      file: File | null;
+      externalData: string;
+    };
+    validationMessages: {
+      caption?: string;
+      dataSource?: string;
+      type?: string;
+      file?: string;
+      externalData?: string;
+    };
+    processingState: 'idle' | 'inserting' | 'insert error';
+    errorMessage?: string;
+  };
   error: boolean;
   errorCode?: number;
 };
@@ -59,7 +78,13 @@ type Action =
   | { type: 'PART_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'ADD_PART_TEMPLATE_STARTED' }
   | { type: 'ADD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplate }
-  | { type: 'ADD_PART_TEMPLATE_FAILED'; payload?: string };
+  | { type: 'ADD_PART_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'ASSIGNMENT_MEDIA_CAPTION_CHANGED'; payload: string }
+  | { type: 'ASSIGNMENT_MEDIA_ORDER_CHANGED'; payload: string }
+  | { type: 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED'; payload: 'file upload' | 'url' }
+  | { type: 'ASSIGNMENT_MEDIA_FILE_CHANGED'; payload: File | null }
+  | { type: 'ASSIGNMENT_MEDIA_EXTERNAL_DATA_CHANGED'; payload: string }
+  | { type: 'ASSIGNMENT_MEDIA_TYPE_CHANGED'; payload: string };
 
 export const initialState: State = {
   form: {
@@ -78,6 +103,18 @@ export const initialState: State = {
       description: '',
       partNumber: '1',
       optional: false,
+    },
+    validationMessages: {},
+    processingState: 'idle',
+  },
+  assignmentMediaForm: {
+    data: {
+      caption: '',
+      order: '0',
+      dataSource: 'file upload',
+      type: 'image',
+      file: null,
+      externalData: '',
     },
     validationMessages: {},
     processingState: 'idle',
@@ -114,6 +151,19 @@ export const reducer = (state: State, action: Action): State => {
           validationMessages: {},
           processingState: 'idle',
           errorMessage: undefined,
+        },
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          data: {
+            caption: '',
+            order: '0',
+            dataSource: 'file upload',
+            type: 'image',
+            file: null,
+            externalData: '',
+          },
+          validationMessages: {},
+          processingState: 'idle',
         },
         error: false,
       };
@@ -285,6 +335,72 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         partForm: { ...state.partForm, processingState: 'insert error', errorMessage: action.payload },
+      };
+    case 'ASSIGNMENT_MEDIA_CAPTION_CHANGED':
+      return {
+        ...state,
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          data: {
+            ...state.assignmentMediaForm.data,
+            caption: action.payload,
+          },
+        },
+      };
+    case 'ASSIGNMENT_MEDIA_ORDER_CHANGED':
+      return {
+        ...state,
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          data: {
+            ...state.assignmentMediaForm.data,
+            order: action.payload,
+          },
+        },
+      };
+    case 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED':
+      return {
+        ...state,
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          data: {
+            ...state.assignmentMediaForm.data,
+            dataSource: action.payload,
+          },
+        },
+      };
+    case 'ASSIGNMENT_MEDIA_TYPE_CHANGED':
+      return {
+        ...state,
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          data: {
+            ...state.assignmentMediaForm.data,
+            type: action.payload,
+          },
+        },
+      };
+    case 'ASSIGNMENT_MEDIA_FILE_CHANGED':
+      return {
+        ...state,
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          data: {
+            ...state.assignmentMediaForm.data,
+            file: action.payload,
+          },
+        },
+      };
+    case 'ASSIGNMENT_MEDIA_EXTERNAL_DATA_CHANGED':
+      return {
+        ...state,
+        assignmentMediaForm: {
+          ...state.assignmentMediaForm,
+          data: {
+            ...state.assignmentMediaForm.data,
+            externalData: action.payload,
+          },
+        },
       };
   }
 };

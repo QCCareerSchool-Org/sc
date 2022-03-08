@@ -1,8 +1,8 @@
 export type NewPartTemplate = {
   /** uuid */
-  partId: string;
+  partTemplateId: string;
   /** uuid */
-  assignmentId: string;
+  assignmentTemplateId: string;
   partNumber: number;
   title: string | null;
   description: string | null;
@@ -13,9 +13,9 @@ export type NewPartTemplate = {
 
 export type RawNewPartTemplate = {
   /** uuid */
-  partId: string;
+  partTemplateId: string;
   /** uuid */
-  assignmentId: string;
+  assignmentTemplateId: string;
   partNumber: number;
   title: string | null;
   description: string | null;

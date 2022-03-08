@@ -24,7 +24,7 @@ export const NewUploadSlotTemplateList = memo(({ uploadSlots, uploadSlotRowClick
           </thead>
           <tbody>
             {uploadSlots.map(u => (
-              <tr key={u.uploadSlotId} onClick={e => uploadSlotRowClick(e, u.uploadSlotId)}>
+              <tr key={u.uploadSlotTemplateId} onClick={e => uploadSlotRowClick(e, u.uploadSlotTemplateId)}>
                 <td>{trimLabel(u.label)}</td>
                 <td>{u.allowedTypes.join(',')}</td>
                 <td className="text-center">{u.points}</td>

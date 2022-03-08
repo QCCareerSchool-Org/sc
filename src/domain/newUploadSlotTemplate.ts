@@ -1,8 +1,8 @@
 export type NewUploadSlotTemplate = {
   /** uuid */
-  uploadSlotId: string;
+  uploadSlotTemplateId: string;
   /** uuid */
-  partId: string;
+  partTemplateId: string;
   label: string;
   allowedTypes: string[];
   points: number;
@@ -14,9 +14,9 @@ export type NewUploadSlotTemplate = {
 
 export type RawNewUploadSlotTemplate = {
   /** uuid */
-  uploadSlotId: string;
+  uploadSlotTemplateId: string;
   /** uuid */
-  partId: string;
+  partTemplateId: string;
   label: string;
   allowedTypes: string[];
   points: number;

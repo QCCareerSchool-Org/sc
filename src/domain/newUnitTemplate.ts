@@ -1,6 +1,6 @@
 export type NewUnitTemplate = {
   /** uuid */
-  unitId: string;
+  unitTemplateId: string;
   courseId: number;
   unitLetter: string;
   title: string | null;
@@ -13,7 +13,7 @@ export type NewUnitTemplate = {
 
 export type RawNewUnitTemplate = {
   /** uuid */
-  unitId: string;
+  unitTemplateId: string;
   courseId: number;
   unitLetter: string;
   title: string | null;

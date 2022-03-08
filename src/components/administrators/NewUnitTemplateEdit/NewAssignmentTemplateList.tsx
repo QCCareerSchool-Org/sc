@@ -22,7 +22,7 @@ export const NewAssignmentTemplateList = memo(({ assignments, assignmentRowClick
           </thead>
           <tbody>
             {assignments.map(a => (
-              <tr key={a.assignmentId} onClick={e => assignmentRowClick(e, a.assignmentId)}>
+              <tr key={a.assignmentTemplateId} onClick={e => assignmentRowClick(e, a.assignmentTemplateId)}>
                 <td className="text-center">{a.assignmentNumber}</td>
                 <td>{a.title}</td>
                 <td className="text-center">{a.optional ? 'yes' : 'no'}</td>

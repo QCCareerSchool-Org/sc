@@ -1,8 +1,8 @@
 export type NewTextBoxTemplate = {
   /** uuid */
-  textBoxId: string;
+  textBoxTemplateId: string;
   /** uuid */
-  partId: string;
+  partTemplateId: string;
   description: string | null;
   lines: number | null;
   points: number;
@@ -14,9 +14,9 @@ export type NewTextBoxTemplate = {
 
 export type RawNewTextBoxTemplate = {
   /** uuid */
-  textBoxId: string;
+  textBoxTemplateId: string;
   /** uuid */
-  partId: string;
+  partTemplateId: string;
   description: string | null;
   lines: number | null;
   points: number;

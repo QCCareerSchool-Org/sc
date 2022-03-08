@@ -422,7 +422,7 @@ export const reducer = (state: State, action: Action): State => {
       }
       const newTextBoxTemplates = [ ...state.partTemplate.newTextBoxTemplates, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
-          return uuidService.compare(a.textBoxId, b.textBoxId);
+          return uuidService.compare(a.textBoxTemplateId, b.textBoxTemplateId);
         }
         return a.order - b.order;
       });
@@ -584,7 +584,7 @@ export const reducer = (state: State, action: Action): State => {
       }
       const newUploadSlotTemplates = [ ...state.partTemplate.newUploadSlotTemplates, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
-          return uuidService.compare(a.uploadSlotId, b.uploadSlotId);
+          return uuidService.compare(a.uploadSlotTemplateId, b.uploadSlotTemplateId);
         }
         return a.order - b.order;
       });

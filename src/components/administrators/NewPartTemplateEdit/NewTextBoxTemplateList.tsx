@@ -24,7 +24,7 @@ export const NewTextBoxTemplateList = memo(({ textBoxes, textBoxRowClick }: Prop
           </thead>
           <tbody>
             {textBoxes.map(t => (
-              <tr key={t.textBoxId} onClick={e => textBoxRowClick(e, t.textBoxId)} title={t.description ?? undefined}>
+              <tr key={t.textBoxTemplateId} onClick={e => textBoxRowClick(e, t.textBoxTemplateId)} title={t.description ?? undefined}>
                 <td>{t.description === null ? '(none)' : trimDescription(t.description)}</td>
                 <td className="text-center">{t.points}</td>
                 <td className="text-center">{t.lines ?? '(default)'}</td>
