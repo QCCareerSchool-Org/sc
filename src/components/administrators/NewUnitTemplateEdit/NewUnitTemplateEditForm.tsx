@@ -57,7 +57,7 @@ export const NewUnitTemplateEditForm = memo(({ unitTemplate, formState, save$, d
       <form onSubmit={formSubmit}>
         <div className="formGroup">
           <label htmlFor="newUnitTemplateTitle" className="form-label">Title</label>
-          <input onChange={titleChange} value={formState.data.title} type="text" id="newUnitTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newUnitTemplateTitleHelp" />
+          <input onChange={titleChange} value={formState.data.title} type="text" id="newUnitTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newUnitTemplateTitleHelp" />
           <div id="newUnitTemplateTitleHelp" className="form-text">The title of this unit</div>
           {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
         </div>

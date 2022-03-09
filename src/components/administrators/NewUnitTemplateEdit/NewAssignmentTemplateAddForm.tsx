@@ -50,7 +50,7 @@ export const NewAssignmentTemplateAddForm = memo(({ formState, insert$, titleCha
           <form onSubmit={formSubmit}>
             <div className="formGroup">
               <label htmlFor="newAssignmentTemplateTitle" className="form-label">Title</label>
-              <input onChange={titleChange} value={formState.data.title} type="text" id="newAssignmentTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentTemplateTitleHelp" />
+              <input onChange={titleChange} value={formState.data.title} type="text" id="newAssignmentTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentTemplateTitleHelp" />
               <div id="newAssignmentTemplateTitleHelp" className="form-text">The title of this assignment</div>
               {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
             </div>
