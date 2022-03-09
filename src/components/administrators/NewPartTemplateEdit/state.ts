@@ -198,7 +198,9 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, error: true, errorCode: action.payload };
     case 'TITLE_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload) {
+      if (!action.payload) {
+        validationMessage = 'Required';
+      } else {
         const maxLength = 191;
         const newLength = (new TextEncoder().encode(action.payload).length);
         if (newLength > maxLength) {

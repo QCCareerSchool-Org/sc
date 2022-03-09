@@ -39,6 +39,9 @@ const changesPreset = (unitTemplate: NewUnitTemplate | undefined, formData: Stat
   if (unitTemplate.optional !== formData.optional) {
     return true;
   }
+  if (unitTemplate.order !== parseInt(formData.order, 10)) {
+    return true;
+  }
   return false;
 };
 

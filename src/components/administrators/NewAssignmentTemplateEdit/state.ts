@@ -270,16 +270,44 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: { ...state.form, processingState: 'delete error', errorMessage: action.payload },
       };
-    case 'PART_TEMPLATE_TITLE_CHANGED':
+    case 'PART_TEMPLATE_TITLE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (!action.payload.length) {
+        validationMessage = 'Required';
+      } else {
+        const maxLength = 191;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
-        partForm: { ...state.partForm, data: { ...state.partForm.data, title: action.payload } },
+        partForm: {
+          ...state.partForm,
+          data: { ...state.partForm.data, title: action.payload },
+          validationMessages: { ...state.partForm.validationMessages, title: validationMessage },
+        },
       };
-    case 'PART_TEMPLATE_DESCRIPTION_CHANGED':
+    }
+    case 'PART_TEMPLATE_DESCRIPTION_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length) {
+        const maxLength = 65_535;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
-        partForm: { ...state.partForm, data: { ...state.partForm.data, description: action.payload } },
+        partForm: {
+          ...state.partForm,
+          data: { ...state.partForm.data, description: action.payload },
+          validationMessages: { ...state.partForm.validationMessages, description: validationMessage },
+        },
       };
+    }
     case 'PART_TEMPLATE_PART_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {

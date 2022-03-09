@@ -8,7 +8,7 @@ import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newText
 import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 
 export type NewPartTemplatePayload = {
-  title: string | null;
+  title: string;
   description: string | null;
   partNumber: number;
   optional: boolean;

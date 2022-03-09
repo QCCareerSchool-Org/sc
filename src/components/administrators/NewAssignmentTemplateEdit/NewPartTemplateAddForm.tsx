@@ -34,7 +34,7 @@ export const NewPartTemplateAddForm = memo(({ formState, insert$, titleChange, d
     insert$.next({
       processingState: formState.processingState,
       payload: {
-        title: formState.data.title || null,
+        title: formState.data.title,
         description: formState.data.description || null,
         partNumber: parseInt(formState.data.partNumber, 10),
         optional: formState.data.optional,

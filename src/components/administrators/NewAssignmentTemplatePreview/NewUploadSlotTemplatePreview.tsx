@@ -9,7 +9,7 @@ type Props = {
 export const NewUploadSlotTemplatePreview = ({ newUploadSlotTemplate }: Props): ReactElement => {
   return (
     <>
-      <div className="uploadSlot">
+      <div className="formGroup">
         <label htmlFor={newUploadSlotTemplate.uploadSlotTemplateId} className="form-label"><span className="fw-bold">{newUploadSlotTemplate.label}:</span> <small>(type: {formatList(newUploadSlotTemplate.allowedTypes)})</small></label>
         <input type="file" accept={accept(newUploadSlotTemplate.allowedTypes)} className="form-control" id={newUploadSlotTemplate.uploadSlotTemplateId} />
         {newUploadSlotTemplate.optional
@@ -18,13 +18,13 @@ export const NewUploadSlotTemplatePreview = ({ newUploadSlotTemplate }: Props): 
         }
       </div>
       <style jsx>{`
-        .uploadSlot {
+        .formGroup {
           margin-bottom: 0.5rem;
         }
         .spacer {
           height: 0.5rem;
         }
-        .uploadSlot:last-of-type {
+        .formGroup:last-of-type {
           margin-bottom: 0;
         }
       `}</style>
