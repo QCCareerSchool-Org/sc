@@ -57,7 +57,7 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
           <label htmlFor="newPartTemplateTitle" className="form-label">Title <span className="text-danger">*</span></label>
           <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} aria-describedby="newPartTemplateTitleHelp" />
           <div id="newPartTemplateTitleHelp" className="form-text">The title of this part (for internal use only)</div>
-          {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
+          {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
         </div>
         <div className="formGroup">
           <label htmlFor="newPartTemplateDescription" className="form-label">Description</label>

@@ -54,7 +54,7 @@ export const NewUnitTemplateAddForm = memo(({ formState, insert$, titleChange, d
               <label htmlFor="newUnitTemplateTitle" className="form-label">Title</label>
               <input onChange={titleChange} value={formState.data.title} type="text" id="newUnitTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newUnitTemplateTitleHelp" />
               <div id="newUnitTemplateTitleHelp" className="form-text">The title of this unit</div>
-              {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
+              {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
             </div>
             <div className="formGroup">
               <label htmlFor="newUnitTemplateDescription" className="form-label">Description</label>

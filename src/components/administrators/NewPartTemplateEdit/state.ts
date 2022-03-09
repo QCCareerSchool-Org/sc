@@ -198,7 +198,7 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, error: true, errorCode: action.payload };
     case 'TITLE_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
@@ -236,7 +236,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'PART_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const points = parseInt(action.payload, 10);
@@ -343,7 +343,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'TEXT_BOX_TEMPLATE_POINTS_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const points = parseInt(action.payload, 10);
@@ -367,12 +367,12 @@ export const reducer = (state: State, action: Action): State => {
     case 'TEXT_BOX_TEMPLATE_LINES_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
-        const parsedLines = parseInt(action.payload, 10);
-        if (isNaN(parsedLines)) {
+        const lines = parseInt(action.payload, 10);
+        if (isNaN(lines)) {
           validationMessage = 'Invalid number';
-        } else if (parsedLines < 1) {
+        } else if (lines < 1) {
           validationMessage = 'Cannot be less than one';
-        } else if (parsedLines > 127) {
+        } else if (lines > 127) {
           validationMessage = 'Cannot be greater than 127';
         }
       }
@@ -387,15 +387,15 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'TEXT_BOX_TEMPLATE_ORDER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
-        const points = parseInt(action.payload, 10);
-        if (isNaN(points)) {
+        const order = parseInt(action.payload, 10);
+        if (isNaN(order)) {
           validationMessage = 'Invalid number';
-        } else if (points < 0) {
+        } else if (order < 0) {
           validationMessage = 'Cannot be less than zero';
-        } else if (points > 127) {
+        } else if (order > 127) {
           validationMessage = 'Cannot be greater than 127';
         }
       }
@@ -456,7 +456,7 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'UPLOAD_SLOT_TEMPLATE_LABEL_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
@@ -476,7 +476,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'UPLOAD_SLOT_TEMPLATE_POINTS_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const points = parseInt(action.payload, 10);
@@ -499,7 +499,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'UPLOAD_SLOT_TEMPLATE_ORDER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const points = parseInt(action.payload, 10);

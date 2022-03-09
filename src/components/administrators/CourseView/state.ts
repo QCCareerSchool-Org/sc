@@ -121,7 +121,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else if (action.payload.length > 1) {
         validationMessage = 'Maximum of one character allowed';
@@ -141,7 +141,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'UNIT_TEMPLATE_ORDER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const order = parseInt(action.payload, 10);

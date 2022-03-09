@@ -98,7 +98,9 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, error: true, errorCode: action.payload };
     case 'LABEL_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload) {
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
         const maxLength = 191;
         const newLength = (new TextEncoder().encode(action.payload).length);
         if (newLength > maxLength) {
@@ -172,7 +174,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'POINTS_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const points = parseInt(action.payload, 10);
@@ -197,7 +199,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'ORDER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const points = parseInt(action.payload, 10);

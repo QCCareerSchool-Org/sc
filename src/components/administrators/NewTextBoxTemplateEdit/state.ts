@@ -78,16 +78,24 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'LOAD_TEXT_BOX_TEMPLATE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'DESCRIPTION_CHANGED':
+    case 'DESCRIPTION_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, description: action.payload,
-          },
+          data: { ...state.form.data, description: action.payload },
+          validationMessages: { ...state.form.validationMessages, description: validationMessage },
         },
       };
+    }
     case 'POINTS_CHANGED': {
       let validationMessage: string | undefined;
       if (!action.payload) {
@@ -106,9 +114,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, points: action.payload,
-          },
+          data: { ...state.form.data, points: action.payload },
           validationMessages: { ...state.form.validationMessages, points: validationMessage },
         },
       };
@@ -116,12 +122,12 @@ export const reducer = (state: State, action: Action): State => {
     case 'LINES_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
-        const parsedLines = parseInt(action.payload, 10);
-        if (isNaN(parsedLines)) {
+        const lines = parseInt(action.payload, 10);
+        if (isNaN(lines)) {
           validationMessage = 'Invalid number';
-        } else if (parsedLines < 1) {
+        } else if (lines < 1) {
           validationMessage = 'Cannot be less than one';
-        } else if (parsedLines > 127) {
+        } else if (lines > 127) {
           validationMessage = 'Cannot be greater than 127';
         }
       }
@@ -129,9 +135,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, lines: action.payload,
-          },
+          data: { ...state.form.data, lines: action.payload },
           validationMessages: { ...state.form.validationMessages, lines: validationMessage },
         },
       };
@@ -141,12 +145,12 @@ export const reducer = (state: State, action: Action): State => {
       if (!action.payload) {
         validationMessage = 'Required';
       } else {
-        const points = parseInt(action.payload, 10);
-        if (isNaN(points)) {
+        const order = parseInt(action.payload, 10);
+        if (isNaN(order)) {
           validationMessage = 'Invalid number';
-        } else if (points < 0) {
+        } else if (order < 0) {
           validationMessage = 'Cannot be less than zero';
-        } else if (points > 127) {
+        } else if (order > 127) {
           validationMessage = 'Cannot be greater than 127';
         }
       }
@@ -154,9 +158,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: {
           ...state.form,
-          data: {
-            ...state.form.data, order: action.payload,
-          },
+          data: { ...state.form.data, order: action.payload },
           validationMessages: { ...state.form.validationMessages, order: validationMessage },
         },
       };

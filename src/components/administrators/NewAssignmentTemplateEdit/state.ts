@@ -174,19 +174,45 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'LOAD_ASSIGNMENT_TEMPLATE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'TITLE_CHANGED':
+    case 'TITLE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 191;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
-        form: { ...state.form, data: { ...state.form.data, title: action.payload } },
+        form: {
+          ...state.form,
+          data: { ...state.form.data, title: action.payload },
+          validationMessages: { ...state.form.validationMessages, title: validationMessage },
+        },
       };
-    case 'DESCRIPTION_CHANGED':
+    }
+    case 'DESCRIPTION_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
       return {
         ...state,
-        form: { ...state.form, data: { ...state.form.data, description: action.payload } },
+        form: {
+          ...state.form,
+          data: { ...state.form.data, description: action.payload },
+          validationMessages: { ...state.form.validationMessages, description: validationMessage },
+        },
       };
+    }
     case 'ASSIGNMENT_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const partNumber = parseInt(action.payload, 10);
@@ -272,7 +298,7 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'PART_TEMPLATE_TITLE_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
@@ -310,7 +336,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'PART_TEMPLATE_PART_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const partNumber = parseInt(action.payload, 10);
@@ -373,7 +399,7 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'ASSIGNMENT_MEDIA_CAPTION_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
@@ -393,7 +419,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'ASSIGNMENT_MEDIA_ORDER_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const order = parseInt(action.payload, 10);
@@ -416,7 +442,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload) {
+      if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else if (![ 'file upload', 'url' ].includes(action.payload)) {
         validationMessage = 'Invalid';
