@@ -49,8 +49,8 @@ export const NewPartTemplateAddForm = memo(({ formState, insert$, titleChange, d
           <h3 className="h5">New Part Template</h3>
           <form onSubmit={formSubmit}>
             <div className="formGroup">
-              <label htmlFor="newPartTemplateTitle" className="form-label">Title</label>
-              <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTemplateTitleHelp" />
+              <label htmlFor="newPartTemplateTitle" className="form-label">Title <span className="text-danger">*</span></label>
+              <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} aria-describedby="newPartTemplateTitleHelp" />
               <div id="newPartTemplateTitleHelp" className="form-text">The title of this part (for internal use only)</div>
               {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
             </div>

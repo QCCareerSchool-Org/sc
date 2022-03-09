@@ -186,7 +186,7 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'ASSIGNMENT_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload.length === 0) {
+      if (!action.payload) {
         validationMessage = 'Required';
       } else {
         const partNumber = parseInt(action.payload, 10);
@@ -272,7 +272,7 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'PART_TEMPLATE_TITLE_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload.length) {
+      if (!action.payload) {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
@@ -310,7 +310,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'PART_TEMPLATE_PART_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload.length === 0) {
+      if (!action.payload) {
         validationMessage = 'Required';
       } else {
         const partNumber = parseInt(action.payload, 10);
@@ -373,7 +373,7 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'ASSIGNMENT_MEDIA_CAPTION_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload.length === 0) {
+      if (!action.payload) {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
@@ -393,7 +393,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'ASSIGNMENT_MEDIA_ORDER_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload.length === 0) {
+      if (!action.payload) {
         validationMessage = 'Required';
       } else {
         const order = parseInt(action.payload, 10);
@@ -416,7 +416,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload.length === 0) {
+      if (!action.payload) {
         validationMessage = 'Required';
       } else if (![ 'file upload', 'url' ].includes(action.payload)) {
         validationMessage = 'Invalid';
