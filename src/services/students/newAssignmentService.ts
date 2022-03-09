@@ -1,7 +1,7 @@
 import { map, Observable } from 'rxjs';
 
 import { endpoint } from '../../basePath';
-import type { IHttpService } from '../httpService';
+import type { IHttpService, ProgressResponse } from '../httpService';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/newPart';
 import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
@@ -24,7 +24,7 @@ type RawNewAssignmentWithChildren = RawNewAssignment & {
 export interface INewAssignmentService {
   getAssignment: (studentId: number, courseId: number, unitId: string, assignmentId: string) => Observable<NewAssignmentWithChildren>;
   saveText: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, text: string) => Observable<NewTextBox>;
-  uploadFile: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File) => Observable<number>;
+  uploadFile: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File) => Observable<ProgressResponse<NewUploadSlot>>;
   deleteFile: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
   downloadFile: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
 }
@@ -52,12 +52,12 @@ export class NewAssignmentService implements INewAssignmentService {
     );
   }
 
-  public uploadFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File): Observable<number> {
+  public uploadFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File): Observable<ProgressResponse<NewUploadSlot>> {
     const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}`;
     const formData = new FormData();
     formData.append('file', file);
     const headers = { 'Content-Type': 'multipart/form-data' };
-    return this.httpService.putFile(url, formData, { headers });
+    return this.httpService.putFile<NewUploadSlot>(url, formData, { headers });
   }
 
   public deleteFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {

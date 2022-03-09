@@ -55,7 +55,13 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
     dispatch({ type: 'FILE_UPLOAD_STARTED', payload: { partId, uploadSlotId } });
     return newAssignmentService.uploadFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId, file).pipe(
       tap({
-        next: progress => dispatch({ type: 'FILE_UPLOAD_PROGRESSED', payload: { partId, uploadSlotId, progress } }),
+        next: progressResponse => {
+          if (progressResponse.type === 'progress') {
+            dispatch({ type: 'FILE_UPLOAD_PROGRESSED', payload: { partId, uploadSlotId, progress: progressResponse.value } });
+          } else if (progressResponse.type === 'data') {
+            dispatch({ type: 'FILE_UPLOAD_SUCCEEDED', payload: { partId, uploadSlotId, filename: file.name, size: file.size } });
+          }
+        },
         error: err => {
           let message = 'File upload failed';
           if (err instanceof HttpServiceError) {
@@ -69,7 +75,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           dispatch({ type: 'FILE_UPLOAD_FAILED', payload: { partId, uploadSlotId } });
           alert(message);
         },
-        complete: () => dispatch({ type: 'FILE_UPLOAD_SUCCEEDED', payload: { partId, uploadSlotId, filename: file.name, size: file.size } }),
+        // complete: () => dispatch({ type: 'FILE_UPLOAD_SUCCEEDED', payload: { partId, uploadSlotId, filename: file.name, size: file.size } }),
       }),
       catchError(() => EMPTY),
     );

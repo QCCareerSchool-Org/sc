@@ -24,7 +24,7 @@ export const NewUnitTemplateList = memo(({ units, unitRowClick }: Props): ReactE
             {units.map(u => (
               <tr key={u.unitTemplateId} onClick={e => unitRowClick(e, u.unitTemplateId)}>
                 <td className="text-center">{u.unitLetter}</td>
-                <td>{u.title}</td>
+                <td>{u.title ?? '(none)'}</td>
                 <td className="text-center">{u.optional ? 'yes' : 'no'}</td>
               </tr>
             ))}

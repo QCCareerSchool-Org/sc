@@ -37,7 +37,7 @@ export const TutorNav = (): ReactElement | null => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="studentNav">
-            {otherNavPresent && <><strong>T:</strong>&nbsp;&nbsp;</>}
+            {otherNavPresent && <span className="d-none d-md-inline"><strong>T:</strong>&nbsp;&nbsp;</span>}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/tutors/index.php">Home{index === 0 && <div className="active-indicator" />}</a>

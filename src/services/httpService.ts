@@ -24,7 +24,7 @@ export interface IHttpService {
   post: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
   postFile: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<ProgressResponse<T>>;
   put: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
-  putFile: (url: string, body: unknown, config?: Config) => Observable<number>;
+  putFile: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<ProgressResponse<T>>;
   delete: <T = unknown>(url: string, config?: Config) => Observable<T>;
   download: (url: string, config?: Config) => Observable<void>;
 }
@@ -86,7 +86,7 @@ export class AxiosHttpService implements IHttpService {
     );
   }
 
-  public putFile(url: string, body: unknown, config?: Config): Observable<number> {
+  public putFile<T>(url: string, body: unknown, config?: Config): Observable<ProgressResponse<T>> {
     const progress$ = new Subject<number>();
     const onUploadProgress = (progressEvent: ProgressEvent): void => {
       const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
@@ -98,19 +98,24 @@ export class AxiosHttpService implements IHttpService {
       }
     };
 
-    const data$ = this.instance.put(url, body, { ...config, onUploadProgress }).pipe(
+    const data$ = this.instance.put<T>(url, body, { ...config, onUploadProgress }).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
 
-    // combine the request with the progress observable created above
-    // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
-    return combineLatest([
-      data$.pipe(startWith(undefined)),
-      progress$,
-    ]).pipe(
-      map(([ , progress ]) => progress), // we only care about the second observable
+    return merge(
+      data$.pipe(map(value => ({ type: 'data', value } as const))),
+      progress$.pipe(map(value => ({ type: 'progress', value } as const))),
     );
+
+    // // combine the request with the progress observable created above
+    // // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
+    // return combineLatest([
+    //   data$.pipe(startWith(undefined)),
+    //   progress$,
+    // ]).pipe(
+    //   map(([ , progress ]) => progress), // we only care about the second observable
+    // );
   }
 
   public delete<T>(url: string, config?: Config): Observable<T> {
