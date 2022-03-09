@@ -1,4 +1,5 @@
 import NextError from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ChangeEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
@@ -12,8 +13,8 @@ import { initialState, reducer, State } from './state';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentMediumService, newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
+import type { NewAssignmentMediumPayload } from '@/services/administrators/newAssignmentMediumService';
 import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
-import { NewAssignmentMediumPayload } from '@/services/administrators/newAssignmentTemplateService copy';
 import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
@@ -263,6 +264,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
       <section>
         <div className="container">
           <h1>Edit Assignment Template</h1>
+          <p><Link href={router.asPath + '/preview'}><a>Preview</a></Link></p>
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewAssignmentTemplateEditForm

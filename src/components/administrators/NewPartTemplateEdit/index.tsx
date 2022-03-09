@@ -204,11 +204,11 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   }, []);
 
   const textBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
-    void router.push(`${router.asPath}/textBoxes/${textBoxId}/edit`);
+    void router.push(`${router.asPath}/textBoxes/${textBoxId}`);
   }, [ router ]);
 
   const uploadSlotRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
-    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}/edit`);
+    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}`);
   }, [ router ]);
 
   const textBoxDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {

@@ -2,6 +2,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
 import { NewAssignmentTemplateEdit } from '@/components/administrators/NewAssignmentTemplateEdit';
+import { NewAssignmentTemplatePreview } from '@/components/administrators/NewAssignmentTemplatePreview';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -11,7 +12,7 @@ type Props = {
   assignmentId: string | null;
 };
 
-const NewAssignmentTemplateEditPage: NextPage<Props> = ({ schoolId, courseId, unitId, assignmentId }) => {
+const NewAssignmentTemplatePreviewPage: NextPage<Props> = ({ schoolId, courseId, unitId, assignmentId }) => {
   const authState = useAuthState();
 
   if (typeof authState.administratorId === 'undefined') {
@@ -22,7 +23,7 @@ const NewAssignmentTemplateEditPage: NextPage<Props> = ({ schoolId, courseId, un
     return <Error statusCode={400} />;
   }
 
-  return <NewAssignmentTemplateEdit
+  return <NewAssignmentTemplatePreview
     administratorId={authState.administratorId}
     schoolId={schoolId}
     courseId={courseId}
@@ -43,4 +44,4 @@ export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   return { props: { schoolId, courseId, unitId, assignmentId } };
 };
 
-export default NewAssignmentTemplateEditPage;
+export default NewAssignmentTemplatePreviewPage;

@@ -3,7 +3,9 @@ import { ReactElement, useEffect, useState } from 'react';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';
 
-export const TutorNav = (): ReactElement | null => {
+export type TutorNavProps = Record<string, never>;
+
+export const TutorNav = (props: TutorNavProps): ReactElement | null => {
   const authState = useAuthState();
   const navState = useNavState();
   const [ loaded, setLoaded ] = useState(false);

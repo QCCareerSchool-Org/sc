@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import { memo, MouseEvent, ReactElement } from 'react';
 
 import type { Course } from '@/domain/course';
 
@@ -7,7 +7,7 @@ type Props = {
   courseRowClick: (e: MouseEvent<HTMLTableRowElement>, courseId: number) => void;
 };
 
-export const CourseList = ({ courses, courseRowClick }: Props): ReactElement => (
+export const CourseList = memo(({ courses, courseRowClick }: Props): ReactElement => (
   <>
     <table id="coursesTable" className="table table-bordered table-hover w-auto bg-white">
       <thead>
@@ -34,4 +34,6 @@ export const CourseList = ({ courses, courseRowClick }: Props): ReactElement => 
       #coursesTable tr { cursor: pointer }
     `}</style>
   </>
-);
+));
+
+CourseList.displayName = 'CourseList';

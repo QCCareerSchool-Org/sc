@@ -4,7 +4,7 @@ import type { Subject } from 'rxjs';
 import type { State } from './state';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Spinner } from '@/components/Spinner';
-import type { NewAssignmentMediumPayload } from '@/services/administrators/newAssignmentTemplateService copy';
+import type { NewAssignmentMediumPayload } from '@/services/administrators/newAssignmentMediumService';
 
 type Props = {
   formState: State['assignmentMediaForm'];

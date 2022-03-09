@@ -1,7 +1,7 @@
 import { axiosHttpService } from '..';
 import { CourseService } from './courseService';
+import { NewAssignmentMediumService } from './newAssignmentMediumService';
 import { NewAssignmentTemplateService } from './newAssignmentTemplateService';
-import { NewAssignmentMediumService } from './newAssignmentTemplateService copy';
 import { NewPartTemplateService } from './newPartTemplateService';
 import { NewTextBoxTemplateService } from './newTextBoxTemplateService';
 import { NewUnitTemplateService } from './newUnitTemplateService';
