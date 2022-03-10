@@ -19,6 +19,15 @@ export const NewUnitStatus = memo(({ unit }: Props): ReactElement | null => {
     );
   }
 
+  if (unit.skipped) {
+    return (
+      <div className="alert alert-info">
+        <h5>Unit Skipped</h5>
+        <p className="fw-bold mb-0">This unit has been skipped. You won't receive a grade for this unit.</p>
+      </div>
+    );
+  }
+
   if (unit.submitted) {
     return (
       <div className="alert alert-success">
@@ -34,12 +43,12 @@ export const NewUnitStatus = memo(({ unit }: Props): ReactElement | null => {
         <div className="alert alert-danger">
           <h5>Unit Has Been Returned</h5>
           <p className="fw-bold">Your unit has been returned by your tutor for changes. Please review the comments below, make the required changes, and then resubmit your unit.</p>
-          <div className="ms-4 mt-4">
+          <div className="ms-4 mt-4 comments">
             {unit.adminComment.replace(/\r\n/gu, '\n').split('\n\n').map((line, i) => <p key={i} className="fst-italic">{line}</p>)}
           </div>
         </div>
         <style jsx>{`
-          .alert > p:last-of-type { margin-bottom: 0; }
+          .comments > p:last-of-type { margin-bottom: 0; }
         `}</style>
       </>
     );
