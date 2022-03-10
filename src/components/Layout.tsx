@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { SiteNav } from './nav';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';

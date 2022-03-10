@@ -1,4 +1,5 @@
-import { ChangeEventHandler, memo, MouseEventHandler, ReactElement, useEffect, useRef } from 'react';
+import type { ChangeEventHandler, MouseEventHandler, ReactElement } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { debounceTime, exhaustMap, Subject, takeUntil } from 'rxjs';
 
 import type { TextBoxFunction } from '.';

@@ -1,5 +1,6 @@
-import { map, Observable } from 'rxjs';
-import { IHttpService } from '../httpService';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
+import type { IHttpService } from '../httpService';
 
 import type { Course } from '@/domain/course';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
@@ -28,14 +29,14 @@ export class NewUnitService implements INewUnitService {
   public getUnit(administratorId: number, studentId: number, enrollmentId: number, unitId: string): Observable<NewUnitWithCourseAndAssignments> {
     const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${unitId}`;
     return this.httpService.get<RawNewUnitWithCourseAndAssignments>(url).pipe(
-      map(this.mapNewUnitWithCourseAndAssignments),
+      map(unit => this.mapNewUnitWithCourseAndAssignments(unit)),
     );
   }
 
   public restartUnit(administratorId: number, studentId: number, enrollmentId: number, unitId: string): Observable<NewUnit> {
     const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${unitId}/restarts`;
     return this.httpService.post<RawNewUnit>(url).pipe(
-      map(this.mapNewUnit),
+      map(unit => this.mapNewUnit(unit)),
     );
   }
 

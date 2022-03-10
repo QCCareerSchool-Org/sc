@@ -1,4 +1,5 @@
-import { memo, MouseEvent, ReactElement } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
+import { memo } from 'react';
 
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 

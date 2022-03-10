@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 
 import { NewTextBoxTemplatePreview } from './NewTextBoxTemplatePreview';
 import { NewUploadSlotTemplatePreview } from './NewUploadSlotTemplatePreview';
-import { NewDescriptionType } from '@/domain/newDescriptionType';
+import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';

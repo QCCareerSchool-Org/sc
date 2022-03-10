@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router';
-import { ReactElement, ReactNode, useEffect } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { useEffect } from 'react';
 
 import { useAuthState } from '../hooks/useAuthState';
-import { AuthState } from '../state/auth';
+import type { AuthState } from '../state/auth';
 
 type Props = {
   children: ReactNode;

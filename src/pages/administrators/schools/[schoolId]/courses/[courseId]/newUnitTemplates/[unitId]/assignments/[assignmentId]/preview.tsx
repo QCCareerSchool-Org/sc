@@ -1,7 +1,6 @@
-import { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
-import { NewAssignmentTemplateEdit } from '@/components/administrators/NewAssignmentTemplateEdit';
 import { NewAssignmentTemplatePreview } from '@/components/administrators/NewAssignmentTemplatePreview';
 import { useAuthState } from '@/hooks/useAuthState';
 

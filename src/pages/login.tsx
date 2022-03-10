@@ -1,6 +1,7 @@
-import { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { ChangeEventHandler, FormEventHandler, useEffect, useRef, useState } from 'react';
+import type { ChangeEventHandler, FormEventHandler } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { basePath } from '../basePath';

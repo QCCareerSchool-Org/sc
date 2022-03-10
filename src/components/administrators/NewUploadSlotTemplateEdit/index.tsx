@@ -1,10 +1,12 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { ChangeEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import type { ChangeEventHandler, ReactElement } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewUploadSlotTemplateEditForm } from './NewUploadSlotTemplateEditForm';
-import { initialState, reducer, State } from './state';
+import type { State } from './state';
+import { initialState, reducer } from './state';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newUploadSlotTemplateService } from '@/services/administrators';
@@ -76,7 +78,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }
@@ -96,7 +98,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -123,7 +125,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
             let message = 'Delete failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;

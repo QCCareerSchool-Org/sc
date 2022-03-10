@@ -1,6 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { MouseEvent, ReactElement, useEffect, useReducer } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
+import { useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
 import { CourseList } from './CourseList';
@@ -31,7 +32,7 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }

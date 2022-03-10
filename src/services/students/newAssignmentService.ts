@@ -1,4 +1,5 @@
-import { map, Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService, ProgressResponse } from '../httpService';
@@ -36,7 +37,7 @@ export class NewAssignmentService implements INewAssignmentService {
   public getAssignment(studentId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentWithChildren> {
     const url = this.getUrl(studentId, courseId, unitId, assignmentId);
     return this.httpService.get<RawNewAssignmentWithChildren>(url).pipe(
-      map(this.mapNewAssignmentWithChildren),
+      map(assignment => this.mapNewAssignmentWithChildren(assignment)),
     );
   }
 

@@ -1,12 +1,14 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { ChangeEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewAssignmentTemplateAddForm } from './NewAssignmentTemplateAddForm';
 import { NewAssignmentTemplateList } from './NewAssignmentTemplateList';
 import { NewUnitTemplateEditForm } from './NewUnitTemplateEditForm';
-import { initialState, reducer, State } from './state';
+import type { State } from './state';
+import { initialState, reducer } from './state';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentTemplateService, newUnitTemplateService } from '@/services/administrators';
@@ -69,7 +71,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }
@@ -89,7 +91,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -116,7 +118,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             let message = 'Delete failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -140,7 +142,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;

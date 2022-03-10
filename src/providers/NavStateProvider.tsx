@@ -1,5 +1,7 @@
-import { createContext, Dispatch, ReactElement, ReactNode, useReducer } from 'react';
-import { NavAction, navInitialState, navReducer, NavState } from '../state/nav';
+import type { Dispatch, ReactElement, ReactNode } from 'react';
+import { createContext, useReducer } from 'react';
+import type { NavAction, NavState } from '../state/nav';
+import { navInitialState, navReducer } from '../state/nav';
 
 export const NavStateContext = createContext<NavState | undefined>(undefined);
 export const NavDispatchContext = createContext<Dispatch<NavAction> | undefined>(undefined);

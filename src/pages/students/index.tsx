@@ -1,6 +1,8 @@
-import { NextPage } from 'next';
-import { MouseEventHandler, ReactElement, useEffect, useMemo, useRef, useState } from 'react';
-import { BehaviorSubject, map, Observable, Observer } from 'rxjs';
+import type { NextPage } from 'next';
+import type { MouseEventHandler, ReactElement } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { Observable, Observer } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 
 const StudentPage: NextPage = () => {
   const [ adjustment, setAdjustment ] = useState(3);

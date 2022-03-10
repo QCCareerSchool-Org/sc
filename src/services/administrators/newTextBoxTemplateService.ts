@@ -1,4 +1,5 @@
-import { map, Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
@@ -35,21 +36,21 @@ export class NewTextBoxTemplateService implements INewTextBoxTemplateService {
   public addTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxTemplatePayload): Observable<NewTextBoxTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId);
     return this.httpService.post<RawNewTextBoxTemplate>(url, payload).pipe(
-      map(this.mapNewTextBoxTemplate),
+      map(textBox => this.mapNewTextBoxTemplate(textBox)),
     );
   }
 
   public getTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string): Observable<NewTextBoxTemplateWithPart> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
     return this.httpService.get<RawNewTextBoxTemplateWithPart>(url).pipe(
-      map(this.mapNewTextBoxTemplateWithPart),
+      map(textBox => this.mapNewTextBoxTemplateWithPart(textBox)),
     );
   }
 
   public saveTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxTemplatePayload): Observable<NewTextBoxTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
     return this.httpService.put<RawNewTextBoxTemplate>(url, payload).pipe(
-      map(this.mapNewTextBoxTemplate),
+      map(textBox => this.mapNewTextBoxTemplate(textBox)),
     );
   }
 

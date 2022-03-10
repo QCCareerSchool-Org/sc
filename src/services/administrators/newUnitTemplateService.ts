@@ -1,4 +1,5 @@
-import { map, Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
@@ -38,21 +39,21 @@ export class NewUnitTemplateService implements INewUnitTemplateService {
   public addUnit(administratorId: number, schoolId: number, courseId: number, payload: NewUnitTemplatePayload): Observable<NewUnitTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId);
     return this.httpService.post<RawNewUnitTemplate>(url, payload).pipe(
-      map(this.mapNewUnitTemplate),
+      map(unit => this.mapNewUnitTemplate(unit)),
     );
   }
 
   public getUnit(administratorId: number, schoolId: number, courseId: number, unitId: string): Observable<NewUnitTemplateWithCourseAndAssignments> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId)}/${unitId}`;
     return this.httpService.get<RawNewUnitTemplateWithCourseAndAssignments>(url).pipe(
-      map(this.mapNewUnitTemplateWithCourseAndAssignments),
+      map(unit => this.mapNewUnitTemplateWithCourseAndAssignments(unit)),
     );
   }
 
   public saveUnit(administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewUnitTemplatePayload): Observable<NewUnitTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId)}/${unitId}`;
     return this.httpService.put<RawNewUnitTemplate>(url, payload).pipe(
-      map(this.mapNewUnitTemplate),
+      map(unit => this.mapNewUnitTemplate(unit)),
     );
   }
 

@@ -1,4 +1,5 @@
-import { ChangeEventHandler, FormEventHandler, memo, ReactElement } from 'react';
+import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';

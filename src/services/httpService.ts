@@ -1,13 +1,14 @@
 import type Axios from '@qccareerschool/axios-observable';
 import type { AxiosResponse } from 'axios';
 import { saveAs } from 'file-saver';
-import { catchError, combineLatest, from, map, mapTo, merge, Observable, startWith, Subject, tap, throwError } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { catchError, from, map, merge, Subject, tap, throwError } from 'rxjs';
 
 import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError, AxiosUnauthorizedError } from 'src/axiosInstance';
 import { endpoint } from 'src/basePath';
 
 type Config = {
-  params?: any;
+  params?: Record<string, string | number | boolean>;
   headers?: Record<string, string | number | boolean>;
 };
 
@@ -137,9 +138,11 @@ export class AxiosHttpService implements IHttpService {
     return this.instance.get(url, { ...config, responseType: 'blob' }).pipe(
       tap(response => {
         const filename = /filename="(.*)"/u.exec(response.headers['content-disposition'])?.[1];
-        saveAs(response.data, filename);
+        if (response.data instanceof Blob) {
+          saveAs(response.data, filename);
+        }
       }),
-      mapTo(undefined),
+      map(() => undefined),
       catchError((err, caught) => {
         // for requests to third parties, do the standard error handling
         if (!url.startsWith(endpoint)) {
@@ -151,29 +154,35 @@ export class AxiosHttpService implements IHttpService {
         if (err instanceof AbstractAxiosError) {
 
           // check if there's a response
-          const blob = err.response?.data;
-          if (typeof blob === 'undefined') {
+          if (typeof err.response?.data === 'undefined') {
             return throwError(() => new HttpServiceError(err.message, false));
           }
 
-          // turn the blob back into text
-          // because Blob.prototype.text returns a Promise, we conver it to an Observable
-          const errorMessage$ = from((blob as Blob).text());
+          if (err.response.data instanceof Blob) {
+            const blob = err.response?.data;
 
-          // return the a new HttpServiceError
-          return errorMessage$.pipe(
-            map(message => {
-              if (err instanceof AxiosRefreshError) {
-                throw new HttpServiceError(message, true);
-              }
-              if (err instanceof AxiosOtherError) {
-                throw new HttpServiceError(message, false, err.response?.status);
-              }
-              throw new HttpServiceError(err.message, false);
-            }),
-          );
+            // turn the blob back into text
+            // because Blob.prototype.text returns a Promise, we conver it to an Observable
+            const errorMessage$ = from(blob.text());
+
+            // return the a new HttpServiceError
+            return errorMessage$.pipe(
+              map(message => {
+                if (err instanceof AxiosRefreshError) {
+                  throw new HttpServiceError(message, true);
+                }
+                if (err instanceof AxiosOtherError) {
+                  throw new HttpServiceError(message, false, err.response?.status);
+                }
+                throw new HttpServiceError(err.message, false);
+              }),
+            );
+          }
         }
-        return throwError(() => new HttpServiceError(err.message, false));
+        if (err instanceof Error) {
+          return throwError(() => new HttpServiceError(err.message, false));
+        }
+        return throwError(() => new HttpServiceError('Unknown error', false));
       }),
     );
   }
@@ -182,16 +191,18 @@ export class AxiosHttpService implements IHttpService {
     return response.data;
   }
 
-  private handleError<T>(err: Error, caught: Observable<T>): Observable<never> {
+  private handleError<T>(err: unknown, caught: Observable<T>): Observable<never> {
     if (err instanceof AbstractAxiosError) {
-      const data = err.response?.data;
-      const message = typeof data === 'string' ? data : '';
+      const message = typeof err.response?.data === 'string' ? err.response?.data : '';
       if (err instanceof AxiosUnauthorizedError || err instanceof AxiosRefreshError) {
         return throwError(() => new HttpServiceError(message, true));
       } else if (err instanceof AxiosOtherError) {
         return throwError(() => new HttpServiceError(message, false, err.response?.status));
       }
     }
-    return throwError(() => new HttpServiceError(err.message, false));
+    if (err instanceof Error) {
+      return throwError(() => new HttpServiceError(err.message, false));
+    }
+    return throwError(() => new HttpServiceError('Unknown error', false));
   }
 }

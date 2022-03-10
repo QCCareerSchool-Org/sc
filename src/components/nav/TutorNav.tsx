@@ -1,4 +1,5 @@
-import { ReactElement, useEffect, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';

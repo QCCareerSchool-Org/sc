@@ -1,6 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { ReactElement, useEffect, useReducer } from 'react';
+import type { ReactElement } from 'react';
+import { useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
@@ -35,7 +36,7 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }

@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 
 import { endpoint } from '../basePath';
-import { IHttpService } from './httpService';
-import { AuthenticationPayload } from '@/domain/authenticationPayload';
+import type { IHttpService } from './httpService';
+import type { AuthenticationPayload } from '@/domain/authenticationPayload';
 
 export interface ILoginService {
   logIn: (username: string, password: string, stayLoggedIn: boolean) => Observable<AuthenticationPayload>;

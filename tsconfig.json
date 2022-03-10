@@ -22,6 +22,16 @@
       "@/services/*": ["src/services/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/students/NewUnitView"],
-  "exclude": ["node_modules"]
+  "include": [
+    "custom-next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".eslintrc.js",
+    "jest.config.js",
+    "jest.setup.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "next-env.d.ts"
+  ]
 }

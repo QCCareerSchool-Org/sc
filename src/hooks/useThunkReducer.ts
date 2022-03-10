@@ -1,4 +1,5 @@
-import { Dispatch, useCallback, useRef, useState } from 'react';
+import type { Dispatch } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 type ReducerFunction<State, Action extends Record<string, unknown>> = (state: State, action: Action) => State;
 type InitializerFunction<State> = (state: State) => State;
@@ -11,7 +12,7 @@ export const useThunkReducer = <State, Action extends Record<string, unknown>>(r
   // state management
   const state = useRef(hookState);
   const getState = useCallback(() => state.current, [ state ]);
-  const setState = useCallback(newState => {
+  const setState = useCallback<(newState: State) => void>(newState => {
     state.current = newState;
     setHookState(newState);
   }, [ state, setHookState ]);
@@ -24,7 +25,7 @@ export const useThunkReducer = <State, Action extends Record<string, unknown>>(r
   // augmented dispatcher
   const dispatch = useCallback((action: Action | ThunkFunction<State, Action>): void => {
     return typeof action === 'function'
-      ? (action as ThunkFunction<State, Action>)(dispatch, getState)
+      ? action(dispatch, getState)
       : setState(reduce(action));
   }, [ getState, setState, reduce ]);
 

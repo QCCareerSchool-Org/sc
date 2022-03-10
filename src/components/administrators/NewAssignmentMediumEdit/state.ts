@@ -1,4 +1,4 @@
-import { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
+import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 
 export type State = {
   newAssignmentMedium?: NewAssignmentMedium;

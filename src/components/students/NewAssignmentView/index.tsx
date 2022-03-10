@@ -1,6 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { MouseEventHandler, ReactElement, useCallback, useEffect, useReducer } from 'react';
+import type { MouseEventHandler, ReactElement } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
 import { NewPartForm } from './NewPartForm';
@@ -37,7 +38,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }
@@ -66,7 +67,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           let message = 'File upload failed';
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return navigateToLogin(router);
+              return void navigateToLogin(router);
             }
             if (err.message) {
               message = err.message;
@@ -88,7 +89,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         error: err => {
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return navigateToLogin(router);
+              return void navigateToLogin(router);
             }
           }
           dispatch({ type: 'FILE_DELETE_FAILED', payload: { partId, uploadSlotId } });
@@ -106,7 +107,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           let message = 'File download failed';
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return navigateToLogin(router);
+              return void navigateToLogin(router);
             }
             if (err.message) {
               message = err.message;
@@ -127,7 +128,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         error: err => {
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return navigateToLogin(router);
+              return void navigateToLogin(router);
             }
           }
           dispatch({ type: 'TEXT_SAVE_FAILED', payload: { partId, textBoxId } });

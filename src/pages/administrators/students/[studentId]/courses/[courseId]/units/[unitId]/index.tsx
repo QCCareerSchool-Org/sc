@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
 import { NewUnitView } from '@/components/administrators/NewUnitView';

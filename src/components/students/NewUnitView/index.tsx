@@ -1,13 +1,15 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { ReactElement, useEffect, useReducer, useRef } from 'react';
+import type { ReactElement } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { AssignmentSection } from './AssignmentSection';
 import { NewUnitInfoTable } from './NewUnitInfoTable';
 import { NewUnitStatus } from './NewUnitStatus';
 import { SkipSection } from './SkipSection';
-import { initialState, reducer, State } from './state';
+import type { State } from './state';
+import { initialState, reducer } from './state';
 import { SubmitSection } from './SubmitSection';
 import { HttpServiceError } from '@/services/httpService';
 import { newUnitService } from '@/services/students';
@@ -55,7 +57,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
             let message = 'Submit failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -79,7 +81,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
             let message = 'Skip failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -115,7 +117,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
               {state.newUnit.optional && <span className="text-danger">OPTIONAL</span>}
               <h1>Unit {state.newUnit.unitLetter}{state.newUnit.title && <>: {state.newUnit.title}</>}</h1>
               <NewUnitInfoTable newUnit={state.newUnit} />
-              <NewUnitStatus unit={state.newUnit} />
+              <NewUnitStatus newUnit={state.newUnit} />
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { ReactElement, useEffect } from 'react';
+import type { ReactElement } from 'react';
+import { useEffect } from 'react';
 
 import { Layout } from '../components/Layout';
 import { RouteGuard } from '../components/RouteGuard';

@@ -17,16 +17,16 @@ module.exports = {
   plugins: [
     '@typescript-eslint',
     'jest',
+    'testing-library',
   ],
   extends: [
     'next/core-web-vitals',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:react/recommended',
     'plugin:import/recommended',
     'plugin:import/typescript',
-    'plugin:jest/recommended',
-    'plugin:jest/style',
   ],
   rules: {
     // standard rules -- best practices
@@ -147,6 +147,7 @@ module.exports = {
     'yield-star-spacing': 'error',
 
     // @typescript-eslint rules
+    '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off', // included in "overrides" section
     '@typescript-eslint/explicit-member-accessibility': 'off', // included in "overrides" section
     '@typescript-eslint/member-delimiter-style': 'error',
@@ -163,6 +164,7 @@ module.exports = {
     '@typescript-eslint/promise-function-async': 'error',
     '@typescript-eslint/prefer-reduce-type-parameter': 'error',
     '@typescript-eslint/prefer-string-starts-ends-with': 'error',
+    '@typescript-eslint/restrict-template-expressions': [ 'error', { allowBoolean: true, allowNullish: true } ],
     '@typescript-eslint/type-annotation-spacing': 'error',
 
     // @typescript-eslint eslint extension rules
@@ -218,6 +220,17 @@ module.exports = {
         '@typescript-eslint/explicit-function-return-type': [ 'error', { allowExpressions: true } ],
         '@typescript-eslint/explicit-member-accessibility': 'error',
       },
+    },
+    {
+      files: [
+        '**/__tests__/**/*.[jt]s?(x)',
+        '**/?(*.)+(spec|test).[jt]s?(x)',
+      ],
+      extends: [
+        'plugin:jest/recommended',
+        'plugin:jest/style',
+        'plugin:testing-library/react',
+      ],
     },
     {
       files: [

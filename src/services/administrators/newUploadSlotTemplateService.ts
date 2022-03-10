@@ -1,4 +1,5 @@
-import { map, Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
@@ -37,21 +38,21 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
   public addUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewUploadSlotTemplatePayload): Observable<NewUploadSlotTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId);
     return this.httpService.post<RawNewUploadSlotTemplate>(url, payload).pipe(
-      map(this.mapNewParTemplate),
+      map(uploadSlot => this.mapNewParTemplate(uploadSlot)),
     );
   }
 
   public getUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<NewUploadSlotTemplateWithPart> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${uploadSlotId}`;
     return this.httpService.get<RawNewUploadSlotTemplateWithPart>(url).pipe(
-      map(this.mapNewParTemplateWithPart),
+      map(uploadSlot => this.mapNewParTemplateWithPart(uploadSlot)),
     );
   }
 
   public saveUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, payload: NewUploadSlotTemplatePayload): Observable<NewUploadSlotTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${uploadSlotId}`;
     return this.httpService.put<RawNewUploadSlotTemplate>(url, payload).pipe(
-      map(this.mapNewParTemplate),
+      map(uploadSlot => this.mapNewParTemplate(uploadSlot)),
     );
   }
 

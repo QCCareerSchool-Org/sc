@@ -1,4 +1,5 @@
-import { map, Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
@@ -60,28 +61,28 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
   public addAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewAssignmentTemplatePayload): Observable<NewAssignmentTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId);
     return this.httpService.post<RawNewAssignmentTemplate>(url, payload).pipe(
-      map(this.mapNewAssignmentTemplate),
+      map(assignment => this.mapNewAssignmentTemplate(assignment)),
     );
   }
 
   public getAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentTemplateWithUnitAndParts> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
     return this.httpService.get<RawNewAssignmentTemplateWithUnitAndParts>(url).pipe(
-      map(this.mapNewAssignmentTemplateWithUnitAndParts),
+      map(assignment => this.mapNewAssignmentTemplateWithUnitAndParts(assignment)),
     );
   }
 
   public getAssignmentWithInputs(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentTemplateWithUnitAndPartsAndInputs> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
     return this.httpService.get<RawNewAssignmentTemplateWithUnitAndPartsAndInputs>(url, { params: { inputs: true } }).pipe(
-      map(this.mapNewAssignmentTemplateWithUnitAndPartsAndInputs),
+      map(assignment => this.mapNewAssignmentTemplateWithUnitAndPartsAndInputs(assignment)),
     );
   }
 
   public saveAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentTemplatePayload): Observable<NewAssignmentTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
     return this.httpService.put<RawNewAssignmentTemplate>(url, payload).pipe(
-      map(this.mapNewAssignmentTemplate),
+      map(assignment => this.mapNewAssignmentTemplate(assignment)),
     );
   }
 

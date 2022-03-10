@@ -1,11 +1,13 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { ChangeEventHandler, memo, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
+import { memo, useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewUnitTemplateAddForm } from './NewUnitTemplateAddForm';
 import { NewUnitTemplateList } from './NewUnitTemplateList';
-import { initialState, reducer, State } from './state';
+import type { State } from './state';
+import { initialState, reducer } from './state';
 import { courseService, newUnitTemplateService } from '@/services/administrators';
 import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
@@ -36,7 +38,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }
@@ -54,7 +56,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;

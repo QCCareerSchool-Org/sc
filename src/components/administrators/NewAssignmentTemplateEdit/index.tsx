@@ -1,7 +1,8 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ChangeEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewAssignmentMediumAddForm } from './NewAssignmentMediumAddForm';
@@ -9,7 +10,8 @@ import { NewAssignmentMediumList } from './NewAssignmentMediumList';
 import { NewAssignmentTemplateEditForm } from './NewAssignmentTemplateEditForm';
 import { NewPartTemplateAddForm } from './NewPartTemplateAddForm';
 import { NewPartTemplateList } from './NewPartTemplateList';
-import { initialState, reducer, State } from './state';
+import type { State } from './state';
+import { initialState, reducer } from './state';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentMediumService, newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
@@ -72,7 +74,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }
@@ -92,7 +94,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -119,7 +121,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             let message = 'Delete failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -143,7 +145,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -173,7 +175,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;

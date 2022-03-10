@@ -1,4 +1,4 @@
-import { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
+import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';

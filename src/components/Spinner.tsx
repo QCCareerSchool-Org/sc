@@ -1,5 +1,4 @@
-import { ReactElement } from 'react';
-import { CSSProperties } from 'styled-components';
+import type { CSSProperties, ReactElement } from 'react';
 
 type Props = {
   size?: 'sm' | 'lg';

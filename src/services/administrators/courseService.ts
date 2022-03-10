@@ -1,4 +1,5 @@
-import { map, Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
@@ -27,7 +28,7 @@ export class CourseService implements ICourseService {
   public getCourse(administratorId: number, schoolId: number, courseId: number): Observable<CourseWithSchoolAndUnits> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId);
     return this.httpService.get<RawCourseWithSchoolAndUnits>(url).pipe(
-      map(this.mapCourseWithSchoolAndUnits),
+      map(course => this.mapCourseWithSchoolAndUnits(course)),
     );
   }
 

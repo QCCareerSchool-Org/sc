@@ -1,4 +1,5 @@
-import { createContext, ReactElement, ReactNode, useEffect, useState } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 export const ScreenWidthContext = createContext<number | undefined>(undefined);
 

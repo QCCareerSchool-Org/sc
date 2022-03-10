@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import Error from 'next/error';
 
 import { CourseDevelopmentOverview } from '@/components/administrators/CourseDevelopmentOverview';

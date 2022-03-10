@@ -1,14 +1,16 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { ChangeEventHandler, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import type { ChangeEventHandler, ReactElement } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewTextBoxEditForm } from './NewTextBoxEditForm';
-import { initialState, reducer, State } from './state';
-import { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
+import type { State } from './state';
+import { initialState, reducer } from './state';
+import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newTextBoxTemplateService } from '@/services/administrators';
-import { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
+import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -67,7 +69,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }
@@ -87,7 +89,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -114,7 +116,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
             let message = 'Delete failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;

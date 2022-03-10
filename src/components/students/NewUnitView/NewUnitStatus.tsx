@@ -1,13 +1,14 @@
-import { memo, ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import { memo } from 'react';
 
-import type { NewUnitWithCourseAndChildren } from '@/services/students/newUnitService';
+import type { NewUnit } from '@/domain/newUnit';
 
 type Props = {
-  unit: NewUnitWithCourseAndChildren;
+  newUnit: NewUnit;
 };
 
-export const NewUnitStatus = memo(({ unit }: Props): ReactElement | null => {
-  if (unit.marked) {
+export const NewUnitStatus = memo(({ newUnit }: Props): ReactElement | null => {
+  if (newUnit.marked) {
     return (
       <div className="alert alert-success">
         <h5>Unit Marked</h5>
@@ -19,7 +20,7 @@ export const NewUnitStatus = memo(({ unit }: Props): ReactElement | null => {
     );
   }
 
-  if (unit.skipped) {
+  if (newUnit.skipped) {
     return (
       <div className="alert alert-info">
         <h5>Unit Skipped</h5>
@@ -28,7 +29,7 @@ export const NewUnitStatus = memo(({ unit }: Props): ReactElement | null => {
     );
   }
 
-  if (unit.submitted) {
+  if (newUnit.submitted) {
     return (
       <div className="alert alert-success">
         <h5>Unit Submitted</h5>
@@ -37,14 +38,14 @@ export const NewUnitStatus = memo(({ unit }: Props): ReactElement | null => {
     );
   }
 
-  if (unit.adminComment) {
+  if (newUnit.adminComment) {
     return (
       <>
         <div className="alert alert-danger">
           <h5>Unit Has Been Returned</h5>
           <p className="fw-bold">Your unit has been returned by your tutor for changes. Please review the comments below, make the required changes, and then resubmit your unit.</p>
           <div className="ms-4 mt-4 comments">
-            {unit.adminComment.replace(/\r\n/gu, '\n').split('\n\n').map((line, i) => <p key={i} className="fst-italic">{line}</p>)}
+            {newUnit.adminComment.replace(/\r\n/gu, '\n').split('\n\n').map((line, i) => <p key={i} className="fst-italic">{line}</p>)}
           </div>
         </div>
         <style jsx>{`

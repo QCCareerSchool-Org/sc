@@ -1,4 +1,5 @@
-import { map, Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
@@ -41,21 +42,21 @@ export class NewPartTemplateService implements INewPartTemplateService {
   public addPart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, data: NewPartTemplatePayload): Observable<NewPartTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId);
     return this.httpService.post<RawNewPartTemplate>(url, data).pipe(
-      map(this.mapNewParTemplate),
+      map(part => this.mapNewPartTemplate(part)),
     );
   }
 
   public getPart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): Observable<NewPartTemplateWithAssignmentAndInputs> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${partId}`;
     return this.httpService.get<RawNewPartTemplateWithAssignmentAndInputs>(url).pipe(
-      map(this.mapNewParTemplateWithAssignmentAndInputs),
+      map(part => this.mapNewParTemplateWithAssignmentAndInputs(part)),
     );
   }
 
   public savePart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, data: NewPartTemplatePayload): Observable<NewPartTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${partId}`;
     return this.httpService.put<RawNewPartTemplate>(url, data).pipe(
-      map(this.mapNewParTemplate),
+      map(part => this.mapNewPartTemplate(part)),
     );
   }
 
@@ -68,7 +69,7 @@ export class NewPartTemplateService implements INewPartTemplateService {
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts`;
   }
 
-  private mapNewParTemplate(part: RawNewPartTemplate): NewPartTemplate {
+  private mapNewPartTemplate(part: RawNewPartTemplate): NewPartTemplate {
     return {
       ...part,
       created: new Date(part.created),

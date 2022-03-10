@@ -1,10 +1,11 @@
-import { memo, ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import { memo } from 'react';
 
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
 import type { TextBoxFunction, UploadSlotFunction } from '.';
 import type { PartState } from '@/components/students/NewAssignmentView/state';
-import { NewDescriptionType } from '@/domain/newDescriptionType';
+import type { NewDescriptionType } from '@/domain/newDescriptionType';
 
 type Props = {
   part: PartState;

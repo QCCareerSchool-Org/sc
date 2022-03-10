@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { useScreenWidth } from '../hooks/useScreenWidth';
 import Logo from '../images/logo.svg';

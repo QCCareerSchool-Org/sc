@@ -1,6 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import { ChangeEventHandler, MouseEvent, ReactElement, useCallback, useEffect, useReducer, useRef } from 'react';
+import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { NewPartTemplateEditForm } from './NewPartTemplateEditForm';
@@ -8,7 +9,8 @@ import { NewTextBoxTemplateAddForm } from './NewTextBoxTemplateAddForm';
 import { NewTextBoxTemplateList } from './NewTextBoxTemplateList';
 import { NewUploadSlotTemplateAddForm } from './NewUploadSlotTemplateAddForm';
 import { NewUploadSlotTemplateList } from './NewUploadSlotTemplateList';
-import { initialState, reducer, State } from './state';
+import type { State } from './state';
+import { initialState, reducer } from './state';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newPartTemplateService, newTextBoxTemplateService, newUploadSlotTemplateService } from '@/services/administrators';
@@ -68,7 +70,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return navigateToLogin(router);
+            return void navigateToLogin(router);
           }
           errorCode = err.code;
         }
@@ -88,7 +90,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -115,7 +117,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             let message = 'Delete failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -141,7 +143,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
@@ -167,7 +169,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return navigateToLogin(router);
+                return void navigateToLogin(router);
               }
               if (err.message) {
                 message = err.message;
