@@ -1,7 +1,7 @@
 import type { NewUnitWithCourseAndChildren } from '@/services/students/newUnitService';
 
 export type State = {
-  unit?: NewUnitWithCourseAndChildren;
+  newUnit?: NewUnitWithCourseAndChildren;
   error: boolean;
   errorCode?: number;
   processingState: 'idle' | 'submitting' | 'skipping' | 'submit error' | 'skip error';
@@ -9,8 +9,8 @@ export type State = {
 };
 
 export type Action =
-  | { type: 'UNIT_LOAD_SUCEEDED'; payload: NewUnitWithCourseAndChildren }
-  | { type: 'UNIT_LOAD_FAILED'; payload?: number }
+  | { type: 'LOAD_UNIT_SUCEEDED'; payload: NewUnitWithCourseAndChildren }
+  | { type: 'LOAD_UNIT_FAILED'; payload?: number }
   | { type: 'SUBMIT_STARTED' }
   | { type: 'SUBMIT_SUCCEEDED' }
   | { type: 'SUBMIT_FAILED'; payload: string }
@@ -20,19 +20,19 @@ export type Action =
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'UNIT_LOAD_SUCEEDED':
-      return { ...state, unit: action.payload, error: false };
-    case 'UNIT_LOAD_FAILED':
+    case 'LOAD_UNIT_SUCEEDED':
+      return { ...state, newUnit: action.payload, error: false };
+    case 'LOAD_UNIT_FAILED':
       return { ...state, error: true, errorCode: action.payload };
     case 'SUBMIT_STARTED':
       return { ...state, processingState: 'submitting', errorMessage: undefined };
     case 'SUBMIT_SUCCEEDED':
-      if (!state.unit) {
-        throw Error('unit is undefined');
+      if (!state.newUnit) {
+        throw Error('newUnit is undefined');
       }
       return {
         ...state,
-        unit: { ...state.unit, submitted: new Date() },
+        newUnit: { ...state.newUnit, submitted: new Date() },
         processingState: 'idle',
       };
     case 'SUBMIT_FAILED':
@@ -40,12 +40,12 @@ export const reducer = (state: State, action: Action): State => {
     case 'SKIP_STARTED':
       return { ...state, processingState: 'skipping', errorMessage: undefined };
     case 'SKIP_SUCEEDED':
-      if (!state.unit) {
-        throw Error('unit is undefined');
+      if (!state.newUnit) {
+        throw Error('newUnit is undefined');
       }
       return {
         ...state,
-        unit: { ...state.unit, skipped: new Date() },
+        newUnit: { ...state.newUnit, skipped: new Date() },
         processingState: 'idle',
       };
     case 'SKIP_FAILED':

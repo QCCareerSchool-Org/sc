@@ -14,7 +14,10 @@ export const SkipSection = ({ skip$, processingState, errorMessage }: Props): Re
 
   const skipUnit: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
-    skip$.next(processingState);
+    const message = 'Are you sure you want to skip this unit? Your tutor will not review your work and you will no receive a grade for this unit.\n\nThis is irreverible.';
+    if (confirm(message)) {
+      skip$.next(processingState);
+    }
   };
 
   const buttonDisabled = processingState === 'submitting' || processingState === 'skipping';

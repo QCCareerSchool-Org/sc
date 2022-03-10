@@ -20,7 +20,7 @@ export const SubmitSection = ({ submit$, unitComplete, processingState, errorMes
   const buttonDisabled = !unitComplete || processingState === 'submitting' || processingState === 'skipping';
 
   return (
-    <section className="submitSection bg-dark text-white">
+    <section className="submitSection">
       <div className="container">
         <h2>Submit Unit</h2>
         {unitComplete

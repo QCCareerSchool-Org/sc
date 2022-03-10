@@ -4,13 +4,13 @@ import { ReactElement, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import { AssignmentSection } from './AssignmentSection';
-import { AssignmentStatus } from './AssignmentStatus';
+import { NewUnitInfoTable } from './NewUnitInfoTable';
+import { NewUnitStatus } from './NewUnitStatus';
 import { SkipSection } from './SkipSection';
 import { initialState, reducer, State } from './state';
 import { SubmitSection } from './SubmitSection';
 import { HttpServiceError } from '@/services/httpService';
 import { newUnitService } from '@/services/students';
-import { formatDate } from 'src/formatDate';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
@@ -32,7 +32,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
     newUnitService.getUnit(studentId, courseId, unitId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: unit => dispatch({ type: 'UNIT_LOAD_SUCEEDED', payload: unit }),
+      next: unit => dispatch({ type: 'LOAD_UNIT_SUCEEDED', payload: unit }),
       error: err => {
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
@@ -41,7 +41,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'UNIT_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_UNIT_FAILED', payload: errorCode });
       },
     });
 
@@ -100,19 +100,11 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.unit) {
+  if (!state.newUnit) {
     return null;
   }
 
-  const showAssignments = (!!state.unit.marked || !(!!state.unit.skipped || !!state.unit.submitted));
-
-  const status = state.unit.marked
-    ? 'Marked'
-    : state.unit.submitted
-      ? 'Submitted'
-      : state.unit.adminComment
-        ? 'Returned for Changes'
-        : 'In Progress';
+  const showAssignments = (!!state.newUnit.marked || !(!!state.newUnit.skipped || !!state.newUnit.submitted));
 
   return (
     <>
@@ -120,45 +112,24 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8">
-              {state.unit.optional && <span className="text-danger">OPTIONAL</span>}
-              <h1>Unit {state.unit.unitLetter}{state.unit.title && <>: {state.unit.title}</>}</h1>
-              <table className="table table-bordered bg-white w-auto">
-                <tbody>
-                  <tr><th scope="row">Started</th><td>{formatDate(state.unit.created)}</td></tr>
-                  <tr><th scope="row">Submitted</th><td>{state.unit.submitted ? formatDate(state.unit.submitted) : '---'}</td></tr>
-                  <tr><th scope="row">Marked</th><td>{state.unit.marked ? formatDate(state.unit.marked) : '---'}</td></tr>
-                  {/* <tr style={{ background: '#cff4fc' }}><th scope="row">Status</th><td>{status}</td></tr> */}
-                </tbody>
-              </table>
-              <AssignmentStatus unit={state.unit} />
+              {state.newUnit.optional && <span className="text-danger">OPTIONAL</span>}
+              <h1>Unit {state.newUnit.unitLetter}{state.newUnit.title && <>: {state.newUnit.title}</>}</h1>
+              <NewUnitInfoTable newUnit={state.newUnit} />
+              <NewUnitStatus unit={state.newUnit} />
             </div>
           </div>
         </div>
       </section>
-      <section>
-        <div className="container">
-          <div className="row">
-            {/* <div className="col-12 col-md-10 col-lg-8"> */}
-            {state.unit.description && (
-              <>
-                <h2 className="h3">Unit Description</h2>
-                {state.unit.description.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
-              </>
-            )}
-            {/* </div> */}
-          </div>
-        </div>
-      </section>
-      {showAssignments && <AssignmentSection unit={state.unit} />}
-      {!state.unit.submitted && !state.unit.skipped && (
+      {showAssignments && <AssignmentSection unit={state.newUnit} />}
+      {!state.newUnit.submitted && !state.newUnit.skipped && (
         <>
           <SubmitSection
             submit$={submit$.current}
-            unitComplete={state.unit.complete}
+            unitComplete={state.newUnit.complete}
             processingState={state.processingState}
             errorMessage={state.errorMessage}
           />
-          {state.unit.optional && (
+          {state.newUnit.optional && (
             <SkipSection
               skip$={skip$.current}
               processingState={state.processingState}

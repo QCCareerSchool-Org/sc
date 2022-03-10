@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { memo, ReactElement } from 'react';
 
 import type { NewUnitWithCourseAndChildren } from '@/services/students/newUnitService';
 
@@ -6,7 +6,7 @@ type Props = {
   unit: NewUnitWithCourseAndChildren;
 };
 
-export const AssignmentStatus = ({ unit }: Props): ReactElement | null => {
+export const NewUnitStatus = memo(({ unit }: Props): ReactElement | null => {
   if (unit.marked) {
     return (
       <div className="alert alert-success">
@@ -51,4 +51,6 @@ export const AssignmentStatus = ({ unit }: Props): ReactElement | null => {
       <p className="fw-bold mb-0">Your unit is currently in progress. Once the assignments below are complete, please submit your unit to your tutor using the &ldquo;Submit Unit&rdquo; button below.</p>
     </div>
   );
-};
+});
+
+NewUnitStatus.displayName = 'NewUnitStatus';
