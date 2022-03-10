@@ -2,7 +2,7 @@ import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewTextBoxTemplateWithPart } from '@/services/administrators/newTextBoxTemplateService';
 
 export type State = {
-  textBoxTemplate?: NewTextBoxTemplateWithPart;
+  newTextBoxTemplate?: NewTextBoxTemplateWithPart;
   form: {
     data: {
       description: string;
@@ -61,7 +61,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'LOAD_TEXT_BOX_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        textBoxTemplate: action.payload,
+        newTextBoxTemplate: action.payload,
         form: {
           data: {
             description: action.payload.description ?? '',
@@ -177,13 +177,13 @@ export const reducer = (state: State, action: Action): State => {
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'SAVE_TEXT_BOX_TEMPLATE_SUCCEEDED':
-      if (!state.textBoxTemplate) {
-        throw Error('textBoxTemplate is undefined');
+      if (!state.newTextBoxTemplate) {
+        throw Error('newTextBoxTemplate is undefined');
       }
       return {
         ...state,
-        textBoxTemplate: {
-          ...state.textBoxTemplate,
+        newTextBoxTemplate: {
+          ...state.newTextBoxTemplate,
           ...action.payload,
         },
         form: {
@@ -217,7 +217,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'DELETE_TEXT_BOX_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        textBoxTemplate: undefined,
+        newTextBoxTemplate: undefined,
         form: {
           ...state.form,
           data: {

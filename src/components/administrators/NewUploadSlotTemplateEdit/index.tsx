@@ -58,7 +58,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.uploadSlotTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPreset(state.newUploadSlotTemplate, state.form.data));
 
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewUploadSlotTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
@@ -176,7 +176,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.uploadSlotTemplate) {
+  if (!state.newUploadSlotTemplate) {
     return null;
   }
 
@@ -205,9 +205,9 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
-                    <tr><th scope="row">Part</th><td>{state.uploadSlotTemplate.newPartTemplate.title ?? state.uploadSlotTemplate.newPartTemplate.partNumber}</td></tr>
-                    <tr><th scope="row">Created</th><td>{formatDateTime(state.uploadSlotTemplate.created)}</td></tr>
-                    {state.uploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.uploadSlotTemplate.modified)}</td></tr>}
+                    <tr><th scope="row">Part</th><td>{state.newUploadSlotTemplate.newPartTemplate.title ?? state.newUploadSlotTemplate.newPartTemplate.partNumber}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.newUploadSlotTemplate.created)}</td></tr>
+                    {state.newUploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newUploadSlotTemplate.modified)}</td></tr>}
                   </tbody>
                 </table>
               </div>

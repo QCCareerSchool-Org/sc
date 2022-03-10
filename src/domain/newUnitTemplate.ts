@@ -7,6 +7,7 @@ export type NewUnitTemplate = {
   description: string | null;
   optional: boolean;
   order: number;
+  enabled: boolean;
   created: Date;
   modified: Date | null;
 };
@@ -20,6 +21,7 @@ export type RawNewUnitTemplate = {
   description: string | null;
   optional: boolean;
   order: number;
+  enabled: boolean;
   /** date string */
   created: string;
   /** date string */

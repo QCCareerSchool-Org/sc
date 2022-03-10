@@ -1,12 +1,14 @@
+import type { NewDescriptionType } from './newDescriptionType';
+
 export type NewPartTemplate = {
   /** uuid */
   partTemplateId: string;
   /** uuid */
   assignmentTemplateId: string;
   partNumber: number;
-  title: string | null;
+  title: string;
   description: string | null;
-  optional: boolean;
+  descriptionType: NewDescriptionType;
   created: Date;
   modified: Date | null;
 };
@@ -17,8 +19,9 @@ export type RawNewPartTemplate = {
   /** uuid */
   assignmentTemplateId: string;
   partNumber: number;
-  title: string | null;
+  title: string;
   description: string | null;
+  descriptionType: NewDescriptionType;
   optional: boolean;
   /** string date */
   created: string;

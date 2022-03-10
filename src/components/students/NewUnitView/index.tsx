@@ -118,17 +118,35 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
     <>
       <section>
         <div className="container">
-          <h1>Unit {state.unit.unitLetter}{state.unit.title && <>: {state.unit.title}</>}</h1>
-          {state.unit.description && <p>{state.unit.description}</p>}
-          <table className="table table-bordered bg-white w-auto">
-            <tbody>
-              <tr><th scope="row">Started</th><td>{formatDate(state.unit.created)}</td></tr>
-              <tr><th scope="row">Submitted</th><td>{state.unit.submitted ? formatDate(state.unit.submitted) : '---'}</td></tr>
-              <tr><th scope="row">Marked</th><td>{state.unit.marked ? formatDate(state.unit.marked) : '---'}</td></tr>
-              <tr><th scope="row">Status</th><td>{status}</td></tr>
-            </tbody>
-          </table>
-          <AssignmentStatus unit={state.unit} />
+          <div className="row">
+            <div className="col-12 col-md-10 col-lg-8">
+              {state.unit.optional && <span className="text-danger">OPTIONAL</span>}
+              <h1>Unit {state.unit.unitLetter}{state.unit.title && <>: {state.unit.title}</>}</h1>
+              <table className="table table-bordered bg-white w-auto">
+                <tbody>
+                  <tr><th scope="row">Started</th><td>{formatDate(state.unit.created)}</td></tr>
+                  <tr><th scope="row">Submitted</th><td>{state.unit.submitted ? formatDate(state.unit.submitted) : '---'}</td></tr>
+                  <tr><th scope="row">Marked</th><td>{state.unit.marked ? formatDate(state.unit.marked) : '---'}</td></tr>
+                  {/* <tr style={{ background: '#cff4fc' }}><th scope="row">Status</th><td>{status}</td></tr> */}
+                </tbody>
+              </table>
+              <AssignmentStatus unit={state.unit} />
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div className="container">
+          <div className="row">
+            {/* <div className="col-12 col-md-10 col-lg-8"> */}
+            {state.unit.description && (
+              <>
+                <h2 className="h3">Unit Description</h2>
+                {state.unit.description.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
+              </>
+            )}
+            {/* </div> */}
+          </div>
         </div>
       </section>
       {showAssignments && <AssignmentSection unit={state.unit} />}

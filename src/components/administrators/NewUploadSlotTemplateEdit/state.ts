@@ -2,7 +2,7 @@ import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import type { NewUploadSlotTemplateWithPart } from '@/services/administrators/newUploadSlotTemplateService';
 
 export type State = {
-  uploadSlotTemplate?: NewUploadSlotTemplateWithPart;
+  newUploadSlotTemplate?: NewUploadSlotTemplateWithPart;
   form: {
     data: {
       label: string;
@@ -74,7 +74,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'LOAD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        uploadSlotTemplate: action.payload,
+        newUploadSlotTemplate: action.payload,
         form: {
           data: {
             label: action.payload.label ?? '',
@@ -236,13 +236,13 @@ export const reducer = (state: State, action: Action): State => {
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'SAVE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED':
-      if (!state.uploadSlotTemplate) {
-        throw Error('uploadSlotTemplate is undefined');
+      if (!state.newUploadSlotTemplate) {
+        throw Error('newUploadSlotTemplate is undefined');
       }
       return {
         ...state,
-        uploadSlotTemplate: {
-          ...state.uploadSlotTemplate,
+        newUploadSlotTemplate: {
+          ...state.newUploadSlotTemplate,
           ...action.payload,
         },
         form: {
@@ -279,7 +279,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'DELETE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        uploadSlotTemplate: undefined,
+        newUploadSlotTemplate: undefined,
         form: {
           ...state.form,
           data: {

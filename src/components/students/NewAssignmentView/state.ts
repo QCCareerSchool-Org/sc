@@ -3,6 +3,7 @@ import type { NewPart } from '@/domain/newPart';
 import type { NewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignmentWithChildren } from '@/services/students/newAssignmentService';
+import { sanitize } from 'src/sanitize';
 
 type FormState = 'pristine' | 'dirty';
 
@@ -97,6 +98,9 @@ const assignmentLoad = (state: State, assignment: NewAssignmentWithChildren): St
       saveState: 'saved',
       parts: assignment.newParts.map(p => ({
         ...p,
+        description: p.description === null
+          ? null
+          : p.descriptionType === 'text' ? p.description : sanitize(p.description),
         formState: 'pristine',
         saveState: 'saved',
         textBoxes: p.newTextBoxes.map(t => {

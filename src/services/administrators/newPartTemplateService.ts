@@ -3,6 +3,7 @@ import { map, Observable } from 'rxjs';
 import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
@@ -10,8 +11,8 @@ import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/n
 export type NewPartTemplatePayload = {
   title: string;
   description: string | null;
+  descriptionType: NewDescriptionType;
   partNumber: number;
-  optional: boolean;
 };
 
 type RawNewPartTemplateWithAssignmentAndInputs = RawNewPartTemplate & {

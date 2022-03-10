@@ -3,9 +3,10 @@ import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
 import { uuidService } from '@/services/index';
+import { sanitize } from 'src/sanitize';
 
 export type State = {
-  assignmentTemplate?: NewAssignmentTemplateWithUnitAndParts;
+  newAssignmentTemplate?: NewAssignmentTemplateWithUnitAndParts;
   form: {
     data: {
       title: string;
@@ -22,18 +23,23 @@ export type State = {
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
     errorMessage?: string;
   };
-  partForm: {
+  newPartTemplateForm: {
     data: {
       title: string;
       description: string;
+      descriptionType: string;
       partNumber: string;
       optional: boolean;
     };
     validationMessages: {
       title?: string;
       description?: string;
+      descriptionType?: string;
       partNumber?: string;
       optional?: string;
+    };
+    meta: {
+      sanitizedHtml: string;
     };
     processingState: 'idle' | 'inserting' | 'insert error';
     errorMessage?: string;
@@ -76,6 +82,7 @@ type Action =
   | { type: 'DELETE_ASSIGNMENT_TEMPLATE_FAILED'; payload?: string }
   | { type: 'PART_TEMPLATE_TITLE_CHANGED'; payload: string }
   | { type: 'PART_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
+  | { type: 'PART_TEMPLATE_DESCRIPTION_TYPE_CHANGED'; payload: string }
   | { type: 'PART_TEMPLATE_PART_NUMBER_CHANGED'; payload: string }
   | { type: 'PART_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'ADD_PART_TEMPLATE_STARTED' }
@@ -102,14 +109,18 @@ export const initialState: State = {
     validationMessages: {},
     processingState: 'idle',
   },
-  partForm: {
+  newPartTemplateForm: {
     data: {
       title: '',
       description: '',
+      descriptionType: 'text',
       partNumber: '1',
       optional: false,
     },
     validationMessages: {},
+    meta: {
+      sanitizedHtml: '',
+    },
     processingState: 'idle',
   },
   assignmentMediaForm: {
@@ -132,7 +143,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        assignmentTemplate: action.payload,
+        newAssignmentTemplate: action.payload,
         form: {
           ...state.form,
           data: {
@@ -145,15 +156,19 @@ export const reducer = (state: State, action: Action): State => {
           processingState: 'idle',
           errorMessage: undefined,
         },
-        partForm: {
-          ...state.partForm,
+        newPartTemplateForm: {
+          ...state.newPartTemplateForm,
           data: {
             title: '',
             description: '',
+            descriptionType: 'text',
             partNumber: action.payload.newPartTemplates.length === 0 ? '1' : (Math.max(...action.payload.newPartTemplates.map(p => p.partNumber)) + 1).toString(),
             optional: false,
           },
           validationMessages: {},
+          meta: {
+            sanitizedHtml: '',
+          },
           processingState: 'idle',
           errorMessage: undefined,
         },
@@ -244,13 +259,13 @@ export const reducer = (state: State, action: Action): State => {
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'SAVE_ASSIGNMENT_TEMPLATE_SUCCEEDED':
-      if (!state.assignmentTemplate) {
-        throw Error('assignmentTemplate is undefined');
+      if (!state.newAssignmentTemplate) {
+        throw Error('newAssignmentTemplate is undefined');
       }
       return {
         ...state,
-        assignmentTemplate: {
-          ...state.assignmentTemplate,
+        newAssignmentTemplate: {
+          ...state.newAssignmentTemplate,
           ...action.payload,
         },
         form: {
@@ -277,7 +292,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'DELETE_ASSIGNMENT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        assignmentTemplate: undefined,
+        newAssignmentTemplate: undefined,
         form: {
           ...state.form,
           data: {
@@ -309,10 +324,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        partForm: {
-          ...state.partForm,
-          data: { ...state.partForm.data, title: action.payload },
-          validationMessages: { ...state.partForm.validationMessages, title: validationMessage },
+        newPartTemplateForm: {
+          ...state.newPartTemplateForm,
+          data: { ...state.newPartTemplateForm.data, title: action.payload },
+          validationMessages: { ...state.newPartTemplateForm.validationMessages, title: validationMessage },
         },
       };
     }
@@ -327,10 +342,34 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        partForm: {
-          ...state.partForm,
-          data: { ...state.partForm.data, description: action.payload },
-          validationMessages: { ...state.partForm.validationMessages, description: validationMessage },
+        newPartTemplateForm: {
+          ...state.newPartTemplateForm,
+          data: { ...state.newPartTemplateForm.data, description: action.payload },
+          validationMessages: { ...state.newPartTemplateForm.validationMessages, description: validationMessage },
+          meta: {
+            sanitizedHtml: state.newPartTemplateForm.data.descriptionType === 'html' ? sanitize(action.payload) : '',
+          },
+        },
+      };
+    }
+    case 'PART_TEMPLATE_DESCRIPTION_TYPE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        if (![ 'text', 'html' ].includes(action.payload)) {
+          validationMessage = 'Invalid value';
+        }
+      }
+      return {
+        ...state,
+        newPartTemplateForm: {
+          ...state.newPartTemplateForm,
+          data: { ...state.newPartTemplateForm.data, descriptionType: action.payload },
+          validationMessages: { ...state.newPartTemplateForm.validationMessages, descriptionType: validationMessage },
+          meta: {
+            sanitizedHtml: action.payload === 'text' ? '' : sanitize(state.newPartTemplateForm.data.description),
+          },
         },
       };
     }
@@ -346,15 +385,15 @@ export const reducer = (state: State, action: Action): State => {
           validationMessage = 'Cannot be less than zero';
         } else if (partNumber > 127) {
           validationMessage = 'Cannot be greater than 127';
-        } else if (state.assignmentTemplate?.newPartTemplates.some(p => p.partNumber === partNumber)) {
+        } else if (state.newAssignmentTemplate?.newPartTemplates.some(p => p.partNumber === partNumber)) {
           validationMessage = 'Another part already has this part number';
         }
       }
       return {
         ...state,
-        partForm: {
-          ...state.partForm,
-          data: { ...state.partForm.data, partNumber: action.payload },
+        newPartTemplateForm: {
+          ...state.newPartTemplateForm,
+          data: { ...state.newPartTemplateForm.data, partNumber: action.payload },
           validationMessages: { ...state.form.validationMessages, partNumber: validationMessage },
         },
       };
@@ -362,29 +401,30 @@ export const reducer = (state: State, action: Action): State => {
     case 'PART_TEMPLATE_OPTIONAL_CHANGED':
       return {
         ...state,
-        partForm: { ...state.partForm, data: { ...state.partForm.data, optional: action.payload } },
+        newPartTemplateForm: { ...state.newPartTemplateForm, data: { ...state.newPartTemplateForm.data, optional: action.payload } },
       };
     case 'ADD_PART_TEMPLATE_STARTED':
       return {
         ...state,
-        partForm: { ...state.partForm, processingState: 'inserting', errorMessage: undefined },
+        newPartTemplateForm: { ...state.newPartTemplateForm, processingState: 'inserting', errorMessage: undefined },
       };
     case 'ADD_PART_TEMPLATE_SUCCEEDED': {
-      if (!state.assignmentTemplate) {
-        throw Error('assignmentTemplate is undefined');
+      if (!state.newAssignmentTemplate) {
+        throw Error('newAssignmentTemplate is undefined');
       }
-      const newPartTemplates = [ ...state.assignmentTemplate.newPartTemplates, action.payload ].sort((a, b) => a.partNumber - b.partNumber);
+      const newPartTemplates = [ ...state.newAssignmentTemplate.newPartTemplates, action.payload ].sort((a, b) => a.partNumber - b.partNumber);
       return {
         ...state,
-        assignmentTemplate: {
-          ...state.assignmentTemplate,
+        newAssignmentTemplate: {
+          ...state.newAssignmentTemplate,
           newPartTemplates,
         },
-        partForm: {
-          ...state.partForm,
+        newPartTemplateForm: {
+          ...state.newPartTemplateForm,
           data: {
             title: '',
             description: '',
+            descriptionType: 'text',
             partNumber: (Math.max(...newPartTemplates.map(p => p.partNumber)) + 1).toString(),
             optional: false,
           },
@@ -395,7 +435,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'ADD_PART_TEMPLATE_FAILED':
       return {
         ...state,
-        partForm: { ...state.partForm, processingState: 'insert error', errorMessage: action.payload },
+        newPartTemplateForm: { ...state.newPartTemplateForm, processingState: 'insert error', errorMessage: action.payload },
       };
     case 'ASSIGNMENT_MEDIA_CAPTION_CHANGED': {
       let validationMessage: string | undefined;
@@ -507,10 +547,10 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     case 'ADD_ASSIGNMENT_MEDIUM_SUCCEEDED': {
-      if (!state.assignmentTemplate) {
-        throw Error('assignmentTemplate is undefined');
+      if (!state.newAssignmentTemplate) {
+        throw Error('newAssignmentTemplate is undefined');
       }
-      const newAssignmentMedia = [ ...state.assignmentTemplate.newAssignmentMedia, action.payload ].sort((a, b) => {
+      const newAssignmentMedia = [ ...state.newAssignmentTemplate.newAssignmentMedia, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
           return uuidService.compare(a.assignmentMediumId, b.assignmentMediumId);
         }
@@ -518,8 +558,8 @@ export const reducer = (state: State, action: Action): State => {
       });
       return {
         ...state,
-        assignmentTemplate: {
-          ...state.assignmentTemplate,
+        newAssignmentTemplate: {
+          ...state.newAssignmentTemplate,
           newAssignmentMedia,
         },
         assignmentMediaForm: {

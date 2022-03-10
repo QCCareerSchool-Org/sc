@@ -1,3 +1,4 @@
+import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import { ReactElement, useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
@@ -45,6 +46,10 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId ]);
 
+  if (state.error) {
+    return <NextError statusCode={state.errorCode ?? 500} />;
+  }
+
   if (!state.assignmentTemplate) {
     return null;
   }
@@ -53,8 +58,9 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
     <>
       <section>
         <div className="container">
-          <h1>{state.assignmentTemplate.title ?? `Assignment ${state.assignmentTemplate.assignmentNumber}`}</h1>
-          {state.assignmentTemplate.description && <p className="lead">{state.assignmentTemplate.description}</p>}
+          {state.assignmentTemplate.optional && <span className="text-danger">OPTIONAL</span>}
+          <h1>Assignment {state.assignmentTemplate.assignmentNumber}{state.assignmentTemplate.title && <>: {state.assignmentTemplate.title}</>}</h1>
+          {state.assignmentTemplate.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
         </div>
       </section>
       {state.assignmentTemplate.newPartTemplates.map(p => <NewPartTemplatePreview key={p.partTemplateId} newPartTemplate={p} />)}

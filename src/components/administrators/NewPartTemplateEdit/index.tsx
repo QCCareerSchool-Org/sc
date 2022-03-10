@@ -51,12 +51,12 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.partTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPreset(state.newPartTemplate, state.form.data));
 
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewPartTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
-  const textBoxInsert$ = useRef(new Subject<{ processingState: State['textBoxForm']['processingState']; payload: NewTextBoxTemplatePayload }>());
-  const uploadSlotInsert$ = useRef(new Subject<{ processingState: State['uploadSlotForm']['processingState']; payload: NewUploadSlotTemplatePayload }>());
+  const textBoxInsert$ = useRef(new Subject<{ processingState: State['newTextBoxTemplateForm']['processingState']; payload: NewTextBoxTemplatePayload }>());
+  const uploadSlotInsert$ = useRef(new Subject<{ processingState: State['newUoloadSlotTemplateForm']['processingState']; payload: NewUploadSlotTemplatePayload }>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -195,6 +195,10 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
+  const descriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'DESCRIPTION_TYPE_CHANGED', payload: e.target.value });
+  }, []);
+
   const partNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_NUMBER_CHANGED', payload: e.target.value });
   }, []);
@@ -267,12 +271,12 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.partTemplate) {
+  if (!state.newPartTemplate) {
     return null;
   }
 
-  const partDescriptionWarning = !state.partTemplate.description && (state.partTemplate.newUploadSlotTemplates.length > 0 || state.partTemplate.newTextBoxTemplates.filter(t => !t.description).length > 0);
-  const textBoxDescriptionWarning = state.partTemplate.newTextBoxTemplates.length > 1 && state.partTemplate.newTextBoxTemplates.some(t => !t.description);
+  const partDescriptionWarning = !state.newPartTemplate.description && (state.newPartTemplate.newUploadSlotTemplates.length > 0 || state.newPartTemplate.newTextBoxTemplates.filter(t => !t.description).length > 0);
+  const textBoxDescriptionWarning = state.newPartTemplate.newTextBoxTemplates.length > 1 && state.newPartTemplate.newTextBoxTemplates.some(t => !t.description);
 
   return (
     <>
@@ -282,12 +286,13 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewPartTemplateEditForm
-                partTemplate={state.partTemplate}
+                partTemplate={state.newPartTemplate}
                 formState={state.form}
                 save$={save$.current}
                 delete$={delete$.current}
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
+                descriptionTypeChange={descriptionTypeChange}
                 partNumberChange={partNumberChange}
                 optionalChange={optionalChange}
               />
@@ -296,16 +301,22 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
-                    <tr><th scope="row">Assignment</th><td>{state.partTemplate.newAssignmentTemplate.title ?? state.partTemplate.newAssignmentTemplate.assignmentNumber}</td></tr>
-                    <tr><th scope="row">Text Boxes</th><td>{state.partTemplate.newTextBoxTemplates.length}</td></tr>
-                    <tr><th scope="row">Upload Slots</th><td>{state.partTemplate.newUploadSlotTemplates.length}</td></tr>
-                    <tr><th scope="row">Created</th><td>{formatDateTime(state.partTemplate.created)}</td></tr>
-                    {state.partTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.partTemplate.modified)}</td></tr>}
+                    <tr><th scope="row">Assignment</th><td>{state.newPartTemplate.newAssignmentTemplate.title ?? state.newPartTemplate.newAssignmentTemplate.assignmentNumber}</td></tr>
+                    <tr><th scope="row">Text Boxes</th><td>{state.newPartTemplate.newTextBoxTemplates.length}</td></tr>
+                    <tr><th scope="row">Upload Slots</th><td>{state.newPartTemplate.newUploadSlotTemplates.length}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.newPartTemplate.created)}</td></tr>
+                    {state.newPartTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newPartTemplate.modified)}</td></tr>}
                   </tbody>
                 </table>
               </div>
-              {(partDescriptionWarning || textBoxDescriptionWarning) && (
+              {(partDescriptionWarning || textBoxDescriptionWarning || state.form.meta.sanitizedHtml.length > 0) && (
                 <div>
+                  {state.form.meta.sanitizedHtml.length > 0 && (
+                    <div className="alert alert-info">
+                      <h3 className="h6">HTML Preview</h3>
+                      <div className="htmlPreview" dangerouslySetInnerHTML={{ __html: state.form.meta.sanitizedHtml }} />
+                    </div>
+                  )}
                   {partDescriptionWarning && (
                     <div className="alert alert-warning">
                       <h3 className="h6">Part Description Warning</h3>
@@ -329,11 +340,11 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Text Box Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewTextBoxTemplateList textBoxes={state.partTemplate.newTextBoxTemplates} textBoxRowClick={textBoxRowClick} />
+              <NewTextBoxTemplateList textBoxes={state.newPartTemplate.newTextBoxTemplates} textBoxRowClick={textBoxRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewTextBoxTemplateAddForm
-                formState={state.textBoxForm}
+                formState={state.newTextBoxTemplateForm}
                 insert$={textBoxInsert$.current}
                 descriptionChange={textBoxDescriptionChange}
                 pointsChange={textBoxPointsChange}
@@ -350,11 +361,11 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Upload Slot Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewUploadSlotTemplateList uploadSlots={state.partTemplate.newUploadSlotTemplates} uploadSlotRowClick={uploadSlotRowClick} />
+              <NewUploadSlotTemplateList uploadSlots={state.newPartTemplate.newUploadSlotTemplates} uploadSlotRowClick={uploadSlotRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewUploadSlotTemplateAddForm
-                formState={state.uploadSlotForm}
+                formState={state.newUoloadSlotTemplateForm}
                 insert$={uploadSlotInsert$.current}
                 labelChange={uploadSlotLabelChange}
                 pointsChange={uploadSlotPointsChange}

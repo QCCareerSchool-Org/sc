@@ -64,7 +64,7 @@ export const NewUnitTemplateEditForm = memo(({ unitTemplate, formState, save$, d
         <div className="formGroup">
           <label htmlFor="newUnitTemplateDescription" className="form-label">Description</label>
           <textarea onChange={descriptionChange} value={formState.data.description} id="newUnitTemplateDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newUnitTemplateDescriptionHelp" />
-          <div id="newUnitTemplateDescriptionHelp" className="form-text">The description for this unit</div>
+          <div id="newUnitTemplateDescriptionHelp" className="form-text">The description for this unit <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
           {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
         </div>
         <div className="formGroup">

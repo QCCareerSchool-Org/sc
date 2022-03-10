@@ -51,11 +51,11 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.assignmentTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPreset(state.newAssignmentTemplate, state.form.data));
 
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
-  const partInsert$ = useRef(new Subject<{ processingState: State['partForm']['processingState']; payload: NewPartTemplatePayload }>());
+  const partInsert$ = useRef(new Subject<{ processingState: State['newPartTemplateForm']['processingState']; payload: NewPartTemplatePayload }>());
   const mediumInsert$ = useRef(new Subject<{ processingState: State['assignmentMediaForm']['processingState']; payload: NewAssignmentMediumPayload }>());
 
   useEffect(() => {
@@ -223,6 +223,10 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
     dispatch({ type: 'PART_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
+  const partDescriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'PART_TEMPLATE_DESCRIPTION_TYPE_CHANGED', payload: e.target.value });
+  }, []);
+
   const partPartNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_PART_NUMBER_CHANGED', payload: e.target.value });
   }, []);
@@ -255,7 +259,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.assignmentTemplate) {
+  if (!state.newAssignmentTemplate) {
     return null;
   }
 
@@ -268,7 +272,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewAssignmentTemplateEditForm
-                assignmentTemplate={state.assignmentTemplate}
+                assignmentTemplate={state.newAssignmentTemplate}
                 formState={state.form}
                 save$={save$.current}
                 delete$={delete$.current}
@@ -282,10 +286,10 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
-                    <tr><th scope="row">Unit</th><td>{state.assignmentTemplate.newUnitTemplate.title ?? state.assignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
-                    <tr><th scope="row">Parts</th><td>{state.assignmentTemplate.newPartTemplates.length}</td></tr>
-                    <tr><th scope="row">Created</th><td>{formatDateTime(state.assignmentTemplate.created)}</td></tr>
-                    {state.assignmentTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.assignmentTemplate.modified)}</td></tr>}
+                    <tr><th scope="row">Unit</th><td>{state.newAssignmentTemplate.newUnitTemplate.title ?? state.newAssignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
+                    <tr><th scope="row">Parts</th><td>{state.newAssignmentTemplate.newPartTemplates.length}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.newAssignmentTemplate.created)}</td></tr>
+                    {state.newAssignmentTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newAssignmentTemplate.modified)}</td></tr>}
                   </tbody>
                 </table>
               </div>
@@ -298,16 +302,16 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <h2 className="h3">Part Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewPartTemplateList parts={state.assignmentTemplate.newPartTemplates} partRowClick={partRowClick} />
+              <NewPartTemplateList parts={state.newAssignmentTemplate.newPartTemplates} partRowClick={partRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewPartTemplateAddForm
-                formState={state.partForm}
+                formState={state.newPartTemplateForm}
                 insert$={partInsert$.current}
                 titleChange={partTitleChange}
                 descriptionChange={partDescriptionChange}
+                descriptionTypeChange={partDescriptionTypeChange}
                 partNumberChange={partPartNumberChange}
-                optionalChange={partOptionalChange}
               />
             </div>
           </div>
@@ -318,7 +322,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <h2 className="h3">Assignment Media</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewAssignmentMediumList media={state.assignmentTemplate.newAssignmentMedia} mediumRowClick={mediumRowClick} />
+              <NewAssignmentMediumList media={state.newAssignmentTemplate.newAssignmentMedia} mediumRowClick={mediumRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentMediumAddForm

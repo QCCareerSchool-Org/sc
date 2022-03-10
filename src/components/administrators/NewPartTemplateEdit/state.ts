@@ -1,28 +1,39 @@
+import sanitizeHtml from 'sanitize-html';
+
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
 import { uuidService } from '@/services/index';
 
+const sanitize = (input: string): string => {
+  return sanitizeHtml(input, {
+    allowedAttributes: { ...sanitizeHtml.defaults.allowedAttributes, '*': [ 'class' ] },
+  });
+};
+
 export type State = {
-  partTemplate?: NewPartTemplateWithAssignmentAndInputs;
+  newPartTemplate?: NewPartTemplateWithAssignmentAndInputs;
   form: {
     data: {
       title: string;
       description: string;
+      descriptionType: string;
       partNumber: string;
-      optional: boolean;
     };
     validationMessages: {
       title?: string;
       description?: string;
+      descriptionType?: string;
       partNumber?: string;
-      optional?: string;
+    };
+    meta: {
+      sanitizedHtml: string;
     };
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
     errorMessage?: string;
   };
-  textBoxForm: {
+  newTextBoxTemplateForm: {
     data: {
       description: string;
       points: string;
@@ -40,7 +51,7 @@ export type State = {
     processingState: 'idle' | 'inserting' | 'insert error';
     errorMessage?: string;
   };
-  uploadSlotForm: {
+  newUoloadSlotTemplateForm: {
     data: {
       label: string;
       points: string;
@@ -72,8 +83,8 @@ type Action =
   | { type: 'LOAD_PART_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
+  | { type: 'DESCRIPTION_TYPE_CHANGED'; payload: string }
   | { type: 'PART_NUMBER_CHANGED'; payload: string }
-  | { type: 'OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'SAVE_PART_TEMPLATE_STARTED' }
   | { type: 'SAVE_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplate }
   | { type: 'SAVE_PART_TEMPLATE_FAILED'; payload?: string }
@@ -105,14 +116,17 @@ export const initialState: State = {
     data: {
       title: '',
       description: '',
+      descriptionType: 'text',
       partNumber: '1',
-      optional: false,
     },
     validationMessages: {},
+    meta: {
+      sanitizedHtml: '',
+    },
     processingState: 'idle',
     errorMessage: undefined,
   },
-  textBoxForm: {
+  newTextBoxTemplateForm: {
     data: {
       description: '',
       points: '1',
@@ -124,7 +138,7 @@ export const initialState: State = {
     processingState: 'idle',
     errorMessage: undefined,
   },
-  uploadSlotForm: {
+  newUoloadSlotTemplateForm: {
     data: {
       label: '',
       points: '1',
@@ -153,16 +167,19 @@ export const reducer = (state: State, action: Action): State => {
           data: {
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
+            descriptionType: action.payload.descriptionType,
             partNumber: action.payload.partNumber.toString(),
-            optional: action.payload.optional,
           },
           validationMessages: {},
+          meta: {
+            sanitizedHtml: action.payload.description !== null && action.payload.descriptionType === 'html' ? sanitize(action.payload.description) : '',
+          },
           processingState: 'idle',
           errorMessage: undefined,
         },
-        partTemplate: action.payload,
-        textBoxForm: {
-          ...state.textBoxForm,
+        newPartTemplate: action.payload,
+        newTextBoxTemplateForm: {
+          ...state.newTextBoxTemplateForm,
           data: {
             description: '',
             points: '1',
@@ -174,8 +191,8 @@ export const reducer = (state: State, action: Action): State => {
           processingState: 'idle',
           errorMessage: undefined,
         },
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
           data: {
             label: '',
             points: '1',
@@ -231,6 +248,30 @@ export const reducer = (state: State, action: Action): State => {
           ...state.form,
           data: { ...state.form.data, description: action.payload },
           validationMessages: { ...state.form.validationMessages, description: validationMessage },
+          meta: {
+            sanitizedHtml: state.form.data.descriptionType === 'html' ? sanitize(action.payload) : '',
+          },
+        },
+      };
+    }
+    case 'DESCRIPTION_TYPE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        if (![ 'text', 'html' ].includes(action.payload)) {
+          validationMessage = 'Invalid value';
+        }
+      }
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          data: { ...state.form.data, descriptionType: action.payload },
+          validationMessages: { ...state.form.validationMessages, descriptionType: validationMessage },
+          meta: {
+            sanitizedHtml: action.payload === 'text' ? '' : sanitize(state.form.data.description),
+          },
         },
       };
     }
@@ -257,27 +298,19 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'OPTIONAL_CHANGED':
-      return {
-        ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, optional: action.payload },
-        },
-      };
     case 'SAVE_PART_TEMPLATE_STARTED':
       return {
         ...state,
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'SAVE_PART_TEMPLATE_SUCCEEDED':
-      if (!state.partTemplate) {
-        throw Error('partTemplate is undefined');
+      if (!state.newPartTemplate) {
+        throw Error('newPartTemplate is undefined');
       }
       return {
         ...state,
-        partTemplate: {
-          ...state.partTemplate,
+        newPartTemplate: {
+          ...state.newPartTemplate,
           ...action.payload,
         },
         form: {
@@ -285,8 +318,11 @@ export const reducer = (state: State, action: Action): State => {
           data: {
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
+            descriptionType: action.payload.descriptionType,
             partNumber: action.payload.partNumber.toString(),
-            optional: action.payload.optional,
+          },
+          meta: {
+            sanitizedHtml: action.payload.description !== null && action.payload.descriptionType === 'html' ? sanitize(action.payload.description) : '',
           },
           processingState: 'idle',
         },
@@ -304,14 +340,14 @@ export const reducer = (state: State, action: Action): State => {
     case 'DELETE_PART_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        partTemplate: undefined,
+        newPartTemplate: undefined,
         form: {
           ...state.form,
           data: {
             title: '',
             description: '',
+            descriptionType: 'text',
             partNumber: '1',
-            optional: false,
           },
           validationMessages: {},
           processingState: 'idle',
@@ -334,10 +370,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        textBoxForm: {
-          ...state.textBoxForm,
-          data: { ...state.textBoxForm.data, description: action.payload },
-          validationMessages: { ...state.textBoxForm.validationMessages, description: validationMessage },
+        newTextBoxTemplateForm: {
+          ...state.newTextBoxTemplateForm,
+          data: { ...state.newTextBoxTemplateForm.data, description: action.payload },
+          validationMessages: { ...state.newTextBoxTemplateForm.validationMessages, description: validationMessage },
         },
       };
     }
@@ -357,10 +393,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        textBoxForm: {
-          ...state.textBoxForm,
-          data: { ...state.textBoxForm.data, points: action.payload },
-          validationMessages: { ...state.textBoxForm.validationMessages, points: validationMessage },
+        newTextBoxTemplateForm: {
+          ...state.newTextBoxTemplateForm,
+          data: { ...state.newTextBoxTemplateForm.data, points: action.payload },
+          validationMessages: { ...state.newTextBoxTemplateForm.validationMessages, points: validationMessage },
         },
       };
     }
@@ -378,10 +414,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        textBoxForm: {
-          ...state.textBoxForm,
-          data: { ...state.textBoxForm.data, lines: action.payload },
-          validationMessages: { ...state.textBoxForm.validationMessages, lines: validationMessage },
+        newTextBoxTemplateForm: {
+          ...state.newTextBoxTemplateForm,
+          data: { ...state.newTextBoxTemplateForm.data, lines: action.payload },
+          validationMessages: { ...state.newTextBoxTemplateForm.validationMessages, lines: validationMessage },
         },
       };
     }
@@ -401,28 +437,28 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        textBoxForm: {
-          ...state.textBoxForm,
-          data: { ...state.textBoxForm.data, order: action.payload },
-          validationMessages: { ...state.textBoxForm.validationMessages, order: validationMessage },
+        newTextBoxTemplateForm: {
+          ...state.newTextBoxTemplateForm,
+          data: { ...state.newTextBoxTemplateForm.data, order: action.payload },
+          validationMessages: { ...state.newTextBoxTemplateForm.validationMessages, order: validationMessage },
         },
       };
     }
     case 'TEXT_BOX_TEMPLATE_OPTIONAL_CHANGED':
       return {
         ...state,
-        textBoxForm: { ...state.textBoxForm, data: { ...state.textBoxForm.data, optional: action.payload } },
+        newTextBoxTemplateForm: { ...state.newTextBoxTemplateForm, data: { ...state.newTextBoxTemplateForm.data, optional: action.payload } },
       };
     case 'ADD_TEXT_BOX_TEMPLATE_STARTED':
       return {
         ...state,
-        textBoxForm: { ...state.textBoxForm, processingState: 'inserting', errorMessage: undefined },
+        newTextBoxTemplateForm: { ...state.newTextBoxTemplateForm, processingState: 'inserting', errorMessage: undefined },
       };
     case 'ADD_TEXT_BOX_TEMPLATE_SUCCEEDED': {
-      if (!state.partTemplate) {
-        throw Error('partTemplate is undefined');
+      if (!state.newPartTemplate) {
+        throw Error('newPartTemplate is undefined');
       }
-      const newTextBoxTemplates = [ ...state.partTemplate.newTextBoxTemplates, action.payload ].sort((a, b) => {
+      const newTextBoxTemplates = [ ...state.newPartTemplate.newTextBoxTemplates, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
           return uuidService.compare(a.textBoxTemplateId, b.textBoxTemplateId);
         }
@@ -430,12 +466,12 @@ export const reducer = (state: State, action: Action): State => {
       });
       return {
         ...state,
-        partTemplate: {
-          ...state.partTemplate,
+        newPartTemplate: {
+          ...state.newPartTemplate,
           newTextBoxTemplates,
         },
-        textBoxForm: {
-          ...state.textBoxForm,
+        newTextBoxTemplateForm: {
+          ...state.newTextBoxTemplateForm,
           data: {
             description: '',
             points: '1',
@@ -452,7 +488,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'ADD_TEXT_BOX_TEMPLATE_FAILED':
       return {
         ...state,
-        textBoxForm: { ...state.textBoxForm, processingState: 'insert error', errorMessage: action.payload },
+        newTextBoxTemplateForm: { ...state.newTextBoxTemplateForm, processingState: 'insert error', errorMessage: action.payload },
       };
     case 'UPLOAD_SLOT_TEMPLATE_LABEL_CHANGED': {
       let validationMessage: string | undefined;
@@ -467,10 +503,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
-          data: { ...state.uploadSlotForm.data, label: action.payload },
-          validationMessages: { ...state.uploadSlotForm.validationMessages, label: validationMessage },
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
+          data: { ...state.newUoloadSlotTemplateForm.data, label: action.payload },
+          validationMessages: { ...state.newUoloadSlotTemplateForm.validationMessages, label: validationMessage },
         },
       };
     }
@@ -490,10 +526,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
-          data: { ...state.uploadSlotForm.data, points: action.payload },
-          validationMessages: { ...state.uploadSlotForm.validationMessages, points: validationMessage },
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
+          data: { ...state.newUoloadSlotTemplateForm.data, points: action.payload },
+          validationMessages: { ...state.newUoloadSlotTemplateForm.validationMessages, points: validationMessage },
         },
       };
     }
@@ -513,78 +549,78 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
-          data: { ...state.uploadSlotForm.data, order: action.payload },
-          validationMessages: { ...state.uploadSlotForm.validationMessages, order: validationMessage },
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
+          data: { ...state.newUoloadSlotTemplateForm.data, order: action.payload },
+          validationMessages: { ...state.newUoloadSlotTemplateForm.validationMessages, order: validationMessage },
         },
       };
     }
     case 'UPLOAD_SLOT_TEMPLATE_IMAGE_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload && !state.uploadSlotForm.data.allowedTypes.pdf && !state.uploadSlotForm.data.allowedTypes.word && !state.uploadSlotForm.data.allowedTypes.excel) {
+      if (!action.payload && !state.newUoloadSlotTemplateForm.data.allowedTypes.pdf && !state.newUoloadSlotTemplateForm.data.allowedTypes.word && !state.newUoloadSlotTemplateForm.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
       }
       return {
         ...state,
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
-          data: { ...state.uploadSlotForm.data, allowedTypes: { ...state.uploadSlotForm.data.allowedTypes, image: action.payload } },
-          validationMessages: { ...state.uploadSlotForm.validationMessages, allowedTypes: validationMessage },
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
+          data: { ...state.newUoloadSlotTemplateForm.data, allowedTypes: { ...state.newUoloadSlotTemplateForm.data.allowedTypes, image: action.payload } },
+          validationMessages: { ...state.newUoloadSlotTemplateForm.validationMessages, allowedTypes: validationMessage },
         },
       };
     }
     case 'UPLOAD_SLOT_TEMPLATE_PDF_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload && !state.uploadSlotForm.data.allowedTypes.image && !state.uploadSlotForm.data.allowedTypes.word && !state.uploadSlotForm.data.allowedTypes.excel) {
+      if (!action.payload && !state.newUoloadSlotTemplateForm.data.allowedTypes.image && !state.newUoloadSlotTemplateForm.data.allowedTypes.word && !state.newUoloadSlotTemplateForm.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
       }
       return {
         ...state,
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
-          data: { ...state.uploadSlotForm.data, allowedTypes: { ...state.uploadSlotForm.data.allowedTypes, pdf: action.payload } },
-          validationMessages: { ...state.uploadSlotForm.validationMessages, allowedTypes: validationMessage },
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
+          data: { ...state.newUoloadSlotTemplateForm.data, allowedTypes: { ...state.newUoloadSlotTemplateForm.data.allowedTypes, pdf: action.payload } },
+          validationMessages: { ...state.newUoloadSlotTemplateForm.validationMessages, allowedTypes: validationMessage },
         },
       };
     }
     case 'UPLOAD_SLOT_TEMPLATE_WORD_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload && !state.uploadSlotForm.data.allowedTypes.image && !state.uploadSlotForm.data.allowedTypes.pdf && !state.uploadSlotForm.data.allowedTypes.excel) {
+      if (!action.payload && !state.newUoloadSlotTemplateForm.data.allowedTypes.image && !state.newUoloadSlotTemplateForm.data.allowedTypes.pdf && !state.newUoloadSlotTemplateForm.data.allowedTypes.excel) {
         validationMessage = 'At least one type required';
       }
       return {
         ...state,
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
-          data: { ...state.uploadSlotForm.data, allowedTypes: { ...state.uploadSlotForm.data.allowedTypes, word: action.payload } },
-          validationMessages: { ...state.uploadSlotForm.validationMessages, allowedTypes: validationMessage },
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
+          data: { ...state.newUoloadSlotTemplateForm.data, allowedTypes: { ...state.newUoloadSlotTemplateForm.data.allowedTypes, word: action.payload } },
+          validationMessages: { ...state.newUoloadSlotTemplateForm.validationMessages, allowedTypes: validationMessage },
         },
       };
     }
     case 'UPLOAD_SLOT_TEMPLATE_EXCEL_CHANGED': {
       let validationMessage: string | undefined;
-      if (!action.payload && !state.uploadSlotForm.data.allowedTypes.image && !state.uploadSlotForm.data.allowedTypes.pdf && !state.uploadSlotForm.data.allowedTypes.word) {
+      if (!action.payload && !state.newUoloadSlotTemplateForm.data.allowedTypes.image && !state.newUoloadSlotTemplateForm.data.allowedTypes.pdf && !state.newUoloadSlotTemplateForm.data.allowedTypes.word) {
         validationMessage = 'At least one type required';
       }
       return {
         ...state,
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
-          data: { ...state.uploadSlotForm.data, allowedTypes: { ...state.uploadSlotForm.data.allowedTypes, excel: action.payload } },
-          validationMessages: { ...state.uploadSlotForm.validationMessages, allowedTypes: validationMessage },
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
+          data: { ...state.newUoloadSlotTemplateForm.data, allowedTypes: { ...state.newUoloadSlotTemplateForm.data.allowedTypes, excel: action.payload } },
+          validationMessages: { ...state.newUoloadSlotTemplateForm.validationMessages, allowedTypes: validationMessage },
         },
       };
     }
     case 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED':
-      return { ...state, uploadSlotForm: { ...state.uploadSlotForm, data: { ...state.uploadSlotForm.data, optional: action.payload } } };
+      return { ...state, newUoloadSlotTemplateForm: { ...state.newUoloadSlotTemplateForm, data: { ...state.newUoloadSlotTemplateForm.data, optional: action.payload } } };
     case 'ADD_UPLOAD_SLOT_TEMPLATE_STARTED':
-      return { ...state, uploadSlotForm: { ...state.uploadSlotForm, processingState: 'inserting', errorMessage: undefined } };
+      return { ...state, newUoloadSlotTemplateForm: { ...state.newUoloadSlotTemplateForm, processingState: 'inserting', errorMessage: undefined } };
     case 'ADD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED': {
-      if (!state.partTemplate) {
-        throw Error('partTemplate is undefined');
+      if (!state.newPartTemplate) {
+        throw Error('newPartTemplate is undefined');
       }
-      const newUploadSlotTemplates = [ ...state.partTemplate.newUploadSlotTemplates, action.payload ].sort((a, b) => {
+      const newUploadSlotTemplates = [ ...state.newPartTemplate.newUploadSlotTemplates, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
           return uuidService.compare(a.uploadSlotTemplateId, b.uploadSlotTemplateId);
         }
@@ -592,12 +628,12 @@ export const reducer = (state: State, action: Action): State => {
       });
       return {
         ...state,
-        partTemplate: {
-          ...state.partTemplate,
+        newPartTemplate: {
+          ...state.newPartTemplate,
           newUploadSlotTemplates,
         },
-        uploadSlotForm: {
-          ...state.uploadSlotForm,
+        newUoloadSlotTemplateForm: {
+          ...state.newUoloadSlotTemplateForm,
           data: {
             label: '',
             points: '1',
@@ -619,7 +655,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'ADD_UPLOAD_SLOT_TEMPLATE_FAILED':
       return {
         ...state,
-        uploadSlotForm: { ...state.uploadSlotForm, processingState: 'insert error', errorMessage: action.payload },
+        newUoloadSlotTemplateForm: { ...state.newUoloadSlotTemplateForm, processingState: 'insert error', errorMessage: action.payload },
       };
   }
 };

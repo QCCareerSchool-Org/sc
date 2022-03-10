@@ -161,8 +161,9 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
     <>
       <section>
         <div className="container">
+          {state.assignment.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
-          {state.assignment.description && <p className="lead">{state.assignment.description}</p>}
+          {state.assignment.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
         </div>
       </section>
       {state.assignment.parts.map(p => (

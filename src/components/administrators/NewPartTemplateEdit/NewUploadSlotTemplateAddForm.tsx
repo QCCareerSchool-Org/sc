@@ -6,8 +6,8 @@ import { Spinner } from '@/components/Spinner';
 import type { NewUploadSlotAllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
 
 type Props = {
-  formState: State['uploadSlotForm'];
-  insert$: Subject<{ processingState: State['uploadSlotForm']['processingState']; payload: NewUploadSlotTemplatePayload }>;
+  formState: State['newUoloadSlotTemplateForm'];
+  insert$: Subject<{ processingState: State['newUoloadSlotTemplateForm']['processingState']; payload: NewUploadSlotTemplatePayload }>;
   labelChange: ChangeEventHandler<HTMLInputElement>;
   pointsChange: ChangeEventHandler<HTMLInputElement>;
   orderChange: ChangeEventHandler<HTMLInputElement>;
@@ -23,7 +23,7 @@ export const NewUploadSlotTemplateAddForm = memo(({ formState, insert$, labelCha
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
-      const validationMessage = key as keyof State['uploadSlotForm']['validationMessages'];
+      const validationMessage = key as keyof State['newUoloadSlotTemplateForm']['validationMessages'];
       if (formState.validationMessages[validationMessage]) {
         valid = false;
       }

@@ -49,7 +49,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.textBoxTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPreset(state.newTextBoxTemplate, state.form.data));
 
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewTextBoxTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
@@ -155,7 +155,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.textBoxTemplate) {
+  if (!state.newTextBoxTemplate) {
     return null;
   }
 
@@ -181,9 +181,9 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
-                    <tr><th scope="row">Part</th><td>{state.textBoxTemplate.newPartTemplate.title ?? state.textBoxTemplate.newPartTemplate.partNumber}</td></tr>
-                    <tr><th scope="row">Created</th><td>{formatDateTime(state.textBoxTemplate.created)}</td></tr>
-                    {state.textBoxTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.textBoxTemplate.modified)}</td></tr>}
+                    <tr><th scope="row">Part</th><td>{state.newTextBoxTemplate.newPartTemplate.title ?? state.newTextBoxTemplate.newPartTemplate.partNumber}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.newTextBoxTemplate.created)}</td></tr>
+                    {state.newTextBoxTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newTextBoxTemplate.modified)}</td></tr>}
                   </tbody>
                 </table>
               </div>

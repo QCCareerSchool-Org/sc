@@ -62,7 +62,7 @@ export const NewAssignmentTemplateEditForm = memo(({ assignmentTemplate, formSta
         <div className="formGroup">
           <label htmlFor="newAssignmentTemplateDescription" className="form-label">Description</label>
           <textarea onChange={descriptionChange} value={formState.data.description} id="newAssignmentTemplateDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newAssignmentTemplateDescriptionHelp" />
-          <div id="newAssignmentTemplateDescriptionHelp" className="form-text">The description of this assignment</div>
+          <div id="newAssignmentTemplateDescriptionHelp" className="form-text">The description of this assignment <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
           {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
         </div>
         <div className="formGroup">

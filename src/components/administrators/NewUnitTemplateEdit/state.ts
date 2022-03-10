@@ -3,7 +3,7 @@ import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import type { NewUnitTemplateWithCourseAndAssignments } from '@/services/administrators/newUnitTemplateService';
 
 export type State = {
-  unitTemplate?: NewUnitTemplateWithCourseAndAssignments;
+  newUnitTemplate?: NewUnitTemplateWithCourseAndAssignments;
   form: {
     data: {
       title: string;
@@ -22,7 +22,7 @@ export type State = {
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
     errorMessage?: string;
   };
-  assignmentForm: {
+  newAssignmentTemplateForm: {
     data: {
       title: string;
       description: string;
@@ -77,7 +77,7 @@ export const initialState: State = {
     processingState: 'idle',
     errorMessage: undefined,
   },
-  assignmentForm: {
+  newAssignmentTemplateForm: {
     data: {
       title: '',
       description: '',
@@ -96,7 +96,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'LOAD_UNIT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        unitTemplate: action.payload,
+        newUnitTemplate: action.payload,
         form: {
           data: {
             title: action.payload.title ?? '',
@@ -109,7 +109,7 @@ export const reducer = (state: State, action: Action): State => {
           processingState: 'idle',
           errorMessage: undefined,
         },
-        assignmentForm: {
+        newAssignmentTemplateForm: {
           data: {
             title: '',
             description: '',
@@ -212,13 +212,13 @@ export const reducer = (state: State, action: Action): State => {
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'SAVE_UNIT_TEMPLATE_SUCCEEDED': {
-      if (!state.unitTemplate) {
-        throw Error('unitTemplate is undefined');
+      if (!state.newUnitTemplate) {
+        throw Error('newUnitTemplate is undefined');
       }
       return {
         ...state,
-        unitTemplate: {
-          ...state.unitTemplate,
+        newUnitTemplate: {
+          ...state.newUnitTemplate,
           ...action.payload,
         },
         form: {
@@ -247,12 +247,12 @@ export const reducer = (state: State, action: Action): State => {
         form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
     case 'DELETE_UNIT_TEMPLATE_SUCCEEDED': {
-      if (!state.unitTemplate) {
-        throw Error('unitTemplate is undefined');
+      if (!state.newUnitTemplate) {
+        throw Error('newUnitTemplate is undefined');
       }
       return {
         ...state,
-        unitTemplate: undefined,
+        newUnitTemplate: undefined,
         form: {
           ...state.form,
           data: {
@@ -284,10 +284,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        assignmentForm: {
-          ...state.assignmentForm,
-          data: { ...state.assignmentForm.data, title: action.payload },
-          validationMessages: { ...state.assignmentForm.validationMessages, title: validationMessage },
+        newAssignmentTemplateForm: {
+          ...state.newAssignmentTemplateForm,
+          data: { ...state.newAssignmentTemplateForm.data, title: action.payload },
+          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, title: validationMessage },
         },
       };
     }
@@ -302,10 +302,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        assignmentForm: {
-          ...state.assignmentForm,
-          data: { ...state.assignmentForm.data, description: action.payload },
-          validationMessages: { ...state.assignmentForm.validationMessages, title: validationMessage },
+        newAssignmentTemplateForm: {
+          ...state.newAssignmentTemplateForm,
+          data: { ...state.newAssignmentTemplateForm.data, description: action.payload },
+          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, title: validationMessage },
         },
       };
     }
@@ -321,43 +321,43 @@ export const reducer = (state: State, action: Action): State => {
           validationMessage = 'Cannot be less than zero';
         } else if (assignmentNumber > 127) {
           validationMessage = 'Cannot be greater than 127';
-        } else if (state.unitTemplate?.newAssignmentTemplates.some(a => a.assignmentNumber === assignmentNumber)) {
+        } else if (state.newUnitTemplate?.newAssignmentTemplates.some(a => a.assignmentNumber === assignmentNumber)) {
           validationMessage = 'Another assignment already has this assignment number';
         }
       }
       return {
         ...state,
-        assignmentForm: {
-          ...state.assignmentForm,
-          data: { ...state.assignmentForm.data, assignmentNumber: action.payload },
-          validationMessages: { ...state.assignmentForm.validationMessages, assignmentNumber: validationMessage },
+        newAssignmentTemplateForm: {
+          ...state.newAssignmentTemplateForm,
+          data: { ...state.newAssignmentTemplateForm.data, assignmentNumber: action.payload },
+          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, assignmentNumber: validationMessage },
         },
       };
     }
     case 'ASSIGNMENT_TEMPLATE_OPTIONAL_CHANGED': {
       return {
         ...state,
-        assignmentForm: { ...state.assignmentForm, data: { ...state.assignmentForm.data, optional: action.payload } },
+        newAssignmentTemplateForm: { ...state.newAssignmentTemplateForm, data: { ...state.newAssignmentTemplateForm.data, optional: action.payload } },
       };
     }
     case 'ADD_ASSIGNMENT_TEMPLATE_STARTED':
       return {
         ...state,
-        assignmentForm: { ...state.assignmentForm, processingState: 'inserting', errorMessage: undefined },
+        newAssignmentTemplateForm: { ...state.newAssignmentTemplateForm, processingState: 'inserting', errorMessage: undefined },
       };
     case 'ADD_ASSIGNMENT_TEMPLATE_SUCCEEDED': {
-      if (!state.unitTemplate) {
-        throw Error('unitTemplate is undefined');
+      if (!state.newUnitTemplate) {
+        throw Error('newUnitTemplate is undefined');
       }
-      const newAssignmentTemplates = [ ...state.unitTemplate.newAssignmentTemplates, action.payload ].sort((a, b) => a.assignmentNumber - b.assignmentNumber);
+      const newAssignmentTemplates = [ ...state.newUnitTemplate.newAssignmentTemplates, action.payload ].sort((a, b) => a.assignmentNumber - b.assignmentNumber);
       return {
         ...state,
-        unitTemplate: {
-          ...state.unitTemplate,
+        newUnitTemplate: {
+          ...state.newUnitTemplate,
           newAssignmentTemplates,
         },
-        assignmentForm: {
-          ...state.assignmentForm,
+        newAssignmentTemplateForm: {
+          ...state.newAssignmentTemplateForm,
           data: {
             title: '',
             description: '',
@@ -373,7 +373,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'ADD_ASSIGNMENT_TEMPLATE_FAILED':
       return {
         ...state,
-        assignmentForm: { ...state.assignmentForm, processingState: 'insert error', errorMessage: action.payload },
+        newAssignmentTemplateForm: { ...state.newAssignmentTemplateForm, processingState: 'insert error', errorMessage: action.payload },
       };
   }
 };

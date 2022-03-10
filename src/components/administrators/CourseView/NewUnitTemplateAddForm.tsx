@@ -6,8 +6,8 @@ import { Spinner } from '@/components/Spinner';
 import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
 
 type Props = {
-  formState: State['unitForm'];
-  insert$: Subject<{ processingState: State['unitForm']['processingState']; payload: NewUnitTemplatePayload }>;
+  formState: State['newUnitTemplateForm'];
+  insert$: Subject<{ processingState: State['newUnitTemplateForm']['processingState']; payload: NewUnitTemplatePayload }>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   unitLetterChange: ChangeEventHandler<HTMLInputElement>;
@@ -20,7 +20,7 @@ export const NewUnitTemplateAddForm = memo(({ formState, insert$, titleChange, d
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
-      const validationMessage = key as keyof State['unitForm']['validationMessages'];
+      const validationMessage = key as keyof State['newUnitTemplateForm']['validationMessages'];
       if (formState.validationMessages[validationMessage]) {
         valid = false;
       }
@@ -59,7 +59,7 @@ export const NewUnitTemplateAddForm = memo(({ formState, insert$, titleChange, d
             <div className="formGroup">
               <label htmlFor="newUnitTemplateDescription" className="form-label">Description</label>
               <textarea onChange={descriptionChange} value={formState.data.description} id="newUnitTemplateDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newUnitTemplateDescriptionHelp" />
-              <div id="newUnitTemplateDescriptionHelp" className="form-text">The description of this unit</div>
+              <div id="newUnitTemplateDescriptionHelp" className="form-text">The description of this unit <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
               {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
             </div>
             <div className="formGroup">

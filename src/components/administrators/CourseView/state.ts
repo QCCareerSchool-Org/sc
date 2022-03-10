@@ -3,7 +3,7 @@ import type { CourseWithSchoolAndUnits } from '@/services/administrators/courseS
 
 export type State = {
   course?: CourseWithSchoolAndUnits;
-  unitForm: {
+  newUnitTemplateForm: {
     data: {
       title: string;
       description: string;
@@ -38,7 +38,7 @@ type Action =
   | { type: 'ADD_UNIT_TEMPLATE_FAILED'; payload?: string };
 
 export const initialState: State = {
-  unitForm: {
+  newUnitTemplateForm: {
     data: {
       title: '',
       description: '',
@@ -66,7 +66,7 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         course: action.payload,
-        unitForm: {
+        newUnitTemplateForm: {
           data: {
             title: '',
             description: '',
@@ -94,10 +94,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        unitForm: {
-          ...state.unitForm,
-          data: { ...state.unitForm.data, title: action.payload },
-          validationMessages: { ...state.unitForm.validationMessages, title: validationMessage },
+        newUnitTemplateForm: {
+          ...state.newUnitTemplateForm,
+          data: { ...state.newUnitTemplateForm.data, title: action.payload },
+          validationMessages: { ...state.newUnitTemplateForm.validationMessages, title: validationMessage },
         },
       };
     }
@@ -112,10 +112,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        unitForm: {
-          ...state.unitForm,
-          data: { ...state.unitForm.data, description: action.payload },
-          validationMessages: { ...state.unitForm.validationMessages, description: validationMessage },
+        newUnitTemplateForm: {
+          ...state.newUnitTemplateForm,
+          data: { ...state.newUnitTemplateForm.data, description: action.payload },
+          validationMessages: { ...state.newUnitTemplateForm.validationMessages, description: validationMessage },
         },
       };
     }
@@ -132,10 +132,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        unitForm: {
-          ...state.unitForm,
-          data: { ...state.unitForm.data, unitLetter: action.payload.toUpperCase() },
-          validationMessages: { ...state.unitForm.validationMessages, unitLetter: validationMessage },
+        newUnitTemplateForm: {
+          ...state.newUnitTemplateForm,
+          data: { ...state.newUnitTemplateForm.data, unitLetter: action.payload.toUpperCase() },
+          validationMessages: { ...state.newUnitTemplateForm.validationMessages, unitLetter: validationMessage },
         },
       };
     }
@@ -155,23 +155,23 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        unitForm: {
-          ...state.unitForm,
-          data: { ...state.unitForm.data, order: action.payload },
-          validationMessages: { ...state.unitForm.validationMessages, order: validationMessage },
+        newUnitTemplateForm: {
+          ...state.newUnitTemplateForm,
+          data: { ...state.newUnitTemplateForm.data, order: action.payload },
+          validationMessages: { ...state.newUnitTemplateForm.validationMessages, order: validationMessage },
         },
       };
     }
     case 'UNIT_TEMPLATE_OPTIONAL_CHANGED':
       return {
         ...state,
-        unitForm: { ...state.unitForm, data: { ...state.unitForm.data, optional: action.payload } },
+        newUnitTemplateForm: { ...state.newUnitTemplateForm, data: { ...state.newUnitTemplateForm.data, optional: action.payload } },
       };
 
     case 'ADD_UNIT_TEMPLATE_STARTED':
       return {
         ...state,
-        unitForm: { ...state.unitForm, processingState: 'inserting', errorMessage: undefined },
+        newUnitTemplateForm: { ...state.newUnitTemplateForm, processingState: 'inserting', errorMessage: undefined },
       };
     case 'ADD_UNIT_TEMPLATE_SUCCEEDED': {
       if (!state.course) {
@@ -194,8 +194,8 @@ export const reducer = (state: State, action: Action): State => {
           ...state.course,
           newUnitTemplates,
         },
-        unitForm: {
-          ...state.unitForm,
+        newUnitTemplateForm: {
+          ...state.newUnitTemplateForm,
           data: {
             title: '',
             description: '',
@@ -212,7 +212,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'ADD_UNIT_TEMPLATE_FAILED':
       return {
         ...state,
-        unitForm: { ...state.unitForm, processingState: 'insert error', errorMessage: action.payload },
+        newUnitTemplateForm: { ...state.newUnitTemplateForm, processingState: 'insert error', errorMessage: action.payload },
       };
   }
 };

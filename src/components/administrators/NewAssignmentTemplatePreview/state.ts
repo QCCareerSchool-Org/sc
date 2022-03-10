@@ -1,4 +1,5 @@
 import type { NewAssignmentTemplateWithUnitAndPartsAndInputs } from '@/services/administrators/newAssignmentTemplateService';
+import { sanitize } from 'src/sanitize';
 
 export type State = {
   assignmentTemplate?: NewAssignmentTemplateWithUnitAndPartsAndInputs;
@@ -19,7 +20,15 @@ export const reducer = (state: State, action: Action): State => {
     case 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        assignmentTemplate: action.payload,
+        assignmentTemplate: {
+          ...action.payload,
+          newPartTemplates: action.payload.newPartTemplates.map(p => ({
+            ...p,
+            description: p.description === null
+              ? null
+              : p.descriptionType === 'text' ? p.description : sanitize(p.description),
+          })),
+        },
         error: false,
       };
     case 'LOAD_ASSIGNMENT_TEMPLATE_FAILED':

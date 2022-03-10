@@ -49,11 +49,11 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.unitTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPreset(state.newUnitTemplate, state.form.data));
 
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewUnitTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
-  const assignmentInsert$ = useRef(new Subject<{ processingState: State['assignmentForm']['processingState']; payload: NewAssignmentTemplatePayload }>());
+  const assignmentInsert$ = useRef(new Subject<{ processingState: State['newAssignmentTemplateForm']['processingState']; payload: NewAssignmentTemplatePayload }>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -201,7 +201,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.unitTemplate) {
+  if (!state.newUnitTemplate) {
     return null;
   }
 
@@ -213,7 +213,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewUnitTemplateEditForm
-                unitTemplate={state.unitTemplate}
+                unitTemplate={state.newUnitTemplate}
                 formState={state.form}
                 save$={save$.current}
                 delete$={delete$.current}
@@ -228,10 +228,10 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
-                    <tr><th scope="row">Course</th><td>{state.unitTemplate.course.name}</td></tr>
-                    <tr><th scope="row">Assignments</th><td>{state.unitTemplate.newAssignmentTemplates.length}</td></tr>
-                    <tr><th scope="row">Created</th><td>{formatDateTime(state.unitTemplate.created)}</td></tr>
-                    {state.unitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.unitTemplate.modified)}</td></tr>}
+                    <tr><th scope="row">Course</th><td>{state.newUnitTemplate.course.name}</td></tr>
+                    <tr><th scope="row">Assignments</th><td>{state.newUnitTemplate.newAssignmentTemplates.length}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.newUnitTemplate.created)}</td></tr>
+                    {state.newUnitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newUnitTemplate.modified)}</td></tr>}
                   </tbody>
                 </table>
               </div>
@@ -244,11 +244,11 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Assignment Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewAssignmentTemplateList assignments={state.unitTemplate.newAssignmentTemplates} assignmentRowClick={assignmentRowClick} />
+              <NewAssignmentTemplateList assignments={state.newUnitTemplate.newAssignmentTemplates} assignmentRowClick={assignmentRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentTemplateAddForm
-                formState={state.assignmentForm}
+                formState={state.newAssignmentTemplateForm}
                 insert$={assignmentInsert$.current}
                 titleChange={assignmentTitleChange}
                 descriptionChange={assignmentDescriptionChange}

@@ -55,7 +55,7 @@ export const NewTextBoxForm = memo(({ textBox, update, save }: Props): ReactElem
   return (
     <>
       <div className="textBox">
-        {textBox.description && <label htmlFor={textBox.textBoxId}>{textBox.description}</label>}
+        {textBox.description && <label htmlFor={textBox.textBoxId} className="form-label fw-bold">{textBox.description}</label>}
         <textarea maxLength={maxLength} onChange={onChange} value={textBox.text} id={textBox.textBoxId} className="form-control" rows={textBox.lines ?? 7} />
         <div className="row">
           <div className="col">

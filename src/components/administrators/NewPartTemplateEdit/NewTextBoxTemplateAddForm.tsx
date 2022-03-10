@@ -6,8 +6,8 @@ import { Spinner } from '@/components/Spinner';
 import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
 
 type Props = {
-  formState: State['textBoxForm'];
-  insert$: Subject<{ processingState: State['textBoxForm']['processingState']; payload: NewTextBoxTemplatePayload }>;
+  formState: State['newTextBoxTemplateForm'];
+  insert$: Subject<{ processingState: State['newTextBoxTemplateForm']['processingState']; payload: NewTextBoxTemplatePayload }>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   pointsChange: ChangeEventHandler<HTMLInputElement>;
   linesChange: ChangeEventHandler<HTMLInputElement>;
@@ -20,7 +20,7 @@ export const NewTextBoxTemplateAddForm = memo(({ formState, insert$, description
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
-      const validationMessage = key as keyof State['textBoxForm']['validationMessages'];
+      const validationMessage = key as keyof State['newTextBoxTemplateForm']['validationMessages'];
       if (formState.validationMessages[validationMessage]) {
         valid = false;
       }

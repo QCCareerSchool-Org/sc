@@ -17,7 +17,6 @@ export const NewPartTemplateList = memo(({ parts, partRowClick }: Props): ReactE
             <tr>
               <th className="text-center">#</th>
               <th>Title</th>
-              <th className="text-center">Optional</th>
             </tr>
           </thead>
           <tbody>
@@ -25,7 +24,6 @@ export const NewPartTemplateList = memo(({ parts, partRowClick }: Props): ReactE
               <tr key={p.partTemplateId} onClick={e => partRowClick(e, p.partTemplateId)}>
                 <td className="text-center">{p.partNumber}</td>
                 <td>{p.title}</td>
-                <td className="text-center">{p.optional ? 'yes' : 'no'}</td>
               </tr>
             ))}
           </tbody>

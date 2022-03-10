@@ -12,11 +12,11 @@ type Props = {
   delete$: Subject<State['form']['processingState']>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  descriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
   partNumberChange: ChangeEventHandler<HTMLInputElement>;
-  optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, delete$, titleChange, descriptionChange, partNumberChange, optionalChange }: Props): ReactElement => {
+export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, delete$, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -33,13 +33,16 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
     if (!valid) {
       return;
     }
+    if (formState.data.descriptionType !== 'text' && formState.data.descriptionType !== 'html') {
+      throw Error('Invalid description type');
+    }
     save$.next({
       processingState: formState.processingState,
       payload: {
         title: formState.data.title,
-        description: formState.data.description || null,
+        description: formState.data.description.length === 0 ? null : formState.data.descriptionType === 'text' ? formState.data.description : formState.meta.sanitizedHtml,
+        descriptionType: formState.data.descriptionType,
         partNumber: parseInt(formState.data.partNumber, 10),
-        optional: formState.data.optional,
       },
     });
   };
@@ -55,14 +58,28 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
       <form onSubmit={formSubmit}>
         <div className="formGroup">
           <label htmlFor="newPartTemplateTitle" className="form-label">Title <span className="text-danger">*</span></label>
-          <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} aria-describedby="newPartTemplateTitleHelp" />
+          <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} aria-describedby="newPartTemplateTitleHelp" required />
           <div id="newPartTemplateTitleHelp" className="form-text">The title of this part (for internal use only)</div>
           {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
         </div>
         <div className="formGroup">
           <label htmlFor="newPartTemplateDescription" className="form-label">Description</label>
+          <div className="row gx-3 align-items-center">
+            <div className="col-auto">
+              <div className="form-check">
+                <input onChange={descriptionTypeChange} checked={formState.data.descriptionType === 'text'} className="form-check-input" type="radio" name="descriptionType" value="text" id="newPartTemplateDescriptionTypeText" />
+                <label className="form-check-label" htmlFor="newPartTemplateDescriptionTypeText">Text</label>
+              </div>
+            </div>
+            <div className="col-auto">
+              <div className="form-check">
+                <input onChange={descriptionTypeChange} checked={formState.data.descriptionType === 'html'} className="form-check-input" type="radio" name="descriptionType" value="html" id="newPartTemplateDescriptionTypeHtml" />
+                <label className="form-check-label" htmlFor="newPartTemplateDescriptionTypeHtml">HTML</label>
+              </div>
+            </div>
+          </div>
           <textarea onChange={descriptionChange} value={formState.data.description} id="newPartTemplateDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTemplateDescriptionHelp" />
-          <div id="newPartTemplateDescriptionHelp" className="form-text">The description of this part</div>
+          <div id="newPartTemplateDescriptionHelp" className="form-text">The description of this part{formState.data.descriptionType === 'text' ? <span className="fw-bold"> (Two <em>ENTER</em> keys in a row will start a new paragraph)</span> : formState.data.descriptionType === 'html' ? <span className="fw-bold"> (HTML descriptions should use &lt;p&gt; tags)</span> : null}</div>
           {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
         </div>
         <div className="formGroup">
@@ -70,13 +87,6 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
           <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartTemplatePartNumber" min={1} max={127} className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} aria-describedby="newPartTemplatePartNumberHelp" required />
           <div id="newPartTemplatePartNumberHelp" className="form-text">The ordering for this part within its assignment (must be unique)</div>
           {formState.validationMessages.partNumber && <div className="invalid-feedback">{formState.validationMessages.partNumber}</div>}
-        </div>
-        <div className="formGroup">
-          <div className="form-check">
-            <input onChange={optionalChange} checked={formState.data.optional} type="checkbox" id="newPartTemplateOptional" className={`form-check-input ${formState.validationMessages.optional ? 'is-invalid' : ''}`} />
-            <label htmlFor="newPartTemplateOptional" className="form-check-label">Optional</label>
-            {formState.validationMessages.optional && <div className="invalid-feedback">{formState.validationMessages.optional}</div>}
-          </div>
         </div>
         <div className="d-flex align-items-center">
           <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>
