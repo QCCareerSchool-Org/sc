@@ -246,9 +246,8 @@ const textSaveSucceeded = (state: State, partId: string, textBoxId: string, text
 
   const otherPartsComplete = state.assignment.parts
     .filter(p => p.partId !== partId)
-    .filter(p => !p.optional)
     .every(p => p.complete);
-  const assignmentComplete = (partComplete || part.optional) && otherPartsComplete;
+  const assignmentComplete = partComplete && otherPartsComplete;
 
   // for this part, check if all the other text boxes
   const partAllTextBoxesSaved = part.textBoxes
@@ -470,9 +469,8 @@ const fileUploadSucceeded = (state: State, partId: string, uploadSlotId: string,
 
   const otherPartsComplete = state.assignment.parts
     .filter(p => p.partId !== partId)
-    .filter(p => !p.optional)
     .every(p => p.complete);
-  const assignmentComplete = (partComplete || part.optional) && otherPartsComplete;
+  const assignmentComplete = partComplete && otherPartsComplete;
 
   // for this part, check if all text boxes and all upload slots (other than this one) are saved
   const partAllTextBoxesSaved = part.textBoxes
@@ -661,9 +659,8 @@ const fileDeleteSucceeded = (state: State, partId: string, uploadSlotId: string)
 
   const otherPartsComplete = state.assignment.parts
     .filter(p => p.partId !== partId)
-    .filter(p => !p.optional)
     .every(p => p.complete);
-  const assignmentComplete = (partComplete || part.optional) && otherPartsComplete;
+  const assignmentComplete = partComplete && otherPartsComplete;
 
   // for this part, check if all text boxes and all upload slots (other than this one) are saved
   const partAllTextBoxesSaved = part.textBoxes

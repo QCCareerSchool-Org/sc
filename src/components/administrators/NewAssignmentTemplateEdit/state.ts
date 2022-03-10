@@ -29,7 +29,6 @@ export type State = {
       description: string;
       descriptionType: string;
       partNumber: string;
-      optional: boolean;
     };
     validationMessages: {
       title?: string;
@@ -84,7 +83,6 @@ type Action =
   | { type: 'PART_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
   | { type: 'PART_TEMPLATE_DESCRIPTION_TYPE_CHANGED'; payload: string }
   | { type: 'PART_TEMPLATE_PART_NUMBER_CHANGED'; payload: string }
-  | { type: 'PART_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'ADD_PART_TEMPLATE_STARTED' }
   | { type: 'ADD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplate }
   | { type: 'ADD_PART_TEMPLATE_FAILED'; payload?: string }
@@ -115,7 +113,6 @@ export const initialState: State = {
       description: '',
       descriptionType: 'text',
       partNumber: '1',
-      optional: false,
     },
     validationMessages: {},
     meta: {
@@ -163,7 +160,6 @@ export const reducer = (state: State, action: Action): State => {
             description: '',
             descriptionType: 'text',
             partNumber: action.payload.newPartTemplates.length === 0 ? '1' : (Math.max(...action.payload.newPartTemplates.map(p => p.partNumber)) + 1).toString(),
-            optional: false,
           },
           validationMessages: {},
           meta: {
@@ -398,11 +394,6 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'PART_TEMPLATE_OPTIONAL_CHANGED':
-      return {
-        ...state,
-        newPartTemplateForm: { ...state.newPartTemplateForm, data: { ...state.newPartTemplateForm.data, optional: action.payload } },
-      };
     case 'ADD_PART_TEMPLATE_STARTED':
       return {
         ...state,
@@ -426,7 +417,6 @@ export const reducer = (state: State, action: Action): State => {
             description: '',
             descriptionType: 'text',
             partNumber: (Math.max(...newPartTemplates.map(p => p.partNumber)) + 1).toString(),
-            optional: false,
           },
           processingState: 'idle',
         },

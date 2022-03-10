@@ -41,9 +41,6 @@ const changesPreset = (partTemplate: NewPartTemplate | undefined, formData: Stat
   if (partTemplate.partNumber !== parseInt(formData.partNumber, 10)) {
     return true;
   }
-  if (partTemplate.optional !== formData.optional) {
-    return true;
-  }
   return false;
 };
 
@@ -203,10 +200,6 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     dispatch({ type: 'PART_NUMBER_CHANGED', payload: e.target.value });
   }, []);
 
-  const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
-  }, []);
-
   const textBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
     void router.push(`${router.asPath}/textBoxes/${textBoxId}`);
   }, [ router ]);
@@ -294,7 +287,6 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 descriptionChange={descriptionChange}
                 descriptionTypeChange={descriptionTypeChange}
                 partNumberChange={partNumberChange}
-                optionalChange={optionalChange}
               />
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">

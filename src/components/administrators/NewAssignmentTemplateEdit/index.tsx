@@ -231,10 +231,6 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
     dispatch({ type: 'PART_TEMPLATE_PART_NUMBER_CHANGED', payload: e.target.value });
   }, []);
 
-  const partOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'PART_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
-  }, []);
-
   const assignmentMediumCaptionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_MEDIA_CAPTION_CHANGED', payload: e.target.value });
   }, []);
