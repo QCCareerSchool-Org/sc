@@ -9,7 +9,7 @@ type Props = {
 
 export const SchoolList = memo(({ schools, schoolRowClick }: Props): ReactElement => (
   <>
-    <table id="schoolTable" className="table table-bordered table-hover w-auto bg-white">
+    <table className="schoolTable table table-bordered table-hover w-auto bg-white">
       <thead>
         <tr>
           <th>Name</th>
@@ -25,7 +25,7 @@ export const SchoolList = memo(({ schools, schoolRowClick }: Props): ReactElemen
     </table>
 
     <style jsx>{`
-      #schoolTable tr { cursor: pointer }
+      .schoolTable tr { cursor: pointer }
     `}</style>
   </>
 ));

@@ -2,6 +2,7 @@ import type { ChangeEventHandler, FormEventHandler, MouseEventHandler, ReactElem
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
+import { NewPartTemplateFormElements } from './NewPartTemplateFormElements';
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
 import type { NewPartTemplatePayload, NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
@@ -55,57 +56,26 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
   };
 
   return (
-    <>
-      <form onSubmit={formSubmit}>
-        <div className="formGroup">
-          <label htmlFor="newPartTemplateTitle" className="form-label">Title <span className="text-danger">*</span></label>
-          <input onChange={titleChange} value={formState.data.title} type="text" id="newPartTemplateTitle" maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} aria-describedby="newPartTemplateTitleHelp" required />
-          <div id="newPartTemplateTitleHelp" className="form-text">The title of this part (for internal use only)</div>
-          {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
-        </div>
-        <div className="formGroup">
-          <label htmlFor="newPartTemplateDescription" className="form-label">Description</label>
-          <div className="row gx-3 align-items-center">
-            <div className="col-auto">
-              <div className="form-check">
-                <input onChange={descriptionTypeChange} checked={formState.data.descriptionType === 'text'} className="form-check-input" type="radio" name="descriptionType" value="text" id="newPartTemplateDescriptionTypeText" />
-                <label className="form-check-label" htmlFor="newPartTemplateDescriptionTypeText">Text</label>
-              </div>
-            </div>
-            <div className="col-auto">
-              <div className="form-check">
-                <input onChange={descriptionTypeChange} checked={formState.data.descriptionType === 'html'} className="form-check-input" type="radio" name="descriptionType" value="html" id="newPartTemplateDescriptionTypeHtml" />
-                <label className="form-check-label" htmlFor="newPartTemplateDescriptionTypeHtml">HTML</label>
-              </div>
-            </div>
-          </div>
-          <textarea onChange={descriptionChange} value={formState.data.description} id="newPartTemplateDescription" rows={5} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby="newPartTemplateDescriptionHelp" />
-          <div id="newPartTemplateDescriptionHelp" className="form-text">The description of this part{formState.data.descriptionType === 'text' ? <span className="fw-bold"> (Two <em>ENTER</em> keys in a row will start a new paragraph)</span> : formState.data.descriptionType === 'html' ? <span className="fw-bold"> (HTML descriptions should use &lt;p&gt; tags)</span> : null}</div>
-          {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
-        </div>
-        <div className="formGroup">
-          <label htmlFor="newPartTemplatePartNumber" className="form-label">Part Number <span className="text-danger">*</span></label>
-          <input onChange={partNumberChange} value={formState.data.partNumber} type="number" id="newPartTemplatePartNumber" min={1} max={127} className={`form-control ${formState.validationMessages.partNumber ? 'is-invalid' : ''}`} aria-describedby="newPartTemplatePartNumberHelp" required />
-          <div id="newPartTemplatePartNumberHelp" className="form-text">The ordering for this part within its assignment (must be unique)</div>
-          {formState.validationMessages.partNumber && <div className="invalid-feedback">{formState.validationMessages.partNumber}</div>}
-        </div>
-        <div className="d-flex align-items-center">
-          <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>
-            {formState.processingState === 'saving' ? <Spinner size="sm" /> : 'Save'}
-          </button>
-          <button type="button" onClick={deleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
-            {formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
-          </button>
-          {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Save Error'}</span>}
-          {formState.processingState === 'delete error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Delete Error'}</span>}
-        </div>
-      </form>
-
-      <style jsx>{`
-        .formGroup { margin-bottom: 1rem; }
-        .form-text { font-size: 0.75rem; }
-      `}</style>
-    </>
+    <form onSubmit={formSubmit}>
+      <NewPartTemplateFormElements
+        formData={formState.data}
+        formValidationMessages={formState.validationMessages}
+        titleChange={titleChange}
+        descriptionChange={descriptionChange}
+        descriptionTypeChange={descriptionTypeChange}
+        partNumberChange={partNumberChange}
+      />
+      <div className="d-flex align-items-center">
+        <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>
+          {formState.processingState === 'saving' ? <Spinner size="sm" /> : 'Save'}
+        </button>
+        <button type="button" onClick={deleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
+          {formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
+        </button>
+        {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Save Error'}</span>}
+        {formState.processingState === 'delete error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Delete Error'}</span>}
+      </div>
+    </form>
   );
 });
 

@@ -37,7 +37,7 @@ export class NewAssignmentService implements INewAssignmentService {
   public getAssignment(studentId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentWithChildren> {
     const url = this.getUrl(studentId, courseId, unitId, assignmentId);
     return this.httpService.get<RawNewAssignmentWithChildren>(url).pipe(
-      map(assignment => this.mapNewAssignmentWithChildren(assignment)),
+      map(this.mapNewAssignmentWithChildren),
     );
   }
 
@@ -75,7 +75,7 @@ export class NewAssignmentService implements INewAssignmentService {
     return `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}`;
   }
 
-  private mapNewAssignmentWithChildren(newAssignment: RawNewAssignmentWithChildren): NewAssignmentWithChildren {
+  private readonly mapNewAssignmentWithChildren = (newAssignment: RawNewAssignmentWithChildren): NewAssignmentWithChildren => {
     return {
       ...newAssignment,
       created: new Date(newAssignment.created),
@@ -96,5 +96,5 @@ export class NewAssignmentService implements INewAssignmentService {
         })),
       })),
     };
-  }
+  };
 }

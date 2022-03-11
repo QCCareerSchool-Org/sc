@@ -29,14 +29,14 @@ export class NewUnitService implements INewUnitService {
   public getUnit(administratorId: number, studentId: number, enrollmentId: number, unitId: string): Observable<NewUnitWithCourseAndAssignments> {
     const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${unitId}`;
     return this.httpService.get<RawNewUnitWithCourseAndAssignments>(url).pipe(
-      map(unit => this.mapNewUnitWithCourseAndAssignments(unit)),
+      map(this.mapNewUnitWithCourseAndAssignments),
     );
   }
 
   public restartUnit(administratorId: number, studentId: number, enrollmentId: number, unitId: string): Observable<NewUnit> {
     const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${unitId}/restarts`;
     return this.httpService.post<RawNewUnit>(url).pipe(
-      map(unit => this.mapNewUnit(unit)),
+      map(this.mapNewUnit),
     );
   }
 
@@ -44,7 +44,7 @@ export class NewUnitService implements INewUnitService {
     return `${endpoint}/administrators/${administratorId}/students/${studentId}/enrollments/${enrollmentId}/newUnits`;
   }
 
-  private mapNewUnit(newUnit: RawNewUnit): NewUnit {
+  private readonly mapNewUnit = (newUnit: RawNewUnit): NewUnit => {
     return {
       ...newUnit,
       submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
@@ -54,9 +54,9 @@ export class NewUnitService implements INewUnitService {
       created: new Date(newUnit.created),
       modified: newUnit.modified === null ? null : new Date(newUnit.modified),
     };
-  }
+  };
 
-  private mapNewUnitWithCourseAndAssignments(newUnit: RawNewUnitWithCourseAndAssignments): NewUnitWithCourseAndAssignments {
+  private readonly mapNewUnitWithCourseAndAssignments = (newUnit: RawNewUnitWithCourseAndAssignments): NewUnitWithCourseAndAssignments => {
     return {
       ...newUnit,
       submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
@@ -71,5 +71,5 @@ export class NewUnitService implements INewUnitService {
         modified: a.modified === null ? null : new Date(a.modified),
       })),
     };
-  }
+  };
 }

@@ -31,6 +31,7 @@ type RawNewUnitWithCourseAndChildren = RawNewUnit & {
 };
 
 export interface INewUnitService {
+  initializeNextUnit: (studentId: number, courseId: number) => Observable<NewUnit>;
   getUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnitWithCourseAndChildren>;
   submitUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnit>;
   skipUnit: (studentId: number, courseId: number, unitId: string) => Observable<NewUnit>;
@@ -40,29 +41,36 @@ export class NewUnitService implements INewUnitService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
+  public initializeNextUnit(studentId: number, courseId: number): Observable<NewUnit> {
+    const url = `${this.getBaseUrl(studentId, courseId)}/initializeNext`;
+    return this.httpService.post<RawNewUnit>(url).pipe(
+      map(this.mapNewUnit),
+    );
+  }
+
   public getUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnitWithCourseAndChildren> {
-    const url = this.getBaseUrl(studentId, courseId, unitId);
+    const url = `${this.getBaseUrl(studentId, courseId)}/${unitId}`;
     return this.httpService.get<RawNewUnitWithCourseAndChildren>(url).pipe(
       map(this.mapNewUnitWithCourseAndChildren),
     );
   }
 
   public submitUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnit> {
-    const url = this.getBaseUrl(studentId, courseId, unitId) + '/submissions';
+    const url = `${this.getBaseUrl(studentId, courseId)}/${unitId}/submissions`;
     return this.httpService.post<RawNewUnit>(url).pipe(
       map(this.mapNewUnit),
     );
   }
 
   public skipUnit(studentId: number, courseId: number, unitId: string): Observable<NewUnit> {
-    const url = this.getBaseUrl(studentId, courseId, unitId) + '/skips';
+    const url = `${this.getBaseUrl(studentId, courseId)}/${unitId}/skips`;
     return this.httpService.post<RawNewUnit>(url).pipe(
       map(this.mapNewUnit),
     );
   }
 
-  private getBaseUrl(studentId: number, courseId: number, unitId: string): string {
-    return `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}`;
+  private getBaseUrl(studentId: number, courseId: number): string {
+    return `${endpoint}/students/${studentId}/courses/${courseId}/newUnits`;
   }
 
   private readonly mapNewUnit = (newUnit: RawNewUnit): NewUnit => {

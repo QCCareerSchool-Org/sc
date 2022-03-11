@@ -42,21 +42,21 @@ export class NewPartTemplateService implements INewPartTemplateService {
   public addPart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, data: NewPartTemplatePayload): Observable<NewPartTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId);
     return this.httpService.post<RawNewPartTemplate>(url, data).pipe(
-      map(part => this.mapNewPartTemplate(part)),
+      map(this.mapNewPartTemplate),
     );
   }
 
   public getPart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): Observable<NewPartTemplateWithAssignmentAndInputs> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${partId}`;
     return this.httpService.get<RawNewPartTemplateWithAssignmentAndInputs>(url).pipe(
-      map(part => this.mapNewParTemplateWithAssignmentAndInputs(part)),
+      map(this.mapNewParTemplateWithAssignmentAndInputs),
     );
   }
 
   public savePart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, data: NewPartTemplatePayload): Observable<NewPartTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${partId}`;
     return this.httpService.put<RawNewPartTemplate>(url, data).pipe(
-      map(part => this.mapNewPartTemplate(part)),
+      map(this.mapNewPartTemplate),
     );
   }
 
@@ -69,15 +69,15 @@ export class NewPartTemplateService implements INewPartTemplateService {
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts`;
   }
 
-  private mapNewPartTemplate(part: RawNewPartTemplate): NewPartTemplate {
+  private readonly mapNewPartTemplate = (part: RawNewPartTemplate): NewPartTemplate => {
     return {
       ...part,
       created: new Date(part.created),
       modified: part.modified === null ? null : new Date(part.modified),
     };
-  }
+  };
 
-  private mapNewParTemplateWithAssignmentAndInputs(part: RawNewPartTemplateWithAssignmentAndInputs): NewPartTemplateWithAssignmentAndInputs {
+  private readonly mapNewParTemplateWithAssignmentAndInputs = (part: RawNewPartTemplateWithAssignmentAndInputs): NewPartTemplateWithAssignmentAndInputs => {
     return {
       ...part,
       created: new Date(part.created),
@@ -98,5 +98,5 @@ export class NewPartTemplateService implements INewPartTemplateService {
         modified: u.modified === null ? null : new Date(u.modified),
       })),
     };
-  }
+  };
 }

@@ -13,7 +13,7 @@ export const NewUnitTemplateList = memo(({ units, unitRowClick }: Props): ReactE
     {units.length === 0
       ? <p>no units</p>
       : (
-        <table id="newUnitTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
+        <table className="newUnitTemplatesTable table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th className="text-center">#</th>
@@ -35,7 +35,7 @@ export const NewUnitTemplateList = memo(({ units, unitRowClick }: Props): ReactE
     }
 
     <style jsx>{`
-      #newUnitTemplatesTable tr { cursor: pointer }
+      .newUnitTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));

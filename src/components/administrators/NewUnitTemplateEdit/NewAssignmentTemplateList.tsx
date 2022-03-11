@@ -13,7 +13,7 @@ export const NewAssignmentTemplateList = memo(({ assignments, assignmentRowClick
     {assignments.length === 0
       ? <p>no assignments</p>
       : (
-        <table id="newAssignmentTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
+        <table className="newAssignmentTemplatesTable table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th className="text-center">#</th>
@@ -35,7 +35,7 @@ export const NewAssignmentTemplateList = memo(({ assignments, assignmentRowClick
     }
 
     <style jsx>{`
-      #newAssignmentTemplatesTable tr { cursor: pointer }
+      .newAssignmentTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));

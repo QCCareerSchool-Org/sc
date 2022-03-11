@@ -20,7 +20,7 @@ export const NewPartTemplatePreview = ({ newPartTemplate }: Props): ReactElement
   return (
     <section>
       <div className="container">
-        <h2 className="h3">{newPartTemplate.title}</h2>
+        <h2 className="h3"><span className="text-danger">{newPartTemplate.partNumber}.</span> {newPartTemplate.title}</h2>
         <div className="col col-md-10 col-lg-8">
           {newPartTemplate.description && <Description description={newPartTemplate.description} descriptionType={newPartTemplate.descriptionType} />}
           {newPartTemplate.newTextBoxTemplates.map(t => <NewTextBoxTemplatePreview key={t.textBoxTemplateId} newTextBoxTemplate={t} />)}

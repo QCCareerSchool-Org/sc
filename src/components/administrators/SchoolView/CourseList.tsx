@@ -10,7 +10,7 @@ type Props = {
 
 export const CourseList = memo(({ courses, courseRowClick }: Props): ReactElement => (
   <>
-    <table id="coursesTable" className="table table-bordered table-hover w-auto bg-white">
+    <table className="coursesTable table table-bordered table-hover w-auto bg-white">
       <thead>
         <tr>
           <th className="text-center">Code</th>
@@ -32,7 +32,7 @@ export const CourseList = memo(({ courses, courseRowClick }: Props): ReactElemen
     </table>
 
     <style jsx>{`
-      #coursesTable tr { cursor: pointer }
+      .coursesTable tr { cursor: pointer }
     `}</style>
   </>
 ));

@@ -49,41 +49,32 @@ export class NewAssignmentMediumService implements INewAssignmentMediumService {
     } else {
       throw Error('Invalid payload');
     }
-    return this.httpService.postFile<NewAssignmentMedium>(url, body, { headers });
+    return this.httpService.postFile<RawNewAssignmentMedium>(url, body, { headers }).pipe(
+      map(response => {
+        if (response.type === 'progress') {
+          return response;
+        }
+        return {
+          type: 'data',
+          value: this.mapNewAssignmentMedium(response.value),
+        };
+      }),
+    );
   }
-
-  // public getAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentTemplateWithUnitAndParts> {
-  //   const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
-  //   return this.httpService.get<RawNewAssignmentTemplateWithUnitAndParts>(url).pipe(
-  //     map(this.mapNewAssignmentTemplateWithUnitAndParts),
-  //   );
-  // }
-
-  // public saveAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentTemplatePayload): Observable<NewAssignmentTemplate> {
-  //   const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
-  //   return this.httpService.put<RawNewAssignmentTemplate>(url, payload).pipe(
-  //     map(this.mapNewAssignmentTemplate),
-  //   );
-  // }
-
-  // public deleteAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<void> {
-  //   const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
-  //   return this.httpService.delete<void>(url);
-  // }
 
   private getBaseUrl(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): string {
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media`;
   }
 
-  private mapNewAssignmentMedium(medium: RawNewAssignmentMedium): NewAssignmentMedium {
+  private readonly mapNewAssignmentMedium = (medium: RawNewAssignmentMedium): NewAssignmentMedium => {
     return {
       ...medium,
       created: new Date(medium.created),
       modified: medium.modified === null ? null : new Date(medium.modified),
     };
-  }
+  };
 
-  private mapNewAssignmentMediumWithAssignment(medium: RawNewAssignmentMediumWithAssingnment): NewAssignmentMediumWithAssingnment {
+  private readonly mapNewAssignmentMediumWithAssignment = (medium: RawNewAssignmentMediumWithAssingnment): NewAssignmentMediumWithAssingnment => {
     return {
       ...medium,
       created: new Date(medium.created),
@@ -94,5 +85,5 @@ export class NewAssignmentMediumService implements INewAssignmentMediumService {
         modified: medium.newAssignmentTemplate.modified === null ? null : new Date(medium.newAssignmentTemplate.modified),
       },
     };
-  }
+  };
 }

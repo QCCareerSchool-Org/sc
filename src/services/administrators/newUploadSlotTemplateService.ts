@@ -38,21 +38,21 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
   public addUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewUploadSlotTemplatePayload): Observable<NewUploadSlotTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId);
     return this.httpService.post<RawNewUploadSlotTemplate>(url, payload).pipe(
-      map(uploadSlot => this.mapNewParTemplate(uploadSlot)),
+      map(this.mapNewParTemplate),
     );
   }
 
   public getUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<NewUploadSlotTemplateWithPart> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${uploadSlotId}`;
     return this.httpService.get<RawNewUploadSlotTemplateWithPart>(url).pipe(
-      map(uploadSlot => this.mapNewParTemplateWithPart(uploadSlot)),
+      map(this.mapNewParTemplateWithPart),
     );
   }
 
   public saveUploadSlot(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, payload: NewUploadSlotTemplatePayload): Observable<NewUploadSlotTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${uploadSlotId}`;
     return this.httpService.put<RawNewUploadSlotTemplate>(url, payload).pipe(
-      map(uploadSlot => this.mapNewParTemplate(uploadSlot)),
+      map(this.mapNewParTemplate),
     );
   }
 
@@ -65,15 +65,15 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts/${partId}/uploadSlots`;
   }
 
-  private mapNewParTemplate(textBox: RawNewUploadSlotTemplate): NewUploadSlotTemplate {
+  private readonly mapNewParTemplate = (textBox: RawNewUploadSlotTemplate): NewUploadSlotTemplate => {
     return {
       ...textBox,
       created: new Date(textBox.created),
       modified: textBox.modified === null ? null : new Date(textBox.modified),
     };
-  }
+  };
 
-  private mapNewParTemplateWithPart(textBox: RawNewUploadSlotTemplateWithPart): NewUploadSlotTemplateWithPart {
+  private readonly mapNewParTemplateWithPart = (textBox: RawNewUploadSlotTemplateWithPart): NewUploadSlotTemplateWithPart => {
     return {
       ...textBox,
       created: new Date(textBox.created),
@@ -84,5 +84,5 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
         modified: textBox.newPartTemplate.modified === null ? null : new Date(textBox.newPartTemplate.modified),
       },
     };
-  }
+  };
 }

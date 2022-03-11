@@ -13,7 +13,7 @@ export const NewTextBoxTemplateList = memo(({ textBoxes, textBoxRowClick }: Prop
     {textBoxes.length === 0
       ? <p>no text boxes</p>
       : (
-        <table id="newTextBoxTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
+        <table className="newTextBoxTemplatesTable table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th>Description</th>
@@ -39,7 +39,7 @@ export const NewTextBoxTemplateList = memo(({ textBoxes, textBoxRowClick }: Prop
     }
 
     <style jsx>{`
-      #newTextBoxTemplatesTable tr { cursor: pointer }
+      .newTextBoxTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));

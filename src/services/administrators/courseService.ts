@@ -28,7 +28,7 @@ export class CourseService implements ICourseService {
   public getCourse(administratorId: number, schoolId: number, courseId: number): Observable<CourseWithSchoolAndUnits> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId);
     return this.httpService.get<RawCourseWithSchoolAndUnits>(url).pipe(
-      map(course => this.mapCourseWithSchoolAndUnits(course)),
+      map(this.mapCourseWithSchoolAndUnits),
     );
   }
 
@@ -36,7 +36,7 @@ export class CourseService implements ICourseService {
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}`;
   }
 
-  private mapCourseWithSchoolAndUnits(course: RawCourseWithSchoolAndUnits): CourseWithSchoolAndUnits {
+  private readonly mapCourseWithSchoolAndUnits = (course: RawCourseWithSchoolAndUnits): CourseWithSchoolAndUnits => {
     return {
       ...course,
       newUnitTemplates: course.newUnitTemplates.map(u => ({
@@ -45,5 +45,5 @@ export class CourseService implements ICourseService {
         modified: u.modified === null ? null : new Date(u.modified),
       })),
     };
-  }
+  };
 }

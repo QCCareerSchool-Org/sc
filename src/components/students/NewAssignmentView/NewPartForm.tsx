@@ -19,7 +19,7 @@ type Props = {
 export const NewPartForm = memo(({ part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => (
   <section>
     <div className="container">
-      <h2 className="h3">{part.title}</h2>
+      <h2 className="h3"><span className="text-danger">{part.partNumber}.</span> {part.title}</h2>
       {part.description && <Description description={part.description} descriptionType={part.descriptionType} />}
       <div className="row">
         <div className="col col-md-10 col-lg-8">

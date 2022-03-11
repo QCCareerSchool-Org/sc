@@ -26,7 +26,7 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
       takeUntil(destroy$),
     ).subscribe({
       next: school => {
-        dispatch({ type: 'SCHOOL_LOAD_SUCCEEDED', payload: school });
+        dispatch({ type: 'LOAD_SCHOOL_SUCCEEDED', payload: school });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -36,7 +36,7 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'SCHOOL_LOAD_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_SCHOOL_FAILED', payload: errorCode });
       },
     });
 

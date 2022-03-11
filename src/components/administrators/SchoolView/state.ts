@@ -7,8 +7,8 @@ export type State = {
 };
 
 type Action =
-  | { type: 'SCHOOL_LOAD_SUCCEEDED'; payload: SchoolWithCourses }
-  | { type: 'SCHOOL_LOAD_FAILED'; payload?: number };
+  | { type: 'LOAD_SCHOOL_SUCCEEDED'; payload: SchoolWithCourses }
+  | { type: 'LOAD_SCHOOL_FAILED'; payload?: number };
 
 export const initialState: State = {
   error: false,
@@ -16,9 +16,9 @@ export const initialState: State = {
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'SCHOOL_LOAD_SUCCEEDED':
+    case 'LOAD_SCHOOL_SUCCEEDED':
       return { ...state, school: action.payload, error: false };
-    case 'SCHOOL_LOAD_FAILED':
+    case 'LOAD_SCHOOL_FAILED':
       return { ...state, error: true, errorCode: action.payload };
   }
 };

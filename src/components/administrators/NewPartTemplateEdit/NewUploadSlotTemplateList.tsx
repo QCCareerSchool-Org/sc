@@ -13,7 +13,7 @@ export const NewUploadSlotTemplateList = memo(({ uploadSlots, uploadSlotRowClick
     {uploadSlots.length === 0
       ? <p>no upload slots</p>
       : (
-        <table id="newUploadSlotTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
+        <table className="newUploadSlotTemplatesTable table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th>Label</th>
@@ -39,7 +39,7 @@ export const NewUploadSlotTemplateList = memo(({ uploadSlots, uploadSlotRowClick
     }
 
     <style jsx>{`
-      #newUploadSlotTemplatesTable tr { cursor: pointer }
+      .newUploadSlotTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));

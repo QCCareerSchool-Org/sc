@@ -25,7 +25,7 @@ export const SubmitSection = ({ submit$, unitComplete, processingState, errorMes
         <h2>Submit Unit</h2>
         {unitComplete
           ? <p>Your unit is complete. Please click the Submit button below to send it to your tutor for marking. Once you have submitted your unit, you will not be able to make any further changes to it.</p>
-          : <p>Your unit is not yet complete. Please complete all assignments before submitting your unit.</p>
+          : <p>Your unit is <u>not yet complete</u>. Please complete all assignments before submitting your unit.</p>
         }
         <div className="d-flex align-items-center">
           <button onClick={submitUnit} className="btn btn-primary" disabled={buttonDisabled}>Submit Unit</button>

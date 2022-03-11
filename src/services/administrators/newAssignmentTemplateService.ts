@@ -61,28 +61,28 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
   public addAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, payload: NewAssignmentTemplatePayload): Observable<NewAssignmentTemplate> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId);
     return this.httpService.post<RawNewAssignmentTemplate>(url, payload).pipe(
-      map(assignment => this.mapNewAssignmentTemplate(assignment)),
+      map(this.mapNewAssignmentTemplate),
     );
   }
 
   public getAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentTemplateWithUnitAndParts> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
     return this.httpService.get<RawNewAssignmentTemplateWithUnitAndParts>(url).pipe(
-      map(assignment => this.mapNewAssignmentTemplateWithUnitAndParts(assignment)),
+      map(this.mapNewAssignmentTemplateWithUnitAndParts),
     );
   }
 
   public getAssignmentWithInputs(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentTemplateWithUnitAndPartsAndInputs> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
     return this.httpService.get<RawNewAssignmentTemplateWithUnitAndPartsAndInputs>(url, { params: { inputs: true } }).pipe(
-      map(assignment => this.mapNewAssignmentTemplateWithUnitAndPartsAndInputs(assignment)),
+      map(this.mapNewAssignmentTemplateWithUnitAndPartsAndInputs),
     );
   }
 
   public saveAssignment(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentTemplatePayload): Observable<NewAssignmentTemplate> {
     const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId)}/${assignmentId}`;
     return this.httpService.put<RawNewAssignmentTemplate>(url, payload).pipe(
-      map(assignment => this.mapNewAssignmentTemplate(assignment)),
+      map(this.mapNewAssignmentTemplate),
     );
   }
 
@@ -95,15 +95,15 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments`;
   }
 
-  private mapNewAssignmentTemplate(assignment: RawNewAssignmentTemplate): NewAssignmentTemplate {
+  private readonly mapNewAssignmentTemplate = (assignment: RawNewAssignmentTemplate): NewAssignmentTemplate => {
     return {
       ...assignment,
       created: new Date(assignment.created),
       modified: assignment.modified === null ? null : new Date(assignment.modified),
     };
-  }
+  };
 
-  private mapNewAssignmentTemplateWithUnitAndParts(assignment: RawNewAssignmentTemplateWithUnitAndParts): NewAssignmentTemplateWithUnitAndParts {
+  private readonly mapNewAssignmentTemplateWithUnitAndParts = (assignment: RawNewAssignmentTemplateWithUnitAndParts): NewAssignmentTemplateWithUnitAndParts => {
     return {
       ...assignment,
       created: new Date(assignment.created),
@@ -124,9 +124,9 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
         modified: m.modified === null ? null : new Date(m.modified),
       })),
     };
-  }
+  };
 
-  private mapNewAssignmentTemplateWithUnitAndPartsAndInputs(assignment: RawNewAssignmentTemplateWithUnitAndPartsAndInputs): NewAssignmentTemplateWithUnitAndPartsAndInputs {
+  private readonly mapNewAssignmentTemplateWithUnitAndPartsAndInputs = (assignment: RawNewAssignmentTemplateWithUnitAndPartsAndInputs): NewAssignmentTemplateWithUnitAndPartsAndInputs => {
     return {
       ...assignment,
       created: new Date(assignment.created),
@@ -157,5 +157,5 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
         modified: m.modified === null ? null : new Date(m.modified),
       })),
     };
-  }
+  };
 }

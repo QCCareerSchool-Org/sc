@@ -13,7 +13,7 @@ export const NewAssignmentMediumList = memo(({ media, mediumRowClick }: Props): 
     {media.length === 0
       ? <p>no media</p>
       : (
-        <table id="newAssignmentMediaTable" className="table table-bordered table-hover w-auto bg-white">
+        <table className="newAssignmentMediaTable table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th>Caption</th>
@@ -35,7 +35,7 @@ export const NewAssignmentMediumList = memo(({ media, mediumRowClick }: Props): 
     }
 
     <style jsx>{`
-      #newAssignmentMediaTable tr { cursor: pointer }
+      .newAssignmentMediaTable tr { cursor: pointer }
     `}</style>
   </>
 ));

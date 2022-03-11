@@ -13,7 +13,7 @@ export const NewPartTemplateList = memo(({ parts, partRowClick }: Props): ReactE
     {parts.length === 0
       ? <p>no parts</p>
       : (
-        <table id="newPartTemplatesTable" className="table table-bordered table-hover w-auto bg-white">
+        <table className="newPartTemplatesTable table table-bordered table-hover w-auto bg-white">
           <thead>
             <tr>
               <th className="text-center">#</th>
@@ -33,7 +33,7 @@ export const NewPartTemplateList = memo(({ parts, partRowClick }: Props): ReactE
     }
 
     <style jsx>{`
-      #newPartTemplatesTable tr { cursor: pointer }
+      .newPartTemplatesTable tr { cursor: pointer }
     `}</style>
   </>
 ));
