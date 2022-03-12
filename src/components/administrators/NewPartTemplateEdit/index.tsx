@@ -295,9 +295,9 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
-                    <tr><th scope="row">Assignment</th><td>{state.newPartTemplate.newAssignmentTemplate.title ?? state.newPartTemplate.newAssignmentTemplate.assignmentNumber}</td></tr>
-                    <tr><th scope="row">Text Boxes</th><td>{state.newPartTemplate.newTextBoxTemplates.length}</td></tr>
-                    <tr><th scope="row">Upload Slots</th><td>{state.newPartTemplate.newUploadSlotTemplates.length}</td></tr>
+                    <tr><th scope="row">Assignment Template</th><td>{state.newPartTemplate.newAssignmentTemplate.title ?? state.newPartTemplate.newAssignmentTemplate.assignmentNumber}</td></tr>
+                    <tr><th scope="row">Text Box Templates</th><td>{state.newPartTemplate.newTextBoxTemplates.length}</td></tr>
+                    <tr><th scope="row">Upload Slot Templates</th><td>{state.newPartTemplate.newUploadSlotTemplates.length}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newPartTemplate.created)}</td></tr>
                     {state.newPartTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newPartTemplate.modified)}</td></tr>}
                   </tbody>

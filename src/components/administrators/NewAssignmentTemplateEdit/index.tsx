@@ -15,7 +15,7 @@ import { initialState, reducer } from './state';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentMediumService, newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
-import type { NewAssignmentMediumPayload } from '@/services/administrators/newAssignmentMediumService';
+import type { NewAssignmentMediumAddPayload, NewAssignmentMediumEditPayload } from '@/services/administrators/newAssignmentMediumService';
 import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
 import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';
@@ -58,7 +58,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>());
   const delete$ = useRef(new Subject<State['form']['processingState']>());
   const partInsert$ = useRef(new Subject<{ processingState: State['newPartTemplateForm']['processingState']; payload: NewPartTemplatePayload }>());
-  const mediumInsert$ = useRef(new Subject<{ processingState: State['assignmentMediaForm']['processingState']; payload: NewAssignmentMediumPayload }>());
+  const mediumInsert$ = useRef(new Subject<{ processingState: State['assignmentMediaForm']['processingState']; payload: NewAssignmentMediumAddPayload }>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -284,8 +284,9 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
-                    <tr><th scope="row">Unit</th><td>{state.newAssignmentTemplate.newUnitTemplate.title ?? state.newAssignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
-                    <tr><th scope="row">Parts</th><td>{state.newAssignmentTemplate.newPartTemplates.length}</td></tr>
+                    <tr><th scope="row">Unit Template</th><td>{state.newAssignmentTemplate.newUnitTemplate.title ?? state.newAssignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
+                    <tr><th scope="row">Part Templates</th><td>{state.newAssignmentTemplate.newPartTemplates.length}</td></tr>
+                    <tr><th scope="row">Media</th><td>{state.newAssignmentTemplate.newAssignmentMedia.length}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newAssignmentTemplate.created)}</td></tr>
                     {state.newAssignmentTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newAssignmentTemplate.modified)}</td></tr>}
                   </tbody>

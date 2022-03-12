@@ -4,11 +4,13 @@ import { map } from 'rxjs';
 import { endpoint } from '../../basePath';
 import type { IHttpService, ProgressResponse } from '../httpService';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
+import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart, RawNewPart } from '@/domain/newPart';
 import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
 
 export type NewAssignmentWithChildren = NewAssignment & {
+  newAssignmentMedia: NewAssignmentMedium[];
   newParts: Array<NewPart & {
     newTextBoxes: Array<NewTextBox>;
     newUploadSlots: Array<NewUploadSlot>;
@@ -16,6 +18,7 @@ export type NewAssignmentWithChildren = NewAssignment & {
 };
 
 type RawNewAssignmentWithChildren = RawNewAssignment & {
+  newAssignmentMedia: RawNewAssignmentMedium[];
   newParts: Array<RawNewPart & {
     newTextBoxes: Array<RawNewTextBox>;
     newUploadSlots: Array<RawNewUploadSlot>;
@@ -67,7 +70,7 @@ export class NewAssignmentService implements INewAssignmentService {
   }
 
   public downloadFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
-    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}`;
+    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
     return this.httpService.download(url);
   }
 
@@ -80,6 +83,11 @@ export class NewAssignmentService implements INewAssignmentService {
       ...newAssignment,
       created: new Date(newAssignment.created),
       modified: newAssignment.modified === null ? null : new Date(newAssignment.modified),
+      newAssignmentMedia: newAssignment.newAssignmentMedia.map(m => ({
+        ...m,
+        created: new Date(m.created),
+        modified: m.modified === null ? null : new Date(m.modified),
+      })),
       newParts: newAssignment.newParts.map(p => ({
         ...p,
         created: new Date(p.created),

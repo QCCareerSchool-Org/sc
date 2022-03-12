@@ -3,10 +3,11 @@ import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService, ProgressResponse } from '../httpService';
+import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 
-export type NewAssignmentMediumPayload = {
+export type NewAssignmentMediumAddPayload = {
   caption: string;
   order: number;
 } & ({
@@ -17,25 +18,35 @@ export type NewAssignmentMediumPayload = {
   externalData: string;
 });
 
-type RawNewAssignmentMediumWithAssingnment = RawNewAssignmentMedium & {
-  newAssignmentTemplate: RawNewAssignmentTemplate;
+export type NewAssignmentMediumEditPayload = {
+  caption: string;
+  order: number;
 };
 
-export type NewAssignmentMediumWithAssingnment = NewAssignmentMedium & {
+type RawNewAssignmentMediumWithAssignnment = RawNewAssignmentMedium & {
+  newAssignmentTemplate: RawNewAssignmentTemplate;
+  newAssignments: RawNewAssignment[];
+};
+
+export type NewAssignmentMediumWithAssignnment = NewAssignmentMedium & {
   newAssignmentTemplate: NewAssignmentTemplate;
+  newAssignments: NewAssignment[];
 };
 
 export interface INewAssignmentMediumService {
-  addAssignmentMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentMediumPayload) => Observable<ProgressResponse<NewAssignmentMedium>>;
+  addAssignmentMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentMediumAddPayload) => Observable<ProgressResponse<NewAssignmentMedium>>;
+  getAssignmentMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, mediumId: string) => Observable<NewAssignmentMediumWithAssignnment>;
+  saveAssignmentMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, mediumId: string, payload: NewAssignmentMediumEditPayload) => Observable<NewAssignmentMedium>;
+  deleteAssignmentMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, mediumId: string) => Observable<void>;
 }
 
 export class NewAssignmentMediumService implements INewAssignmentMediumService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public addAssignmentMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentMediumPayload): Observable<ProgressResponse<NewAssignmentMedium>> {
+  public addAssignmentMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, payload: NewAssignmentMediumAddPayload): Observable<ProgressResponse<NewAssignmentMedium>> {
     const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId);
-    let body: FormData | NewAssignmentMediumPayload;
+    let body: FormData | NewAssignmentMediumAddPayload;
     let headers: Record<string, string>;
     if (payload.sourceData === 'file upload') {
       body = new FormData();
@@ -62,6 +73,30 @@ export class NewAssignmentMediumService implements INewAssignmentMediumService {
     );
   }
 
+  public getAssignmentMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, mediumId: string): Observable<NewAssignmentMediumWithAssignnment> {
+    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${mediumId}`;
+    return this.httpService.get<RawNewAssignmentMediumWithAssignnment>(url).pipe(
+      map(this.mapNewAssignmentMediumWithAssignment),
+    );
+  }
+
+  public saveAssignmentMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, mediumId: string, payload: NewAssignmentMediumEditPayload): Observable<NewAssignmentMedium> {
+    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${mediumId}`;
+    return this.httpService.put<RawNewAssignmentMedium>(url, payload).pipe(
+      map(this.mapNewAssignmentMedium),
+    );
+  }
+
+  public deleteAssignmentMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, mediumId: string): Observable<void> {
+    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${mediumId}`;
+    return this.httpService.delete<void>(url);
+  }
+
+  public downloadAssignmentMediumFile(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, mediumId: string): Observable<void> {
+    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${mediumId}/file`;
+    return this.httpService.download(url);
+  }
+
   private getBaseUrl(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): string {
     return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media`;
   }
@@ -74,7 +109,7 @@ export class NewAssignmentMediumService implements INewAssignmentMediumService {
     };
   };
 
-  private readonly mapNewAssignmentMediumWithAssignment = (medium: RawNewAssignmentMediumWithAssingnment): NewAssignmentMediumWithAssingnment => {
+  private readonly mapNewAssignmentMediumWithAssignment = (medium: RawNewAssignmentMediumWithAssignnment): NewAssignmentMediumWithAssignnment => {
     return {
       ...medium,
       created: new Date(medium.created),
@@ -84,6 +119,11 @@ export class NewAssignmentMediumService implements INewAssignmentMediumService {
         created: new Date(medium.newAssignmentTemplate.created),
         modified: medium.newAssignmentTemplate.modified === null ? null : new Date(medium.newAssignmentTemplate.modified),
       },
+      newAssignments: medium.newAssignments.map(a => ({
+        ...a,
+        created: new Date(a.created),
+        modified: a.modified === null ? null : new Date(a.modified),
+      })),
     };
   };
 }

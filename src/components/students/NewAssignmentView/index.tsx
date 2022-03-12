@@ -4,6 +4,7 @@ import type { MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useEffect, useReducer } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
+import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
@@ -165,6 +166,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           {state.assignment.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
           {state.assignment.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+          {state.assignment.newAssignmentMedia.map(m => <NewAssignmentMediumView studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} key={m.assignmentMediumId} newAssignmentMedium={m} />)}
         </div>
       </section>
       {state.assignment.parts.map(p => (

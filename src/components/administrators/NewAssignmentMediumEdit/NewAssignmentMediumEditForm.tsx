@@ -2,23 +2,20 @@ import type { ChangeEventHandler, FormEventHandler, MouseEventHandler, ReactElem
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
-import { NewAssignmentTemplateFormElements } from './NewAssignmentTemplateFormElements';
+import { NewAssignmentMediumFormElements } from './NewAssignmentMediumFormElements';
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { NewAssignmentTemplatePayload, NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentMediumEditPayload } from '@/services/administrators/newAssignmentMediumService';
 
 type Props = {
-  assignmentTemplate: NewAssignmentTemplateWithUnitAndParts;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>;
+  save$: Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentMediumEditPayload }>;
   delete$: Subject<State['form']['processingState']>;
-  titleChange: ChangeEventHandler<HTMLInputElement>;
-  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
-  assignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
-  optionalChange: ChangeEventHandler<HTMLInputElement>;
+  captionChange: ChangeEventHandler<HTMLInputElement>;
+  orderChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentTemplateEditForm = memo(({ assignmentTemplate, formState, save$, delete$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
+export const NewAssignmentMediumEditForm = memo(({ formState, save$, delete$, captionChange, orderChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -38,29 +35,26 @@ export const NewAssignmentTemplateEditForm = memo(({ assignmentTemplate, formSta
     save$.next({
       processingState: formState.processingState,
       payload: {
-        title: formState.data.title || null,
-        description: formState.data.description || null,
-        assignmentNumber: parseInt(formState.data.assignmentNumber, 10),
-        optional: formState.data.optional,
+        caption: formState.data.caption,
+        order: parseInt(formState.data.order, 10),
       },
     });
   };
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this assignment template and all its media and parts?\n\nmedia:${assignmentTemplate?.newAssignmentMedia.length}\nparts: ${assignmentTemplate?.newPartTemplates.length}`)) {
+    if (confirm(`Are you sure you want to delete this assignment medium?`)) {
       delete$.next(formState.processingState);
     }
   };
 
   return (
     <form onSubmit={formSubmit}>
-      <NewAssignmentTemplateFormElements
+      <NewAssignmentMediumFormElements
+        formType="edit"
         formData={formState.data}
         formValidationMessages={formState.validationMessages}
-        titleChange={titleChange}
-        descriptionChange={descriptionChange}
-        assignmentNumberChange={assignmentNumberChange}
-        optionalChange={optionalChange}
+        captionChange={captionChange}
+        orderChange={orderChange}
       />
       <div className="d-flex align-items-center">
         <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>
@@ -70,10 +64,9 @@ export const NewAssignmentTemplateEditForm = memo(({ assignmentTemplate, formSta
           {formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
         {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Save Error'}</span>}
-        {formState.processingState === 'delete error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Delete Error'}</span>}
-      </div>
+        {formState.processingState === 'delete error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Delete Error'}</span>}          </div>
     </form>
   );
 });
 
-NewAssignmentTemplateEditForm.displayName = 'NewAssignmentTemplateEditForm';
+NewAssignmentMediumEditForm.displayName = 'NewAssignmentMediumEditForm';

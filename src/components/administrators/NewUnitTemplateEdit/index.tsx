@@ -231,7 +231,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 <table className="table table-bordered w-auto ms-lg-auto">
                   <tbody>
                     <tr><th scope="row">Course</th><td>{state.newUnitTemplate.course.name}</td></tr>
-                    <tr><th scope="row">Assignments</th><td>{state.newUnitTemplate.newAssignmentTemplates.length}</td></tr>
+                    <tr><th scope="row">Assignment Templates</th><td>{state.newUnitTemplate.newAssignmentTemplates.length}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newUnitTemplate.created)}</td></tr>
                     {state.newUnitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newUnitTemplate.modified)}</td></tr>}
                   </tbody>

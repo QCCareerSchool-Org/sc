@@ -1,4 +1,5 @@
 import type { NewAssignment } from '@/domain/newAssignment';
+import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart } from '@/domain/newPart';
 import type { NewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
@@ -30,6 +31,7 @@ export type AssignmentState = NewAssignment & {
   complete: boolean;
   formState: FormState;
   saveState: 'saved' | 'unsaved' | 'saving' | 'error';
+  newAssignmentMedia: NewAssignmentMedium[];
   parts: PartState[];
 };
 

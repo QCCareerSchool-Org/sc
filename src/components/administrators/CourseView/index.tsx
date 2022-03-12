@@ -119,6 +119,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
               <tr><th scope="row">Quizzes Enabled</th><td>{state.course.quizzesEnabled ? 'yes' : 'no'}</td></tr>
               <tr><th scope="row">No Tutor</th><td>{state.course.noTutor ? 'yes' : 'no'}</td></tr>
               <tr><th scope="row">Unit Type</th><td>{state.course.unitType === 0 ? 'old' : state.course.unitType === 1 ? 'new' : 'unknown'}</td></tr>
+              <tr><th scope="row">Unit Templates</th><td>{state.course.newUnitTemplates.length}</td></tr>
             </tbody>
           </table>
         </div>
