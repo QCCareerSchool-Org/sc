@@ -146,9 +146,9 @@ const accept = (allowedTypes: string[]): string => {
       accepted.push('image/jpeg', 'image/png', 'image/x-png', 'image/bmp', 'image/gif');
     } else if (allowedType === 'pdf') {
       accepted.push('application/pdf');
-    } else if (allowedType === 'Word document') {
+    } else if (allowedType === 'word') {
       accepted.push('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword');
-    } else if (allowedType === 'Excel spreadsheet') {
+    } else if (allowedType === 'excel') {
       accepted.push('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel');
     }
   }

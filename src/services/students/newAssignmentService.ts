@@ -57,7 +57,7 @@ export class NewAssignmentService implements INewAssignmentService {
   }
 
   public uploadFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File): Observable<ProgressResponse<NewUploadSlot>> {
-    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}`;
+    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
     const formData = new FormData();
     formData.append('file', file);
     const headers = { 'Content-Type': 'multipart/form-data' };
