@@ -166,7 +166,12 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           {state.assignment.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
           {state.assignment.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
-          {state.assignment.newAssignmentMedia.map(m => <NewAssignmentMediumView studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} key={m.assignmentMediumId} newAssignmentMedium={m} />)}
+          {state.assignment.newAssignmentMedia.map(m => (
+            <figure key={m.assignmentMediumId} className="figure">
+              <NewAssignmentMediumView className="figure-img mb-0" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
+              <figcaption className="figure-caption">{m.caption}</figcaption>
+            </figure>
+          ))}
         </div>
       </section>
       {state.assignment.parts.map(p => (

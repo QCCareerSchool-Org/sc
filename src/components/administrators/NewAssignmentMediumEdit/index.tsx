@@ -1,5 +1,4 @@
 import NextError from 'next/error';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, ReactElement } from 'react';
 import { useCallback, useEffect, useReducer, useRef } from 'react';
@@ -125,6 +124,8 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
     return null;
   }
 
+  const src = `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${state.newAssignmentMedium.assignmentMediumId}/file`;
+
   return (
     <>
       <section>
@@ -146,6 +147,9 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
                   <tbody>
                     <tr><th scope="row">Assignment Template</th><td>{state.newAssignmentMedium.newAssignmentTemplate.title ?? state.newAssignmentMedium.newAssignmentTemplate.assignmentNumber}</td></tr>
                     <tr><th scope="row">Linked Assignments</th><td>{state.newAssignmentMedium.newAssignments.length}</td></tr>
+                    <tr><th scope="row">Filename</th><td>{state.newAssignmentMedium.filename}</td></tr>
+                    <tr><th scope="row">Type</th><td>{state.newAssignmentMedium.type}</td></tr>
+                    <tr><th scope="row">Mime Type</th><td>{state.newAssignmentMedium.mimeTypeId}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newAssignmentMedium.created)}</td></tr>
                     {state.newAssignmentMedium.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newAssignmentMedium.modified)}</td></tr>}
                   </tbody>
@@ -159,18 +163,16 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
         <div className="container">
           {state.newAssignmentMedium.type === 'image' && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="mediaContent" src={`${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${state.newAssignmentMedium.assignmentMediumId}/file`} alt={state.newAssignmentMedium.caption} />
+            <img src={src} className="mediaContent" alt={state.newAssignmentMedium.caption} />
           )}
           {state.newAssignmentMedium.type === 'video' && (
-            // eslint-disable-next-line @next/next/no-img-element
             <video className="mediaContent" controls>
-              <source src={`${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${state.newAssignmentMedium.assignmentMediumId}/file`} />
+              <source src={src} type={state.newAssignmentMedium.mimeTypeId} />
             </video>
           )}
           {state.newAssignmentMedium.type === 'audio' && (
-            // eslint-disable-next-line @next/next/no-img-element
             <audio controls>
-              <source src={`${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${state.newAssignmentMedium.assignmentMediumId}/file`} />
+              <source src={src} type={state.newAssignmentMedium.mimeTypeId} />
             </audio>
           )}
         </div>

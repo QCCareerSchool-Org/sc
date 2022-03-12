@@ -7,6 +7,7 @@ export type NewAssignmentMedium = {
   assignmentTemplateId: string | null;
   mimeTypeId: string;
   type: NewMediumType;
+  filename: string;
   caption: string;
   externalData: string | null;
   order: number;

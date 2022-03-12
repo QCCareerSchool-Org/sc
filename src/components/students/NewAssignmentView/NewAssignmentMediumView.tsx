@@ -4,6 +4,7 @@ import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import { endpoint } from 'src/basePath';
 
 type Props = {
+  className: string;
   studentId: number;
   courseId: number;
   unitId: string;
@@ -11,17 +12,17 @@ type Props = {
   newAssignmentMedium: NewAssignmentMedium;
 };
 
-export const NewAssignmentMediumView = ({ studentId, courseId, unitId, assignmentId, newAssignmentMedium }: Props): ReactElement | null => {
+export const NewAssignmentMediumView = ({ className, studentId, courseId, unitId, assignmentId, newAssignmentMedium }: Props): ReactElement | null => {
   const src = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}/media/${newAssignmentMedium.assignmentMediumId}/file`;
 
   if (newAssignmentMedium.type === 'image') {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} className="mediaContent" alt={newAssignmentMedium.caption} />;
+    return <img src={src} className={className} alt={newAssignmentMedium.caption} />;
   }
 
   if (newAssignmentMedium.type === 'video') {
     return (
-      <video controls className="mediaContent">
+      <video controls className={className}>
         <source type={newAssignmentMedium.mimeTypeId} src={src} />
       </video>
     );
@@ -29,7 +30,7 @@ export const NewAssignmentMediumView = ({ studentId, courseId, unitId, assignmen
 
   if (newAssignmentMedium.type === 'audio') {
     return (
-      <audio controls>
+      <audio controls className={className}>
         <source type={newAssignmentMedium.mimeTypeId} src={src} />
       </audio>
     );
