@@ -9,7 +9,7 @@ export const PdfIcon = (): ReactElement => (
     <style jsx>{`
     .offset {
       position: relative;
-      left: -8px;
+      left: -12px;
     }
     `}</style>
   </>
