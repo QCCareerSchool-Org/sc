@@ -1,13 +1,14 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
-import type { IHttpService } from '../httpService';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
+import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
+import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewPartTemplatePayload = {
   title: string;
@@ -20,12 +21,14 @@ type RawNewPartTemplateWithAssignmentAndInputs = RawNewPartTemplate & {
   newAssignmentTemplate: RawNewAssignmentTemplate;
   newTextBoxTemplates: RawNewTextBoxTemplate[];
   newUploadSlotTemplates: RawNewUploadSlotTemplate[];
+  newPartMedia: RawNewPartMedium[];
 };
 
 export type NewPartTemplateWithAssignmentAndInputs = NewPartTemplate & {
   newAssignmentTemplate: NewAssignmentTemplate;
   newTextBoxTemplates: NewTextBoxTemplate[];
   newUploadSlotTemplates: NewUploadSlotTemplate[];
+  newPartMedia: NewPartMedium[];
 };
 
 export interface INewPartTemplateService {
@@ -96,6 +99,11 @@ export class NewPartTemplateService implements INewPartTemplateService {
         ...u,
         created: new Date(u.created),
         modified: u.modified === null ? null : new Date(u.modified),
+      })),
+      newPartMedia: part.newPartMedia.map(m => ({
+        ...m,
+        created: new Date(m.created),
+        modified: m.modified === null ? null : new Date(m.modified),
       })),
     };
   };

@@ -24,26 +24,26 @@ type Props = {
   externalDataChange: ChangeEventHandler<HTMLInputElement>;
 });
 
-export const NewAssignmentMediumFormElements = ({ formType, formData, formValidationMessages, inserting, progress, dataSourceChange, captionChange, orderChange, fileChange, externalDataChange }: Props): ReactElement => {
+export const NewPartMediumFormElements = ({ formType, formData, formValidationMessages, inserting, progress, dataSourceChange, captionChange, orderChange, fileChange, externalDataChange }: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = Math.random().toString(32).slice(2);
   return (
     <>
       <div className="formGroup">
-        <label htmlFor={id + '_newAssignmentMediaCaption'} className="form-label">Caption <span className="text-danger">*</span></label>
-        <input onChange={captionChange} value={formData.caption} type="text" id={id + '_newAssignmentMediaCaption'} maxLength={191} className={`form-control ${formValidationMessages.caption ? 'is-invalid' : ''}`} required />
+        <label htmlFor={id + '_newPartMediaCaption'} className="form-label">Caption <span className="text-danger">*</span></label>
+        <input onChange={captionChange} value={formData.caption} type="text" id={id + '_newPartMediaCaption'} maxLength={191} className={`form-control ${formValidationMessages.caption ? 'is-invalid' : ''}`} required />
         {formValidationMessages.caption && <div className="invalid-feedback">{formValidationMessages.caption}</div>}
       </div>
 
       <div className="formGroup">
-        <label htmlFor={id + '_newAssignmentMediaOrder'} className="form-label">Order <span className="text-danger">*</span></label>
-        <input onChange={orderChange} value={formData.order} type="number" id={id + '_newAssignmentMediaOrder'} min={0} max={127} className={`form-control ${formValidationMessages.order ? 'is-invalid' : ''}`} required />
+        <label htmlFor={id + '_newPartMediaOrder'} className="form-label">Order <span className="text-danger">*</span></label>
+        <input onChange={orderChange} value={formData.order} type="number" id={id + '_newPartMediaOrder'} min={0} max={127} className={`form-control ${formValidationMessages.order ? 'is-invalid' : ''}`} required />
         {formValidationMessages.order && <div className="invalid-feedback">{formValidationMessages.order}</div>}
       </div>
 
       {formType === 'add' && (
         <>
-          <ul className="nav nav-tabs" id={id + '_newAssignmentMediaFileTab'} role="tablist">
+          <ul className="nav nav-tabs" id={id + '_newPartMediaFileTab'} role="tablist">
             <li className="nav-item" role="presentation">
               <button onClick={() => dataSourceChange?.('file upload')} className={`nav-link ${formData.dataSource === 'file upload' ? 'active' : ''}`} id={id + '_uploadTab'} type="button" role="tab" aria-controls={id + '_upload'} aria-selected={formData.dataSource === 'file upload'}>File Upload</button>
             </li>
@@ -52,17 +52,17 @@ export const NewAssignmentMediumFormElements = ({ formType, formData, formValida
             </li>
           </ul>
 
-          <div className="tab-content" id={id + '_newAssignmentMediaFileContent'}>
+          <div className="tab-content" id={id + '_newPartMediaFileContent'}>
 
             <div className={`tab-pane fade ${formData.dataSource === 'file upload' ? 'show active' : ''}`} id={id + '_upload'} role="tabpanel" aria-labelledby={id + '_uploadTab'}>
               <div className="formGroup">
-                <label htmlFor={id + '_newAssignmentMediaFile'} className="form-label">File{formData.dataSource === 'file upload' && <> <span className="text-danger">*</span></>}</label>
+                <label htmlFor={id + '_newPartMediaFile'} className="form-label">File{formData.dataSource === 'file upload' && <> <span className="text-danger">*</span></>}</label>
                 {inserting && typeof progress !== 'undefined'
                   ? <ProgressBar progress={progress}>{progress.toFixed(0)}%</ProgressBar>
                   : (
                     <>
-                      <input onChange={fileChange} className={`form-control ${formValidationMessages.file ? 'is-invalid' : ''}`} type="file" accept="image/*, video/*, audio/*" id="newAssignmentMediaFile" aria-describedby={id + '_newAssignmentMediaFileHelp'} required={formData.dataSource === 'file upload'} />
-                      <div id="newAssignmentMediaFileHelp" className="form-text">Select a file from your computer to upload</div>
+                      <input onChange={fileChange} className={`form-control ${formValidationMessages.file ? 'is-invalid' : ''}`} type="file" accept="image/*, video/*, audio/*" id={id + '_newPartMediaFile'} aria-describedby={id + '_newPartMediaFileHelp'} required={formData.dataSource === 'file upload'} />
+                      <div id={id + '_newPartMediaFileHelp'} className="form-text">Select a file from your computer to upload</div>
                     </>
                   )}
                 {formValidationMessages.file && <div className="invalid-feedback">{formValidationMessages.file}</div>}
@@ -71,9 +71,9 @@ export const NewAssignmentMediumFormElements = ({ formType, formData, formValida
 
             <div className={`tab-pane fade ${formData.dataSource === 'url' ? 'show active' : ''}`} id={id + '_external'} role="tabpanel" aria-labelledby={id + '_profile-tab'}>
               <div className="formGroup">
-                <label htmlFor={id + '_newAssignmentMediaExternalData'} className="form-label">External URL {formData.dataSource === 'url' && <> <span className="text-danger">*</span></>}</label>
-                <input onChange={externalDataChange} value={formData.externalData} id={id + '_newAssignmentMediaExternalData'} maxLength={1024} className={`form-control ${formValidationMessages.externalData ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newAssignmentMediaExternalDataHelp'} required={formData.dataSource === 'url'} />
-                <div id={id + '_newAssignmentMediaExternalDataHelp'} className="form-text">Enter a URL starting with https://</div>
+                <label htmlFor={id + '_newPartMediaExternalData'} className="form-label">External URL {formData.dataSource === 'url' && <> <span className="text-danger">*</span></>}</label>
+                <input onChange={externalDataChange} value={formData.externalData} id={id + '_newPartMediaExternalData'} maxLength={1024} className={`form-control ${formValidationMessages.externalData ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newPartMediaExternalDataHelp'} required={formData.dataSource === 'url'} />
+                <div id={id + '_newPartMediaExternalDataHelp'} className="form-text">Enter a URL starting with https://</div>
                 {formValidationMessages.externalData && <div className="invalid-feedback">{formValidationMessages.externalData}</div>}
               </div>
             </div>

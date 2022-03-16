@@ -1,19 +1,21 @@
 import type { ReactElement } from 'react';
+import { memo } from 'react';
 
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import { endpoint } from 'src/basePath';
 
 type Props = {
   className: string;
-  studentId: number;
+  administratorId: number;
+  schoolId: number;
   courseId: number;
   unitId: string;
   assignmentId: string;
   newAssignmentMedium: NewAssignmentMedium;
 };
 
-export const NewAssignmentMediumView = ({ className, studentId, courseId, unitId, assignmentId, newAssignmentMedium }: Props): ReactElement | null => {
-  const src = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}/media/${newAssignmentMedium.assignmentMediumId}/file`;
+export const NewAssignmentMediumView = memo(({ className, administratorId, schoolId, courseId, unitId, assignmentId, newAssignmentMedium }: Props): ReactElement | null => {
+  const src = `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${newAssignmentMedium.assignmentMediumId}/file`;
 
   if (newAssignmentMedium.type === 'image') {
     // eslint-disable-next-line @next/next/no-img-element
@@ -37,4 +39,6 @@ export const NewAssignmentMediumView = ({ className, studentId, courseId, unitId
   }
 
   return null;
-};
+});
+
+NewAssignmentMediumView.displayName = 'NewAssignmentMediumView';

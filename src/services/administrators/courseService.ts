@@ -1,11 +1,11 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
-import type { IHttpService } from '../httpService';
 import type { Course } from '@/domain/course';
 import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
 import type { School } from '@/domain/school';
+import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 type RawCourseWithSchoolAndUnits = Course & {
   school: School;

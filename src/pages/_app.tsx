@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import type { ReactElement } from 'react';
 import { useEffect } from 'react';
 
-import { Layout } from '../components/Layout';
-import { RouteGuard } from '../components/RouteGuard';
 import { StateProvider } from '../providers';
+import { Layout } from '@/components/Layout';
+import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
 
 import '../style.scss';

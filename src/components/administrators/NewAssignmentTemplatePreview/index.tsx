@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 import { useEffect, useReducer } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
+import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
 import { newAssignmentTemplateService } from '@/services/administrators';
@@ -62,9 +63,29 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
           {state.assignmentTemplate.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.assignmentTemplate.assignmentNumber}{state.assignmentTemplate.title && <>: {state.assignmentTemplate.title}</>}</h1>
           {state.assignmentTemplate.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+          <div className="row">
+            <div className="col-12 col-lg-10 col-xl-8">
+              {state.assignmentTemplate.newAssignmentMedia.map(m => (
+                <figure key={m.assignmentMediumId} className="figure">
+                  <NewAssignmentMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
+                  <figcaption className="figure-caption">{m.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
-      {state.assignmentTemplate.newPartTemplates.map(p => <NewPartTemplatePreview key={p.partTemplateId} newPartTemplate={p} />)}
+      {state.assignmentTemplate.newPartTemplates.map(p => (
+        <NewPartTemplatePreview
+          key={p.partTemplateId}
+          administratorId={administratorId}
+          schoolId={schoolId}
+          courseId={courseId}
+          unitId={unitId}
+          assignmentId={assignmentId}
+          newPartTemplate={p}
+        />
+      ))}
     </>
   );
 };

@@ -15,7 +15,7 @@ import { initialState, reducer } from './state';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentMediumService, newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
-import type { NewAssignmentMediumAddPayload, NewAssignmentMediumEditPayload } from '@/services/administrators/newAssignmentMediumService';
+import type { NewAssignmentMediumAddPayload } from '@/services/administrators/newAssignmentMediumService';
 import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
 import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';

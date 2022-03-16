@@ -1,14 +1,15 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
-import type { IHttpService } from '../httpService';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
 import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
+import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewAssignmentTemplatePayload = {
   title: string | null;
@@ -34,6 +35,7 @@ type RawNewAssignmentTemplateWithUnitAndPartsAndInputs = RawNewAssignmentTemplat
   newPartTemplates: Array<RawNewPartTemplate & {
     newTextBoxTemplates: RawNewTextBoxTemplate[];
     newUploadSlotTemplates: RawNewUploadSlotTemplate[];
+    newPartMedia: RawNewPartMedium[];
   }>;
   newAssignmentMedia: RawNewAssignmentMedium[];
 };
@@ -43,6 +45,7 @@ export type NewAssignmentTemplateWithUnitAndPartsAndInputs = NewAssignmentTempla
   newPartTemplates: Array<NewPartTemplate & {
     newTextBoxTemplates: NewTextBoxTemplate[];
     newUploadSlotTemplates: NewUploadSlotTemplate[];
+    newPartMedia: NewPartMedium[];
   }>;
   newAssignmentMedia: NewAssignmentMedium[];
 };
@@ -149,6 +152,11 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
           ...u,
           created: new Date(u.created),
           modified: u.modified === null ? null : new Date(u.modified),
+        })),
+        newPartMedia: p.newPartMedia.map(m => ({
+          ...m,
+          created: new Date(m.created),
+          modified: m.modified === null ? null : new Date(m.modified),
         })),
       })),
       newAssignmentMedia: assignment.newAssignmentMedia.map(m => ({

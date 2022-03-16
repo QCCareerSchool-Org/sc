@@ -4,6 +4,8 @@ import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { NewPartMediumAddForm } from './NewPartMediumAddForm';
+import { NewPartMediumList } from './NewPartMediumList';
 import { NewPartTemplateEditForm } from './NewPartTemplateEditForm';
 import { NewTextBoxTemplateAddForm } from './NewTextBoxTemplateAddForm';
 import { NewTextBoxTemplateList } from './NewTextBoxTemplateList';
@@ -13,7 +15,8 @@ import type { State } from './state';
 import { initialState, reducer } from './state';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { newPartTemplateService, newTextBoxTemplateService, newUploadSlotTemplateService } from '@/services/administrators';
+import { newPartMediumService, newPartTemplateService, newTextBoxTemplateService, newUploadSlotTemplateService } from '@/services/administrators';
+import type { NewPartMediumAddPayload } from '@/services/administrators/newPartMediumService';
 import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
 import type { NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
@@ -56,6 +59,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   const delete$ = useRef(new Subject<State['form']['processingState']>());
   const textBoxInsert$ = useRef(new Subject<{ processingState: State['newTextBoxTemplateForm']['processingState']; payload: NewTextBoxTemplatePayload }>());
   const uploadSlotInsert$ = useRef(new Subject<{ processingState: State['newUoloadSlotTemplateForm']['processingState']; payload: NewUploadSlotTemplatePayload }>());
+  const mediumInsert$ = useRef(new Subject<{ processingState: State['partMediaForm']['processingState']; payload: NewPartMediumAddPayload }>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -183,6 +187,37 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
       takeUntil(destroy$),
     ).subscribe();
 
+    mediumInsert$.current.pipe(
+      filter(({ processingState }) => processingState !== 'inserting'),
+      tap(() => dispatch({ type: 'ADD_PART_MEDIUM_STARTED' })),
+      exhaustMap(({ payload }) => newPartMediumService.addPartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+        tap({
+          next: progressResponse => {
+            if (progressResponse.type === 'progress') {
+              dispatch({ type: 'ADD_PART_MEDIUM_PROGRESSED', payload: progressResponse.value });
+            } else if (progressResponse.type === 'data') {
+              dispatch({ type: 'ADD_PART_MEDIUM_SUCCEEDED', payload: progressResponse.value });
+            }
+          },
+          error: err => {
+            let message = 'Insert failed';
+            if (err instanceof HttpServiceError) {
+              if (err.login) {
+                return void navigateToLogin(router);
+              }
+              if (err.message) {
+                message = err.message;
+              }
+            }
+            dispatch({ type: 'ADD_PART_MEDIUM_FAILED', payload: message });
+            console.log(err);
+          },
+        }),
+        catchError(() => EMPTY),
+      )),
+      takeUntil(destroy$),
+    ).subscribe();
+
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
 
@@ -203,11 +238,15 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   }, []);
 
   const textBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
-    void router.push(`${router.asPath}/textBoxes/${textBoxId}`);
+    void router.push(`${router.asPath}/textBoxes/${textBoxId}`, undefined, { scroll: false });
   }, [ router ]);
 
   const uploadSlotRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
-    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}`);
+    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}`, undefined, { scroll: false });
+  }, [ router ]);
+
+  const mediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
+    void router.push(`${router.asPath}/media/${mediumId}`, undefined, { scroll: false });
   }, [ router ]);
 
   const textBoxDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
@@ -260,6 +299,26 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
   const uploadSlotOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
+  }, []);
+
+  const partMediumCaptionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'PART_MEDIA_CAPTION_CHANGED', payload: e.target.value });
+  }, []);
+
+  const partMediumOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'PART_MEDIA_ORDER_CHANGED', payload: e.target.value });
+  }, []);
+
+  const partMediumDataSourceChange = useCallback((dataSource: 'file upload' | 'url'): void => {
+    dispatch({ type: 'PART_MEDIA_DATA_SOURCE_CHANGED', payload: dataSource });
+  }, []);
+
+  const partMediumFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'PART_MEDIA_FILE_CHANGED', payload: e.target.files?.[0] ?? null });
+  }, []);
+
+  const partMediumExternalDataChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'PART_MEDIA_EXTERNAL_DATA_CHANGED', payload: e.target.value });
   }, []);
 
   if (state.error) {
@@ -369,6 +428,27 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 wordChange={uploadSlotWordChange}
                 excelChange={uploadSlotExcelChange}
                 optionalChange={uploadSlotOptionalChange}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div className="container">
+          <h2 className="h3">Part Media</h2>
+          <div className="row">
+            <div className="col-12 col-xl-6">
+              <NewPartMediumList media={state.newPartTemplate.newPartMedia} mediumRowClick={mediumRowClick} />
+            </div>
+            <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
+              <NewPartMediumAddForm
+                formState={state.partMediaForm}
+                insert$={mediumInsert$.current}
+                dataSourceChange={partMediumDataSourceChange}
+                captionChange={partMediumCaptionChange}
+                orderChange={partMediumOrderChange}
+                fileChange={partMediumFileChange}
+                externalDataChange={partMediumExternalDataChange}
               />
             </div>
           </div>

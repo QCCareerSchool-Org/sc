@@ -2,23 +2,20 @@ import type { ChangeEventHandler, FormEventHandler, MouseEventHandler, ReactElem
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
-import { NewPartTemplateFormElements } from './NewPartTemplateFormElements';
+import { NewPartMediumFormElements } from './NewPartMediumFormElements';
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { NewPartTemplatePayload, NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
+import type { NewPartMediumEditPayload } from '@/services/administrators/newPartMediumService';
 
 type Props = {
-  partTemplate: NewPartTemplateWithAssignmentAndInputs;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewPartTemplatePayload }>;
+  save$: Subject<{ processingState: State['form']['processingState']; payload: NewPartMediumEditPayload }>;
   delete$: Subject<State['form']['processingState']>;
-  titleChange: ChangeEventHandler<HTMLInputElement>;
-  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
-  descriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
-  partNumberChange: ChangeEventHandler<HTMLInputElement>;
+  captionChange: ChangeEventHandler<HTMLInputElement>;
+  orderChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, delete$, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
+export const NewPartMediumEditForm = memo(({ formState, save$, delete$, captionChange, orderChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -35,35 +32,29 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
     if (!valid) {
       return;
     }
-    if (formState.data.descriptionType !== 'text' && formState.data.descriptionType !== 'html') {
-      throw Error('Invalid description type');
-    }
     save$.next({
       processingState: formState.processingState,
       payload: {
-        title: formState.data.title,
-        description: formState.data.description.length === 0 ? null : formState.data.descriptionType === 'text' ? formState.data.description : formState.meta.sanitizedHtml,
-        descriptionType: formState.data.descriptionType,
-        partNumber: parseInt(formState.data.partNumber, 10),
+        caption: formState.data.caption,
+        order: parseInt(formState.data.order, 10),
       },
     });
   };
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this part template and all its media and inputs?\n\nmedia: ${partTemplate.newPartMedia.length}\ntext boxes: ${partTemplate?.newTextBoxTemplates.length}\nupload slots: ${partTemplate?.newUploadSlotTemplates.length}`)) {
+    if (confirm(`Are you sure you want to delete this part medium?`)) {
       delete$.next(formState.processingState);
     }
   };
 
   return (
     <form onSubmit={formSubmit}>
-      <NewPartTemplateFormElements
+      <NewPartMediumFormElements
+        formType="edit"
         formData={formState.data}
         formValidationMessages={formState.validationMessages}
-        titleChange={titleChange}
-        descriptionChange={descriptionChange}
-        descriptionTypeChange={descriptionTypeChange}
-        partNumberChange={partNumberChange}
+        captionChange={captionChange}
+        orderChange={orderChange}
       />
       <div className="d-flex align-items-center">
         <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>
@@ -73,10 +64,9 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
           {formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
         {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Save Error'}</span>}
-        {formState.processingState === 'delete error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Delete Error'}</span>}
-      </div>
+        {formState.processingState === 'delete error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Delete Error'}</span>}          </div>
     </form>
   );
 });
 
-NewPartTemplateEditForm.displayName = 'NewPartTemplateEditForm';
+NewPartMediumEditForm.displayName = 'NewPartMediumEditForm';

@@ -1,5 +1,6 @@
 import sanitizeHtml from 'sanitize-html';
 
+import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
@@ -74,6 +75,25 @@ export type State = {
     processingState: 'idle' | 'inserting' | 'insert error';
     errorMessage?: string;
   };
+  partMediaForm: {
+    data: {
+      dataSource: 'file upload' | 'url';
+      caption: string;
+      order: string;
+      file: File | null;
+      externalData: string;
+    };
+    validationMessages: {
+      dataSource?: string;
+      caption?: string;
+      order?: string;
+      file?: string;
+      externalData?: string;
+    };
+    processingState: 'idle' | 'inserting' | 'insert error';
+    progress: number;
+    errorMessage?: string;
+  };
   error: boolean;
   errorCode?: number;
 };
@@ -109,7 +129,16 @@ type Action =
   | { type: 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'ADD_UPLOAD_SLOT_TEMPLATE_STARTED' }
   | { type: 'ADD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED'; payload: NewUploadSlotTemplate }
-  | { type: 'ADD_UPLOAD_SLOT_TEMPLATE_FAILED'; payload?: string };
+  | { type: 'ADD_UPLOAD_SLOT_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'PART_MEDIA_CAPTION_CHANGED'; payload: string }
+  | { type: 'PART_MEDIA_ORDER_CHANGED'; payload: string }
+  | { type: 'PART_MEDIA_DATA_SOURCE_CHANGED'; payload: 'file upload' | 'url' }
+  | { type: 'PART_MEDIA_FILE_CHANGED'; payload: File | null }
+  | { type: 'PART_MEDIA_EXTERNAL_DATA_CHANGED'; payload: string }
+  | { type: 'ADD_PART_MEDIUM_STARTED' }
+  | { type: 'ADD_PART_MEDIUM_PROGRESSED'; payload: number }
+  | { type: 'ADD_PART_MEDIUM_SUCCEEDED'; payload: NewPartMedium }
+  | { type: 'ADD_PART_MEDIUM_FAILED'; payload?: string };
 
 export const initialState: State = {
   form: {
@@ -154,6 +183,18 @@ export const initialState: State = {
     validationMessages: {},
     processingState: 'idle',
     errorMessage: undefined,
+  },
+  partMediaForm: {
+    data: {
+      caption: '',
+      order: '0',
+      dataSource: 'file upload',
+      file: null,
+      externalData: '',
+    },
+    validationMessages: {},
+    processingState: 'idle',
+    progress: 0,
   },
   error: false,
 };
@@ -208,6 +249,19 @@ export const reducer = (state: State, action: Action): State => {
           validationMessages: {},
           processingState: 'idle',
           errorMessage: undefined,
+        },
+        partMediaForm: {
+          ...state.partMediaForm,
+          data: {
+            dataSource: 'file upload',
+            caption: '',
+            order: action.payload.newPartMedia.length === 0 ? '0' : Math.max(...action.payload.newPartMedia.map(m => m.order)).toString(),
+            file: null,
+            externalData: '',
+          },
+          validationMessages: {},
+          processingState: 'idle',
+          progress: 0,
         },
         error: false,
       };
@@ -656,6 +710,155 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         newUoloadSlotTemplateForm: { ...state.newUoloadSlotTemplateForm, processingState: 'insert error', errorMessage: action.payload },
+      };
+    case 'PART_MEDIA_CAPTION_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        const maxLength = 191;
+        const newLength = (new TextEncoder().encode(action.payload).length);
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        partMediaForm: {
+          ...state.partMediaForm,
+          data: { ...state.partMediaForm.data, caption: action.payload },
+          validationMessages: { ...state.partMediaForm.validationMessages, caption: validationMessage },
+        },
+      };
+    }
+    case 'PART_MEDIA_ORDER_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        const order = parseInt(action.payload, 10);
+        if (isNaN(order)) {
+          validationMessage = 'Invalid number';
+        } else if (order < 0) {
+          validationMessage = 'Cannot be less than zero';
+        } else if (order > 127) {
+          validationMessage = 'Cannot be greater than 127';
+        }
+      }
+      return {
+        ...state,
+        partMediaForm: {
+          ...state.partMediaForm,
+          data: { ...state.partMediaForm.data, order: action.payload },
+          validationMessages: { ...state.partMediaForm.validationMessages, order: validationMessage },
+        },
+      };
+    }
+    case 'PART_MEDIA_DATA_SOURCE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else if (![ 'file upload', 'url' ].includes(action.payload)) {
+        validationMessage = 'Invalid';
+      }
+      return {
+        ...state,
+        partMediaForm: {
+          ...state.partMediaForm,
+          data: { ...state.partMediaForm.data, dataSource: action.payload },
+          validationMessages: { ...state.partMediaForm.validationMessages, dataSource: validationMessage },
+        },
+      };
+    }
+    case 'PART_MEDIA_FILE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        if (action.payload.size >= 33_554_432) {
+          validationMessage = 'Maximum file size of 32 MB exceeded';
+        }
+      }
+      return {
+        ...state,
+        partMediaForm: {
+          ...state.partMediaForm,
+          data: { ...state.partMediaForm.data, file: action.payload },
+          validationMessages: { ...state.partMediaForm.validationMessages, file: validationMessage },
+        },
+      };
+    }
+    case 'PART_MEDIA_EXTERNAL_DATA_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        if (!action.payload.startsWith('https://')) {
+          validationMessage = 'Must start with https://';
+        }
+      }
+      return {
+        ...state,
+        partMediaForm: {
+          ...state.partMediaForm,
+          data: { ...state.partMediaForm.data, externalData: action.payload },
+          validationMessages: { ...state.partMediaForm.validationMessages, externalData: validationMessage },
+        },
+      };
+    }
+    case 'ADD_PART_MEDIUM_STARTED':
+      return {
+        ...state,
+        partMediaForm: {
+          ...state.partMediaForm,
+          processingState: 'inserting',
+          progress: 0,
+          errorMessage: undefined,
+        },
+      };
+    case 'ADD_PART_MEDIUM_PROGRESSED':
+      return {
+        ...state,
+        partMediaForm: {
+          ...state.partMediaForm,
+          progress: action.payload,
+        },
+      };
+    case 'ADD_PART_MEDIUM_SUCCEEDED': {
+      if (!state.newPartTemplate) {
+        throw Error('newPartTemplate is undefined');
+      }
+      const newPartMedia = [ ...state.newPartTemplate.newPartMedia, action.payload ].sort((a, b) => {
+        if (a.order === b.order) {
+          return uuidService.compare(a.partMediumId, b.partMediumId);
+        }
+        return a.order - b.order;
+      });
+      return {
+        ...state,
+        newPartTemplate: {
+          ...state.newPartTemplate,
+          newPartMedia,
+        },
+        partMediaForm: {
+          ...state.partMediaForm,
+          data: {
+            ...state.partMediaForm.data,
+            caption: '',
+            order: Math.max(...newPartMedia.map(m => m.order)).toString(),
+            file: null,
+            externalData: '',
+          },
+          processingState: 'idle',
+          progress: 100,
+        },
+      };
+    }
+    case 'ADD_PART_MEDIUM_FAILED':
+      return {
+        ...state,
+        partMediaForm: {
+          ...state.partMediaForm,
+          processingState: 'insert error',
+          progress: 0,
+          errorMessage: action.payload,
+        },
       };
   }
 };

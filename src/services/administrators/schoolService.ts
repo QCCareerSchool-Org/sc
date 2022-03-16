@@ -1,9 +1,9 @@
 import type { Observable } from 'rxjs';
 
-import { endpoint } from '../../basePath';
-import type { IHttpService } from '../httpService';
 import type { Course } from '@/domain/course';
 import type { School } from '@/domain/school';
+import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type SchoolWithCourses = School & {
   courses: Course[];

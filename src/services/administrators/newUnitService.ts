@@ -1,10 +1,10 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
-import type { IHttpService } from '../httpService';
 
 import type { Course } from '@/domain/course';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
 import type { NewUnit, RawNewUnit } from '@/domain/newUnit';
+import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export type NewUnitWithCourseAndAssignments = NewUnit & {

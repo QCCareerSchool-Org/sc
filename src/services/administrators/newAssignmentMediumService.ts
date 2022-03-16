@@ -1,11 +1,11 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
-import type { IHttpService, ProgressResponse } from '../httpService';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import type { IHttpService, ProgressResponse } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewAssignmentMediumAddPayload = {
   caption: string;
