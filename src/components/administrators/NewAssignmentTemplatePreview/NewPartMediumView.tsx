@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { PdfIcon } from '@/components/PdfIcon';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import { endpoint } from 'src/basePath';
 
@@ -37,6 +38,10 @@ export const NewPartMediumView = memo(({ className, administratorId, schoolId, c
         <source type={newPartMedium.mimeTypeId} src={src} />
       </audio>
     );
+  }
+
+  if (newPartMedium.type === 'download') {
+    return <a href={src} download><PdfIcon /></a>;
   }
 
   return null;

@@ -61,7 +61,7 @@ export const NewPartMediumFormElements = ({ formType, formData, formValidationMe
                   ? <ProgressBar progress={progress}>{progress.toFixed(0)}%</ProgressBar>
                   : (
                     <>
-                      <input onChange={fileChange} className={`form-control ${formValidationMessages.file ? 'is-invalid' : ''}`} type="file" accept="image/*, video/*, audio/*" id={id + '_newPartMediaFile'} aria-describedby={id + '_newPartMediaFileHelp'} required={formData.dataSource === 'file upload'} />
+                      <input onChange={fileChange} className={`form-control ${formValidationMessages.file ? 'is-invalid' : ''}`} type="file" accept="image/*, video/*, audio/*, application/pdf" id={id + '_newPartMediaFile'} aria-describedby={id + '_newPartMediaFileHelp'} required={formData.dataSource === 'file upload'} />
                       <div id={id + '_newPartMediaFileHelp'} className="form-text">Select a file from your computer to upload</div>
                     </>
                   )}

@@ -62,7 +62,7 @@ export const NewPartMediumAddForm = memo(({ formState, insert$, dataSourceChange
   return (
     <div className="card">
       <div className="card-body">
-        <h3 className="h5">New Assignment Medium</h3>
+        <h3 className="h5">New Part Medium</h3>
         <form onSubmit={formSubmit}>
           <NewPartMediumFormElements
             formType="add"

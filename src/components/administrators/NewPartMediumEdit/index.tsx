@@ -7,6 +7,7 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import { NewPartMediumEditForm } from './NewPartMediumEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { PdfIcon } from '@/components/PdfIcon';
 import { newPartMediumService } from '@/services/administrators';
 import type { NewPartMediumEditPayload } from '@/services/administrators/newPartMediumService';
 import { HttpServiceError } from '@/services/httpService';
@@ -131,7 +132,7 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
     <>
       <section>
         <div className="container">
-          <h1>Edit Assignment Media</h1>
+          <h1>Edit Part Media</h1>
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewPartMediumEditForm
@@ -175,6 +176,9 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
             <audio controls>
               <source src={src} type={state.newPartMedium.mimeTypeId} />
             </audio>
+          )}
+          {state.newPartMedium.type === 'download' && (
+            <a href={src} download><PdfIcon /></a>
           )}
         </div>
       </section>
