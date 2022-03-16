@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart, RawNewPart } from '@/domain/newPart';
+import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
@@ -14,6 +15,7 @@ export type NewAssignmentWithChildren = NewAssignment & {
   newParts: Array<NewPart & {
     newTextBoxes: Array<NewTextBox>;
     newUploadSlots: Array<NewUploadSlot>;
+    newPartMedia: NewPartMedium[];
   }>;
 };
 
@@ -22,6 +24,7 @@ type RawNewAssignmentWithChildren = RawNewAssignment & {
   newParts: Array<RawNewPart & {
     newTextBoxes: Array<RawNewTextBox>;
     newUploadSlots: Array<RawNewUploadSlot>;
+    newPartMedia: RawNewPartMedium[];
   }>;
 };
 
@@ -101,6 +104,11 @@ export class NewAssignmentService implements INewAssignmentService {
           ...u,
           created: new Date(u.created),
           modified: u.modified === null ? null : new Date(u.modified),
+        })),
+        newPartMedia: p.newPartMedia.map(m => ({
+          ...m,
+          created: new Date(m.created),
+          modified: m.modified === null ? null : new Date(m.modified),
         })),
       })),
     };

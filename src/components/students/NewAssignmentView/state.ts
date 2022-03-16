@@ -1,6 +1,7 @@
 import type { NewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart } from '@/domain/newPart';
+import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignmentWithChildren } from '@/services/students/newAssignmentService';
@@ -25,6 +26,7 @@ export type PartState = NewPart & {
   saveState: 'saved' | 'unsaved' | 'saving' | 'error';
   textBoxes: TextBoxState[];
   uploadSlots: UploadSlotState[];
+  newPartMedia: NewPartMedium[];
 };
 
 export type AssignmentState = NewAssignment & {

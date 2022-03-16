@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { memo } from 'react';
 
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import { endpoint } from 'src/basePath';
@@ -12,7 +13,7 @@ type Props = {
   newAssignmentMedium: NewAssignmentMedium;
 };
 
-export const NewAssignmentMediumView = ({ className, studentId, courseId, unitId, assignmentId, newAssignmentMedium }: Props): ReactElement | null => {
+export const NewAssignmentMediumView = memo(({ className, studentId, courseId, unitId, assignmentId, newAssignmentMedium }: Props): ReactElement | null => {
   const src = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}/media/${newAssignmentMedium.assignmentMediumId}/file`;
 
   if (newAssignmentMedium.type === 'image') {
@@ -37,4 +38,6 @@ export const NewAssignmentMediumView = ({ className, studentId, courseId, unitId
   }
 
   return null;
-};
+});
+
+NewAssignmentMediumView.displayName = 'NewAssignmentMediumView';

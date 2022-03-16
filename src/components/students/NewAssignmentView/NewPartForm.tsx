@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
 import type { TextBoxFunction, UploadSlotFunction } from '.';
@@ -8,6 +9,10 @@ import type { PartState } from '@/components/students/NewAssignmentView/state';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
 
 type Props = {
+  studentId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
   part: PartState;
   saveText: TextBoxFunction;
   updateText: TextBoxFunction;
@@ -16,13 +21,19 @@ type Props = {
   downloadFile: UploadSlotFunction;
 };
 
-export const NewPartForm = memo(({ part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => (
+export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => (
   <section>
     <div className="container">
       <h2 className="h3"><span className="text-danger">{part.partNumber}.</span> {part.title}</h2>
       {part.description && <Description description={part.description} descriptionType={part.descriptionType} />}
       <div className="row">
         <div className="col col-md-10 col-lg-8">
+          {part.newPartMedia.map(m => (
+            <figure key={m.partMediumId} className="figure d-block">
+              <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
+              <figcaption className="figure-caption">{m.caption}</figcaption>
+            </figure>
+          ))}
           {part.textBoxes.map(t => (
             <NewTextBoxForm
               key={t.textBoxId}
