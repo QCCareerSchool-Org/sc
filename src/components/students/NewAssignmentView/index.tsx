@@ -181,6 +181,10 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       {state.assignment.parts.map(p => (
         <NewPartForm
           key={p.partId}
+          studentId={studentId}
+          courseId={courseId}
+          unitId={unitId}
+          assignmentId={assignmentId}
           part={p}
           updateText={updateText}
           saveText={saveText}
