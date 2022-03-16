@@ -1,5 +1,5 @@
-import type Axios from '@qccareerschool/axios-observable';
 import type { AxiosResponse } from 'axios';
+import type axios from 'axios-observable';
 import { saveAs } from 'file-saver';
 import type { Observable } from 'rxjs';
 import { catchError, from, map, merge, Subject, tap, throwError } from 'rxjs';
@@ -32,7 +32,7 @@ export interface IHttpService {
 
 export class AxiosHttpService implements IHttpService {
 
-  public constructor(private readonly instance: Axios) { /* */ }
+  public constructor(private readonly instance: axios) { /* */ }
 
   public get<T>(url: string, config?: Config): Observable<T> {
     return this.instance.get<T>(url, config).pipe(
