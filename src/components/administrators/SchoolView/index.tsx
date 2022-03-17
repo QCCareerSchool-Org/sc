@@ -52,7 +52,7 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
   }
 
   const courseRowClick = (e: MouseEvent<HTMLTableRowElement>, courseId: number): void => {
-    void router.push(`${router.asPath}/courses/${courseId}`, undefined, { scroll: false });
+    void router.push(`${router.asPath}/courses/${courseId}`);
   };
 
   return (

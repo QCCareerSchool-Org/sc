@@ -238,15 +238,15 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   }, []);
 
   const textBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
-    void router.push(`${router.asPath}/textBoxes/${textBoxId}`, undefined, { scroll: false });
+    void router.push(`${router.asPath}/textBoxes/${textBoxId}`);
   }, [ router ]);
 
   const uploadSlotRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
-    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}`, undefined, { scroll: false });
+    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}`);
   }, [ router ]);
 
   const mediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
-    void router.push(`${router.asPath}/media/${mediumId}`, undefined, { scroll: false });
+    void router.push(`${router.asPath}/media/${mediumId}`);
   }, [ router ]);
 
   const textBoxDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {

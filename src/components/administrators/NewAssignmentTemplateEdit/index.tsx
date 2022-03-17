@@ -210,11 +210,11 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
   }, []);
 
   const partRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, partId: string): void => {
-    void router.push(`${router.asPath}/parts/${partId}`, undefined, { scroll: false });
+    void router.push(`${router.asPath}/parts/${partId}`);
   }, [ router ]);
 
   const mediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
-    void router.push(`${router.asPath}/media/${mediumId}`, undefined, { scroll: false });
+    void router.push(`${router.asPath}/media/${mediumId}`);
   }, [ router ]);
 
   const partTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {

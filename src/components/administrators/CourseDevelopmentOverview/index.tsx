@@ -51,7 +51,7 @@ export const CourseDevelopmentOverview = ({ administratorId }: Props): ReactElem
   }
 
   const schoolRowClick = (e: MouseEvent<HTMLTableRowElement>, schoolId: number): void => {
-    void router.push(`/administrators/schools/${schoolId}`, undefined, { scroll: false });
+    void router.push(`/administrators/schools/${schoolId}`);
   };
 
   return (

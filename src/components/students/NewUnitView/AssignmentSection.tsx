@@ -16,7 +16,7 @@ export const AssignmentSection = ({ unit }: Props): ReactElement | null => {
     if (e.ctrlKey || e.metaKey) {
       window.open(basePath + url, '_ blank');
     } else {
-      void router.push(url, undefined, { scroll: false });
+      void router.push(url);
     }
   };
 

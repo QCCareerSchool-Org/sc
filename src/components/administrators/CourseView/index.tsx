@@ -74,7 +74,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
   }, [ router, administratorId, schoolId, courseId ]);
 
   const unitRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
-    void router.push(`${router.asPath}/newUnitTemplates/${unitId}`, undefined, { scroll: false });
+    void router.push(`${router.asPath}/newUnitTemplates/${unitId}`);
   }, [ router ]);
 
   const unitTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {

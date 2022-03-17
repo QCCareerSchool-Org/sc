@@ -180,7 +180,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   }, []);
 
   const assignmentRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
-    void router.push(`${router.asPath}/assignments/${assignmentId}`, undefined, { scroll: false });
+    void router.push(`${router.asPath}/assignments/${assignmentId}`);
   }, [ router ]);
 
   const assignmentTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
