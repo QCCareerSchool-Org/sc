@@ -60,7 +60,7 @@ export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, pa
       </div>
       <style jsx>{`
       .downloadFigure {
-        width: 136px;
+        ${screenWidth >= 992 ? 'width: 128px; margin-right: 1rem' : screenWidth >= 360 ? 'width: 96px; margin-right: 1rem' : 'width: 100%'}
       }
       `}</style>
     </section>
