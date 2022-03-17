@@ -2,6 +2,7 @@ import type { MouseEvent, ReactElement } from 'react';
 import { memo } from 'react';
 
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
+import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
 type Props = {
   media: NewAssignmentMedium[];
@@ -18,6 +19,7 @@ export const NewAssignmentMediumList = memo(({ media, mediumRowClick }: Props): 
             <tr>
               <th>Caption</th>
               <th>Type</th>
+              <th className="text-end">Size</th>
               <th className="text-center">Order</th>
             </tr>
           </thead>
@@ -26,6 +28,7 @@ export const NewAssignmentMediumList = memo(({ media, mediumRowClick }: Props): 
               <tr key={m.assignmentMediumId} onClick={e => mediumRowClick(e, m.assignmentMediumId)}>
                 <td>{m.caption}</td>
                 <td>{m.type}</td>
+                <td className="text-end">{humanReadableFileSize(m.size)}</td>
                 <td className="text-center">{m.order}</td>
               </tr>
             ))}

@@ -1,4 +1,5 @@
 import NextError from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useEffect, useReducer } from 'react';
@@ -177,7 +178,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
                 </figure>
               ))}
               {state.assignment.newAssignmentMedia.filter(m => m.type === 'download').map(m => {
-                const href = `${endpoint}/students/${studentId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
+                const href = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
                 return (
                   <div key={m.assignmentMediumId} className="downloadMedium">
                     <a href={href} download>
@@ -207,10 +208,17 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       ))}
       <section className="bg-dark text-light">
         <div className="container">
-          {state.assignment.complete
-            ? <p className="lead">All mandatory answers are complete!</p>
-            : <p className="lead">Some mandatory answers are incomplete</p>
-          }
+          {state.assignment.complete && <p className="lead">All required parts are complete!</p>}
+          {!state.assignment.complete && (
+            <div className="mb-4">
+              <p className="lead mb-2">Some required parts are incomplete:</p>
+              <ul className="ps-3">
+                {state.assignment.parts.filter(p => !p.complete).map(p => (
+                  <li key={p.partId}><Link href={`#${p.partId}`}><a className="link-light text-decoration-none">{p.title}</a></Link></li>
+                ))}
+              </ul>
+            </div>
+          )}
           <button onClick={backButtonClick} className="btn btn-primary" disabled={state.assignment.saveState !== 'saved'}>Return to Unit Overview</button>
         </div>
       </section>

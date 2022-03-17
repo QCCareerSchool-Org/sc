@@ -25,7 +25,7 @@ type Props = {
 
 export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => {
   return (
-    <section>
+    <section id={part.partId}>
       <div className="container">
         <h2 className="h3"><span className="text-danger">{part.partNumber}.</span> {part.title}</h2>
         {part.description && <Description description={part.description} descriptionType={part.descriptionType} />}
@@ -38,7 +38,7 @@ export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, pa
               </figure>
             ))}
             {part.newPartMedia.filter(m => m.type === 'download').map(m => {
-              const href = `${endpoint}/students/${studentId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${m.partMediumId}/file`;
+              const href = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}/media/${m.partMediumId}/file`;
               return (
                 <div key={m.partMediumId} className="downloadMedium">
                   <a href={href} download>

@@ -13,6 +13,7 @@ import type { NewAssignmentMediumEditPayload } from '@/services/administrators/n
 import { HttpServiceError } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 import { formatDateTime } from 'src/formatDate';
+import { humanReadableFileSize } from 'src/humanReadableFilesize';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
@@ -151,6 +152,7 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
                     <tr><th scope="row">Filename</th><td>{state.newAssignmentMedium.filename}</td></tr>
                     <tr><th scope="row">Type</th><td>{state.newAssignmentMedium.type}</td></tr>
                     <tr><th scope="row">Mime Type</th><td>{state.newAssignmentMedium.mimeTypeId}</td></tr>
+                    <tr><th scope="row">Size</th><td>{humanReadableFileSize(state.newAssignmentMedium.size)}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newAssignmentMedium.created)}</td></tr>
                     {state.newAssignmentMedium.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newAssignmentMedium.modified)}</td></tr>}
                   </tbody>

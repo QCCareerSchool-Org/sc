@@ -4,22 +4,10 @@ import { FaDownload } from 'react-icons/fa';
 import { FileIcon } from './FileIcon';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium } from '@/domain/newPartMedium';
+import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
 type Props = {
   medium: NewAssignmentMedium | NewPartMedium;
-};
-
-const humanReadableFileSize = (filesize: number): string => {
-  if (filesize < 1024) {
-    return `${filesize} B`;
-  }
-  if (filesize < 1_048_576) {
-    return `${Math.round(filesize / 1024)} KB`;
-  }
-  if (filesize < 1_073_741_824) {
-    return `${Math.round(filesize / 1_048_576)} MB`;
-  }
-  return `${Math.round(filesize / 1_073_741_824)} GB`;
 };
 
 export const DownloadMedium = ({ medium }: Props): ReactElement => (
