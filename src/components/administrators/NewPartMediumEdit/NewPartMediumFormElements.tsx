@@ -24,6 +24,17 @@ type Props = {
   externalDataChange: ChangeEventHandler<HTMLInputElement>;
 });
 
+const allowedMimeTypes = [
+  'image/*',
+  'video/*',
+  'audio/*',
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-excel',
+];
+
 export const NewPartMediumFormElements = ({ formType, formData, formValidationMessages, inserting, progress, dataSourceChange, captionChange, orderChange, fileChange, externalDataChange }: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = Math.random().toString(32).slice(2);
@@ -61,7 +72,7 @@ export const NewPartMediumFormElements = ({ formType, formData, formValidationMe
                   ? <ProgressBar progress={progress}>{progress.toFixed(0)}%</ProgressBar>
                   : (
                     <>
-                      <input onChange={fileChange} className={`form-control ${formValidationMessages.file ? 'is-invalid' : ''}`} type="file" accept="image/*, video/*, audio/*, application/pdf" id={id + '_newPartMediaFile'} aria-describedby={id + '_newPartMediaFileHelp'} required={formData.dataSource === 'file upload'} />
+                      <input onChange={fileChange} className={`form-control ${formValidationMessages.file ? 'is-invalid' : ''}`} type="file" accept={allowedMimeTypes.join(',')} id={id + '_newPartMediaFile'} aria-describedby={id + '_newPartMediaFileHelp'} required={formData.dataSource === 'file upload'} />
                       <div id={id + '_newPartMediaFileHelp'} className="form-text">Select a file from your computer to upload</div>
                     </>
                   )}

@@ -7,7 +7,7 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import { NewPartMediumEditForm } from './NewPartMediumEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
-import { PdfIcon } from '@/components/PdfIcon';
+import { FileIcon } from '@/components/FileIcon';
 import { newPartMediumService } from '@/services/administrators';
 import type { NewPartMediumEditPayload } from '@/services/administrators/newPartMediumService';
 import { HttpServiceError } from '@/services/httpService';
@@ -178,7 +178,7 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
             </audio>
           )}
           {state.newPartMedium.type === 'download' && (
-            <a href={src} download><PdfIcon /></a>
+            <a href={src} download><FileIcon mimeType={state.newPartMedium.mimeTypeId} /></a>
           )}
         </div>
       </section>

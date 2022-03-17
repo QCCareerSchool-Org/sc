@@ -25,7 +25,7 @@ export const AssignmentSection = ({ unit }: Props): ReactElement | null => {
       <div className="container">
         <h2>Assignments</h2>
         {unit.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
-        <table className="table table-bordered bg-white w-auto">
+        <table className="table table-bordered table-hover bg-white w-auto">
           <thead>
             <tr>
               <th>#</th>
