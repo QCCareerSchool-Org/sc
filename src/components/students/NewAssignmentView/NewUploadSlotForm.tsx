@@ -46,7 +46,7 @@ export const NewUploadSlotForm = memo(({ uploadSlot, uploadFile, deleteFile, dow
   return (
     <>
       <div className="uploadSlot">
-        <label htmlFor={uploadSlot.uploadSlotId} className="form-label"><span className="fw-bold">{uploadSlot.label}:</span> <small>(type: {formatList(uploadSlot.allowedTypes)})</small></label>
+        <label htmlFor={uploadSlot.uploadSlotId} className="form-label"><span className="fw-bold">{uploadSlot.label}:</span> <small>({formatList(uploadSlot.allowedTypes.map(allowedTypeName))})</small></label>
         {uploadSlot.saveState === 'saving'
           ? <ProgressBar progress={uploadSlot.progress}>{uploadSlot.progress}%</ProgressBar>
           : uploadSlot.saveState === 'save error' || uploadSlot.saveState === 'empty'
@@ -62,13 +62,13 @@ export const NewUploadSlotForm = memo(({ uploadSlot, uploadFile, deleteFile, dow
       </div>
       <style jsx>{`
       .uploadSlot {
-        margin-bottom: 0.5rem;
-      }
-      .spacer {
-        height: 0.5rem;
+        margin-bottom: 1rem;
       }
       .uploadSlot:last-of-type {
         margin-bottom: 0;
+      }
+      .spacer {
+        height: 0.5rem;
       }
       `}</style>
     </>
@@ -126,17 +126,30 @@ const FullSlot = ({ uploadSlot, delete$, download$ }: FullSlotProps): ReactEleme
   return (
     <>
       <div className="d-flex flex-column-reverse flex-md-row align-items-md-center">
-        <button
-          onClick={deleteClick}
-          className="btn btn-danger me-3 mt-2 mt-md-0"
-          style={{ width: 90 }} // fixed width so that the button doesn't change size when the text is replaced with a spinner
-          disabled={uploadSlot.saveState === 'deleting'}
-        >{uploadSlot.saveState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}</button>
-        {uploadSlot.filename && <><a href="#" onClick={downloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.size && <>({humanReadablefilesize(uploadSlot.size)})</>}</>}
+        <button onClick={deleteClick} className="btn btn-danger me-0 me-md-3 mt-3 mt-md-0" style={{ width: 90 }} disabled={uploadSlot.saveState === 'deleting'}>
+          {uploadSlot.saveState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
+        </button>
+        <div>{uploadSlot.filename && <><a href="#" onClick={downloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.size && <>({humanReadablefilesize(uploadSlot.size)})</>}</>}</div>
       </div>
       {uploadSlot.saveState === 'delete error' && <small className="text-danger me-2">Error deleting file</small>}
     </>
   );
+};
+
+const allowedTypeName = (allowedType: string): string => {
+  if (allowedType === 'image') {
+    return 'image';
+  }
+  if (allowedType === 'pdf') {
+    return 'PDF document';
+  }
+  if (allowedType === 'word') {
+    return 'Word document';
+  }
+  if (allowedType === 'excel') {
+    return 'Excel document';
+  }
+  return allowedType;
 };
 
 const accept = (allowedTypes: string[]): string => {

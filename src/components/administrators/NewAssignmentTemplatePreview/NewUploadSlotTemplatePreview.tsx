@@ -10,7 +10,7 @@ export const NewUploadSlotTemplatePreview = ({ newUploadSlotTemplate }: Props): 
   return (
     <>
       <div className="formGroup">
-        <label htmlFor={newUploadSlotTemplate.uploadSlotTemplateId} className="form-label"><span className="fw-bold">{newUploadSlotTemplate.label}:</span> <small>(type: {formatList(newUploadSlotTemplate.allowedTypes)})</small></label>
+        <label htmlFor={newUploadSlotTemplate.uploadSlotTemplateId} className="form-label"><span className="fw-bold">{newUploadSlotTemplate.label}:</span> <small>({formatList(newUploadSlotTemplate.allowedTypes.map(allowedTypeName))})</small></label>
         <input type="file" accept={accept(newUploadSlotTemplate.allowedTypes)} className="form-control" id={newUploadSlotTemplate.uploadSlotTemplateId} />
         {newUploadSlotTemplate.optional
           ? <small className="text-danger me-2">optional</small>
@@ -19,13 +19,13 @@ export const NewUploadSlotTemplatePreview = ({ newUploadSlotTemplate }: Props): 
       </div>
       <style jsx>{`
         .formGroup {
-          margin-bottom: 0.5rem;
-        }
-        .spacer {
-          height: 0.5rem;
+          margin-bottom: 1rem;
         }
         .formGroup:last-of-type {
           margin-bottom: 0;
+        }
+        .spacer {
+          height: 0.5rem;
         }
       `}</style>
     </>
@@ -46,6 +46,22 @@ const accept = (allowedTypes: string[]): string => {
     }
   }
   return accepted.join(',');
+};
+
+const allowedTypeName = (allowedType: string): string => {
+  if (allowedType === 'image') {
+    return 'image';
+  }
+  if (allowedType === 'pdf') {
+    return 'PDF document';
+  }
+  if (allowedType === 'word') {
+    return 'Word document';
+  }
+  if (allowedType === 'excel') {
+    return 'Excel document';
+  }
+  return allowedType;
 };
 
 const formatList = (list: string[]): string => {
