@@ -178,7 +178,7 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
             </audio>
           )}
           {state.newPartMedium.type === 'download' && (
-            <a href={src} download><FileIcon mimeType={state.newPartMedium.mimeTypeId} /></a>
+            <a href={src} download><FileIcon mimeType={state.newPartMedium.mimeTypeId} size={96} /></a>
           )}
         </div>
       </section>
