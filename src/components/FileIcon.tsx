@@ -15,7 +15,7 @@ export const FileIcon = memo(({ mimeType }: Props): ReactElement => {
 
   return (
     <>
-      <div className="offset">
+      <div className="d-inline-block me-2 offset">
         <Icon mimeType={mimeType} iconSize={iconSize} />
       </div>
       <style jsx>{`

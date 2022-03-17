@@ -66,7 +66,7 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
           <div className="row">
             <div className="col-12 col-lg-10 col-xl-8">
               {state.assignmentTemplate.newAssignmentMedia.map(m => (
-                <figure key={m.assignmentMediumId} className="figure">
+                <figure key={m.assignmentMediumId} className={`figure ${m.type !== 'download' ? 'd-block' : ''}`}>
                   <NewAssignmentMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
                   <figcaption className="figure-caption">{m.caption}</figcaption>
                 </figure>

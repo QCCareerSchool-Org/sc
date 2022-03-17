@@ -32,7 +32,7 @@ export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, un
         <div className="col col-md-10 col-lg-8">
           {newPartTemplate.description && <Description description={newPartTemplate.description} descriptionType={newPartTemplate.descriptionType} />}
           {newPartTemplate.newPartMedia.map(m => (
-            <figure key={m.partMediumId} className="figure d-block">
+            <figure key={m.partMediumId} className={`figure ${m.type !== 'download' ? 'd-block' : ''}`}>
               <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
               <figcaption className="figure-caption">{m.caption}</figcaption>
             </figure>
