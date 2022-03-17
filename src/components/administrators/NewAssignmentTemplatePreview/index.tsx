@@ -7,9 +7,11 @@ import { Subject, takeUntil } from 'rxjs';
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
+import { DownloadMedium } from '@/components/DownloadMedium';
 import { useScreenWidth } from '@/hooks/useScreenWidth';
 import { newAssignmentTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
@@ -66,22 +68,24 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
           <h1>Assignment {state.assignmentTemplate.assignmentNumber}{state.assignmentTemplate.title && <>: {state.assignmentTemplate.title}</>}</h1>
           {state.assignmentTemplate.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
           <div className="row">
-            {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
-              <div key={m.assignmentMediumId} className="col-12 col-lg-10 col-xl-8">
-                <figure className={`figure ${m.type}Figure`}>
+            <div className="col-12 col-lg-10 col-xl-8">
+              {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
+                <figure key={m.assignmentMediumId} className={`figure ${m.type}Figure d-block`}>
                   <NewAssignmentMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
                   <figcaption className="figure-caption">{m.caption}</figcaption>
                 </figure>
-              </div>
-            ))}
-          </div>
-          <div className="d-flex flex-wrap align-items-top">
-            {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type === 'download').map(m => (
-              <figure key={m.assignmentMediumId} className={`figure ${m.type}Figure`}>
-                <NewAssignmentMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
-                <figcaption className="figure-caption">{m.caption}</figcaption>
-              </figure>
-            ))}
+              ))}
+              {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type === 'download').map(m => {
+                const href = `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
+                return (
+                  <div key={m.assignmentMediumId} className="downloadMedium">
+                    <a href={href} download>
+                      <DownloadMedium medium={m} />
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -97,8 +101,15 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
         />
       ))}
       <style jsx>{`
-      .downloadFigure {
-        ${screenWidth >= 992 ? 'width: 128px; margin-right: 1rem' : screenWidth >= 360 ? 'width: 96px; margin-right: 1rem' : 'width: 100%'}
+      .downloadMedium {
+        margin-bottom: 1rem;
+      }
+      .downloadMedium:last-of-type {
+        margin-bottom: 0;
+      }
+      .downloadMedium a {
+        text-decoration: none;
+        color: inherit;
       }
       `}</style>
     </>

@@ -3,12 +3,13 @@ import type { ReactElement } from 'react';
 import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxTemplatePreview } from './NewTextBoxTemplatePreview';
 import { NewUploadSlotTemplatePreview } from './NewUploadSlotTemplatePreview';
+import { DownloadMedium } from '@/components/DownloadMedium';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
+import { endpoint } from 'src/basePath';
 
 type NewPartTemplateWithInputs = NewPartTemplate & {
   newTextBoxTemplates: NewTextBoxTemplate[];
@@ -26,40 +27,44 @@ type Props = {
 };
 
 export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, unitId, assignmentId, newPartTemplate }: Props): ReactElement => {
-  const screenWidth = useScreenWidth();
   return (
     <section>
       <div className="container">
         <h2 className="h3"><span className="text-danger">{newPartTemplate.partNumber}.</span> {newPartTemplate.title}</h2>
         {newPartTemplate.description && <Description description={newPartTemplate.description} descriptionType={newPartTemplate.descriptionType} />}
         <div className="row">
-          {newPartTemplate.newPartMedia.filter(m => m.type !== 'download').map(m => (
-            <div key={m.partMediumId} className="col-12 col-lg-10 col-xl-8">
-              <figure className={`figure ${m.type}Figure`}>
+          <div className="col-12 col-lg-10 col-xl-8">
+            {newPartTemplate.newPartMedia.filter(m => m.type !== 'download').map(m => (
+              <figure key={m.partMediumId} className={`figure ${m.type}Figure`}>
                 <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
                 <figcaption className="figure-caption">{m.caption}</figcaption>
               </figure>
-            </div>
-          ))}
-        </div>
-        <div className="d-flex flex-wrap align-items-top">
-          {newPartTemplate.newPartMedia.filter(m => m.type === 'download').map(m => (
-            <figure key={m.partMediumId} className={`figure ${m.type}Figure`}>
-              <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
-              <figcaption className="figure-caption">{m.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
-        <div className="row">
-          <div className="col col-md-10 col-lg-8">
+            ))}
+            {newPartTemplate.newPartMedia.filter(m => m.type === 'download').map(m => {
+              const href = `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${m.partMediumId}/file`;
+              return (
+                <div key={m.partMediumId} className="downloadMedium">
+                  <a href={href} download>
+                    <DownloadMedium medium={m} />
+                  </a>
+                </div>
+              );
+            })}
             {newPartTemplate.newTextBoxTemplates.map(t => <NewTextBoxTemplatePreview key={t.textBoxTemplateId} newTextBoxTemplate={t} />)}
             {newPartTemplate.newUploadSlotTemplates.map(u => <NewUploadSlotTemplatePreview key={u.uploadSlotTemplateId} newUploadSlotTemplate={u} />)}
           </div>
         </div>
       </div>
       <style jsx>{`
-      .downloadFigure {
-        ${screenWidth >= 992 ? 'width: 128px; margin-right: 1rem' : screenWidth >= 360 ? 'width: 96px; margin-right: 1rem' : 'width: 100%'}
+      .downloadMedium {
+        margin-bottom: 1rem;
+      }
+      .downloadMedium:last-of-type {
+        margin-bottom: 0;
+      }
+      .downloadMedium a {
+        text-decoration: none;
+        color: inherit;
       }
       `}</style>
     </section>

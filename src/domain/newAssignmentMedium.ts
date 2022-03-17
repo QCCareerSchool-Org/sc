@@ -10,6 +10,7 @@ export type NewAssignmentMedium = {
   filename: string;
   caption: string;
   externalData: string | null;
+  size: number;
   order: number;
   created: Date;
   modified: Date | null;
@@ -25,6 +26,7 @@ export type RawNewAssignmentMedium = {
   filename: string;
   caption: string;
   externalData: string | null;
+  size: number;
   order: number;
   /** string date */
   created: string;
