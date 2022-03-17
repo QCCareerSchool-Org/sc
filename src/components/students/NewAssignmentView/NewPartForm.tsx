@@ -29,7 +29,7 @@ export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, pa
       <div className="row">
         <div className="col col-md-10 col-lg-8">
           {part.newPartMedia.map(m => (
-            <figure key={m.partMediumId} className="figure d-block">
+            <figure key={m.partMediumId} className={`figure ${m.type !== 'download' ? 'd-block' : ''}`}>
               <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
               <figcaption className="figure-caption">{m.caption}</figcaption>
             </figure>

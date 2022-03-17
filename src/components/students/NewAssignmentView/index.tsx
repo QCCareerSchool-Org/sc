@@ -169,7 +169,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           <div className="row">
             <div className="col-12 col-lg-10 col-xl-8">
               {state.assignment.newAssignmentMedia.map(m => (
-                <figure key={m.assignmentMediumId} className="figure d-block">
+                <figure key={m.assignmentMediumId} className={`figure ${m.type !== 'download' ? 'd-block' : ''}`}>
                   <NewAssignmentMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
                   <figcaption className="figure-caption">{m.caption}</figcaption>
                 </figure>
