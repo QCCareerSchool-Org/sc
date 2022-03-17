@@ -167,14 +167,24 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
           {state.assignment.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
           <div className="row">
-            <div className="col-12 col-lg-10 col-xl-8">
-              {state.assignment.newAssignmentMedia.map(m => (
-                <figure key={m.assignmentMediumId} className={`figure ${m.type !== 'download' ? 'd-block' : ''}`}>
+            {state.assignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
+              <div key={m.assignmentMediumId} className="col-12 col-lg-10 col-xl-8">
+                <figure className={`figure ${m.type}Figure`}>
                   <NewAssignmentMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
                   <figcaption className="figure-caption">{m.caption}</figcaption>
                 </figure>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
+          <div className="row">
+            {state.assignment.newAssignmentMedia.filter(m => m.type === 'download').map(m => (
+              <div key={m.assignmentMediumId} className="col-4 col-sm-3 col-md-2">
+                <figure className={`figure ${m.type}Figure`}>
+                  <NewAssignmentMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
+                  <figcaption className="figure-caption">{m.caption}</figcaption>
+                </figure>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -202,6 +212,11 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           <button onClick={backButtonClick} className="btn btn-primary" disabled={state.assignment.saveState !== 'saved'}>Return to Unit Overview</button>
         </div>
       </section>
+      <style jsx>{`
+      .downloadFigure {
+        max-width: 136px;
+      }
+      `}</style>
     </>
   );
 };

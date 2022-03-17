@@ -27,33 +27,41 @@ export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, pa
       <h2 className="h3"><span className="text-danger">{part.partNumber}.</span> {part.title}</h2>
       {part.description && <Description description={part.description} descriptionType={part.descriptionType} />}
       <div className="row">
-        <div className="col col-md-10 col-lg-8">
-          {part.newPartMedia.map(m => (
-            <figure key={m.partMediumId} className={`figure ${m.type !== 'download' ? 'd-block' : ''}`}>
+        {part.newPartMedia.filter(m => m.type !== 'download').map(m => (
+          <div key={m.partMediumId} className="col-12 col-lg-10 col-xl-8">
+            <figure className={`figure ${m.type}Figure`}>
               <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
               <figcaption className="figure-caption">{m.caption}</figcaption>
             </figure>
-          ))}
+          </div>
+        ))}
+      </div>
+      <div className="row">
+        {part.newPartMedia.filter(m => m.type === 'download').map(m => (
+          <div key={m.partMediumId} className="col-4 col-sm-3 col-md-2">
+            <figure className={`figure ${m.type}Figure`}>
+              <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
+              <figcaption className="figure-caption">{m.caption}</figcaption>
+            </figure>
+          </div>
+        ))}
+      </div>
+      <div className="row">
+        <div className="col col-md-10 col-lg-8">
           {part.textBoxes.map(t => (
-            <NewTextBoxForm
-              key={t.textBoxId}
-              textBox={t}
-              save={saveText}
-              update={updateText}
-            />
+            <NewTextBoxForm key={t.textBoxId} textBox={t} save={saveText} update={updateText} />
           ))}
           {part.uploadSlots.map(u => (
-            <NewUploadSlotForm
-              key={u.uploadSlotId}
-              uploadSlot={u}
-              uploadFile={uploadFile}
-              deleteFile={deleteFile}
-              downloadFile={downloadFile}
-            />
+            <NewUploadSlotForm key={u.uploadSlotId} uploadSlot={u} uploadFile={uploadFile} deleteFile={deleteFile} downloadFile={downloadFile} />
           ))}
         </div>
       </div>
     </div>
+    <style jsx>{`
+    .downloadFigure {
+      max-width: 136px;
+    }
+    `}</style>
   </section>
 ));
 

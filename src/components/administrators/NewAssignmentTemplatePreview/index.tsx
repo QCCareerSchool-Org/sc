@@ -64,14 +64,24 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
           <h1>Assignment {state.assignmentTemplate.assignmentNumber}{state.assignmentTemplate.title && <>: {state.assignmentTemplate.title}</>}</h1>
           {state.assignmentTemplate.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
           <div className="row">
-            <div className="col-12 col-lg-10 col-xl-8">
-              {state.assignmentTemplate.newAssignmentMedia.map(m => (
-                <figure key={m.assignmentMediumId} className={`figure ${m.type !== 'download' ? 'd-block' : ''}`}>
+            {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
+              <div key={m.assignmentMediumId} className="col-12 col-lg-10 col-xl-8">
+                <figure className={`figure ${m.type}Figure`}>
                   <NewAssignmentMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
                   <figcaption className="figure-caption">{m.caption}</figcaption>
                 </figure>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
+          <div className="row">
+            {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type === 'download').map(m => (
+              <div key={m.assignmentMediumId} className="col-4 col-sm-3 col-md-2">
+                <figure className={`figure ${m.type}Figure`}>
+                  <NewAssignmentMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
+                  <figcaption className="figure-caption">{m.caption}</figcaption>
+                </figure>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -86,6 +96,11 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
           newPartTemplate={p}
         />
       ))}
+      <style jsx>{`
+      .downloadFigure {
+        max-width: 136px;
+      }
+      `}</style>
     </>
   );
 };

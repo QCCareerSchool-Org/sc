@@ -8,6 +8,7 @@ import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
+import { useScreenWidth } from '@/hooks/useScreenWidth';
 
 type NewPartTemplateWithInputs = NewPartTemplate & {
   newTextBoxTemplates: NewTextBoxTemplate[];
@@ -29,18 +30,39 @@ export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, un
     <section>
       <div className="container">
         <h2 className="h3"><span className="text-danger">{newPartTemplate.partNumber}.</span> {newPartTemplate.title}</h2>
-        <div className="col col-md-10 col-lg-8">
-          {newPartTemplate.description && <Description description={newPartTemplate.description} descriptionType={newPartTemplate.descriptionType} />}
-          {newPartTemplate.newPartMedia.map(m => (
-            <figure key={m.partMediumId} className={`figure ${m.type !== 'download' ? 'd-block' : ''}`}>
-              <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
-              <figcaption className="figure-caption">{m.caption}</figcaption>
-            </figure>
+        {newPartTemplate.description && <Description description={newPartTemplate.description} descriptionType={newPartTemplate.descriptionType} />}
+        <div className="row">
+          {newPartTemplate.newPartMedia.filter(m => m.type !== 'download').map(m => (
+            <div key={m.partMediumId} className="col-12 col-lg-10 col-xl-8">
+              <figure className={`figure ${m.type}Figure`}>
+                <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
+                <figcaption className="figure-caption">{m.caption}</figcaption>
+              </figure>
+            </div>
           ))}
-          {newPartTemplate.newTextBoxTemplates.map(t => <NewTextBoxTemplatePreview key={t.textBoxTemplateId} newTextBoxTemplate={t} />)}
-          {newPartTemplate.newUploadSlotTemplates.map(u => <NewUploadSlotTemplatePreview key={u.uploadSlotTemplateId} newUploadSlotTemplate={u} />)}
+        </div>
+        <div className="row">
+          {newPartTemplate.newPartMedia.filter(m => m.type === 'download').map(m => (
+            <div key={m.partMediumId} className="col-4 col-sm-3 col-md-2">
+              <figure className={`figure ${m.type}Figure`}>
+                <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
+                <figcaption className="figure-caption">{m.caption}</figcaption>
+              </figure>
+            </div>
+          ))}
+        </div>
+        <div className="row">
+          <div className="col col-md-10 col-lg-8">
+            {newPartTemplate.newTextBoxTemplates.map(t => <NewTextBoxTemplatePreview key={t.textBoxTemplateId} newTextBoxTemplate={t} />)}
+            {newPartTemplate.newUploadSlotTemplates.map(u => <NewUploadSlotTemplatePreview key={u.uploadSlotTemplateId} newUploadSlotTemplate={u} />)}
+          </div>
         </div>
       </div>
+      <style jsx>{`
+      .downloadFigure {
+        max-width: 136px;
+      }
+      `}</style>
     </section>
   );
 };
