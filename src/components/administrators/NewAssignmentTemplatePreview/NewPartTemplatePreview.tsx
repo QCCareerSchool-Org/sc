@@ -26,6 +26,7 @@ type Props = {
 };
 
 export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, unitId, assignmentId, newPartTemplate }: Props): ReactElement => {
+  const screenWidth = useScreenWidth();
   return (
     <section>
       <div className="container">
@@ -41,14 +42,12 @@ export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, un
             </div>
           ))}
         </div>
-        <div className="row">
+        <div className="d-flex flex-wrap align-items-top">
           {newPartTemplate.newPartMedia.filter(m => m.type === 'download').map(m => (
-            <div key={m.partMediumId} className="col-4 col-sm-3 col-md-2">
-              <figure className={`figure ${m.type}Figure`}>
-                <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
-                <figcaption className="figure-caption">{m.caption}</figcaption>
-              </figure>
-            </div>
+            <figure key={m.partMediumId} className={`figure ${m.type}Figure`}>
+              <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
+              <figcaption className="figure-caption">{m.caption}</figcaption>
+            </figure>
           ))}
         </div>
         <div className="row">
@@ -60,7 +59,7 @@ export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, un
       </div>
       <style jsx>{`
       .downloadFigure {
-        max-width: 136px;
+        ${screenWidth >= 992 ? 'width: 128px; margin-right: 1rem' : screenWidth >= 360 ? 'width: 96px; margin-right: 1rem' : 'width: 100%'}
       }
       `}</style>
     </section>

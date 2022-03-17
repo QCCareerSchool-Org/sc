@@ -7,6 +7,7 @@ import { NewUploadSlotForm } from './NewUploadSlotForm';
 import type { TextBoxFunction, UploadSlotFunction } from '.';
 import type { PartState } from '@/components/students/NewAssignmentView/state';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
+import { useScreenWidth } from '@/hooks/useScreenWidth';
 
 type Props = {
   studentId: number;
@@ -21,49 +22,50 @@ type Props = {
   downloadFile: UploadSlotFunction;
 };
 
-export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => (
-  <section>
-    <div className="container">
-      <h2 className="h3"><span className="text-danger">{part.partNumber}.</span> {part.title}</h2>
-      {part.description && <Description description={part.description} descriptionType={part.descriptionType} />}
-      <div className="row">
-        {part.newPartMedia.filter(m => m.type !== 'download').map(m => (
-          <div key={m.partMediumId} className="col-12 col-lg-10 col-xl-8">
-            <figure className={`figure ${m.type}Figure`}>
-              <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
-              <figcaption className="figure-caption">{m.caption}</figcaption>
-            </figure>
-          </div>
-        ))}
-      </div>
-      <div className="row">
-        {part.newPartMedia.filter(m => m.type === 'download').map(m => (
-          <div key={m.partMediumId} className="col-4 col-sm-3 col-md-2">
-            <figure className={`figure ${m.type}Figure`}>
-              <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
-              <figcaption className="figure-caption">{m.caption}</figcaption>
-            </figure>
-          </div>
-        ))}
-      </div>
-      <div className="row">
-        <div className="col col-md-10 col-lg-8">
-          {part.textBoxes.map(t => (
-            <NewTextBoxForm key={t.textBoxId} textBox={t} save={saveText} update={updateText} />
-          ))}
-          {part.uploadSlots.map(u => (
-            <NewUploadSlotForm key={u.uploadSlotId} uploadSlot={u} uploadFile={uploadFile} deleteFile={deleteFile} downloadFile={downloadFile} />
+export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => {
+  const screenWidth = useScreenWidth();
+  return (
+    <section>
+      <div className="container">
+        <h2 className="h3"><span className="text-danger">{part.partNumber}.</span> {part.title}</h2>
+        {part.description && <Description description={part.description} descriptionType={part.descriptionType} />}
+        <div className="row">
+          {part.newPartMedia.filter(m => m.type !== 'download').map(m => (
+            <div key={m.partMediumId} className="col-12 col-lg-10 col-xl-8">
+              <figure className={`figure ${m.type}Figure`}>
+                <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
+                <figcaption className="figure-caption">{m.caption}</figcaption>
+              </figure>
+            </div>
           ))}
         </div>
+        <div className="d-flex flex-wrap align-items-top">
+          {part.newPartMedia.filter(m => m.type === 'download').map(m => (
+            <figure key={m.partMediumId} className={`figure ${m.type}Figure`}>
+              <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
+              <figcaption className="figure-caption">{m.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className="row">
+          <div className="col col-md-10 col-lg-8">
+            {part.textBoxes.map(t => (
+              <NewTextBoxForm key={t.textBoxId} textBox={t} save={saveText} update={updateText} />
+            ))}
+            {part.uploadSlots.map(u => (
+              <NewUploadSlotForm key={u.uploadSlotId} uploadSlot={u} uploadFile={uploadFile} deleteFile={deleteFile} downloadFile={downloadFile} />
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-    <style jsx>{`
-    .downloadFigure {
-      max-width: 136px;
-    }
-    `}</style>
-  </section>
-));
+      <style jsx>{`
+      .downloadFigure {
+        width: 136px;
+      }
+      `}</style>
+    </section>
+  );
+});
 
 NewPartForm.displayName = 'NewPartForm';
 

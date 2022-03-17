@@ -7,6 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
+import { useScreenWidth } from '@/hooks/useScreenWidth';
 import { newAssignmentTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -22,6 +23,7 @@ type Props = {
 export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const screenWidth = useScreenWidth();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -73,14 +75,12 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
               </div>
             ))}
           </div>
-          <div className="row">
+          <div className="d-flex flex-wrap align-items-top">
             {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type === 'download').map(m => (
-              <div key={m.assignmentMediumId} className="col-4 col-sm-3 col-md-2">
-                <figure className={`figure ${m.type}Figure`}>
-                  <NewAssignmentMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
-                  <figcaption className="figure-caption">{m.caption}</figcaption>
-                </figure>
-              </div>
+              <figure key={m.assignmentMediumId} className={`figure ${m.type}Figure`}>
+                <NewAssignmentMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
+                <figcaption className="figure-caption">{m.caption}</figcaption>
+              </figure>
             ))}
           </div>
         </div>
@@ -98,7 +98,7 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
       ))}
       <style jsx>{`
       .downloadFigure {
-        max-width: 136px;
+        ${screenWidth >= 992 ? 'width: 128px; margin-right: 1rem' : screenWidth >= 360 ? 'width: 96px; margin-right: 1rem' : 'width: 100%'}
       }
       `}</style>
     </>
