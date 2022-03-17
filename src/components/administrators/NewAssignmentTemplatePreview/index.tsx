@@ -8,7 +8,6 @@ import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
 import { DownloadMedium } from '@/components/DownloadMedium';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
 import { newAssignmentTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
@@ -25,7 +24,6 @@ type Props = {
 export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
-  const screenWidth = useScreenWidth();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();

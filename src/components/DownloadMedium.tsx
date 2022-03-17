@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
-import { FaDownload, FaFile, FaFileExcel, FaFilePdf, FaFileWord } from 'react-icons/fa';
+import { FaDownload } from 'react-icons/fa';
 
+import { FileIcon } from './FileIcon';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 
@@ -24,7 +25,7 @@ const humanReadableFileSize = (filesize: number): string => {
 export const DownloadMedium = ({ medium }: Props): ReactElement => (
   <div className="downloadMedium">
     <div className="fileIcon">
-      <Icon mimeType={medium.mimeTypeId} size={36} />
+      <FileIcon mimeType={medium.mimeTypeId} size={36} />
     </div>
 
     <div className="description">
@@ -67,21 +68,3 @@ export const DownloadMedium = ({ medium }: Props): ReactElement => (
     `}</style>
   </div>
 );
-
-type IconProps = {
-  mimeType: string;
-  size: number;
-};
-
-const Icon = ({ mimeType, size }: IconProps): ReactElement => {
-  if (mimeType === 'application/pdf') {
-    return <FaFilePdf size={size} />;
-  }
-  if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || mimeType === 'application/msword') {
-    return <FaFileWord size={size} />;
-  }
-  if (mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || mimeType === 'application/vnd.ms-excel') {
-    return <FaFileExcel size={size} />;
-  }
-  return <FaFile size={size} />;
-};

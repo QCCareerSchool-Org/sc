@@ -5,9 +5,10 @@ import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
 import type { TextBoxFunction, UploadSlotFunction } from '.';
+import { DownloadMedium } from '@/components/DownloadMedium';
 import type { PartState } from '@/components/students/NewAssignmentView/state';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;
@@ -23,32 +24,29 @@ type Props = {
 };
 
 export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => {
-  const screenWidth = useScreenWidth();
   return (
     <section>
       <div className="container">
         <h2 className="h3"><span className="text-danger">{part.partNumber}.</span> {part.title}</h2>
         {part.description && <Description description={part.description} descriptionType={part.descriptionType} />}
         <div className="row">
-          {part.newPartMedia.filter(m => m.type !== 'download').map(m => (
-            <div key={m.partMediumId} className="col-12 col-lg-10 col-xl-8">
-              <figure className={`figure ${m.type}Figure`}>
+          <div className="col-12 col-lg-10 col-xl-8">
+            {part.newPartMedia.filter(m => m.type !== 'download').map(m => (
+              <figure key={m.partMediumId} className={`figure ${m.type}Figure`}>
                 <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
                 <figcaption className="figure-caption">{m.caption}</figcaption>
               </figure>
-            </div>
-          ))}
-        </div>
-        <div className="d-flex flex-wrap align-items-top">
-          {part.newPartMedia.filter(m => m.type === 'download').map(m => (
-            <figure key={m.partMediumId} className={`figure ${m.type}Figure`}>
-              <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
-              <figcaption className="figure-caption">{m.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
-        <div className="row">
-          <div className="col col-md-10 col-lg-8">
+            ))}
+            {part.newPartMedia.filter(m => m.type === 'download').map(m => {
+              const href = `${endpoint}/students/${studentId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${m.partMediumId}/file`;
+              return (
+                <div key={m.partMediumId} className="downloadMedium">
+                  <a href={href} download>
+                    <DownloadMedium medium={m} />
+                  </a>
+                </div>
+              );
+            })}
             {part.textBoxes.map(t => (
               <NewTextBoxForm key={t.textBoxId} textBox={t} save={saveText} update={updateText} />
             ))}
@@ -59,8 +57,15 @@ export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, pa
         </div>
       </div>
       <style jsx>{`
-      .downloadFigure {
-        ${screenWidth >= 992 ? 'width: 128px; margin-right: 1rem' : screenWidth >= 360 ? 'width: 96px; margin-right: 1rem' : 'width: 100%'}
+      .downloadMedium {
+        margin-bottom: 1rem;
+      }
+      .downloadMedium:last-of-type {
+        margin-bottom: 0;
+      }
+      .downloadMedium a {
+        text-decoration: none;
+        color: inherit;
       }
       `}</style>
     </section>

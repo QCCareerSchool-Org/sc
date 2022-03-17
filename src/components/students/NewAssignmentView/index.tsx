@@ -7,10 +7,11 @@ import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } fr
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
+import { DownloadMedium } from '@/components/DownloadMedium';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { HttpServiceError } from '@/services/httpService';
 import { newAssignmentService } from '@/services/students';
+import { endpoint } from 'src/basePath';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 export type UploadSlotFunction = (partId: string, uploadSlotId: string, file?: File) => Observable<unknown>;
@@ -26,7 +27,6 @@ type Props = {
 export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
-  const screenWidth = useScreenWidth();
 
   useWarnIfUnsavedChanges(state.assignment && state.assignment?.formState !== 'pristine' && state.assignment?.saveState !== 'saved');
 
@@ -169,22 +169,24 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
           {state.assignment.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
           <div className="row">
-            {state.assignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
-              <div key={m.assignmentMediumId} className="col-12 col-lg-10 col-xl-8">
-                <figure className={`figure ${m.type}Figure`}>
+            <div className="col-12 col-lg-10 col-xl-8">
+              {state.assignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
+                <figure key={m.assignmentMediumId} className={`figure ${m.type}Figure d-block`}>
                   <NewAssignmentMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
                   <figcaption className="figure-caption">{m.caption}</figcaption>
                 </figure>
-              </div>
-            ))}
-          </div>
-          <div className="d-flex flex-wrap align-items-top">
-            {state.assignment.newAssignmentMedia.filter(m => m.type === 'download').map(m => (
-              <figure key={m.assignmentMediumId} className={`figure ${m.type}Figure`}>
-                <NewAssignmentMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
-                <figcaption className="figure-caption">{m.caption}</figcaption>
-              </figure>
-            ))}
+              ))}
+              {state.assignment.newAssignmentMedia.filter(m => m.type === 'download').map(m => {
+                const href = `${endpoint}/students/${studentId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
+                return (
+                  <div key={m.assignmentMediumId} className="downloadMedium">
+                    <a href={href} download>
+                      <DownloadMedium medium={m} />
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -213,8 +215,15 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         </div>
       </section>
       <style jsx>{`
-      .downloadFigure {
-        ${screenWidth >= 992 ? 'width: 128px; margin-right: 1rem' : screenWidth >= 360 ? 'width: 96px; margin-right: 1rem' : 'width: 100%'}
+      .downloadMedium {
+        margin-bottom: 1rem;
+      }
+      .downloadMedium:last-of-type {
+        margin-bottom: 0;
+      }
+      .downloadMedium a {
+        text-decoration: none;
+        color: inherit;
       }
       `}</style>
     </>

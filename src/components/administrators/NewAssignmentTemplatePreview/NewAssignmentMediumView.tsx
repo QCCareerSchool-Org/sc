@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
-import { FileIcon } from '@/components/FileIcon';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import { endpoint } from 'src/basePath';
 
@@ -37,10 +36,6 @@ export const NewAssignmentMediumView = memo(({ className, administratorId, schoo
         <source type={newAssignmentMedium.mimeTypeId} src={src} />
       </audio>
     );
-  }
-
-  if (newAssignmentMedium.type === 'download') {
-    return <a href={src} download><FileIcon mimeType={newAssignmentMedium.mimeTypeId} /></a>;
   }
 
   return null;
