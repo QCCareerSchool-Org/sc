@@ -29,7 +29,7 @@ export const DownloadMedium = ({ medium }: Props): ReactElement => (
     </div>
 
     <div className="description">
-      <div>{medium.caption}</div>
+      <div className="caption">{medium.caption}</div>
       <small className="text-muted">{humanReadableFileSize(medium.size)}</small>
     </div>
 
@@ -57,6 +57,12 @@ export const DownloadMedium = ({ medium }: Props): ReactElement => (
       flex-direction: column;
       align-items: start;
       justify-content: space-between;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .caption {
+      width: 100%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

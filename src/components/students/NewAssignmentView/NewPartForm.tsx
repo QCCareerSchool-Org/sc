@@ -60,9 +60,6 @@ export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, pa
       .downloadMedium {
         margin-bottom: 1rem;
       }
-      .downloadMedium:last-of-type {
-        margin-bottom: 0;
-      }
       .downloadMedium a {
         text-decoration: none;
         color: inherit;
