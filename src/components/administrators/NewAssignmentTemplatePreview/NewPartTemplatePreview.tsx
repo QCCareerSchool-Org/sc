@@ -4,6 +4,7 @@ import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxTemplatePreview } from './NewTextBoxTemplatePreview';
 import { NewUploadSlotTemplatePreview } from './NewUploadSlotTemplatePreview';
 import { DownloadMedium } from '@/components/DownloadMedium';
+import { Section } from '@/components/Section';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
@@ -28,7 +29,7 @@ type Props = {
 
 export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, unitId, assignmentId, newPartTemplate }: Props): ReactElement => {
   return (
-    <section>
+    <Section>
       <div className="container">
         <h2 className="h3"><span className="text-danger">{newPartTemplate.partNumber}.</span> {newPartTemplate.title}</h2>
         {newPartTemplate.description && <Description description={newPartTemplate.description} descriptionType={newPartTemplate.descriptionType} />}
@@ -64,7 +65,7 @@ export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, un
         color: inherit;
       }
       `}</style>
-    </section>
+    </Section>
   );
 };
 

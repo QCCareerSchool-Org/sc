@@ -2,6 +2,7 @@ import type { MouseEventHandler, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
+import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
@@ -20,7 +21,7 @@ export const SubmitSection = ({ submit$, unitComplete, processingState, errorMes
   const buttonDisabled = !unitComplete || processingState === 'submitting' || processingState === 'skipping';
 
   return (
-    <section className="submitSection">
+    <Section className="submitSection">
       <div className="container">
         <h2>Submit Unit</h2>
         {unitComplete
@@ -33,6 +34,6 @@ export const SubmitSection = ({ submit$, unitComplete, processingState, errorMes
           {processingState === 'submit error' && <span className="text-danger ms-2">{errorMessage ? errorMessage : 'Error'}</span>}
         </div>
       </div>
-    </section>
+    </Section>
   );
 };

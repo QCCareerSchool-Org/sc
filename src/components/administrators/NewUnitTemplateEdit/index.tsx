@@ -9,6 +9,7 @@ import { NewAssignmentTemplateList } from './NewAssignmentTemplateList';
 import { NewUnitTemplateEditForm } from './NewUnitTemplateEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { Section } from '@/components/Section';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentTemplateService, newUnitTemplateService } from '@/services/administrators';
@@ -209,7 +210,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Edit Unit Template</h1>
           <div className="row">
@@ -240,8 +241,8 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
           </div>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           <h2 className="h3">Assignment Templates</h2>
           <div className="row">
@@ -260,7 +261,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
           </div>
         </div>
-      </section>
+      </Section>
     </>
   );
 };

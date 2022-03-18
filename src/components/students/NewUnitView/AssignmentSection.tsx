@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import type { MouseEvent, ReactElement } from 'react';
 
+import { Section } from '@/components/Section';
 import type { NewUnitWithCourseAndChildren } from '@/services/students/newUnitService';
 import { basePath } from 'src/basePath';
 
@@ -21,7 +22,7 @@ export const AssignmentSection = ({ unit }: Props): ReactElement | null => {
   };
 
   return (
-    <section className="assignmentSection">
+    <Section className="assignmentSection">
       <div className="container">
         <h2>Assignments</h2>
         {unit.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
@@ -45,6 +46,6 @@ export const AssignmentSection = ({ unit }: Props): ReactElement | null => {
         </table>
         {unit.newAssignments.some(a => a.optional) && <p><span className="ms-1 text-danger">*</span> Optional assignment</p>}
       </div>
-    </section>
+    </Section>
   );
 };

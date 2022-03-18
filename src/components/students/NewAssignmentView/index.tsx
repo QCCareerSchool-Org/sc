@@ -9,6 +9,7 @@ import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
 import { DownloadMedium } from '@/components/DownloadMedium';
+import { Section } from '@/components/Section';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { HttpServiceError } from '@/services/httpService';
 import { newAssignmentService } from '@/services/students';
@@ -164,7 +165,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           {state.assignment.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
@@ -190,7 +191,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
             </div>
           </div>
         </div>
-      </section>
+      </Section>
       {state.assignment.parts.map(p => (
         <NewPartForm
           key={p.partId}
@@ -206,7 +207,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           downloadFile={downloadFile}
         />
       ))}
-      <section className="bg-dark text-light">
+      <Section className="bg-dark text-light">
         <div className="container">
           {state.assignment.complete && <p className="lead">All required parts are complete!</p>}
           {!state.assignment.complete && (
@@ -221,7 +222,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           )}
           <button onClick={backButtonClick} className="btn btn-primary" disabled={state.assignment.saveState !== 'saved'}>Return to Unit Overview</button>
         </div>
-      </section>
+      </Section>
       <style jsx>{`
       .downloadMedium {
         margin-bottom: 1rem;

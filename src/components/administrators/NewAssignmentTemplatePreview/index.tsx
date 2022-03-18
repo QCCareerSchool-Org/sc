@@ -8,6 +8,7 @@ import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
 import { DownloadMedium } from '@/components/DownloadMedium';
+import { Section } from '@/components/Section';
 import { newAssignmentTemplateService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
@@ -60,7 +61,7 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           {state.assignmentTemplate.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.assignmentTemplate.assignmentNumber}{state.assignmentTemplate.title && <>: {state.assignmentTemplate.title}</>}</h1>
@@ -86,7 +87,7 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
             </div>
           </div>
         </div>
-      </section>
+      </Section>
       {state.assignmentTemplate.newPartTemplates.map(p => (
         <NewPartTemplatePreview
           key={p.partTemplateId}

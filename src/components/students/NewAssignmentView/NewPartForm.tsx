@@ -6,6 +6,7 @@ import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
 import type { TextBoxFunction, UploadSlotFunction } from '.';
 import { DownloadMedium } from '@/components/DownloadMedium';
+import { Section } from '@/components/Section';
 import type { PartState } from '@/components/students/NewAssignmentView/state';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import { endpoint } from 'src/basePath';
@@ -25,7 +26,7 @@ type Props = {
 
 export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => {
   return (
-    <section id={part.partId}>
+    <Section id={part.partId}>
       <div className="container">
         <h2 className="h3"><span className="text-danger">{part.partNumber}.</span> {part.title}</h2>
         {part.description && <Description description={part.description} descriptionType={part.descriptionType} />}
@@ -65,7 +66,7 @@ export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, pa
         color: inherit;
       }
       `}</style>
-    </section>
+    </Section>
   );
 });
 

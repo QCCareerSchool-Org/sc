@@ -8,6 +8,7 @@ import { NewAssignmentMediumEditForm } from './NewAssignmentMediumEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
 import { FileIcon } from '@/components/FileIcon';
+import { Section } from '@/components/Section';
 import { newAssignmentMediumService } from '@/services/administrators';
 import type { NewAssignmentMediumEditPayload } from '@/services/administrators/newAssignmentMediumService';
 import { HttpServiceError } from '@/services/httpService';
@@ -130,7 +131,7 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Edit Assignment Media</h1>
           <div className="row">
@@ -161,8 +162,8 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
             </div>
           </div>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           {state.newAssignmentMedium.type === 'image' && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -182,7 +183,7 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
             <a href={src} download><FileIcon mimeType={state.newAssignmentMedium.mimeTypeId} size={96} /></a>
           )}
         </div>
-      </section>
+      </Section>
     </>
   );
 };

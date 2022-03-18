@@ -7,6 +7,7 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import { NewTextBoxEditForm } from './NewTextBoxEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { Section } from '@/components/Section';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newTextBoxTemplateService } from '@/services/administrators';
@@ -163,7 +164,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Edit Text Box Template</h1>
           <div className="row">
@@ -192,7 +193,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
             </div>
           </div>
         </div>
-      </section>
+      </Section>
     </>
   );
 };

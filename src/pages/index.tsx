@@ -1,12 +1,14 @@
 import type { NextPage } from 'next';
 
+import { Section } from '@/components/Section';
+
 const Home: NextPage = () => {
   return (
-    <section>
+    <Section>
       <div className="container">
         <h1>Student Center</h1>
       </div>
-    </section>
+    </Section>
   );
 };
 

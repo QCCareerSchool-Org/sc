@@ -2,6 +2,7 @@ import type { MouseEventHandler, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
+import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
@@ -23,7 +24,7 @@ export const SkipSection = ({ skip$, processingState, errorMessage }: Props): Re
   const buttonDisabled = processingState === 'submitting' || processingState === 'skipping';
 
   return (
-    <section className="skipSection">
+    <Section className="skipSection">
       <div className="container">
         <h2>Skip Unit</h2>
         <p>This unit is optional. You can skip it and move on to the next unit.</p>
@@ -34,6 +35,6 @@ export const SkipSection = ({ skip$, processingState, errorMessage }: Props): Re
           {processingState === 'skip error' && <span className="text-danger ms-2">{errorMessage ? errorMessage : 'Error'}</span>}
         </div>
       </div>
-    </section>
+    </Section>
   );
 };

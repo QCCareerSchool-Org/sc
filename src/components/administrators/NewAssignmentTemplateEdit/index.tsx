@@ -12,6 +12,7 @@ import { NewPartTemplateAddForm } from './NewPartTemplateAddForm';
 import { NewPartTemplateList } from './NewPartTemplateList';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { Section } from '@/components/Section';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newAssignmentMediumService, newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
@@ -263,7 +264,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Edit Assignment Template</h1>
           <p><Link href={router.asPath + '/preview'}><a>Preview</a></Link></p>
@@ -295,8 +296,8 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             </div>
           </div>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           <h2 className="h3">Part Templates</h2>
           <div className="row">
@@ -315,8 +316,8 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             </div>
           </div>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           <h2 className="h3">Assignment Media</h2>
           <div className="row">
@@ -336,7 +337,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             </div>
           </div>
         </div>
-      </section>
+      </Section>
     </>
   );
 };

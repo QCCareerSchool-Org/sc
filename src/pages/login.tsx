@@ -6,6 +6,7 @@ import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { basePath } from '../basePath';
 import { loginService } from '../services';
+import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 
@@ -87,7 +88,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Student Center Login</h1>
           <div className="row">
@@ -122,7 +123,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
             </div>
           </div>
         </div>
-      </section>
+      </Section>
 
       <style jsx>{`
         .formGroup { margin-bottom: 1rem; }

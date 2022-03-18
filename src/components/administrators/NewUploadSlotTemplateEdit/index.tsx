@@ -7,6 +7,7 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import { NewUploadSlotTemplateEditForm } from './NewUploadSlotTemplateEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { Section } from '@/components/Section';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newUploadSlotTemplateService } from '@/services/administrators';
@@ -184,7 +185,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Edit Upload Slot Template</h1>
           <div className="row">
@@ -216,7 +217,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
             </div>
           </div>
         </div>
-      </section>
+      </Section>
     </>
   );
 };

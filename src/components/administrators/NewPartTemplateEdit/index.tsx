@@ -13,6 +13,7 @@ import { NewUploadSlotTemplateAddForm } from './NewUploadSlotTemplateAddForm';
 import { NewUploadSlotTemplateList } from './NewUploadSlotTemplateList';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { Section } from '@/components/Section';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { newPartMediumService, newPartTemplateService, newTextBoxTemplateService, newUploadSlotTemplateService } from '@/services/administrators';
@@ -334,7 +335,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Edit Part Template</h1>
           <div className="row">
@@ -387,8 +388,8 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
           </div>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           <h2 className="h3">Text Box Templates</h2>
           <div className="row">
@@ -408,8 +409,8 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
           </div>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           <h2 className="h3">Upload Slot Templates</h2>
           <div className="row">
@@ -432,8 +433,8 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
           </div>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           <h2 className="h3">Part Media</h2>
           <div className="row">
@@ -453,7 +454,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
           </div>
         </div>
-      </section>
+      </Section>
     </>
   );
 };

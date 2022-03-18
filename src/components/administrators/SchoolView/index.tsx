@@ -6,6 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { CourseList } from './CourseList';
 import { initialState, reducer } from './state';
+import { Section } from '@/components/Section';
 import { schoolService } from '@/services/administrators';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -57,17 +58,17 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>School: {state.school.name}</h1>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           <h2 className="h3">Courses</h2>
           <CourseList courses={state.school.courses} courseRowClick={courseRowClick} />
         </div>
-      </section>
+      </Section>
     </>
   );
 };

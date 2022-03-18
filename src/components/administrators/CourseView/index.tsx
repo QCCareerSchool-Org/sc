@@ -8,6 +8,7 @@ import { NewUnitTemplateAddForm } from './NewUnitTemplateAddForm';
 import { NewUnitTemplateList } from './NewUnitTemplateList';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { Section } from '@/components/Section';
 import { courseService, newUnitTemplateService } from '@/services/administrators';
 import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
@@ -107,7 +108,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Course: {state.course.name}</h1>
           <table className="table table-bordered w-auto">
@@ -123,9 +124,9 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
             </tbody>
           </table>
         </div>
-      </section>
+      </Section>
       {state.course.unitType === 1 && (
-        <section>
+        <Section>
           <div className="container">
             <h2 className="h3">Unit Templates</h2>
             <div className="row">
@@ -146,7 +147,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
               </div>
             </div>
           </div>
-        </section>
+        </Section>
       )}
     </>
   );

@@ -11,6 +11,7 @@ import { SkipSection } from './SkipSection';
 import type { State } from './state';
 import { initialState, reducer } from './state';
 import { SubmitSection } from './SubmitSection';
+import { Section } from '@/components/Section';
 import { HttpServiceError } from '@/services/httpService';
 import { newUnitService } from '@/services/students';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -110,7 +111,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8">
@@ -121,7 +122,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
             </div>
           </div>
         </div>
-      </section>
+      </Section>
       {showAssignments && <AssignmentSection unit={state.newUnit} />}
       {!state.newUnit.submitted && !state.newUnit.skipped && (
         <>

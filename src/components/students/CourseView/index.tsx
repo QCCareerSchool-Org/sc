@@ -6,6 +6,7 @@ import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { initialState, reducer } from './state';
 import { UnitsTable } from './UnitsTable';
+import { Section } from '@/components/Section';
 import type { NewUnit } from '@/domain/newUnit';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import { HttpServiceError } from '@/services/httpService';
@@ -92,13 +93,13 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
   };
 
   return (
-    <section>
+    <Section>
       <div className="container">
         <h1>{state.enrollment.course.name}</h1>
         <UnitsTable newUnits={state.enrollment.newUnits} newUnitClick={newUnitClick} />
         {nextUnit && <button onClick={initializeButtonClick} className="btn btn-primary">Start Unit {nextUnit}</button>}
       </div>
-    </section>
+    </Section>
   );
 };
 

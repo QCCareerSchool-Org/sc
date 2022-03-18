@@ -8,6 +8,7 @@ import { NewPartMediumEditForm } from './NewPartMediumEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
 import { FileIcon } from '@/components/FileIcon';
+import { Section } from '@/components/Section';
 import { newPartMediumService } from '@/services/administrators';
 import type { NewPartMediumEditPayload } from '@/services/administrators/newPartMediumService';
 import { HttpServiceError } from '@/services/httpService';
@@ -131,7 +132,7 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
 
   return (
     <>
-      <section>
+      <Section>
         <div className="container">
           <h1>Edit Part Media</h1>
           <div className="row">
@@ -162,8 +163,8 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
             </div>
           </div>
         </div>
-      </section>
-      <section>
+      </Section>
+      <Section>
         <div className="container">
           {state.newPartMedium.type === 'image' && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -183,7 +184,7 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
             <a href={src} download><FileIcon mimeType={state.newPartMedium.mimeTypeId} size={96} /></a>
           )}
         </div>
-      </section>
+      </Section>
     </>
   );
 };
