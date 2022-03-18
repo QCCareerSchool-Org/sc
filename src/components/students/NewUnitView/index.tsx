@@ -129,6 +129,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
           <SubmitSection
             submit$={submit$.current}
             unitComplete={state.newUnit.complete}
+            optionalAssignmentsIncomplete={state.optionalAssignmentIncomplete}
             processingState={state.processingState}
             errorMessage={state.errorMessage}
           />

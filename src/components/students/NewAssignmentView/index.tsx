@@ -1,7 +1,6 @@
 import NextError from 'next/error';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { MouseEventHandler, ReactElement } from 'react';
+import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useEffect, useReducer } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
@@ -15,6 +14,7 @@ import { HttpServiceError } from '@/services/httpService';
 import { newAssignmentService } from '@/services/students';
 import { endpoint } from 'src/basePath';
 import { navigateToLogin } from 'src/navigateToLogin';
+import { scrollToId } from 'src/scrollToId';
 
 export type UploadSlotFunction = (partId: string, uploadSlotId: string, file?: File) => Observable<unknown>;
 export type TextBoxFunction = (partId: string, textBoxId: string, text: string) => Observable<unknown>;
@@ -163,6 +163,11 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
     void router.back();
   };
 
+  const incompletePartClick = (e: MouseEvent, partId: string): void => {
+    e.preventDefault();
+    scrollToId(partId);
+  };
+
   return (
     <>
       <Section>
@@ -215,7 +220,8 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
               <p className="lead mb-2">Some required parts are incomplete:</p>
               <ul className="ps-3">
                 {state.assignment.parts.filter(p => !p.complete).map(p => (
-                  <li key={p.partId}><Link href={`#${p.partId}`}><a className="link-light text-decoration-none">{p.title}</a></Link></li>
+                  // we don't use an anchor link because we don't want the history to change
+                  <li key={p.partId}><a onClick={e => incompletePartClick(e, p.partId)} href={`#${p.partId}`} className="link-light text-decoration-none">{p.title}</a></li>
                 ))}
               </ul>
             </div>

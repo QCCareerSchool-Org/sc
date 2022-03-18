@@ -2,6 +2,7 @@ import type { NewUnitWithCourseAndChildren } from '@/services/students/newUnitSe
 
 export type State = {
   newUnit?: NewUnitWithCourseAndChildren;
+  optionalAssignmentIncomplete: boolean;
   error: boolean;
   errorCode?: number;
   processingState: 'idle' | 'submitting' | 'skipping' | 'submit error' | 'skip error';
@@ -21,7 +22,12 @@ export type Action =
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'LOAD_UNIT_SUCEEDED':
-      return { ...state, newUnit: action.payload, error: false };
+      return {
+        ...state,
+        newUnit: action.payload,
+        optionalAssignmentIncomplete: action.payload.newAssignments.some(a => a.optional && !a.complete),
+        error: false,
+      };
     case 'LOAD_UNIT_FAILED':
       return { ...state, error: true, errorCode: action.payload };
     case 'SUBMIT_STARTED':
@@ -56,6 +62,7 @@ export const reducer = (state: State, action: Action): State => {
 };
 
 export const initialState: State = {
+  optionalAssignmentIncomplete: false,
   error: false,
   processingState: 'idle',
 };
