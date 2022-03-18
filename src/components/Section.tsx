@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const Section = ({ id, className, children }: Props): ReactElement => {
-  const sectionRef = useRef<HTMLSelectElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const [ scrollOffset, setScrollOffset ] = useState(false);
 
   useLayoutEffect(() => {
