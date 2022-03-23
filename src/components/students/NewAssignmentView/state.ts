@@ -30,7 +30,6 @@ export type PartState = NewPart & {
 };
 
 export type AssignmentState = NewAssignment & {
-  complete: boolean;
   formState: FormState;
   saveState: 'saved' | 'unsaved' | 'saving' | 'error';
   newAssignmentMedia: NewAssignmentMedium[];
@@ -127,11 +126,11 @@ const assignmentLoad = (state: State, assignment: NewAssignmentWithChildren): St
 
 /**
  * Updates the text for a text box
- * @param assignmentData the assignment data
+ * @param state the previous state
  * @param partId the id of the part to update
  * @param textBoxId the id of the text box to update
  * @param text the new text
- * @returns the new assignment data
+ * @returns the new state
  */
 const textChanged = (state: State, partId: string, textBoxId: string, text: string): State => {
   if (!state.assignment) {
@@ -171,11 +170,10 @@ const textChanged = (state: State, partId: string, textBoxId: string, text: stri
 
 /**
  * Marks the assignmet, part, and text box as saving
- * @param assignmentData the assignment data
+ * @param state the previous state
  * @param partId the id of the part to update
  * @param textBoxId the id of the text box to update
- * @param text the new text
- * @returns the new assignment data
+ * @returns the new state
  */
 const textSaveRequested = (state: State, partId: string, textBoxId: string): State => {
   if (!state.assignment) {
@@ -208,11 +206,11 @@ const textSaveRequested = (state: State, partId: string, textBoxId: string): Sta
 
 /**
  * Marks a text box as saved
- * @param assignmentData the assignment data
+ * @param state the previous state
  * @param partId the id of the part to update
  * @param textBoxId the id of the text box to update
  * @param text the new text
- * @returns the new assignment data
+ * @returns the new state
  */
 const textSaveSucceeded = (state: State, partId: string, textBoxId: string, text: string): State => {
   if (!state.assignment) {
@@ -287,18 +285,45 @@ const textSaveSucceeded = (state: State, partId: string, textBoxId: string, text
       ? 'error'
       : partAllTextBoxesSaved ? 'saved' : 'unsaved';
 
+  let assignmentPoints = 0;
+  let partPoints = 0;
+  for (const p of state.assignment.parts) {
+    if (p.partId === partId) {
+      for (const t of p.textBoxes) {
+        if (t.textBoxId === textBoxId) {
+          if (textBoxComplete || !t.optional) {
+            partPoints += t.points;
+          }
+        } else {
+          if (t.complete || !t.optional) {
+            partPoints += t.points;
+          }
+        }
+      }
+      for (const u of p.uploadSlots) {
+        if (u.complete || !u.optional) {
+          partPoints += u.points;
+        }
+      }
+    } else {
+      assignmentPoints += partPoints;
+    }
+  }
+
   return {
     ...state,
     assignment: {
       ...state.assignment,
       saveState: assignmentSaveState,
       complete: assignmentComplete,
+      points: assignmentPoints,
       parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             saveState: partSaveState,
             complete: partComplete,
+            points: partPoints,
             textBoxes: p.textBoxes.map(t => {
               if (t.textBoxId === textBoxId) {
                 return {
@@ -320,11 +345,10 @@ const textSaveSucceeded = (state: State, partId: string, textBoxId: string, text
 
 /**
  * Marks the assignmet, part, and text box as having a save failure
- * @param assignmentData the assignment data
+ * @param state the previous state
  * @param partId the id of the part to update
  * @param textBoxId the id of the text box to update
- * @param text the new text
- * @returns the new assignment data
+ * @returns the new state
  */
 const textSaveFailed = (state: State, partId: string, textBoxId: string): State => {
   if (!state.assignment) {
@@ -510,17 +534,44 @@ const fileUploadSucceeded = (state: State, partId: string, uploadSlotId: string,
       ? 'error'
       : partAllTextBoxesSaved ? 'saved' : 'unsaved';
 
+  let assignmentPoints = 0;
+  let partPoints = 0;
+  for (const p of state.assignment.parts) {
+    if (p.partId === partId) {
+      for (const t of p.textBoxes) {
+        if (t.complete || !t.optional) {
+          partPoints += t.points;
+        }
+      }
+      for (const u of p.uploadSlots) {
+        if (u.uploadSlotId === uploadSlotId) {
+          if (uploadSlotComplete || !u.optional) {
+            partPoints += u.points;
+          }
+        } else {
+          if (u.complete || !u.optional) {
+            partPoints += u.points;
+          }
+        }
+      }
+    } else {
+      assignmentPoints += partPoints;
+    }
+  }
+
   return {
     ...state,
     assignment: {
       ...state.assignment,
       complete: assignmentComplete,
+      points: assignmentPoints,
       saveState: assignmentSaveState,
       parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             complete: partComplete,
+            points: partPoints,
             saveState: partSaveState,
             uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {
@@ -700,17 +751,44 @@ const fileDeleteSucceeded = (state: State, partId: string, uploadSlotId: string)
       ? 'error'
       : partAllTextBoxesSaved ? 'saved' : 'unsaved';
 
+  let assignmentPoints = 0;
+  let partPoints = 0;
+  for (const p of state.assignment.parts) {
+    if (p.partId === partId) {
+      for (const t of p.textBoxes) {
+        if (t.complete || !t.optional) {
+          partPoints += t.points;
+        }
+      }
+      for (const u of p.uploadSlots) {
+        if (u.uploadSlotId === uploadSlotId) {
+          if (uploadSlotComplete || !u.optional) {
+            partPoints += u.points;
+          }
+        } else {
+          if (u.complete || !u.optional) {
+            partPoints += u.points;
+          }
+        }
+      }
+    } else {
+      assignmentPoints += partPoints;
+    }
+  }
+
   return {
     ...state,
     assignment: {
       ...state.assignment,
       complete: assignmentComplete,
+      points: assignmentPoints,
       saveState: assignmentSaveState,
       parts: state.assignment.parts.map(p => {
         if (p.partId === partId) {
           return {
             ...p,
             complete: partComplete,
+            points: partPoints,
             saveState: partSaveState,
             uploadSlots: p.uploadSlots.map(u => {
               if (u.uploadSlotId === uploadSlotId) {

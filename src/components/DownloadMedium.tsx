@@ -18,7 +18,7 @@ export const DownloadMedium = ({ medium }: Props): ReactElement => (
 
     <div className="description">
       <div className="caption">{medium.caption}</div>
-      <small className="text-muted">{humanReadableFileSize(medium.size)}</small>
+      <small className="text-muted">{humanReadableFileSize(medium.filesize)}</small>
     </div>
 
     <div className="downloadIcon">

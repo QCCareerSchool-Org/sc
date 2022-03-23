@@ -13,7 +13,11 @@ export type NewUnit = {
   skipped: Date | null;
   transferred: Date | null;
   marked: Date | null;
+  responseFilename: string | null;
+  responseFilesize: string | null;
   complete: boolean;
+  points: number;
+  mark: number | null;
   created: Date;
   modified: Date | null;
 };
@@ -34,7 +38,11 @@ export type RawNewUnit = {
   skipped: string | null;
   transferred: string | null;
   marked: string | null;
+  responseFilename: string | null;
+  responseFilesize: string | null;
   complete: boolean;
+  points: number;
+  mark: number | null;
   /** string date */
   created: string;
   /** string date */

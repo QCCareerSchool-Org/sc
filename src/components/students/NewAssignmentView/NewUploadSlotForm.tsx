@@ -129,7 +129,7 @@ const FullSlot = ({ uploadSlot, delete$, download$ }: FullSlotProps): ReactEleme
         <button onClick={deleteClick} className="btn btn-danger me-0 me-md-3 mt-3 mt-md-0" style={{ width: 90 }} disabled={uploadSlot.saveState === 'deleting'}>
           {uploadSlot.saveState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
-        <div>{uploadSlot.filename && <><a href="#" onClick={downloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.size && <>({humanReadablefilesize(uploadSlot.size)})</>}</>}</div>
+        <div>{uploadSlot.filename && <><a href="#" onClick={downloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.filesize && <>({humanReadablefilesize(uploadSlot.filesize)})</>}</>}</div>
       </div>
       {uploadSlot.saveState === 'delete error' && <small className="text-danger me-2">Error deleting file</small>}
     </>

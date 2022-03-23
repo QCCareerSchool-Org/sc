@@ -10,6 +10,8 @@ export type NewPart = {
   description: string | null;
   descriptionType: NewDescriptionType;
   complete: boolean;
+  points: number;
+  mark: number | null;
   created: Date;
   modified: Date | null;
 };
@@ -25,6 +27,8 @@ export type RawNewPart = {
   descriptionType: NewDescriptionType;
   optional: boolean;
   complete: boolean;
+  points: number;
+  mark: number | null;
   /** date string */
   created: string;
   /** date string */

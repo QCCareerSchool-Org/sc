@@ -25,12 +25,12 @@ export type NewAssignmentMediumEditPayload = {
 
 type RawNewAssignmentMediumWithAssignnment = RawNewAssignmentMedium & {
   newAssignmentTemplate: RawNewAssignmentTemplate;
-  newAssignments: RawNewAssignment[];
+  newAssignments: Omit<RawNewAssignment, 'complete' | 'points' | 'mark'>[];
 };
 
 export type NewAssignmentMediumWithAssignnment = NewAssignmentMedium & {
   newAssignmentTemplate: NewAssignmentTemplate;
-  newAssignments: NewAssignment[];
+  newAssignments: Omit<NewAssignment, 'complete' | 'points' | 'mark'>[];
 };
 
 export interface INewAssignmentMediumService {
@@ -65,10 +65,7 @@ export class NewAssignmentMediumService implements INewAssignmentMediumService {
         if (response.type === 'progress') {
           return response;
         }
-        return {
-          type: 'data',
-          value: this.mapNewAssignmentMedium(response.value),
-        };
+        return { type: 'data', value: this.mapNewAssignmentMedium(response.value) };
       }),
     );
   }

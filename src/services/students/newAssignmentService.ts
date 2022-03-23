@@ -64,11 +64,18 @@ export class NewAssignmentService implements INewAssignmentService {
     const formData = new FormData();
     formData.append('file', file);
     const headers = { 'Content-Type': 'multipart/form-data' };
-    return this.httpService.putFile<NewUploadSlot>(url, formData, { headers });
+    return this.httpService.putFile<RawNewUploadSlot>(url, formData, { headers }).pipe(
+      map(progressResponse => {
+        if (progressResponse.type === 'progress') {
+          return progressResponse;
+        }
+        return { type: 'data', value: this.mapNewUploadSlot(progressResponse.value) };
+      }),
+    );
   }
 
   public deleteFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
-    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}`;
+    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
     return this.httpService.delete(url);
   }
 
@@ -111,6 +118,14 @@ export class NewAssignmentService implements INewAssignmentService {
           modified: m.modified === null ? null : new Date(m.modified),
         })),
       })),
+    };
+  };
+
+  private readonly mapNewUploadSlot = (newUploadSlot: RawNewUploadSlot): NewUploadSlot => {
+    return {
+      ...newUploadSlot,
+      created: new Date(newUploadSlot.created),
+      modified: newUploadSlot.modified === null ? null : new Date(newUploadSlot.modified),
     };
   };
 }

@@ -8,6 +8,8 @@ export type NewAssignment = {
   description: string | null;
   optional: boolean;
   complete: boolean;
+  points: number;
+  mark: number | null;
   created: Date;
   modified: Date | null;
 };
@@ -23,6 +25,8 @@ export type RawNewAssignment = {
   description: string | null;
   optional: boolean;
   complete: boolean;
+  points: number;
+  mark: number | null;
   /** date string */
   created: string;
   /** date string */

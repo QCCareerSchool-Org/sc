@@ -10,7 +10,7 @@ export type NewUploadSlot = {
   optional: boolean;
   order: number;
   filename: string | null;
-  size: number | null;
+  filesize: number | null;
   mimeType: string | null;
   complete: boolean;
   created: Date;
@@ -29,7 +29,7 @@ export type RawNewUploadSlot = {
   optional: boolean;
   order: number;
   filename: string | null;
-  size: number | null;
+  filesize: number | null;
   mimeType: string | null;
   complete: boolean;
   /** string date */

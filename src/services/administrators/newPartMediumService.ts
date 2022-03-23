@@ -1,8 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
-import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPart, RawNewPart } from '@/domain/newPart';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
@@ -27,12 +25,12 @@ export type NewPartMediumEditPayload = {
 
 type RawNewPartMediumWithPart = RawNewPartMedium & {
   newPartTemplate: RawNewPartTemplate;
-  newParts: RawNewPart[];
+  newParts: Omit<RawNewPart, 'complete' | 'points' | 'mark'>[];
 };
 
 export type NewPartMediumWithPart = NewPartMedium & {
   newPartTemplate: NewPartTemplate;
-  newParts: NewPart[];
+  newParts: Omit<NewPart, 'complete' | 'points' | 'mark'>[];
 };
 
 export interface INewPartMediumService {
@@ -67,10 +65,7 @@ export class NewPartMediumService implements INewPartMediumService {
         if (response.type === 'progress') {
           return response;
         }
-        return {
-          type: 'data',
-          value: this.mapNewPartMedium(response.value),
-        };
+        return { type: 'data', value: this.mapNewPartMedium(response.value) };
       }),
     );
   }

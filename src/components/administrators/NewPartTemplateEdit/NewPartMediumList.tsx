@@ -28,7 +28,7 @@ export const NewPartMediumList = memo(({ media, mediumRowClick }: Props): ReactE
               <tr key={m.partMediumId} onClick={e => mediumRowClick(e, m.partMediumId)}>
                 <td>{m.caption}</td>
                 <td>{m.type}</td>
-                <td className="text-end">{humanReadableFileSize(m.size)}</td>
+                <td className="text-end">{humanReadableFileSize(m.filesize)}</td>
                 <td className="text-center">{m.order}</td>
               </tr>
             ))}

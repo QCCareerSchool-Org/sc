@@ -51,7 +51,7 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
         tap({
           next: newUnit => {
             dispatch({ type: 'INITIALIZE_UNIT_SUCCEEDED', payload: newUnit });
-            void router.push(router.asPath + '/newUnits/' + newUnit.unitId);
+            void router.push(router.asPath + '/units/' + newUnit.unitId);
           },
           error: err => {
             let message = 'Initialize failed';

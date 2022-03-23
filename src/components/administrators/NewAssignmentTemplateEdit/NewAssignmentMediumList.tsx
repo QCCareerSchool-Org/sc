@@ -28,7 +28,7 @@ export const NewAssignmentMediumList = memo(({ media, mediumRowClick }: Props): 
               <tr key={m.assignmentMediumId} onClick={e => mediumRowClick(e, m.assignmentMediumId)}>
                 <td>{m.caption}</td>
                 <td>{m.type}</td>
-                <td className="text-end">{humanReadableFileSize(m.size)}</td>
+                <td className="text-end">{humanReadableFileSize(m.filesize)}</td>
                 <td className="text-center">{m.order}</td>
               </tr>
             ))}
