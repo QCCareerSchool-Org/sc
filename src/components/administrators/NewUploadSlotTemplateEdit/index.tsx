@@ -9,8 +9,8 @@ import type { State } from './state';
 import { initialState, reducer } from './state';
 import { Section } from '@/components/Section';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { newUploadSlotTemplateService } from '@/services/administrators';
 import type { NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
@@ -59,6 +59,7 @@ const changesPreset = (uploadSlotTemplate: NewUploadSlotTemplate | undefined, fo
 
 export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId }: Props): ReactElement | null => {
   const router = useRouter();
+  const { newUploadSlotTemplateService } = useAdminServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newUploadSlotTemplate, state.form.data));
@@ -141,7 +142,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, newUploadSlotTemplateService ]);
 
   const labelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'LABEL_CHANGED', payload: e.target.value });

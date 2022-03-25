@@ -4,12 +4,13 @@ import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
-import { schoolService } from '@/services/administrators';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 export const useInitialData = (administratorId: number, schoolId: number, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
+  const { schoolService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -33,5 +34,5 @@ export const useInitialData = (administratorId: number, schoolId: number, dispat
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, schoolId, dispatch, router ]);
+  }, [ administratorId, schoolId, dispatch, router, schoolService ]);
 };

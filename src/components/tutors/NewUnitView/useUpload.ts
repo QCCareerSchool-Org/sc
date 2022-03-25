@@ -4,8 +4,8 @@ import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import type { Action, State } from './state';
+import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
-import { newUnitService } from '@/services/tutors';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 export type UploadPayload = {
@@ -19,6 +19,7 @@ export type UploadPayload = {
 
 export const useUpload = (dispatch: Dispatch<Action>): Subject<UploadPayload> => {
   const router = useRouter();
+  const { newUnitService } = useTutorServices();
 
   const upload$ = useRef(new Subject<UploadPayload>());
 
@@ -58,7 +59,7 @@ export const useUpload = (dispatch: Dispatch<Action>): Subject<UploadPayload> =>
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router ]);
+  }, [ dispatch, router, newUnitService ]);
 
   return upload$.current;
 };

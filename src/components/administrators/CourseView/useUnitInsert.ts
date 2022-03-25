@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import type { Action, State } from './state';
-import { newUnitTemplateService } from '@/services/administrators';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -19,6 +19,7 @@ export type UnitInsertPayload = {
 
 export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<UnitInsertPayload> => {
   const router = useRouter();
+  const { newUnitTemplateService } = useAdminServices();
 
   const unitInsert$ = useRef(new Subject<UnitInsertPayload>());
 

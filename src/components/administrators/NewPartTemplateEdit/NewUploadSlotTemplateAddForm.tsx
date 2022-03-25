@@ -4,12 +4,19 @@ import type { Subject } from 'rxjs';
 
 import { NewUploadSlotTemplateFormElements } from '../NewUploadSlotTemplateEdit/NewUploadSlotTemplateFormElements';
 import type { State } from './state';
+import type { UploadSlotInsertPayload } from './useUploadSlotInsert';
 import { Spinner } from '@/components/Spinner';
-import type { NewUploadSlotAllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
+import type { NewUploadSlotAllowedType } from '@/services/administrators/newUploadSlotTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
+  partId: string;
   formState: State['newUoloadSlotTemplateForm'];
-  insert$: Subject<{ processingState: State['newUoloadSlotTemplateForm']['processingState']; payload: NewUploadSlotTemplatePayload }>;
+  insert$: Subject<UploadSlotInsertPayload>;
   labelChange: ChangeEventHandler<HTMLInputElement>;
   pointsChange: ChangeEventHandler<HTMLInputElement>;
   orderChange: ChangeEventHandler<HTMLInputElement>;
@@ -20,7 +27,7 @@ type Props = {
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUploadSlotTemplateAddForm = memo(({ formState, insert$, labelChange, pointsChange, orderChange, imageChange, pdfChange, wordChange, excelChange, optionalChange }: Props): ReactElement => {
+export const NewUploadSlotTemplateAddForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, formState, insert$, labelChange, pointsChange, orderChange, imageChange, pdfChange, wordChange, excelChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -38,6 +45,12 @@ export const NewUploadSlotTemplateAddForm = memo(({ formState, insert$, labelCha
       return;
     }
     insert$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
+      partId,
       processingState: formState.processingState,
       payload: {
         label: formState.data.label,

@@ -2,7 +2,7 @@ import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
-import { uuidService } from '@/services/index';
+import type { IUUIDService } from '@/services/uuidService';
 import { sanitize } from 'src/sanitize';
 
 export type State = {
@@ -66,7 +66,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithUnitAndParts }
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }
@@ -135,7 +135,7 @@ export const initialState: State = {
   error: false,
 };
 
-export const reducer = (state: State, action: Action): State => {
+export const createReducer = (uuidService: IUUIDService) => (state: State, action: Action): State => {
   switch (action.type) {
     case 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED':
       return {

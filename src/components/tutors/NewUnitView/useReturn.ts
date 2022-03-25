@@ -4,8 +4,8 @@ import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import type { Action, State } from './state';
+import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
-import { newUnitService } from '@/services/tutors';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 export type ReturnPayload = {
@@ -18,6 +18,7 @@ export type ReturnPayload = {
 
 export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> => {
   const router = useRouter();
+  const { newUnitService } = useTutorServices();
 
   const return$ = useRef(new Subject<ReturnPayload>());
 
@@ -53,7 +54,7 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router ]);
+  }, [ dispatch, router, newUnitService ]);
 
   return return$.current;
 };

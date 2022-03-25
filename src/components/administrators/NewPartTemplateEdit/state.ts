@@ -5,7 +5,7 @@ import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
-import { uuidService } from '@/services/index';
+import type { IUUIDService } from '@/services/uuidService';
 
 const sanitize = (input: string): string => {
   return sanitizeHtml(input, {
@@ -98,7 +98,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'LOAD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplateWithAssignmentAndInputs }
   | { type: 'LOAD_PART_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }
@@ -199,7 +199,7 @@ export const initialState: State = {
   error: false,
 };
 
-export const reducer = (state: State, action: Action): State => {
+export const createReducer = (uuidService: IUUIDService) => (state: State, action: Action): State => {
   switch (action.type) {
     case 'LOAD_PART_TEMPLATE_SUCCEEDED':
       return {

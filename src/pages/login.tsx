@@ -5,10 +5,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { basePath } from '../basePath';
-import { loginService } from '../services';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
+import { useServices } from '@/hooks/useServices';
 
 type LogInPayload = {
   username: string;
@@ -23,6 +23,7 @@ type Props = {
 
 const LoginPage: NextPage<Props> = ({ returnUrl }) => {
   const router = useRouter();
+  const { loginService } = useServices();
   const authDispatch = useAuthDispatch();
   const [ username, setUsername ] = useState('');
   const [ password, setPassword ] = useState('');
@@ -67,7 +68,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, authDispatch ]);
+  }, [ router, authDispatch, loginService ]);
 
   const formSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();

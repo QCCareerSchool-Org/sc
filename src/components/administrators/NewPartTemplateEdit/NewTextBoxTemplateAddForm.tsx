@@ -4,12 +4,18 @@ import type { Subject } from 'rxjs';
 
 import { NewTextBoxFormElements } from '../NewTextBoxTemplateEdit/NewTextBoxFormElements';
 import type { State } from './state';
+import type { TextBoxInsertPayload } from './useTextBoxInsert';
 import { Spinner } from '@/components/Spinner';
-import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
+  partId: string;
   formState: State['newTextBoxTemplateForm'];
-  insert$: Subject<{ processingState: State['newTextBoxTemplateForm']['processingState']; payload: NewTextBoxTemplatePayload }>;
+  insert$: Subject<TextBoxInsertPayload>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   pointsChange: ChangeEventHandler<HTMLInputElement>;
   linesChange: ChangeEventHandler<HTMLInputElement>;
@@ -17,7 +23,7 @@ type Props = {
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewTextBoxTemplateAddForm = memo(({ formState, insert$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewTextBoxTemplateAddForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, formState, insert$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -35,6 +41,12 @@ export const NewTextBoxTemplateAddForm = memo(({ formState, insert$, description
       return;
     }
     insert$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
+      partId,
       processingState: formState.processingState,
       payload: {
         description: formState.data.description || null,

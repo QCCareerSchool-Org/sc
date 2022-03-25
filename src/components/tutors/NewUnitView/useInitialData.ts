@@ -4,12 +4,13 @@ import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
+import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
-import { newUnitService } from '@/services/tutors';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 export const useInitialData = (tutorId: number, studentId: number, courseId: number, unitId: string, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
+  const { newUnitService } = useTutorServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -33,5 +34,5 @@ export const useInitialData = (tutorId: number, studentId: number, courseId: num
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ tutorId, studentId, unitId, dispatch, router ]);
+  }, [ tutorId, studentId, unitId, dispatch, router, newUnitService ]);
 };

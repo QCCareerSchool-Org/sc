@@ -4,21 +4,28 @@ import type { Subject } from 'rxjs';
 
 import { NewAssignmentTemplateFormElements } from './NewAssignmentTemplateFormElements';
 import type { State } from './state';
+import type { AssignmentDeletePayload } from './useAssignmentDelete';
+import type { AssignmentSavePayload } from './useAssignmentSave';
 import { Spinner } from '@/components/Spinner';
-import type { NewAssignmentTemplatePayload, NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
   assignmentTemplate: NewAssignmentTemplateWithUnitAndParts;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>;
-  delete$: Subject<State['form']['processingState']>;
+  save$: Subject<AssignmentSavePayload>;
+  delete$: Subject<AssignmentDeletePayload>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   assignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentTemplateEditForm = memo(({ assignmentTemplate, formState, save$, delete$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
+export const NewAssignmentTemplateEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, assignmentTemplate, formState, save$, delete$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -36,6 +43,11 @@ export const NewAssignmentTemplateEditForm = memo(({ assignmentTemplate, formSta
       return;
     }
     save$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
       processingState: formState.processingState,
       payload: {
         title: formState.data.title || null,
@@ -48,7 +60,14 @@ export const NewAssignmentTemplateEditForm = memo(({ assignmentTemplate, formSta
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm(`Are you sure you want to delete this assignment template and all its media and parts?\n\nmedia:${assignmentTemplate?.newAssignmentMedia.length}\nparts: ${assignmentTemplate?.newPartTemplates.length}`)) {
-      delete$.next(formState.processingState);
+      delete$.next({
+        administratorId,
+        schoolId,
+        courseId,
+        unitId,
+        assignmentId,
+        processingState: formState.processingState,
+      });
     }
   };
 

@@ -1,21 +1,17 @@
 import NextError from 'next/error';
-import { useRouter } from 'next/router';
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
+import { useCallback, useReducer } from 'react';
 
 import { NewAssignmentMediumEditForm } from './NewAssignmentMediumEditForm';
-import type { State } from './state';
 import { initialState, reducer } from './state';
+import { useInitialData } from './useInitialData';
+import { useMediumDelete } from './useMediumDelete';
+import { useMediumSave } from './useMediumSave';
 import { FileIcon } from '@/components/FileIcon';
 import { Section } from '@/components/Section';
-import { newAssignmentMediumService } from '@/services/administrators';
-import type { NewAssignmentMediumEditPayload } from '@/services/administrators/newAssignmentMediumService';
-import { HttpServiceError } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 import { formatDateTime } from 'src/formatDate';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -27,89 +23,12 @@ type Props = {
 };
 
 export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, mediumId }: Props): ReactElement | null => {
-  const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentMediumEditPayload }>());
-  const delete$ = useRef(new Subject<State['form']['processingState']>());
+  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, mediumId, dispatch);
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    // load the initial data
-    newAssignmentMediumService.getAssignmentMedium(administratorId, schoolId, courseId, unitId, assignmentId, mediumId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: newAssignmentMedium => {
-        dispatch({ type: 'LOAD_ASSIGNMENT_MEDIUM_SUCCEEDED', payload: newAssignmentMedium });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_ASSIGNMENT_MEDIUM_FAILED', payload: errorCode });
-      },
-    });
-
-    save$.current.pipe(
-      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'SAVE_ASSIGNMENT_MEDIUM_STARTED' })),
-      exhaustMap(({ payload }) => newAssignmentMediumService.saveAssignmentMedium(administratorId, schoolId, courseId, unitId, assignmentId, mediumId, payload).pipe(
-        tap({
-          next: updatedAssignmentMedium => {
-            dispatch({ type: 'SAVE_ASSIGNMENT_MEDIUM_SUCCEEDED', payload: updatedAssignmentMedium });
-          },
-          error: err => {
-            let message = 'Save failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'SAVE_ASSIGNMENT_MEDIUM_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    delete$.current.pipe(
-      filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'DELETE_ASSIGNMENT_MEDIUM_STARTED' })),
-      exhaustMap(() => newAssignmentMediumService.deleteAssignmentMedium(administratorId, schoolId, courseId, unitId, assignmentId, mediumId).pipe(
-        tap({
-          next: () => {
-            dispatch({ type: 'DELETE_ASSIGNMENT_MEDIUM_SUCCEEDED' });
-            router.back();
-          },
-          error: err => {
-            let message = 'Delete failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'DELETE_ASSIGNMENT_MEDIUM_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, mediumId ]);
+  const mediumSave$ = useMediumSave(dispatch);
+  const mediumDelete$ = useMediumDelete(dispatch);
 
   const captionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'CAPTION_CHANGED', payload: e.target.value });
@@ -137,9 +56,15 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewAssignmentMediumEditForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
+                mediumId={mediumId}
                 formState={state.form}
-                save$={save$.current}
-                delete$={delete$.current}
+                save$={mediumSave$}
+                delete$={mediumDelete$}
                 captionChange={captionChange}
                 orderChange={orderChange}
               />

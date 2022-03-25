@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import type { Action, State } from './state';
-import { newAssignmentTemplateService } from '@/services/administrators';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -20,6 +20,7 @@ export type AssignementInsertPayload = {
 
 export const useAssignmentInsert = (dispatch: Dispatch<Action>): Subject<AssignementInsertPayload> => {
   const router = useRouter();
+  const { newAssignmentTemplateService } = useAdminServices();
 
   const assignmentInsert$ = useRef(new Subject<AssignementInsertPayload>());
 
@@ -51,7 +52,7 @@ export const useAssignmentInsert = (dispatch: Dispatch<Action>): Subject<Assigne
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router ]);
+  }, [ dispatch, router, newAssignmentTemplateService ]);
 
   return assignmentInsert$.current;
 };

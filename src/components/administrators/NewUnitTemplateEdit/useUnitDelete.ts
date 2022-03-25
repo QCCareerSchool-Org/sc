@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import type { Action, State } from './state';
-import { newUnitTemplateService } from '@/services/administrators';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
@@ -18,6 +18,7 @@ export type UnitDeletePayload = {
 
 export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<UnitDeletePayload> => {
   const router = useRouter();
+  const { newUnitTemplateService } = useAdminServices();
 
   const unitDelete$ = useRef(new Subject<UnitDeletePayload>());
 
@@ -52,7 +53,7 @@ export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<UnitDeletePay
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router ]);
+  }, [ dispatch, router, newUnitTemplateService ]);
 
   return unitDelete$.current;
 };

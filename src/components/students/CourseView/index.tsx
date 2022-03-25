@@ -9,8 +9,8 @@ import { UnitsTable } from './UnitsTable';
 import { Section } from '@/components/Section';
 import type { NewUnit } from '@/domain/newUnit';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
+import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
-import { enrollmentService, newUnitService } from '@/services/students';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
@@ -20,6 +20,7 @@ type Props = {
 
 export const CourseView = ({ studentId, courseId }: Props): ReactElement | null => {
   const router = useRouter();
+  const { enrollmentService, newUnitService } = useStudentServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   const initialize$ = useRef(new Subject<void>());
@@ -72,7 +73,7 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, studentId, courseId ]);
+  }, [ router, studentId, courseId, enrollmentService, newUnitService ]);
 
   const newUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
     void router.push(router.asPath + '/units/' + unitId);

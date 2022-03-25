@@ -4,12 +4,18 @@ import type { Subject } from 'rxjs';
 
 import { NewAssignmentMediumFormElements } from '../NewAssignmentMediumEdit/NewAssignmentMediumFormElements';
 import type { State } from './state';
+import type { MediumInsertPayload } from './useMediumInsert';
 import { Spinner } from '@/components/Spinner';
 import type { NewAssignmentMediumAddPayload } from '@/services/administrators/newAssignmentMediumService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
   formState: State['assignmentMediaForm'];
-  insert$: Subject<{ processingState: State['assignmentMediaForm']['processingState']; payload: NewAssignmentMediumAddPayload }>;
+  insert$: Subject<MediumInsertPayload>;
   dataSourceChange: (dataSource: 'file upload' | 'url') => void;
   captionChange: ChangeEventHandler<HTMLInputElement>;
   orderChange: ChangeEventHandler<HTMLInputElement>;
@@ -17,7 +23,7 @@ type Props = {
   externalDataChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentMediumAddForm = memo(({ formState, insert$, dataSourceChange, captionChange, orderChange, fileChange, externalDataChange }: Props): ReactElement => {
+export const NewAssignmentMediumAddForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, formState, insert$, dataSourceChange, captionChange, orderChange, fileChange, externalDataChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -54,6 +60,11 @@ export const NewAssignmentMediumAddForm = memo(({ formState, insert$, dataSource
       throw Error('Invalid form data');
     }
     insert$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
       processingState: formState.processingState,
       payload,
     });

@@ -2,8 +2,7 @@ import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
+import { useCallback, useReducer } from 'react';
 
 import { NewAssignmentMediumAddForm } from './NewAssignmentMediumAddForm';
 import { NewAssignmentMediumList } from './NewAssignmentMediumList';
@@ -11,17 +10,17 @@ import { NewAssignmentTemplateEditForm } from './NewAssignmentTemplateEditForm';
 import { NewPartTemplateAddForm } from './NewPartTemplateAddForm';
 import { NewPartTemplateList } from './NewPartTemplateList';
 import type { State } from './state';
-import { initialState, reducer } from './state';
+import { createReducer, initialState } from './state';
+import { useAssignmentDelete } from './useAssignmentDelete';
+import { useAssignmentSave } from './useAssignmentSave';
+import { useInitialData } from './useInitialData';
+import { useMediumInsert } from './useMediumInsert';
+import { usePartInsert } from './usePartInsert';
 import { Section } from '@/components/Section';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
+import { useServices } from '@/hooks/useServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { newAssignmentMediumService, newAssignmentTemplateService, newPartTemplateService } from '@/services/administrators';
-import type { NewAssignmentMediumAddPayload } from '@/services/administrators/newAssignmentMediumService';
-import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
-import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
-import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -52,147 +51,17 @@ const changesPreset = (assignmentTemplate: NewAssignmentTemplate | undefined, fo
 
 export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
-  const [ state, dispatch ] = useReducer(reducer, initialState);
+  const { uuidService } = useServices();
+  const [ state, dispatch ] = useReducer(createReducer(uuidService), initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newAssignmentTemplate, state.form.data));
 
-  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentTemplatePayload }>());
-  const delete$ = useRef(new Subject<State['form']['processingState']>());
-  const partInsert$ = useRef(new Subject<{ processingState: State['newPartTemplateForm']['processingState']; payload: NewPartTemplatePayload }>());
-  const mediumInsert$ = useRef(new Subject<{ processingState: State['assignmentMediaForm']['processingState']; payload: NewAssignmentMediumAddPayload }>());
+  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, dispatch);
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    // load the initial data
-    newAssignmentTemplateService.getAssignment(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: assignmentTemplate => {
-        dispatch({ type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: assignmentTemplate });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED', payload: errorCode });
-      },
-    });
-
-    save$.current.pipe(
-      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newAssignmentTemplateService.saveAssignment(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
-        tap({
-          next: updatedAssignment => {
-            dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: updatedAssignment });
-          },
-          error: err => {
-            let message = 'Save failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    delete$.current.pipe(
-      filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_STARTED' })),
-      exhaustMap(() => newAssignmentTemplateService.deleteAssignment(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
-        tap({
-          next: () => {
-            dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_SUCCEEDED' });
-            router.back();
-          },
-          error: err => {
-            let message = 'Delete failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    partInsert$.current.pipe(
-      filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_PART_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newPartTemplateService.addPart(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
-        tap({
-          next: insertedPart => dispatch({ type: 'ADD_PART_TEMPLATE_SUCCEEDED', payload: insertedPart }),
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'ADD_PART_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    mediumInsert$.current.pipe(
-      filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_STARTED' })),
-      exhaustMap(({ payload }) => newAssignmentMediumService.addAssignmentMedium(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
-        tap({
-          next: progressResponse => {
-            if (progressResponse.type === 'progress') {
-              dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_PROGRESSED', payload: progressResponse.value });
-            } else if (progressResponse.type === 'data') {
-              dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_SUCCEEDED', payload: progressResponse.value });
-            }
-          },
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_FAILED', payload: message });
-            console.log(err);
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId ]);
+  const assignmentSave$ = useAssignmentSave(dispatch);
+  const assignmentDelete$ = useAssignmentDelete(dispatch);
+  const partInsert$ = usePartInsert(dispatch);
+  const mediumInsert$ = useMediumInsert(dispatch);
 
   const titleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TITLE_CHANGED', payload: e.target.value });
@@ -211,7 +80,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
   }, []);
 
   const partRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, partId: string): void => {
-    void router.push(`${router.asPath}/parts/${partId}`);
+    void router.push(`${router.asPath}/partTemplates/${partId}`);
   }, [ router ]);
 
   const mediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
@@ -271,10 +140,15 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewAssignmentTemplateEditForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
                 assignmentTemplate={state.newAssignmentTemplate}
                 formState={state.form}
-                save$={save$.current}
-                delete$={delete$.current}
+                save$={assignmentSave$}
+                delete$={assignmentDelete$}
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
                 assignmentNumberChange={assignmentNumberChange}
@@ -306,8 +180,13 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewPartTemplateAddForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
                 formState={state.newPartTemplateForm}
-                insert$={partInsert$.current}
+                insert$={partInsert$}
                 titleChange={partTitleChange}
                 descriptionChange={partDescriptionChange}
                 descriptionTypeChange={partDescriptionTypeChange}
@@ -326,8 +205,13 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentMediumAddForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
                 formState={state.assignmentMediaForm}
-                insert$={mediumInsert$.current}
+                insert$={mediumInsert$}
                 dataSourceChange={assignmentMediumDataSourceChange}
                 captionChange={assignmentMediumCaptionChange}
                 orderChange={assignmentMediumOrderChange}

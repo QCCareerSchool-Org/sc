@@ -7,7 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { SchoolList } from './SchoolList';
 import { initialState, reducer } from './state';
 import { Section } from '@/components/Section';
-import { schoolService } from '@/services/administrators';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
@@ -18,6 +18,7 @@ type Props = {
 export const CourseDevelopmentOverview = ({ administratorId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const { schoolService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -41,7 +42,7 @@ export const CourseDevelopmentOverview = ({ administratorId }: Props): ReactElem
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId ]);
+  }, [ router, administratorId, schoolService ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;

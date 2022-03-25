@@ -4,21 +4,29 @@ import type { Subject } from 'rxjs';
 
 import { NewPartTemplateFormElements } from './NewPartTemplateFormElements';
 import type { State } from './state';
+import type { PartDeletePayload } from './usePartDelete';
+import type { PartSavePayload } from './usePartSave';
 import { Spinner } from '@/components/Spinner';
-import type { NewPartTemplatePayload, NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
+import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
+  partId: string;
   partTemplate: NewPartTemplateWithAssignmentAndInputs;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewPartTemplatePayload }>;
-  delete$: Subject<State['form']['processingState']>;
+  save$: Subject<PartSavePayload>;
+  delete$: Subject<PartDeletePayload>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   descriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
   partNumberChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, delete$, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
+export const NewPartTemplateEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, partTemplate, formState, save$, delete$, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -39,6 +47,12 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
       throw Error('Invalid description type');
     }
     save$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
+      partId,
       processingState: formState.processingState,
       payload: {
         title: formState.data.title,
@@ -51,7 +65,15 @@ export const NewPartTemplateEditForm = memo(({ partTemplate, formState, save$, d
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm(`Are you sure you want to delete this part template and all its media and inputs?\n\nmedia: ${partTemplate.newPartMedia.length}\ntext boxes: ${partTemplate?.newTextBoxTemplates.length}\nupload slots: ${partTemplate?.newUploadSlotTemplates.length}`)) {
-      delete$.next(formState.processingState);
+      delete$.next({
+        administratorId,
+        schoolId,
+        courseId,
+        unitId,
+        assignmentId,
+        partId,
+        processingState: formState.processingState,
+      });
     }
   };
 

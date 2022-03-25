@@ -9,7 +9,7 @@ import type { State } from './state';
 import { initialState, reducer } from './state';
 import { FileIcon } from '@/components/FileIcon';
 import { Section } from '@/components/Section';
-import { newPartMediumService } from '@/services/administrators';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import type { NewPartMediumEditPayload } from '@/services/administrators/newPartMediumService';
 import { HttpServiceError } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
@@ -29,6 +29,7 @@ type Props = {
 
 export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId }: Props): ReactElement | null => {
   const router = useRouter();
+  const { newPartMediumService } = useAdminServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewPartMediumEditPayload }>());
@@ -110,7 +111,7 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, newPartMediumService ]);
 
   const captionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'CAPTION_CHANGED', payload: e.target.value });

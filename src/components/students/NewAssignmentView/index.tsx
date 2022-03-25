@@ -9,9 +9,9 @@ import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
+import { useStudentServices } from '@/hooks/useStudentServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { HttpServiceError } from '@/services/httpService';
-import { newAssignmentService } from '@/services/students';
 import { endpoint } from 'src/basePath';
 import { navigateToLogin } from 'src/navigateToLogin';
 import { scrollToId } from 'src/scrollToId';
@@ -28,6 +28,7 @@ type Props = {
 
 export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
+  const { newAssignmentService } = useStudentServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useWarnIfUnsavedChanges(state.assignment && state.assignment?.formState !== 'pristine' && state.assignment?.saveState !== 'saved');
@@ -52,7 +53,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentId, courseId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
 
   const uploadFile: UploadSlotFunction = useCallback((partId, uploadSlotId, file) => {
     if (!file) {
@@ -85,7 +86,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
 
   const deleteFile: UploadSlotFunction = useCallback((partId, uploadSlotId) => {
     dispatch({ type: 'FILE_DELETE_STARTED', payload: { partId, uploadSlotId } });
@@ -103,7 +104,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
 
   const downloadFile: UploadSlotFunction = useCallback((partId, uploadSlotId) => {
     return newAssignmentService.downloadFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
@@ -123,7 +124,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
 
   const saveText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
     dispatch({ type: 'TEXT_SAVE_STARTED', payload: { partId, textBoxId } });
@@ -141,7 +142,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, router ]);
+  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
 
   const updateText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
     return new Observable(obs => {

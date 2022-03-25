@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import type { Action, State } from './state';
-import { newUnitTemplateService } from '@/services/administrators';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -20,6 +20,7 @@ export type UnitSavePayload = {
 
 export const useUnitSave = (dispatch: Dispatch<Action>): Subject<UnitSavePayload> => {
   const router = useRouter();
+  const { newUnitTemplateService } = useAdminServices();
 
   const unitSave$ = useRef(new Subject<UnitSavePayload>());
 
@@ -53,7 +54,7 @@ export const useUnitSave = (dispatch: Dispatch<Action>): Subject<UnitSavePayload
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router ]);
+  }, [ dispatch, router, newUnitTemplateService ]);
 
   return unitSave$.current;
 };

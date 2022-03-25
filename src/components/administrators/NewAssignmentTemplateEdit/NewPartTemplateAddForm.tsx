@@ -4,19 +4,24 @@ import type { Subject } from 'rxjs';
 
 import { NewPartTemplateFormElements } from '../NewPartTemplateEdit/NewPartTemplateFormElements';
 import type { State } from './state';
+import type { PartInsertPayload } from './usePartInsert';
 import { Spinner } from '@/components/Spinner';
-import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
   formState: State['newPartTemplateForm'];
-  insert$: Subject<{ processingState: State['newPartTemplateForm']['processingState']; payload: NewPartTemplatePayload }>;
+  insert$: Subject<PartInsertPayload>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   descriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
   partNumberChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateAddForm = memo(({ formState, insert$, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
+export const NewPartTemplateAddForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, formState, insert$, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -37,6 +42,11 @@ export const NewPartTemplateAddForm = memo(({ formState, insert$, titleChange, d
       throw Error('Invalid description type');
     }
     insert$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
       processingState: formState.processingState,
       payload: {
         title: formState.data.title,

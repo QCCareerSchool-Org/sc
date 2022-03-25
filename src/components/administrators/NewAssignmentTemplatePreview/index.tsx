@@ -9,7 +9,7 @@ import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
-import { newAssignmentTemplateService } from '@/services/administrators';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 import { navigateToLogin } from 'src/navigateToLogin';
@@ -24,6 +24,7 @@ type Props = {
 
 export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
+  const { newAssignmentTemplateService } = useAdminServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, course
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, newAssignmentTemplateService ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;

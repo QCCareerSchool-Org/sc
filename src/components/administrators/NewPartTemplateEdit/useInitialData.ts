@@ -8,18 +8,18 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
-export const useInitialData = (administratorId: number, schoolId: number, courseId: number, dispatch: Dispatch<Action>): void => {
+export const useInitialData = (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
-  const { courseService } = useAdminServices();
+  const { newPartTemplateService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    courseService.getCourse(administratorId, schoolId, courseId).pipe(
+    newPartTemplateService.getPart(administratorId, schoolId, courseId, unitId, assignmentId, partId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: schools => {
-        dispatch({ type: 'LOAD_COURSE_SUCCEEDED', payload: schools });
+      next: partTemplate => {
+        dispatch({ type: 'LOAD_PART_TEMPLATE_SUCCEEDED', payload: partTemplate });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -29,8 +29,10 @@ export const useInitialData = (administratorId: number, schoolId: number, course
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'LOAD_COURSE_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_PART_TEMPLATE_FAILED', payload: errorCode });
       },
     });
-  }, [ administratorId, schoolId, courseId, dispatch, router, courseService ]);
+
+    return () => { destroy$.next(); destroy$.complete(); };
+  }, [ administratorId, schoolId, courseId, unitId, assignmentId, partId, dispatch, router, newPartTemplateService ]);
 };

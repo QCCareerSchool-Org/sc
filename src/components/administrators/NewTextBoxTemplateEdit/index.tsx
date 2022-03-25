@@ -9,8 +9,8 @@ import type { State } from './state';
 import { initialState, reducer } from './state';
 import { Section } from '@/components/Section';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
+import { useAdminServices } from '@/hooks/useAdminServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { newTextBoxTemplateService } from '@/services/administrators';
 import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
@@ -50,6 +50,7 @@ const changesPreset = (textBoxTemplate: NewTextBoxTemplate | undefined, formData
 
 export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId }: Props): ReactElement | null => {
   const router = useRouter();
+  const { newTextBoxTemplateService } = useAdminServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newTextBoxTemplate, state.form.data));
@@ -132,7 +133,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, schoolId, courseId, un
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId ]);
+  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, newTextBoxTemplateService ]);
 
   const descriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });

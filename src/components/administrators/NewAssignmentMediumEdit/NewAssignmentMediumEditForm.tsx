@@ -4,18 +4,25 @@ import type { Subject } from 'rxjs';
 
 import { NewAssignmentMediumFormElements } from './NewAssignmentMediumFormElements';
 import type { State } from './state';
+import type { MediumDeletePayload } from './useMediumDelete';
+import type { MediumSavePayload } from './useMediumSave';
 import { Spinner } from '@/components/Spinner';
-import type { NewAssignmentMediumEditPayload } from '@/services/administrators/newAssignmentMediumService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
+  mediumId: string;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewAssignmentMediumEditPayload }>;
-  delete$: Subject<State['form']['processingState']>;
+  save$: Subject<MediumSavePayload>;
+  delete$: Subject<MediumDeletePayload>;
   captionChange: ChangeEventHandler<HTMLInputElement>;
   orderChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentMediumEditForm = memo(({ formState, save$, delete$, captionChange, orderChange }: Props): ReactElement => {
+export const NewAssignmentMediumEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, mediumId, formState, save$, delete$, captionChange, orderChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -33,6 +40,12 @@ export const NewAssignmentMediumEditForm = memo(({ formState, save$, delete$, ca
       return;
     }
     save$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
+      mediumId,
       processingState: formState.processingState,
       payload: {
         caption: formState.data.caption,
@@ -43,7 +56,15 @@ export const NewAssignmentMediumEditForm = memo(({ formState, save$, delete$, ca
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm(`Are you sure you want to delete this assignment medium?`)) {
-      delete$.next(formState.processingState);
+      delete$.next({
+        administratorId,
+        schoolId,
+        courseId,
+        unitId,
+        assignmentId,
+        mediumId,
+        processingState: formState.processingState,
+      });
     }
   };
 

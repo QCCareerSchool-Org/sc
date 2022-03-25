@@ -12,8 +12,8 @@ import type { State } from './state';
 import { initialState, reducer } from './state';
 import { SubmitSection } from './SubmitSection';
 import { Section } from '@/components/Section';
+import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
-import { newUnitService } from '@/services/students';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
@@ -24,6 +24,7 @@ type Props = {
 
 export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElement | null => {
   const router = useRouter();
+  const { newUnitService } = useStudentServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   const submit$ = useRef(new Subject<State['processingState']>());
@@ -97,7 +98,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentId, courseId, unitId, router ]);
+  }, [ studentId, courseId, unitId, router, newUnitService ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;

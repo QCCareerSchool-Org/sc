@@ -1,8 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
+import { useCallback, useReducer } from 'react';
 
 import { NewPartMediumAddForm } from './NewPartMediumAddForm';
 import { NewPartMediumList } from './NewPartMediumList';
@@ -12,18 +11,18 @@ import { NewTextBoxTemplateList } from './NewTextBoxTemplateList';
 import { NewUploadSlotTemplateAddForm } from './NewUploadSlotTemplateAddForm';
 import { NewUploadSlotTemplateList } from './NewUploadSlotTemplateList';
 import type { State } from './state';
-import { initialState, reducer } from './state';
+import { createReducer, initialState } from './state';
+import { useInitialData } from './useInitialData';
+import { useMediumInsert } from './useMediumInsert';
+import { usePartDelete } from './usePartDelete';
+import { usePartSave } from './usePartSave';
+import { useTextBoxInsert } from './useTextBoxInsert';
+import { useUploadSlotInsert } from './useUploadSlotInsert';
 import { Section } from '@/components/Section';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
+import { useServices } from '@/hooks/useServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { newPartMediumService, newPartTemplateService, newTextBoxTemplateService, newUploadSlotTemplateService } from '@/services/administrators';
-import type { NewPartMediumAddPayload } from '@/services/administrators/newPartMediumService';
-import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
-import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
-import type { NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
-import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -52,175 +51,18 @@ const changesPreset = (partTemplate: NewPartTemplate | undefined, formData: Stat
 
 export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId }: Props): ReactElement | null => {
   const router = useRouter();
-  const [ state, dispatch ] = useReducer(reducer, initialState);
+  const { uuidService } = useServices();
+  const [ state, dispatch ] = useReducer(createReducer(uuidService), initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newPartTemplate, state.form.data));
 
-  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewPartTemplatePayload }>());
-  const delete$ = useRef(new Subject<State['form']['processingState']>());
-  const textBoxInsert$ = useRef(new Subject<{ processingState: State['newTextBoxTemplateForm']['processingState']; payload: NewTextBoxTemplatePayload }>());
-  const uploadSlotInsert$ = useRef(new Subject<{ processingState: State['newUoloadSlotTemplateForm']['processingState']; payload: NewUploadSlotTemplatePayload }>());
-  const mediumInsert$ = useRef(new Subject<{ processingState: State['partMediaForm']['processingState']; payload: NewPartMediumAddPayload }>());
+  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, partId, dispatch);
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    newPartTemplateService.getPart(administratorId, schoolId, courseId, unitId, assignmentId, partId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: partTemplate => {
-        dispatch({ type: 'LOAD_PART_TEMPLATE_SUCCEEDED', payload: partTemplate });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_PART_TEMPLATE_FAILED', payload: errorCode });
-      },
-    });
-
-    save$.current.pipe(
-      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'SAVE_PART_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newPartTemplateService.savePart(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
-        tap({
-          next: updatedPart => {
-            dispatch({ type: 'SAVE_PART_TEMPLATE_SUCCEEDED', payload: updatedPart });
-          },
-          error: err => {
-            let message = 'Save failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'SAVE_PART_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    delete$.current.pipe(
-      filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'DELETE_PART_TEMPLATE_STARTED' })),
-      exhaustMap(() => newPartTemplateService.deletePart(administratorId, schoolId, courseId, unitId, assignmentId, partId).pipe(
-        tap({
-          next: () => {
-            dispatch({ type: 'DELETE_PART_TEMPLATE_SUCCEEDED' });
-            router.back();
-          },
-          error: err => {
-            let message = 'Delete failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'DELETE_PART_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    textBoxInsert$.current.pipe(
-      filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_TEXT_BOX_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newTextBoxTemplateService.addTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
-        tap({
-          next: insertedTextBox => {
-            dispatch({ type: 'ADD_TEXT_BOX_TEMPLATE_SUCCEEDED', payload: insertedTextBox });
-          },
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'ADD_TEXT_BOX_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    uploadSlotInsert$.current.pipe(
-      filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_UPLOAD_SLOT_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newUploadSlotTemplateService.addUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
-        tap({
-          next: insertedTextBox => {
-            dispatch({ type: 'ADD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED', payload: insertedTextBox });
-          },
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'ADD_UPLOAD_SLOT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    mediumInsert$.current.pipe(
-      filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_PART_MEDIUM_STARTED' })),
-      exhaustMap(({ payload }) => newPartMediumService.addPartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
-        tap({
-          next: progressResponse => {
-            if (progressResponse.type === 'progress') {
-              dispatch({ type: 'ADD_PART_MEDIUM_PROGRESSED', payload: progressResponse.value });
-            } else if (progressResponse.type === 'data') {
-              dispatch({ type: 'ADD_PART_MEDIUM_SUCCEEDED', payload: progressResponse.value });
-            }
-          },
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'ADD_PART_MEDIUM_FAILED', payload: message });
-            console.log(err);
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId ]);
+  const partSave$ = usePartSave(dispatch);
+  const partDelete$ = usePartDelete(dispatch);
+  const textBoxInsert$ = useTextBoxInsert(dispatch);
+  const uploadSlotInsert$ = useUploadSlotInsert(dispatch);
+  const mediumInsert$ = useMediumInsert(dispatch);
 
   const titleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TITLE_CHANGED', payload: e.target.value });
@@ -341,10 +183,16 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewPartTemplateEditForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
+                partId={partId}
                 partTemplate={state.newPartTemplate}
                 formState={state.form}
-                save$={save$.current}
-                delete$={delete$.current}
+                save$={partSave$}
+                delete$={partDelete$}
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
                 descriptionTypeChange={descriptionTypeChange}
@@ -398,8 +246,14 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewTextBoxTemplateAddForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
+                partId={partId}
                 formState={state.newTextBoxTemplateForm}
-                insert$={textBoxInsert$.current}
+                insert$={textBoxInsert$}
                 descriptionChange={textBoxDescriptionChange}
                 pointsChange={textBoxPointsChange}
                 linesChange={textBoxLinesChange}
@@ -419,8 +273,14 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewUploadSlotTemplateAddForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
+                partId={partId}
                 formState={state.newUoloadSlotTemplateForm}
-                insert$={uploadSlotInsert$.current}
+                insert$={uploadSlotInsert$}
                 labelChange={uploadSlotLabelChange}
                 pointsChange={uploadSlotPointsChange}
                 orderChange={uploadSlotOrderChange}
@@ -443,8 +303,14 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewPartMediumAddForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
+                partId={partId}
                 formState={state.partMediaForm}
-                insert$={mediumInsert$.current}
+                insert$={mediumInsert$}
                 dataSourceChange={partMediumDataSourceChange}
                 captionChange={partMediumCaptionChange}
                 orderChange={partMediumOrderChange}
