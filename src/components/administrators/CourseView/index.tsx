@@ -1,18 +1,14 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
-import { memo, useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
+import { useCallback, useReducer } from 'react';
 
 import { NewUnitTemplateAddForm } from './NewUnitTemplateAddForm';
 import { NewUnitTemplateList } from './NewUnitTemplateList';
-import type { State } from './state';
 import { initialState, reducer } from './state';
+import { useInitialData } from './useInitialData';
+import { useUnitInsert } from './useUnitInsert';
 import { Section } from '@/components/Section';
-import { courseService, newUnitTemplateService } from '@/services/administrators';
-import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
-import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -24,58 +20,12 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  const unitInsert$ = useRef(new Subject<{ processingState: State['newUnitTemplateForm']['processingState']; payload: NewUnitTemplatePayload }>());
+  useInitialData(administratorId, schoolId, courseId, dispatch);
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    courseService.getCourse(administratorId, schoolId, courseId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: schools => {
-        dispatch({ type: 'LOAD_COURSE_SUCCEEDED', payload: schools });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_COURSE_FAILED', payload: errorCode });
-      },
-    });
-
-    unitInsert$.current.pipe(
-      filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_UNIT_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newUnitTemplateService.addUnit(administratorId, schoolId, courseId, payload).pipe(
-        tap({
-          next: insertedUnit => dispatch({ type: 'ADD_UNIT_TEMPLATE_SUCCEEDED', payload: insertedUnit }),
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'ADD_UNIT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId ]);
+  const unitInsert$ = useUnitInsert(dispatch);
 
   const unitRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
-    void router.push(`${router.asPath}/newUnitTemplates/${unitId}`);
+    void router.push(`${router.asPath}/unitTemplates/${unitId}`);
   }, [ router ]);
 
   const unitTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
@@ -131,13 +81,16 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
             <h2 className="h3">Unit Templates</h2>
             <div className="row">
               <div className="col-12 col-xl-6">
-                <NewUnitTemplateList units={state.course.newUnitTemplates} unitRowClick={unitRowClick} />
+                <NewUnitTemplateList units={state.course.newUnitTemplates} onClick={unitRowClick} />
                 <div className="alert alert-info"><h3 className="h6">Unit Ordering</h3>Units are ordered by &ldquo;order&rdquo; then &ldquo;unit letter&rdquo;. As long as you follow a standard unit lettering scheme (e.g., &ldquo;A, B, C, ...&rdquo; or &ldquo;1, 2, 3, ...&rdquo;), you can leave each unit's &ldquo;order&rdquo; value set to 0.</div>
               </div>
               <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
                 <NewUnitTemplateAddForm
+                  administratorId={administratorId}
+                  schoolId={schoolId}
+                  courseId={courseId}
                   formState={state.newUnitTemplateForm}
-                  insert$={unitInsert$.current}
+                  insert$={unitInsert$}
                   titleChange={unitTitleChange}
                   descriptionChange={unitDescriptionChange}
                   unitLetterChange={unitUnitLetterChange}

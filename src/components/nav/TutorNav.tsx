@@ -6,6 +6,7 @@ import { useNavState } from '@/hooks/useNavState';
 
 export type TutorNavProps = Record<string, never>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const TutorNav = (props: TutorNavProps): ReactElement | null => {
   const authState = useAuthState();
   const navState = useNavState();
@@ -33,15 +34,15 @@ export const TutorNav = (props: TutorNavProps): ReactElement | null => {
 
   return (
     <>
-      <nav className="navbar sticky-top navbar-expand-xl navbar-light bg-white mainNav shadow">
+      <nav className="navbar sticky-top navbar-expand-md navbar-light bg-white mainNav shadow">
         <div className="container">
-          <a className="d-xl-none navbar-brand" href="#">Tutor Menu</a>
-          <button className={`navbar-toggler collapsed`} type="button" data-bs-toggle="collapse" data-bs-target="#studentNav" aria-controls="studentNav" aria-expanded="false" aria-label="Toggle navigation">
+          <a className="d-md-none navbar-brand" href="#">Tutor Menu</a>
+          <button className={`navbar-toggler collapsed`} type="button" data-bs-toggle="collapse" data-bs-target="#tutorNav" aria-controls="tutorNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
           </button>
-          <div className="collapse navbar-collapse" id="studentNav">
+          <div className="collapse navbar-collapse" id="tutorNav">
             {otherNavPresent && <span className="d-none d-md-inline"><strong>T:</strong>&nbsp;&nbsp;</span>}
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/tutors/index.php">Home{index === 0 && <div className="active-indicator" />}</a>
               </li>

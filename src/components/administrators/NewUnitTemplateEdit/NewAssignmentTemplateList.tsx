@@ -5,10 +5,10 @@ import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 
 type Props = {
   assignments: NewAssignmentTemplate[];
-  assignmentRowClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
+  onClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
 };
 
-export const NewAssignmentTemplateList = memo(({ assignments, assignmentRowClick }: Props): ReactElement => (
+export const NewAssignmentTemplateList = memo(({ assignments, onClick }: Props): ReactElement => (
   <>
     {assignments.length === 0
       ? <p>no assignments</p>
@@ -23,7 +23,7 @@ export const NewAssignmentTemplateList = memo(({ assignments, assignmentRowClick
           </thead>
           <tbody>
             {assignments.map(a => (
-              <tr key={a.assignmentTemplateId} onClick={e => assignmentRowClick(e, a.assignmentTemplateId)}>
+              <tr key={a.assignmentTemplateId} onClick={e => onClick(e, a.assignmentTemplateId)}>
                 <td className="text-center">{a.assignmentNumber}</td>
                 <td>{a.title ?? '(none)'}</td>
                 <td className="text-center">{a.optional ? 'yes' : 'no'}</td>

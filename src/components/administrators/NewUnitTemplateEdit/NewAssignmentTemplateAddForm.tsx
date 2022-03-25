@@ -4,19 +4,23 @@ import type { Subject } from 'rxjs';
 
 import { NewAssignmentTemplateFormElements } from '../NewAssignmentTemplateEdit/NewAssignmentTemplateFormElements';
 import type { State } from './state';
+import type { AssignementInsertPayload } from './useAssignmentInsert';
 import { Spinner } from '@/components/Spinner';
-import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
   formState: State['newAssignmentTemplateForm'];
-  insert$: Subject<{ processingState: State['newAssignmentTemplateForm']['processingState']; payload: NewAssignmentTemplatePayload }>;
+  insert$: Subject<AssignementInsertPayload>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   assignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentTemplateAddForm = memo(({ formState, insert$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
+export const NewAssignmentTemplateAddForm = memo(({ administratorId, schoolId, courseId, unitId, formState, insert$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -34,6 +38,10 @@ export const NewAssignmentTemplateAddForm = memo(({ formState, insert$, titleCha
       return;
     }
     insert$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
       processingState: formState.processingState,
       payload: {
         title: formState.data.title || null,

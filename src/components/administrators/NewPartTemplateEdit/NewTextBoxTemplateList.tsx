@@ -5,10 +5,10 @@ import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 
 type Props = {
   textBoxes: NewTextBoxTemplate[];
-  textBoxRowClick: (e: MouseEvent<HTMLTableRowElement>, textBoxId: string) => void;
+  onClick: (e: MouseEvent<HTMLTableRowElement>, textBoxId: string) => void;
 };
 
-export const NewTextBoxTemplateList = memo(({ textBoxes, textBoxRowClick }: Props): ReactElement => (
+export const NewTextBoxTemplateList = memo(({ textBoxes, onClick }: Props): ReactElement => (
   <>
     {textBoxes.length === 0
       ? <p>no text boxes</p>
@@ -25,7 +25,7 @@ export const NewTextBoxTemplateList = memo(({ textBoxes, textBoxRowClick }: Prop
           </thead>
           <tbody>
             {textBoxes.map(t => (
-              <tr key={t.textBoxTemplateId} onClick={e => textBoxRowClick(e, t.textBoxTemplateId)} title={t.description ?? undefined}>
+              <tr key={t.textBoxTemplateId} onClick={e => onClick(e, t.textBoxTemplateId)} title={t.description ?? undefined}>
                 <td>{t.description === null ? '(none)' : trimDescription(t.description)}</td>
                 <td className="text-center">{t.points}</td>
                 <td className="text-center">{t.lines ?? '(default)'}</td>

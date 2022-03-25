@@ -22,6 +22,7 @@ const CourseViewPage: NextPage<Props> = ({ courseId }: Props) => {
   return <CourseView studentId={authState.studentId} courseId={courseId} />;
 };
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   const courseIdParam = ctx.params?.courseId;
   const courseId = typeof courseIdParam === 'string' ? parseInt(courseIdParam, 10) : null;

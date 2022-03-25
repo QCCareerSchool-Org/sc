@@ -42,7 +42,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'LOAD_UNIT_TEMPLATE_SUCCEEDED'; payload: NewUnitTemplateWithCourseAndAssignments }
   | { type: 'LOAD_UNIT_TEMPLATE_FAILED'; payload?: number }
   | { type: 'TITLE_CHANGED'; payload: string }

@@ -5,10 +5,10 @@ import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 
 type Props = {
   units: NewUnitTemplate[];
-  unitRowClick: (e: MouseEvent<HTMLTableRowElement>, unitId: string) => void;
+  onClick: (e: MouseEvent<HTMLTableRowElement>, unitId: string) => void;
 };
 
-export const NewUnitTemplateList = memo(({ units, unitRowClick }: Props): ReactElement => (
+export const NewUnitTemplateList = memo(({ units, onClick }: Props): ReactElement => (
   <>
     {units.length === 0
       ? <p>no units</p>
@@ -23,7 +23,7 @@ export const NewUnitTemplateList = memo(({ units, unitRowClick }: Props): ReactE
           </thead>
           <tbody>
             {units.map(u => (
-              <tr key={u.unitTemplateId} onClick={e => unitRowClick(e, u.unitTemplateId)}>
+              <tr key={u.unitTemplateId} onClick={e => onClick(e, u.unitTemplateId)}>
                 <td className="text-center">{u.unitLetter}</td>
                 <td>{u.title ?? '(none)'}</td>
                 <td className="text-center">{u.optional ? 'yes' : 'no'}</td>

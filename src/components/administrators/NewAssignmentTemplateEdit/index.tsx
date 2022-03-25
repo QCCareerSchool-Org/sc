@@ -322,7 +322,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <h2 className="h3">Assignment Media</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewAssignmentMediumList media={state.newAssignmentTemplate.newAssignmentMedia} mediumRowClick={mediumRowClick} />
+              <NewAssignmentMediumList media={state.newAssignmentTemplate.newAssignmentMedia} onClick={mediumRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentMediumAddForm

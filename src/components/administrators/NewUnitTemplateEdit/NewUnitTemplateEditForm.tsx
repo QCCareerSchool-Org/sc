@@ -4,14 +4,20 @@ import type { Subject } from 'rxjs';
 
 import { NewUnitTemplateFormElements } from './NewUnitTemplateFormElements';
 import type { State } from './state';
+import type { UnitDeletePayload } from './useUnitDelete';
+import type { UnitSavePayload } from './useUnitSave';
 import { Spinner } from '@/components/Spinner';
-import type { NewUnitTemplatePayload, NewUnitTemplateWithCourseAndAssignments } from '@/services/administrators/newUnitTemplateService';
+import type { NewUnitTemplateWithCourseAndAssignments } from '@/services/administrators/newUnitTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
   unitTemplate: NewUnitTemplateWithCourseAndAssignments;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewUnitTemplatePayload }>;
-  delete$: Subject<State['form']['processingState']>;
+  save$: Subject<UnitSavePayload>;
+  delete$: Subject<UnitDeletePayload>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   unitLetterChange: ChangeEventHandler<HTMLInputElement>;
@@ -19,7 +25,7 @@ type Props = {
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUnitTemplateEditForm = memo(({ unitTemplate, formState, save$, delete$, titleChange, descriptionChange, unitLetterChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewUnitTemplateEditForm = memo(({ administratorId, schoolId, courseId, unitId, unitTemplate, formState, save$, delete$, titleChange, descriptionChange, unitLetterChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -37,6 +43,10 @@ export const NewUnitTemplateEditForm = memo(({ unitTemplate, formState, save$, d
       return;
     }
     save$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
       processingState: formState.processingState,
       payload: {
         title: formState.data.title || null,
@@ -50,7 +60,13 @@ export const NewUnitTemplateEditForm = memo(({ unitTemplate, formState, save$, d
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm(`Are you sure you want to delete this unit template and all its assignments?\n\nassignments: ${unitTemplate?.newAssignmentTemplates.length}`)) {
-      delete$.next(formState.processingState);
+      delete$.next({
+        administratorId,
+        schoolId,
+        courseId,
+        unitId,
+        processingState: formState.processingState,
+      });
     }
   };
 

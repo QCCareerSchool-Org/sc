@@ -6,6 +6,7 @@ import { useNavState } from '@/hooks/useNavState';
 
 export type AdministratorNavProps = Record<string, never>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const AdministratorNav = (props: AdministratorNavProps): ReactElement | null => {
   const authState = useAuthState();
   const navState = useNavState();
@@ -27,6 +28,7 @@ export const AdministratorNav = (props: AdministratorNavProps): ReactElement | n
 
   const tutorLoggedIn = typeof authState.tutorId !== 'undefined';
   const studentLoggedIn = typeof authState.studentId !== 'undefined';
+  const otherNavPresent = tutorLoggedIn || studentLoggedIn;
 
   const index = navState.type === 'administrator' ? navState.index : null;
 
@@ -35,11 +37,11 @@ export const AdministratorNav = (props: AdministratorNavProps): ReactElement | n
       <nav className="navbar sticky-top navbar-expand-md navbar-light bg-white mainNav shadow">
         <div className="container">
           <a className="d-md-none navbar-brand" href="#">Administrator Menu</a>
-          <button className={`navbar-toggler collapsed`} type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="studentNav" aria-expanded="false" aria-label="Toggle navigation">
+          <button className={`navbar-toggler collapsed`} type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="adminNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="adminNav">
-            {(tutorLoggedIn || studentLoggedIn) && <span className="d-none d-md-inline"><strong>A:</strong>&nbsp;&nbsp;</span>}
+            {otherNavPresent && <span className="d-none d-md-inline"><strong>A:</strong>&nbsp;&nbsp;</span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/administrators">Home{index === 0 && <div className="active-indicator" />}</a>

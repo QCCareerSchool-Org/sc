@@ -5,10 +5,10 @@ import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 
 type Props = {
   uploadSlots: NewUploadSlotTemplate[];
-  uploadSlotRowClick: (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string) => void;
+  onClick: (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string) => void;
 };
 
-export const NewUploadSlotTemplateList = memo(({ uploadSlots, uploadSlotRowClick }: Props): ReactElement => (
+export const NewUploadSlotTemplateList = memo(({ uploadSlots, onClick }: Props): ReactElement => (
   <>
     {uploadSlots.length === 0
       ? <p>no upload slots</p>
@@ -25,7 +25,7 @@ export const NewUploadSlotTemplateList = memo(({ uploadSlots, uploadSlotRowClick
           </thead>
           <tbody>
             {uploadSlots.map(u => (
-              <tr key={u.uploadSlotTemplateId} onClick={e => uploadSlotRowClick(e, u.uploadSlotTemplateId)}>
+              <tr key={u.uploadSlotTemplateId} onClick={e => onClick(e, u.uploadSlotTemplateId)}>
                 <td>{trimLabel(u.label)}</td>
                 <td>{u.allowedTypes.join(',')}</td>
                 <td className="text-center">{u.points}</td>

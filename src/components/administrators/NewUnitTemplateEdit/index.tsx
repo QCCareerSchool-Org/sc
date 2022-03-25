@@ -1,23 +1,21 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
+import { useCallback, useReducer } from 'react';
 
 import { NewAssignmentTemplateAddForm } from './NewAssignmentTemplateAddForm';
 import { NewAssignmentTemplateList } from './NewAssignmentTemplateList';
 import { NewUnitTemplateEditForm } from './NewUnitTemplateEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { useAssignmentInsert } from './useAssignmentInsert';
+import { useInitialData } from './useInitialData';
+import { useUnitDelete } from './useUnitDelete';
+import { useUnitSave } from './useUnitSave';
 import { Section } from '@/components/Section';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { newAssignmentTemplateService, newUnitTemplateService } from '@/services/administrators';
-import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
-import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
-import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -54,111 +52,11 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
   useWarnIfUnsavedChanges(changesPreset(state.newUnitTemplate, state.form.data));
 
-  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewUnitTemplatePayload }>());
-  const delete$ = useRef(new Subject<State['form']['processingState']>());
-  const assignmentInsert$ = useRef(new Subject<{ processingState: State['newAssignmentTemplateForm']['processingState']; payload: NewAssignmentTemplatePayload }>());
+  useInitialData(administratorId, schoolId, courseId, unitId, dispatch);
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    // load the initial data
-    newUnitTemplateService.getUnit(administratorId, schoolId, courseId, unitId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: unitTemplate => {
-        dispatch({ type: 'LOAD_UNIT_TEMPLATE_SUCCEEDED', payload: unitTemplate });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_UNIT_TEMPLATE_FAILED', payload: errorCode });
-      },
-    });
-
-    save$.current.pipe(
-      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'SAVE_UNIT_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newUnitTemplateService.saveUnit(administratorId, schoolId, courseId, unitId, payload).pipe(
-        tap({
-          next: updatedAssignment => {
-            dispatch({ type: 'SAVE_UNIT_TEMPLATE_SUCCEEDED', payload: updatedAssignment });
-          },
-          error: err => {
-            let message = 'Save failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'SAVE_UNIT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    delete$.current.pipe(
-      filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'DELETE_UNIT_TEMPLATE_STARTED' })),
-      exhaustMap(() => newUnitTemplateService.deleteUnit(administratorId, schoolId, courseId, unitId).pipe(
-        tap({
-          next: () => {
-            dispatch({ type: 'DELETE_UNIT_TEMPLATE_SUCCEEDED' });
-            router.back();
-          },
-          error: err => {
-            let message = 'Delete failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'DELETE_UNIT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    assignmentInsert$.current.pipe(
-      filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_ASSIGNMENT_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newAssignmentTemplateService.addAssignment(administratorId, schoolId, courseId, unitId, payload).pipe(
-        tap({
-          next: insertedAssignment => dispatch({ type: 'ADD_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: insertedAssignment }),
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'ADD_ASSIGNMENT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId ]);
+  const unitSave$ = useUnitSave(dispatch);
+  const unitDelete$ = useUnitDelete(dispatch);
+  const assignmentInsert$ = useAssignmentInsert(dispatch);
 
   const titleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TITLE_CHANGED', payload: e.target.value });
@@ -181,7 +79,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   }, []);
 
   const assignmentRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
-    void router.push(`${router.asPath}/assignments/${assignmentId}`);
+    void router.push(`${router.asPath}/assignmentTemplates/${assignmentId}`);
   }, [ router ]);
 
   const assignmentTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
@@ -216,10 +114,14 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewUnitTemplateEditForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
                 unitTemplate={state.newUnitTemplate}
                 formState={state.form}
-                save$={save$.current}
-                delete$={delete$.current}
+                save$={unitSave$}
+                delete$={unitDelete$}
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
                 unitLetterChange={unitLetterChange}
@@ -247,12 +149,16 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Assignment Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewAssignmentTemplateList assignments={state.newUnitTemplate.newAssignmentTemplates} assignmentRowClick={assignmentRowClick} />
+              <NewAssignmentTemplateList assignments={state.newUnitTemplate.newAssignmentTemplates} onClick={assignmentRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentTemplateAddForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
                 formState={state.newAssignmentTemplateForm}
-                insert$={assignmentInsert$.current}
+                insert$={assignmentInsert$}
                 titleChange={assignmentTitleChange}
                 descriptionChange={assignmentDescriptionChange}
                 assignmentNumberChange={assignmentAssignmentNumberChange}

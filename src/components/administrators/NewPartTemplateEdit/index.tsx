@@ -239,11 +239,11 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   }, []);
 
   const textBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
-    void router.push(`${router.asPath}/textBoxes/${textBoxId}`);
+    void router.push(`${router.asPath}/textBoxTemplates/${textBoxId}`);
   }, [ router ]);
 
   const uploadSlotRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
-    void router.push(`${router.asPath}/uploadSlots/${uploadSlotId}`);
+    void router.push(`${router.asPath}/uploadSlotTemplates/${uploadSlotId}`);
   }, [ router ]);
 
   const mediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
@@ -394,7 +394,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Text Box Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewTextBoxTemplateList textBoxes={state.newPartTemplate.newTextBoxTemplates} textBoxRowClick={textBoxRowClick} />
+              <NewTextBoxTemplateList textBoxes={state.newPartTemplate.newTextBoxTemplates} onClick={textBoxRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewTextBoxTemplateAddForm
@@ -415,7 +415,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Upload Slot Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewUploadSlotTemplateList uploadSlots={state.newPartTemplate.newUploadSlotTemplates} uploadSlotRowClick={uploadSlotRowClick} />
+              <NewUploadSlotTemplateList uploadSlots={state.newPartTemplate.newUploadSlotTemplates} onClick={uploadSlotRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewUploadSlotTemplateAddForm
@@ -439,7 +439,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Part Media</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewPartMediumList media={state.newPartTemplate.newPartMedia} mediumRowClick={mediumRowClick} />
+              <NewPartMediumList media={state.newPartTemplate.newPartMedia} onClick={mediumRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewPartMediumAddForm

@@ -36,6 +36,7 @@ const NewAssignmentMediumEditPage: NextPage<Props> = ({ schoolId, courseId, unit
   />;
 };
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   const schoolIdParam = ctx.params?.schoolId;
   const courseIdParam = ctx.params?.courseId;

@@ -6,6 +6,7 @@ import { useNavState } from '@/hooks/useNavState';
 
 export type StudentNavProps = Record<string, never>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const StudentNav = (props: StudentNavProps): ReactElement | null => {
   const authState = useAuthState();
   const navState = useNavState();

@@ -6,10 +6,10 @@ import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
 type Props = {
   media: NewAssignmentMedium[];
-  mediumRowClick: (e: MouseEvent<HTMLTableRowElement>, mediaId: string) => void;
+  onClick: (e: MouseEvent<HTMLTableRowElement>, mediaId: string) => void;
 };
 
-export const NewAssignmentMediumList = memo(({ media, mediumRowClick }: Props): ReactElement => (
+export const NewAssignmentMediumList = memo(({ media, onClick }: Props): ReactElement => (
   <>
     {media.length === 0
       ? <p>no media</p>
@@ -25,7 +25,7 @@ export const NewAssignmentMediumList = memo(({ media, mediumRowClick }: Props): 
           </thead>
           <tbody>
             {media.map(m => (
-              <tr key={m.assignmentMediumId} onClick={e => mediumRowClick(e, m.assignmentMediumId)}>
+              <tr key={m.assignmentMediumId} onClick={e => onClick(e, m.assignmentMediumId)}>
                 <td>{m.caption}</td>
                 <td>{m.type}</td>
                 <td className="text-end">{humanReadableFileSize(m.filesize)}</td>

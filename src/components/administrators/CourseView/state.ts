@@ -25,7 +25,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'LOAD_COURSE_SUCCEEDED'; payload: CourseWithSchoolAndUnits }
   | { type: 'LOAD_COURSE_FAILED'; payload?: number }
   | { type: 'UNIT_TEMPLATE_TITLE_CHANGED'; payload: string }

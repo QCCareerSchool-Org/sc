@@ -22,6 +22,7 @@ const SchoolViewPage: NextPage<Props> = ({ schoolId }) => {
   return <SchoolView administratorId={authState.administratorId} schoolId={schoolId} />;
 };
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   const schoolIdParam = ctx.params?.schoolId;
   const schoolId = typeof schoolIdParam === 'string' ? parseInt(schoolIdParam, 10) : null;
