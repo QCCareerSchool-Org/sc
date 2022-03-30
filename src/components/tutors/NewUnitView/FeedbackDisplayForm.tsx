@@ -1,14 +1,11 @@
-import type { MouseEventHandler, ReactElement, ReactEventHandler } from 'react';
-import { memo, useEffect, useMemo, useRef } from 'react';
+import type { MouseEventHandler, ReactElement } from 'react';
+import { memo, useMemo } from 'react';
 import type { Subject } from 'rxjs';
-import { catchError, EMPTY, Observable, switchMap, takeUntil, tap } from 'rxjs';
 
 import type { State } from './state';
 import type { FeedbackDeletePayload } from './useFeedbackDelete';
 import { Audio } from '@/components/Audio';
 import { Spinner } from '@/components/Spinner';
-import { useAuthDispatch } from '@/hooks/useAuthDispatch';
-import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
@@ -26,7 +23,6 @@ type Props = {
 };
 
 export const FeedbackDisplayForm = memo(({ tutorId, studentId, courseId, unitId, responseFilename, responseFilesize, responseMimeTypeId, processingState, errorMessage, delete$ }: Props): ReactElement => {
-
   const audioSrc = useMemo(() => `${endpoint}/tutors/${tutorId}/students/${studentId}/newUnits/${unitId}/response`, [ tutorId, studentId, unitId ]);
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {

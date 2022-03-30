@@ -17,7 +17,7 @@ export const Audio = memo(({ controls, src, preload, className, onPlay, onTimeUp
   const audioRef = useRef<HTMLAudioElement>(null);
   const retry$ = useRefreshAndRetryMedia(audioRef);
 
-  const audioError: ReactEventHandler<HTMLAudioElement> = e => {
+  const audioError: ReactEventHandler<HTMLAudioElement> = () => {
     if (audioRef.current?.error?.code === 2) { // MEDIA_ERR_NETWORK
       retry$.next();
     }

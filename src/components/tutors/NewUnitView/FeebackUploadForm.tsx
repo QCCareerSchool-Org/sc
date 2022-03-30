@@ -21,7 +21,7 @@ export const FeebackUploadForm = memo(({ tutorId, studentId, courseId, unitId, s
 
   const disabled = typeof state.feedbackForm.errorMessage !== 'undefined' || state.feedbackForm.file === null || state.processingState === 'uploading' || state.processingState === 'deleting' || state.processingState === 'closing' || state.processingState === 'returning';
 
-  const buttonClick: MouseEventHandler<HTMLButtonElement> = e => {
+  const buttonClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (!disabled && state.feedbackForm.file !== null) {
       upload$.next({ tutorId, studentId, courseId, unitId, file: state.feedbackForm.file, processingState: state.processingState });
     }

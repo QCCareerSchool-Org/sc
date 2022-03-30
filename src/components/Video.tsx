@@ -1,5 +1,5 @@
 import type { ReactElement, ReactEventHandler } from 'react';
-import { memo, useRef, useState } from 'react';
+import { memo, useRef } from 'react';
 
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
 
@@ -17,7 +17,7 @@ export const Video = memo(({ controls, src, preload, className, onPlay, onTimeUp
   const videoRef = useRef<HTMLVideoElement>(null);
   const retry$ = useRefreshAndRetryMedia(videoRef);
 
-  const videoError: ReactEventHandler<HTMLAudioElement> = e => {
+  const videoError: ReactEventHandler<HTMLAudioElement> = () => {
     if (videoRef.current?.error?.code === 2) { // MEDIA_ERR_NETWORK
       retry$.next();
     }
