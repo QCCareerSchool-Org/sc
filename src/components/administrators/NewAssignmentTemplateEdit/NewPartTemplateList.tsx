@@ -5,10 +5,10 @@ import type { NewPartTemplate } from '@/domain/newPartTemplate';
 
 type Props = {
   parts: NewPartTemplate[];
-  partRowClick: (e: MouseEvent<HTMLTableRowElement>, partId: string) => void;
+  onClick: (e: MouseEvent<HTMLTableRowElement>, partId: string) => void;
 };
 
-export const NewPartTemplateList = memo(({ parts, partRowClick }: Props): ReactElement => (
+export const NewPartTemplateList = memo(({ parts, onClick }: Props): ReactElement => (
   <>
     {parts.length === 0
       ? <p>no parts</p>
@@ -22,7 +22,7 @@ export const NewPartTemplateList = memo(({ parts, partRowClick }: Props): ReactE
           </thead>
           <tbody>
             {parts.map(p => (
-              <tr key={p.partTemplateId} onClick={e => partRowClick(e, p.partTemplateId)}>
+              <tr key={p.partTemplateId} onClick={e => onClick(e, p.partTemplateId)}>
                 <td className="text-center">{p.partNumber}</td>
                 <td>{p.title}</td>
               </tr>

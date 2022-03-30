@@ -28,6 +28,7 @@ type RawNewUnitWithEnrollmentAndAssignments = RawNewUnit & {
 export interface INewUnitService {
   getUnit: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnitWithEnrollmentAndAssignments>;
   uploadFeedback: (tutorId: number, studentId: number, unitId: string, file: File) => Observable<ProgressResponse<NewUnit>>;
+  deleteFeedback: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnit>;
   closeUnit: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnit>;
   returnUnit: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnit>;
 }
@@ -55,6 +56,13 @@ export class NewUnitService implements INewUnitService {
         }
         return { type: 'data', value: this.mapNewUnit(progressResponse.value) };
       }),
+    );
+  }
+
+  public deleteFeedback(tutorId: number, studentId: number, unitId: string): Observable<NewUnit> {
+    const url = `${this.getUrl(tutorId, studentId)}/${unitId}/response`;
+    return this.httpService.delete<RawNewUnit>(url).pipe(
+      map(this.mapNewUnit),
     );
   }
 

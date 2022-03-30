@@ -4,10 +4,10 @@ import type { School } from '@/domain/school';
 
 type Props = {
   schools: School[];
-  schoolRowClick: (e: MouseEvent<HTMLTableRowElement>, schoolId: number) => void;
+  onClick: (e: MouseEvent<HTMLTableRowElement>, schoolId: number) => void;
 };
 
-export const SchoolList = memo(({ schools, schoolRowClick }: Props): ReactElement => (
+export const SchoolList = memo(({ schools, onClick }: Props): ReactElement => (
   <>
     <table className="schoolTable table table-bordered table-hover w-auto bg-white">
       <thead>
@@ -17,7 +17,7 @@ export const SchoolList = memo(({ schools, schoolRowClick }: Props): ReactElemen
       </thead>
       <tbody>
         {schools.map(s => (
-          <tr key={s.schoolId} onClick={e => schoolRowClick(e, s.schoolId)}>
+          <tr key={s.schoolId} onClick={e => onClick(e, s.schoolId)}>
             <td>{s.name}</td>
           </tr>
         ))}

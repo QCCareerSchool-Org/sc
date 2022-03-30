@@ -7,8 +7,10 @@ import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useMediumDelete } from './useMediumDelete';
 import { useMediumSave } from './useMediumSave';
+import { Audio } from '@/components/Audio';
 import { FileIcon } from '@/components/FileIcon';
 import { Section } from '@/components/Section';
+import { Video } from '@/components/Video';
 import { endpoint } from 'src/basePath';
 import { formatDateTime } from 'src/formatDate';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
@@ -95,14 +97,10 @@ export const NewAssignmentMediumEdit = ({ administratorId, schoolId, courseId, u
             <img src={src} className="mediaContent" alt={state.newAssignmentMedium.caption} />
           )}
           {state.newAssignmentMedium.type === 'video' && (
-            <video className="mediaContent" controls>
-              <source src={src} type={state.newAssignmentMedium.mimeTypeId} />
-            </video>
+            <Video src={src} className="mediaContent" controls preload="auto" />
           )}
           {state.newAssignmentMedium.type === 'audio' && (
-            <audio controls>
-              <source src={src} type={state.newAssignmentMedium.mimeTypeId} />
-            </audio>
+            <Audio src={src} controls preload="auto" />
           )}
           {state.newAssignmentMedium.type === 'download' && (
             <a href={src} download><FileIcon mimeType={state.newAssignmentMedium.mimeTypeId} size={96} /></a>

@@ -1,21 +1,19 @@
 import NextError from 'next/error';
-import { useRouter } from 'next/router';
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
+import { useCallback, useReducer } from 'react';
 
 import { NewPartMediumEditForm } from './NewPartMediumEditForm';
-import type { State } from './state';
 import { initialState, reducer } from './state';
+import { useInitialData } from './useInitialData';
+import { useMediumDelete } from './useMediumDelete';
+import { useMediumSave } from './useMediumSave';
+import { Audio } from '@/components/Audio';
 import { FileIcon } from '@/components/FileIcon';
 import { Section } from '@/components/Section';
-import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewPartMediumEditPayload } from '@/services/administrators/newPartMediumService';
-import { HttpServiceError } from '@/services/httpService';
+import { Video } from '@/components/Video';
 import { endpoint } from 'src/basePath';
 import { formatDateTime } from 'src/formatDate';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -28,90 +26,12 @@ type Props = {
 };
 
 export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId }: Props): ReactElement | null => {
-  const router = useRouter();
-  const { newPartMediumService } = useAdminServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewPartMediumEditPayload }>());
-  const delete$ = useRef(new Subject<State['form']['processingState']>());
+  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, dispatch);
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    // load the initial data
-    newPartMediumService.getPartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: newAssignmentMedium => {
-        dispatch({ type: 'LOAD_PART_MEDIUM_SUCCEEDED', payload: newAssignmentMedium });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_PART_MEDIUM_FAILED', payload: errorCode });
-      },
-    });
-
-    save$.current.pipe(
-      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'SAVE_PART_MEDIUM_STARTED' })),
-      exhaustMap(({ payload }) => newPartMediumService.savePartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, payload).pipe(
-        tap({
-          next: updatedAssignmentMedium => {
-            dispatch({ type: 'SAVE_PART_MEDIUM_SUCCEEDED', payload: updatedAssignmentMedium });
-          },
-          error: err => {
-            let message = 'Save failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'SAVE_PART_MEDIUM_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    delete$.current.pipe(
-      filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'DELETE_PART_MEDIUM_STARTED' })),
-      exhaustMap(() => newPartMediumService.deletePartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId).pipe(
-        tap({
-          next: () => {
-            dispatch({ type: 'DELETE_PART_MEDIUM_SUCCEEDED' });
-            router.back();
-          },
-          error: err => {
-            let message = 'Delete failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'DELETE_PART_MEDIUM_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, newPartMediumService ]);
+  const mediumSave$ = useMediumSave(dispatch);
+  const mediumDelete$ = useMediumDelete(dispatch);
 
   const captionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'CAPTION_CHANGED', payload: e.target.value });
@@ -139,9 +59,16 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewPartMediumEditForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
+                partId={partId}
+                mediumId={mediumId}
                 formState={state.form}
-                save$={save$.current}
-                delete$={delete$.current}
+                save$={mediumSave$}
+                delete$={mediumDelete$}
                 captionChange={captionChange}
                 orderChange={orderChange}
               />
@@ -172,14 +99,10 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
             <img src={src} className="mediaContent" alt={state.newPartMedium.caption} />
           )}
           {state.newPartMedium.type === 'video' && (
-            <video className="mediaContent" controls>
-              <source src={src} type={state.newPartMedium.mimeTypeId} />
-            </video>
+            <Video src={src} className="mediaContent" controls preload="auto" />
           )}
           {state.newPartMedium.type === 'audio' && (
-            <audio controls>
-              <source src={src} type={state.newPartMedium.mimeTypeId} />
-            </audio>
+            <Audio src={src} controls preload="auto" />
           )}
           {state.newPartMedium.type === 'download' && (
             <a href={src} download><FileIcon mimeType={state.newPartMedium.mimeTypeId} size={96} /></a>

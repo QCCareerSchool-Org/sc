@@ -51,7 +51,7 @@ export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<UnitInsertPay
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router ]);
+  }, [ dispatch, router, newUnitTemplateService ]);
 
   return unitInsert$.current;
 };

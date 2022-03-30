@@ -1,6 +1,8 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { Audio } from '@/components/Audio';
+import { Video } from '@/components/Video';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import { endpoint } from 'src/basePath';
 
@@ -24,17 +26,13 @@ export const NewPartMediumView = memo(({ className, studentId, courseId, unitId,
 
   if (newPartMedium.type === 'video') {
     return (
-      <video controls className={className}>
-        <source type={newPartMedium.mimeTypeId} src={src} />
-      </video>
+      <Video src={src} controls className={className} preload="auto" />
     );
   }
 
   if (newPartMedium.type === 'audio') {
     return (
-      <audio controls>
-        <source type={newPartMedium.mimeTypeId} src={src} />
-      </audio>
+      <Audio src={src} controls preload="auto" />
     );
   }
 

@@ -176,7 +176,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <h2 className="h3">Part Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewPartTemplateList parts={state.newAssignmentTemplate.newPartTemplates} partRowClick={partRowClick} />
+              <NewPartTemplateList parts={state.newAssignmentTemplate.newPartTemplates} onClick={partRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewPartTemplateAddForm

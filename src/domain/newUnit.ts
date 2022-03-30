@@ -14,7 +14,8 @@ export type NewUnit = {
   transferred: Date | null;
   marked: Date | null;
   responseFilename: string | null;
-  responseFilesize: string | null;
+  responseFilesize: number | null;
+  responseMimeTypeId: string | null;
   complete: boolean;
   points: number;
   mark: number | null;
@@ -39,7 +40,8 @@ export type RawNewUnit = {
   transferred: string | null;
   marked: string | null;
   responseFilename: string | null;
-  responseFilesize: string | null;
+  responseFilesize: number | null;
+  responseMimeTypeId: string | null;
   complete: boolean;
   points: number;
   mark: number | null;

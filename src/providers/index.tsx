@@ -6,6 +6,7 @@ import { NavStateProvider } from './NavStateProvider';
 import { ScreenWidthProvider } from './ScreenWidthProvider';
 import { ServicesProvider } from './ServicesProvider';
 import { StudentServicesProvider } from './StudentServicesProvider';
+import { TutorServicesProvider } from './TutorServicesProvider';
 
 type Props = {
   children: ReactNode;
@@ -17,9 +18,11 @@ export const StateProvider = ({ children }: Props): ReactElement => (
       <ScreenWidthProvider>
         <ServicesProvider>
           <AdminServicesProvider>
-            <StudentServicesProvider>
-              {children}
-            </StudentServicesProvider>
+            <TutorServicesProvider>
+              <StudentServicesProvider>
+                {children}
+              </StudentServicesProvider>
+            </TutorServicesProvider>
           </AdminServicesProvider>
         </ServicesProvider>
       </ScreenWidthProvider>

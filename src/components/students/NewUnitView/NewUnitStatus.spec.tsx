@@ -6,9 +6,13 @@ import { NewUnitStatus } from './NewUnitStatus';
 import type { NewUnit } from '@/domain/newUnit';
 
 describe('NewUnitStatus Component', () => {
+  let studentId: number;
+  let courseId: number;
   let newUnit: NewUnit;
 
   beforeEach(() => {
+    studentId = randNumber();
+    courseId = randNumber();
     newUnit = {
       unitId: randUuid(),
       enrollmentId: randNumber(),
@@ -23,14 +27,19 @@ describe('NewUnitStatus Component', () => {
       skipped: null,
       transferred: null,
       marked: null,
+      responseFilename: null,
+      responseFilesize: null,
+      responseMimeTypeId: null,
       complete: randBoolean(),
+      points: 32,
+      mark: null,
       created: randPastDate(),
       modified: randPastDate(),
     };
   });
 
   it('should render without accessibility issues', async () => {
-    const { container } = render(<NewUnitStatus newUnit={newUnit} />);
+    const { container } = render(<NewUnitStatus studentId={studentId} courseId={courseId} newUnit={newUnit} />);
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();

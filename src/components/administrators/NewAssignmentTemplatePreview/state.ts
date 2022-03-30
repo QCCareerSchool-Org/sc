@@ -7,7 +7,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithUnitAndPartsAndInputs }
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED'; payload?: number };
 

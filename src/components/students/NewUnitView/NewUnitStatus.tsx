@@ -1,21 +1,24 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { Audio } from '@/components/Audio';
 import type { NewUnit } from '@/domain/newUnit';
+import { endpoint } from 'src/basePath';
 
 type Props = {
+  studentId: number;
+  courseId: number;
   newUnit: NewUnit;
 };
 
-export const NewUnitStatus = memo(({ newUnit }: Props): ReactElement | null => {
+export const NewUnitStatus = memo(({ studentId, courseId, newUnit }: Props): ReactElement | null => {
   if (newUnit.marked) {
+    const responseSrc = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${newUnit.unitId}/response`;
     return (
       <div className="alert alert-success">
         <h5>Unit Marked</h5>
         <p className="fw-bold">Your unit has been marked. Please listen to your tutor's audio feedback below.</p>
-        <audio controls preload="meta">
-          <source src="http://google.com/askldjhsakjdh" type="audio/mpeg" />
-        </audio>
+        <Audio src={responseSrc} controls preload="auto" />
       </div>
     );
   }

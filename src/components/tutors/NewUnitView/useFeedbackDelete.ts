@@ -8,39 +8,34 @@ import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
-export type UploadPayload = {
+export type FeedbackDeletePayload = {
   tutorId: number;
   studentId: number;
   courseId: number;
   unitId: string;
-  file: File;
   processingState: State['processingState'];
 };
 
-export const useUpload = (dispatch: Dispatch<Action>): Subject<UploadPayload> => {
+export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackDeletePayload> => {
   const router = useRouter();
   const { newUnitService } = useTutorServices();
 
-  const upload$ = useRef(new Subject<UploadPayload>());
+  const feedbackDelete$ = useRef(new Subject<FeedbackDeletePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    upload$.current.pipe(
-      filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'close error' || processingState === 'return error'),
-      tap(() => dispatch({ type: 'UPLOAD_FEEDBACK_STARTED' })),
-      exhaustMap(({ tutorId, studentId, unitId, file }) => {
-        return newUnitService.uploadFeedback(tutorId, studentId, unitId, file).pipe(
+    feedbackDelete$.current.pipe(
+      filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'delete error' || processingState === 'close error' || processingState === 'return error'),
+      tap(() => dispatch({ type: 'DELETE_FEEDBACK_STARTED' })),
+      exhaustMap(({ tutorId, studentId, unitId }) => {
+        return newUnitService.deleteFeedback(tutorId, studentId, unitId).pipe(
           tap({
-            next: progressResponse => {
-              if (progressResponse.type === 'progress') {
-                dispatch({ type: 'UPLOAD_FEEDBACK_PROGRESSED', payload: progressResponse.value });
-              } else {
-                dispatch({ type: 'UPLOAD_FEEDBACK_SUCCEEDED', payload: progressResponse.value });
-              }
+            next: newUnit => {
+              dispatch({ type: 'DELETE_FEEDBACK_SUCCEEDED', payload: newUnit });
             },
             error: err => {
-              let message = 'Upload failed';
+              let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
                   return void navigateToLogin(router);
@@ -49,7 +44,7 @@ export const useUpload = (dispatch: Dispatch<Action>): Subject<UploadPayload> =>
                   message = err.message;
                 }
               }
-              dispatch({ type: 'UPLOAD_FEEDBACK_FAILED', payload: message });
+              dispatch({ type: 'DELETE_FEEDBACK_FAILED', payload: message });
             },
           }),
           catchError(() => EMPTY),
@@ -61,5 +56,5 @@ export const useUpload = (dispatch: Dispatch<Action>): Subject<UploadPayload> =>
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, router, newUnitService ]);
 
-  return upload$.current;
+  return feedbackDelete$.current;
 };

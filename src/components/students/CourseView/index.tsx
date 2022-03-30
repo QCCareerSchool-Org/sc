@@ -89,7 +89,7 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
 
   const nextUnit = getNextUnit(state.enrollment.course.newUnitTemplates, state.enrollment.newUnits);
 
-  const initializeButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
+  const initializeButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     initialize$.current.next();
   };
 

@@ -119,7 +119,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
               {state.newUnit.optional && <span className="text-danger">OPTIONAL</span>}
               <h1>Unit {state.newUnit.unitLetter}{state.newUnit.title && <>: {state.newUnit.title}</>}</h1>
               <NewUnitInfoTable newUnit={state.newUnit} />
-              <NewUnitStatus newUnit={state.newUnit} />
+              <NewUnitStatus studentId={studentId} courseId={courseId} newUnit={state.newUnit} />
             </div>
           </div>
         </div>

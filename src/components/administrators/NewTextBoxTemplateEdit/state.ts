@@ -25,7 +25,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'LOAD_TEXT_BOX_TEMPLATE_SUCCEEDED'; payload: NewTextBoxTemplateWithPart }
   | { type: 'LOAD_TEXT_BOX_TEMPLATE_FAILED'; payload?: number }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }

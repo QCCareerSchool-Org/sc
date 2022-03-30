@@ -1,18 +1,14 @@
 import NextError from 'next/error';
-import { useRouter } from 'next/router';
 import type { ReactElement } from 'react';
-import { useEffect, useReducer } from 'react';
-import { Subject, takeUntil } from 'rxjs';
+import { useReducer } from 'react';
 
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
+import { useInitialData } from './useInitialData';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
-import { useAdminServices } from '@/hooks/useAdminServices';
-import { HttpServiceError } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -23,34 +19,9 @@ type Props = {
 };
 
 export const NewAssignmentTemplatePreview = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
-  const router = useRouter();
-  const { newAssignmentTemplateService } = useAdminServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    // load the initial data
-    newAssignmentTemplateService.getAssignmentWithInputs(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: assignmentTemplate => {
-        dispatch({ type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: assignmentTemplate });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED', payload: errorCode });
-      },
-    });
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, newAssignmentTemplateService ]);
+  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, dispatch);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;

@@ -1,20 +1,17 @@
 import NextError from 'next/error';
-import { useRouter } from 'next/router';
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
+import { useCallback, useReducer } from 'react';
 
 import { NewUploadSlotTemplateEditForm } from './NewUploadSlotTemplateEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
+import { useInitialData } from './useInitialData';
+import { useUploadSlotDelete } from './useUploadSlotDelete';
+import { useUploadSlotSave } from './useUploadSlotSave';
 import { Section } from '@/components/Section';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
-import { useAdminServices } from '@/hooks/useAdminServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import type { NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
-import { HttpServiceError } from '@/services/httpService';
 import { formatDateTime } from 'src/formatDate';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   administratorId: number;
@@ -58,91 +55,14 @@ const changesPreset = (uploadSlotTemplate: NewUploadSlotTemplate | undefined, fo
 };
 
 export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId }: Props): ReactElement | null => {
-  const router = useRouter();
-  const { newUploadSlotTemplateService } = useAdminServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newUploadSlotTemplate, state.form.data));
 
-  const save$ = useRef(new Subject<{ processingState: State['form']['processingState']; payload: NewUploadSlotTemplatePayload }>());
-  const delete$ = useRef(new Subject<State['form']['processingState']>());
+  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, dispatch);
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    newUploadSlotTemplateService.getUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: uploadSlotTemplate => {
-        dispatch({ type: 'LOAD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED', payload: uploadSlotTemplate });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_UPLOAD_SLOT_TEMPLATE_FAILED', payload: errorCode });
-      },
-    });
-
-    save$.current.pipe(
-      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'SAVE_UPLOAD_SLOT_TEMPLATE_STARTED' })),
-      exhaustMap(({ payload }) => newUploadSlotTemplateService.saveUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, payload).pipe(
-        tap({
-          next: updatedUploadSlot => {
-            dispatch({ type: 'SAVE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED', payload: updatedUploadSlot });
-          },
-          error: err => {
-            let message = 'Save failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'SAVE_UPLOAD_SLOT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    delete$.current.pipe(
-      filter(processingState => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'DELETE_UPLOAD_SLOT_TEMPLATE_STARTED' })),
-      exhaustMap(() => newUploadSlotTemplateService.deleteUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
-        tap({
-          next: () => {
-            dispatch({ type: 'DELETE_UPLOAD_SLOT_TEMPLATE_SUCCEEDED' });
-            router.back();
-          },
-          error: err => {
-            let message = 'Delete failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'DELETE_UPLOAD_SLOT_TEMPLATE_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, newUploadSlotTemplateService ]);
+  const uploadSlotSave$ = useUploadSlotSave(dispatch);
+  const uploadSlotDelete$ = useUploadSlotDelete(dispatch);
 
   const labelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'LABEL_CHANGED', payload: e.target.value });
@@ -192,9 +112,16 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewUploadSlotTemplateEditForm
+                administratorId={administratorId}
+                schoolId={schoolId}
+                courseId={courseId}
+                unitId={unitId}
+                assignmentId={assignmentId}
+                partId={partId}
+                uploadSlotId={uploadSlotId}
                 formState={state.form}
-                save$={save$.current}
-                delete$={delete$.current}
+                save$={uploadSlotSave$}
+                delete$={uploadSlotDelete$}
                 labelChange={labelChange}
                 pointsChange={pointsChange}
                 imageChange={imageChange}

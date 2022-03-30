@@ -10,6 +10,7 @@ import { endpoint } from 'src/basePath';
 type Config = {
   params?: Record<string, string | number | boolean>;
   headers?: Record<string, string | number | boolean>;
+  withCredentials?: boolean;
 };
 
 export class HttpServiceError extends Error {
@@ -69,15 +70,6 @@ export class AxiosHttpService implements IHttpService {
       data$.pipe(map(value => ({ type: 'data', value } as const))),
       progress$.pipe(map(value => ({ type: 'progress', value } as const))),
     );
-
-    // // combine the request with the progress observable created above
-    // // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
-    // return combineLatest([
-    //   data$.pipe(startWith(undefined)),
-    //   progress$,
-    // ]).pipe(
-    //   map(([ , progress ]) => progress), // we only care about the second observable
-    // );
   }
 
   public put<T>(url: string, body: unknown, config?: Config): Observable<T> {
@@ -108,15 +100,6 @@ export class AxiosHttpService implements IHttpService {
       data$.pipe(map(value => ({ type: 'data', value } as const))),
       progress$.pipe(map(value => ({ type: 'progress', value } as const))),
     );
-
-    // // combine the request with the progress observable created above
-    // // we need both observables to emit at least one value each, so use startWith to cause the first observable to emit right away
-    // return combineLatest([
-    //   data$.pipe(startWith(undefined)),
-    //   progress$,
-    // ]).pipe(
-    //   map(([ , progress ]) => progress), // we only care about the second observable
-    // );
   }
 
   public delete<T>(url: string, config?: Config): Observable<T> {
@@ -194,11 +177,10 @@ export class AxiosHttpService implements IHttpService {
   private handleError<T>(err: unknown, caught: Observable<T>): Observable<never> {
     if (err instanceof AbstractAxiosError) {
       const message = typeof err.response?.data === 'string' ? err.response?.data : '';
-      if (err instanceof AxiosUnauthorizedError || err instanceof AxiosRefreshError) {
+      if (err instanceof AxiosRefreshError) {
         return throwError(() => new HttpServiceError(message, true));
-      } else if (err instanceof AxiosOtherError) {
-        return throwError(() => new HttpServiceError(message, false, err.response?.status));
       }
+      return throwError(() => new HttpServiceError(message, false, err.response?.status));
     }
     if (err instanceof Error) {
       return throwError(() => new HttpServiceError(err.message, false));

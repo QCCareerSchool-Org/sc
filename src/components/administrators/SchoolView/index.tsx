@@ -41,7 +41,7 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
       <Section>
         <div className="container">
           <h2 className="h3">Courses</h2>
-          <CourseList courses={state.school.courses} courseRowClick={courseRowClick} />
+          <CourseList courses={state.school.courses} onClick={courseRowClick} />
         </div>
       </Section>
     </>

@@ -4,13 +4,22 @@ import type { Subject } from 'rxjs';
 
 import { NewUploadSlotTemplateFormElements } from './NewUploadSlotTemplateFormElements';
 import type { State } from './state';
+import type { UploadSlotDeletePayload } from './useUploadSlotDelete';
+import type { UploadSlotSavePayload } from './useUploadSlotSave';
 import { Spinner } from '@/components/Spinner';
 import type { NewUploadSlotAllowedType, NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
+  partId: string;
+  uploadSlotId: string;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewUploadSlotTemplatePayload }>;
-  delete$: Subject<State['form']['processingState']>;
+  save$: Subject<UploadSlotSavePayload>;
+  delete$: Subject<UploadSlotDeletePayload>;
   labelChange: ChangeEventHandler<HTMLInputElement>;
   imageChange: ChangeEventHandler<HTMLInputElement>;
   pdfChange: ChangeEventHandler<HTMLInputElement>;
@@ -21,7 +30,7 @@ type Props = {
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUploadSlotTemplateEditForm = memo(({ formState, save$, delete$, labelChange, imageChange, pdfChange, wordChange, excelChange, pointsChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewUploadSlotTemplateEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, formState, save$, delete$, labelChange, imageChange, pdfChange, wordChange, excelChange, pointsChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -39,6 +48,13 @@ export const NewUploadSlotTemplateEditForm = memo(({ formState, save$, delete$, 
       return;
     }
     save$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
+      partId,
+      uploadSlotId,
       processingState: formState.processingState,
       payload: {
         label: formState.data.label,
@@ -58,7 +74,16 @@ export const NewUploadSlotTemplateEditForm = memo(({ formState, save$, delete$, 
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm('Are you sure you want to delete this text box template?')) {
-      delete$.next(formState.processingState);
+      delete$.next({
+        administratorId,
+        schoolId,
+        courseId,
+        unitId,
+        assignmentId,
+        partId,
+        uploadSlotId,
+        processingState: formState.processingState,
+      });
     }
   };
 

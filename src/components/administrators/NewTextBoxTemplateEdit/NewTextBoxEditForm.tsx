@@ -4,13 +4,21 @@ import type { Subject } from 'rxjs';
 
 import { NewTextBoxFormElements } from './NewTextBoxFormElements';
 import type { State } from './state';
+import type { TextBoxDeletePayload } from './useTextBoxDelete';
+import type { TextBoxSavePayload } from './useTextBoxSave';
 import { Spinner } from '@/components/Spinner';
-import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
+  partId: string;
+  textBoxId: string;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewTextBoxTemplatePayload }>;
-  delete$: Subject<State['form']['processingState']>;
+  save$: Subject<TextBoxSavePayload>;
+  delete$: Subject<TextBoxDeletePayload>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   pointsChange: ChangeEventHandler<HTMLInputElement>;
   linesChange: ChangeEventHandler<HTMLInputElement>;
@@ -18,7 +26,7 @@ type Props = {
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewTextBoxEditForm = memo(({ formState, save$, delete$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewTextBoxEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, formState, save$, delete$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -36,6 +44,13 @@ export const NewTextBoxEditForm = memo(({ formState, save$, delete$, description
       return;
     }
     save$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
+      partId,
+      textBoxId,
       processingState: formState.processingState,
       payload: {
         description: formState.data.description || null,
@@ -49,7 +64,16 @@ export const NewTextBoxEditForm = memo(({ formState, save$, delete$, description
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm('Are you sure you want to delete this text box template?')) {
-      delete$.next(formState.processingState);
+      delete$.next({
+        administratorId,
+        schoolId,
+        courseId,
+        unitId,
+        assignmentId,
+        partId,
+        textBoxId,
+        processingState: formState.processingState,
+      });
     }
   };
 

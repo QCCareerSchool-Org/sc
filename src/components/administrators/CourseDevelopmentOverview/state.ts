@@ -6,7 +6,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'SCHOOLS_LOAD_SUCCEEDED'; payload: School[] }
   | { type: 'SCHOOLS_LOAD_FAILED'; payload?: number };
 

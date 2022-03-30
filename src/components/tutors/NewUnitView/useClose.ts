@@ -26,7 +26,7 @@ export const useClose = (dispatch: Dispatch<Action>): Subject<ClosePayload> => {
     const destroy$ = new Subject<void>();
 
     close$.current.pipe(
-      filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'close error' || processingState === 'return error'),
+      filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'delete error' || processingState === 'close error' || processingState === 'return error'),
       tap(() => dispatch({ type: 'CLOSE_UNIT_STARTED' })),
       exhaustMap(({ tutorId, studentId, unitId }) => {
         return newUnitService.closeUnit(tutorId, studentId, unitId).pipe(

@@ -30,7 +30,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'LOAD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED'; payload: NewUploadSlotTemplateWithPart }
   | { type: 'LOAD_UPLOAD_SLOT_TEMPLATE_FAILED'; payload?: number }
   | { type: 'LABEL_CHANGED'; payload: string }

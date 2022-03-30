@@ -4,18 +4,26 @@ import type { Subject } from 'rxjs';
 
 import { NewPartMediumFormElements } from './NewPartMediumFormElements';
 import type { State } from './state';
+import type { MediumDeletePayload } from './useMediumDelete';
+import type { MediumSavePayload } from './useMediumSave';
 import { Spinner } from '@/components/Spinner';
-import type { NewPartMediumEditPayload } from '@/services/administrators/newPartMediumService';
 
 type Props = {
+  administratorId: number;
+  schoolId: number;
+  courseId: number;
+  unitId: string;
+  assignmentId: string;
+  partId: string;
+  mediumId: string;
   formState: State['form'];
-  save$: Subject<{ processingState: State['form']['processingState']; payload: NewPartMediumEditPayload }>;
-  delete$: Subject<State['form']['processingState']>;
+  save$: Subject<MediumSavePayload>;
+  delete$: Subject<MediumDeletePayload>;
   captionChange: ChangeEventHandler<HTMLInputElement>;
   orderChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartMediumEditForm = memo(({ formState, save$, delete$, captionChange, orderChange }: Props): ReactElement => {
+export const NewPartMediumEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, formState, save$, delete$, captionChange, orderChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -33,6 +41,13 @@ export const NewPartMediumEditForm = memo(({ formState, save$, delete$, captionC
       return;
     }
     save$.next({
+      administratorId,
+      schoolId,
+      courseId,
+      unitId,
+      assignmentId,
+      partId,
+      mediumId,
       processingState: formState.processingState,
       payload: {
         caption: formState.data.caption,
@@ -43,7 +58,16 @@ export const NewPartMediumEditForm = memo(({ formState, save$, delete$, captionC
 
   const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm(`Are you sure you want to delete this part medium?`)) {
-      delete$.next(formState.processingState);
+      delete$.next({
+        administratorId,
+        schoolId,
+        courseId,
+        unitId,
+        assignmentId,
+        partId,
+        mediumId,
+        processingState: formState.processingState,
+      });
     }
   };
 

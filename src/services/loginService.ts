@@ -7,6 +7,7 @@ import { endpoint } from 'src/basePath';
 export interface ILoginService {
   logIn: (username: string, password: string, stayLoggedIn: boolean) => Observable<AuthenticationPayload>;
   logOut: () => Observable<void>;
+  refresh: () => Observable<AuthenticationPayload>;
 }
 
 export class LoginService implements ILoginService {
@@ -22,6 +23,11 @@ export class LoginService implements ILoginService {
   public logOut(): Observable<void> {
     const url = this.getUrl() + '/logout';
     return this.httpService.post<void>(url);
+  }
+
+  public refresh(): Observable<AuthenticationPayload> {
+    const url = this.getUrl() + '/refresh';
+    return this.httpService.post<AuthenticationPayload>(url, undefined);
   }
 
   private getUrl(): string {

@@ -5,10 +5,10 @@ import type { Course } from '@/domain/course';
 
 type Props = {
   courses: Course[];
-  courseRowClick: (e: MouseEvent<HTMLTableRowElement>, courseId: number) => void;
+  onClick: (e: MouseEvent<HTMLTableRowElement>, courseId: number) => void;
 };
 
-export const CourseList = memo(({ courses, courseRowClick }: Props): ReactElement => (
+export const CourseList = memo(({ courses, onClick }: Props): ReactElement => (
   <>
     <table className="coursesTable table table-bordered table-hover w-auto bg-white">
       <thead>
@@ -21,7 +21,7 @@ export const CourseList = memo(({ courses, courseRowClick }: Props): ReactElemen
       </thead>
       <tbody>
         {courses.map(c => (
-          <tr key={c.courseId} onClick={e => courseRowClick(e, c.courseId)}>
+          <tr key={c.courseId} onClick={e => onClick(e, c.courseId)}>
             <td className="text-center">{c.code}</td>
             <td>{c.name}</td>
             <td className="text-center">{c.version}</td>

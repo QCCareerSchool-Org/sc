@@ -8,34 +8,39 @@ import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
-export type ReturnPayload = {
+export type FeedbackUploadPayload = {
   tutorId: number;
   studentId: number;
   courseId: number;
   unitId: string;
+  file: File;
   processingState: State['processingState'];
 };
 
-export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> => {
+export const useFeedbackUpload = (dispatch: Dispatch<Action>): Subject<FeedbackUploadPayload> => {
   const router = useRouter();
   const { newUnitService } = useTutorServices();
 
-  const return$ = useRef(new Subject<ReturnPayload>());
+  const feedbackUpload$ = useRef(new Subject<FeedbackUploadPayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    return$.current.pipe(
+    feedbackUpload$.current.pipe(
       filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'delete error' || processingState === 'close error' || processingState === 'return error'),
-      tap(() => dispatch({ type: 'RETURN_UNIT_STARTED' })),
-      exhaustMap(({ tutorId, studentId, unitId }) => {
-        return newUnitService.returnUnit(tutorId, studentId, unitId).pipe(
+      tap(() => dispatch({ type: 'UPLOAD_FEEDBACK_STARTED' })),
+      exhaustMap(({ tutorId, studentId, unitId, file }) => {
+        return newUnitService.uploadFeedback(tutorId, studentId, unitId, file).pipe(
           tap({
-            next: newUnit => {
-              dispatch({ type: 'RETURN_UNIT_SUCCEEDED', payload: newUnit });
+            next: progressResponse => {
+              if (progressResponse.type === 'progress') {
+                dispatch({ type: 'UPLOAD_FEEDBACK_PROGRESSED', payload: progressResponse.value });
+              } else {
+                dispatch({ type: 'UPLOAD_FEEDBACK_SUCCEEDED', payload: progressResponse.value });
+              }
             },
             error: err => {
-              let message = 'Return failed';
+              let message = 'Upload failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
                   return void navigateToLogin(router);
@@ -44,7 +49,7 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
                   message = err.message;
                 }
               }
-              dispatch({ type: 'RETURN_UNIT_FAILED', payload: message });
+              dispatch({ type: 'UPLOAD_FEEDBACK_FAILED', payload: message });
             },
           }),
           catchError(() => EMPTY),
@@ -56,5 +61,5 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, router, newUnitService ]);
 
-  return return$.current;
+  return feedbackUpload$.current;
 };
