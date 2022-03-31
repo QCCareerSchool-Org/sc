@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useId } from 'react';
+// import { useId } from 'react';
 
 import type { State } from './state';
 import { ProgressBar } from '@/components/ProgressBar';
@@ -37,8 +37,8 @@ const allowedMimeTypes = [
 ];
 
 export const NewAssignmentMediumFormElements = ({ formType, formData, formValidationMessages, inserting, progress, dataSourceChange, captionChange, orderChange, fileChange, externalDataChange }: Props): ReactElement => {
-  const id = useId(); // react 18
-  // const id = Math.random().toString(32).slice(2);
+  // const id = useId(); // react 18
+  const id = Math.random().toString(32).slice(2);
   return (
     <>
       <div className="formGroup">

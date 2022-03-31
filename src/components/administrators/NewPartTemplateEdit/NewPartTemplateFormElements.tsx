@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useId } from 'react';
+// import { useId } from 'react';
 
 import type { State } from './state';
 
@@ -13,8 +13,8 @@ type Props = {
 };
 
 export const NewPartTemplateFormElements = ({ formData, formValidationMessages, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
-  const id = useId(); // react 18
-  // const id = Math.random().toString(32).slice(2);
+  // const id = useId(); // react 18
+  const id = Math.random().toString(32).slice(2);
   return (
     <>
       <div className="formGroup">

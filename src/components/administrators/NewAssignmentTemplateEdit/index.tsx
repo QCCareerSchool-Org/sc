@@ -136,6 +136,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
       <Section>
         <div className="container">
           <h1>Edit Assignment Template</h1>
+
           <p><Link href={router.asPath + '/preview'}><a>Preview</a></Link></p>
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
