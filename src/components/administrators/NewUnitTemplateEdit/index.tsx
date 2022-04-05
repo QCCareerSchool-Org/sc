@@ -66,6 +66,10 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
+  const markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'MARKING_CRITERIA_CHANGED', payload: e.target.value });
+  }, []);
+
   const unitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UNIT_LETTER_CHANGED', payload: e.target.value });
   }, []);
@@ -88,6 +92,10 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
 
   const assignmentDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
+  }, []);
+
+  const assignmentMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_TEMPLATE_MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
 
   const assignmentAssignmentNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
@@ -124,6 +132,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 delete$={unitDelete$}
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
+                markingCriteriaChange={markingCriteriaChange}
                 unitLetterChange={unitLetterChange}
                 orderChange={orderChange}
                 optionalChange={optionalChange}
@@ -161,6 +170,7 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 insert$={assignmentInsert$}
                 titleChange={assignmentTitleChange}
                 descriptionChange={assignmentDescriptionChange}
+                markingCriteriaChange={assignmentMarkingCriteriaChange}
                 assignmentNumberChange={assignmentAssignmentNumberChange}
                 optionalChange={assignmentOptionalChange}
               />

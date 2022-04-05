@@ -2,6 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
 import { NewUploadSlotTemplateEdit } from '@/components/administrators/NewUploadSlotTemplateEdit';
+import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -24,15 +25,20 @@ const NewTextBoxTemplateEditPage: NextPage<Props> = ({ schoolId, courseId, unitI
     return <Error statusCode={400} />;
   }
 
-  return <NewUploadSlotTemplateEdit
-    administratorId={authState.administratorId}
-    schoolId={schoolId}
-    courseId={courseId}
-    unitId={unitId}
-    assignmentId={assignmentId}
-    partId={partId}
-    uploadSlotId={uploadSlotId}
-  />;
+  return (
+    <>
+      <Meta title="Upload Slot Template View" />
+      <NewUploadSlotTemplateEdit
+        administratorId={authState.administratorId}
+        schoolId={schoolId}
+        courseId={courseId}
+        unitId={unitId}
+        assignmentId={assignmentId}
+        partId={partId}
+        uploadSlotId={uploadSlotId}
+      />
+    </>
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/require-await

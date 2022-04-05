@@ -78,7 +78,7 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = (new TextEncoder().encode(action.payload).length);
+        const newLength = [ ...action.payload ].length;
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

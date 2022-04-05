@@ -9,6 +9,7 @@ export type NewPartTemplate = {
   title: string;
   description: string | null;
   descriptionType: NewDescriptionType;
+  markingCriteria: string | null;
   created: Date;
   modified: Date | null;
 };
@@ -22,6 +23,7 @@ export type RawNewPartTemplate = {
   title: string;
   description: string | null;
   descriptionType: NewDescriptionType;
+  markingCriteria: string | null;
   optional: boolean;
   /** string date */
   created: string;

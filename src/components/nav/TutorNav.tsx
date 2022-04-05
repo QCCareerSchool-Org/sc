@@ -46,6 +46,29 @@ export const TutorNav = (props: TutorNavProps): ReactElement | null => {
               <li className="nav-item">
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/tutors/index.php">Home{index === 0 && <div className="active-indicator" />}</a>
               </li>
+              <li className="nav-item">
+                <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/tutors/units/mark.php">Mark<span className="d-md-none d-lg-inline"> Assignments</span>{index === 1 && <div className="active-indicator" />}</a>
+              </li>
+              <li className="nav-item">
+                <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/tutors/units/review.php">Review<span className="d-md-none d-lg-inline"> Assignments</span>{index === 2 && <div className="active-indicator" />}</a>
+              </li>
+              <li className="nav-item">
+                <a className={`nav-link ${index === 3 ? 'active' : ''}`} aria-current={index === 3 ? 'page' : undefined} href="/tutors/files/select-student.php">Upload Files{index === 3 && <div className="active-indicator" />}</a>
+              </li>
+              <li className="nav-item">
+                <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/tutors/badges.php">Badges{index === 4 && <div className="active-indicator" />}</a>
+              </li>
+              <li className="nav-item dropdown">
+                <a className={`nav-link dropdown-toggle ${index === 5 ? 'active' : ''}`} href="#" id="tutorNavAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Account{index === 5 && <div className="active-indicator" />}
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="tutorNavAccountDropdown">
+                  <li><a className="dropdown-item" href="/tutors/passwords/edit.php">Change Password</a></li>
+                  <li><a className="dropdown-item" href="/tutors/email-addresses/edit.php">Change Email Address</a></li>
+                  <li><hr className="dropdown-divider" /></li>
+                  <li><a className="dropdown-item" href="/tutors/logout.php">Log Out</a></li>
+                </ul>
+              </li>
             </ul>
           </div>
         </div>

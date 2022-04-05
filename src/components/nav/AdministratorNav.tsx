@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 
@@ -117,7 +118,7 @@ export const AdministratorNav = (props: AdministratorNavProps): ReactElement | n
                   <li><a className="dropdown-item d-none d-md-block d-xl-none" href="/administrators/returned-units/index.php">Returned Units</a></li>
                   <li><a className="dropdown-item" href="/administrators/forum/login.php" onClick={() => { window.open('/administrators/forum/login.php'); return false; }}>Student Forum</a></li>
                   <li><a className="dropdown-item" href="/administrators/final-submissions/">Final Submissions</a></li>
-                  <li><a className="dropdown-item" href="/sc/administrators/course-development">Course Development</a></li>
+                  <li><Link href="/administrators/course-development"><a className="dropdown-item">Course Development</a></Link></li>
                   <li><a className="dropdown-item" href="/administrators/materials/">Course Materials</a></li>
                   <li><a className="dropdown-item" href="/administrators/paths/">Course Material Paths</a></li>
                   <li><a className="dropdown-item" href="/administrators/showcases/index.php">Student Showcase</a></li>

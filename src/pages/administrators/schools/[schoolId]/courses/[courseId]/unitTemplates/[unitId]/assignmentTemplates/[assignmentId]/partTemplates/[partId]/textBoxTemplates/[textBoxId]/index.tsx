@@ -2,6 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
 import { NewTextBoxTemplateEdit } from '@/components/administrators/NewTextBoxTemplateEdit';
+import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -24,15 +25,20 @@ const NewTextBoxTemplateEditPage: NextPage<Props> = ({ schoolId, courseId, unitI
     return <Error statusCode={400} />;
   }
 
-  return <NewTextBoxTemplateEdit
-    administratorId={authState.administratorId}
-    schoolId={schoolId}
-    courseId={courseId}
-    unitId={unitId}
-    assignmentId={assignmentId}
-    partId={partId}
-    textBoxId={textBoxId}
-  />;
+  return (
+    <>
+      <Meta title="Text Box Template View" />
+      <NewTextBoxTemplateEdit
+        administratorId={authState.administratorId}
+        schoolId={schoolId}
+        courseId={courseId}
+        unitId={unitId}
+        assignmentId={assignmentId}
+        partId={partId}
+        textBoxId={textBoxId}
+      />
+    </>
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/require-await

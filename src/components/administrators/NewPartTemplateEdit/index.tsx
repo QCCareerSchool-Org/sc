@@ -76,6 +76,10 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     dispatch({ type: 'DESCRIPTION_TYPE_CHANGED', payload: e.target.value });
   }, []);
 
+  const markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'MARKING_CRITERIA_CHANGED', payload: e.target.value });
+  }, []);
+
   const partNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_NUMBER_CHANGED', payload: e.target.value });
   }, []);
@@ -196,6 +200,7 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
                 descriptionTypeChange={descriptionTypeChange}
+                markingCriteriaChange={markingCriteriaChange}
                 partNumberChange={partNumberChange}
               />
             </div>

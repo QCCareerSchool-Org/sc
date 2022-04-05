@@ -35,29 +35,36 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
 export const authInitialState: AuthState = {};
 
 export const authInitializer = (): AuthState => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    const authState: AuthState = {};
+  const authState: AuthState = {};
+  if (typeof window !== 'undefined' && navigator.cookieEnabled && 'localStorage' in window) {
     const storedAuthState = window.localStorage.getItem('authState');
     if (storedAuthState) {
       try {
-        const parsedAuthState = JSON.parse(storedAuthState);
-        if (typeof parsedAuthState.administratorId === 'number') {
-          authState.administratorId = parsedAuthState.administratorId;
+        const parsedAuthState = JSON.parse(storedAuthState) as unknown;
+        if (isRecord(parsedAuthState)) {
+          if (typeof parsedAuthState.administratorId === 'number') {
+            authState.administratorId = parsedAuthState.administratorId;
+          }
+          if (typeof parsedAuthState.tutorId === 'number') {
+            authState.tutorId = parsedAuthState.tutorId;
+          }
+          if (typeof parsedAuthState.studentId === 'number') {
+            authState.studentId = parsedAuthState.studentId;
+          }
+          if (typeof parsedAuthState.xsrfToken === 'string') {
+            authState.xsrfToken = parsedAuthState.xsrfToken;
+          }
+        } else {
+          window.localStorage.removeItem('authState'); // it was invalid
         }
-        if (typeof parsedAuthState.tutorId === 'number') {
-          authState.tutorId = parsedAuthState.tutorId;
-        }
-        if (typeof parsedAuthState.studentId === 'number') {
-          authState.studentId = parsedAuthState.studentId;
-        }
-        if (typeof parsedAuthState.xsrfToken === 'string') {
-          authState.xsrfToken = parsedAuthState.xsrfToken;
-        }
-      } catch (err) {
+      } catch (err) { // json parse error
         window.localStorage.removeItem('authState'); // it was invalid
       }
     }
-    return authState;
   }
-  return { };
+  return authState;
+};
+
+const isRecord = (u: unknown): u is Record<string | number, unknown> => {
+  return typeof u === 'object' && u !== null;
 };

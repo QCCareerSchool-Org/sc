@@ -36,6 +36,10 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
     dispatch({ type: 'UNIT_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
+  const unitMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'UNIT_TEMPLATE_MARKING_CRITERIA_CHANGED', payload: e.target.value });
+  }, []);
+
   const unitUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED', payload: e.target.value });
   }, []);
@@ -93,6 +97,7 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
                   insert$={unitInsert$}
                   titleChange={unitTitleChange}
                   descriptionChange={unitDescriptionChange}
+                  markingCriteriaChange={unitMarkingCriteriaChange}
                   unitLetterChange={unitUnitLetterChange}
                   orderChange={unitOrderChange}
                   optionalChange={unitOptionalChange}

@@ -8,11 +8,12 @@ type Props = {
   formValidationMessages: State['form']['validationMessages'];
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   assignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentTemplateFormElements = ({ formData, formValidationMessages, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
+export const NewAssignmentTemplateFormElements = ({ formData, formValidationMessages, titleChange, descriptionChange, markingCriteriaChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = Math.random().toString(32).slice(2);
   return (
@@ -25,9 +26,15 @@ export const NewAssignmentTemplateFormElements = ({ formData, formValidationMess
       </div>
       <div className="formGroup">
         <label htmlFor={id + '_newAssignmentTemplateDescription'} className="form-label">Description</label>
-        <textarea onChange={descriptionChange} value={formData.description} id={id + '_newAssignmentTemplateDescription'} rows={5} className={`form-control ${formValidationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newAssignmentTemplateDescriptionHelp'} />
+        <textarea onChange={descriptionChange} value={formData.description} id={id + '_newAssignmentTemplateDescription'} rows={4} className={`form-control ${formValidationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newAssignmentTemplateDescriptionHelp'} />
         <div id={id + '_newAssignmentTemplateDescriptionHelp'} className="form-text">The description of this assignment <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
         {formValidationMessages.description && <div className="invalid-feedback">{formValidationMessages.description}</div>}
+      </div>
+      <div className="formGroup">
+        <label htmlFor={id + '_newAssignmentTemplateMarkingCriteria'} className="form-label">Marking Criteria</label>
+        <textarea onChange={markingCriteriaChange} value={formData.markingCriteria} id={id + '_newAssignmentTemplateMarkingCriteria'} rows={4} className={`form-control ${formValidationMessages.markingCriteria ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newAssignmentTemplateMarkingCriteriaHelp'} />
+        <div id={id + '_newAssignmentTemplateMarkingCriteriaHelp'} className="form-text">The criteria for marking this assignment <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
+        {formValidationMessages.markingCriteria && <div className="invalid-feedback">{formValidationMessages.markingCriteria}</div>}
       </div>
       <div className="formGroup">
         <label htmlFor={id + '_newAssignmentTemplateAssignmentNumber'} className="form-label">Assignment Number <span className="text-danger">*</span></label>

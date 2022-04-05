@@ -9,15 +9,17 @@ export type State = {
   newAssignmentTemplate?: NewAssignmentTemplateWithUnitAndParts;
   form: {
     data: {
+      assignmentNumber: string;
       title: string;
       description: string;
-      assignmentNumber: string;
+      markingCriteria: string;
       optional: boolean;
     };
     validationMessages: {
+      assignmentNumber?: string;
       title?: string;
       description?: string;
-      assignmentNumber?: string;
+      markingCriteria?: string;
       optional?: string;
     };
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
@@ -25,16 +27,18 @@ export type State = {
   };
   newPartTemplateForm: {
     data: {
+      partNumber: string;
       title: string;
       description: string;
       descriptionType: string;
-      partNumber: string;
+      markingCriteria: string;
     };
     validationMessages: {
+      partNumber?: string;
       title?: string;
       description?: string;
       descriptionType?: string;
-      partNumber?: string;
+      markingCriteria?: string;
       optional?: string;
     };
     meta: {
@@ -69,9 +73,10 @@ export type State = {
 export type Action =
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithUnitAndParts }
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED'; payload?: number }
+  | { type: 'ASSIGNMENT_NUMBER_CHANGED'; payload: string }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
-  | { type: 'ASSIGNMENT_NUMBER_CHANGED'; payload: string }
+  | { type: 'MARKING_CRITERIA_CHANGED'; payload: string }
   | { type: 'OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'SAVE_ASSIGNMENT_TEMPLATE_STARTED' }
   | { type: 'SAVE_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplate }
@@ -79,10 +84,11 @@ export type Action =
   | { type: 'DELETE_ASSIGNMENT_TEMPLATE_STARTED' }
   | { type: 'DELETE_ASSIGNMENT_TEMPLATE_SUCCEEDED' }
   | { type: 'DELETE_ASSIGNMENT_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'PART_TEMPLATE_PART_NUMBER_CHANGED'; payload: string }
   | { type: 'PART_TEMPLATE_TITLE_CHANGED'; payload: string }
   | { type: 'PART_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
   | { type: 'PART_TEMPLATE_DESCRIPTION_TYPE_CHANGED'; payload: string }
-  | { type: 'PART_TEMPLATE_PART_NUMBER_CHANGED'; payload: string }
+  | { type: 'PART_TEMPLATE_MARKING_CRITERIA_CHANGED'; payload: string }
   | { type: 'ADD_PART_TEMPLATE_STARTED' }
   | { type: 'ADD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplate }
   | { type: 'ADD_PART_TEMPLATE_FAILED'; payload?: string }
@@ -99,9 +105,10 @@ export type Action =
 export const initialState: State = {
   form: {
     data: {
+      assignmentNumber: '1',
       title: '',
       description: '',
-      assignmentNumber: '1',
+      markingCriteria: '',
       optional: false,
     },
     validationMessages: {},
@@ -109,10 +116,11 @@ export const initialState: State = {
   },
   newPartTemplateForm: {
     data: {
+      partNumber: '1',
       title: '',
       description: '',
       descriptionType: 'text',
-      partNumber: '1',
+      markingCriteria: '',
     },
     validationMessages: {},
     meta: {
@@ -144,9 +152,10 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         form: {
           ...state.form,
           data: {
+            assignmentNumber: action.payload.assignmentNumber.toString(),
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
-            assignmentNumber: action.payload.assignmentNumber.toString(),
+            markingCriteria: action.payload.markingCriteria ?? '',
             optional: action.payload.optional,
           },
           validationMessages: {},
@@ -156,10 +165,11 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         newPartTemplateForm: {
           ...state.newPartTemplateForm,
           data: {
+            partNumber: action.payload.newPartTemplates.length === 0 ? '1' : (Math.max(...action.payload.newPartTemplates.map(p => p.partNumber)) + 1).toString(),
             title: '',
             description: '',
             descriptionType: 'text',
-            partNumber: action.payload.newPartTemplates.length === 0 ? '1' : (Math.max(...action.payload.newPartTemplates.map(p => p.partNumber)) + 1).toString(),
+            markingCriteria: '',
           },
           validationMessages: {},
           meta: {
@@ -185,42 +195,6 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       };
     case 'LOAD_ASSIGNMENT_TEMPLATE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'TITLE_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const maxLength = 191;
-        const newLength = (new TextEncoder().encode(action.payload).length);
-        if (newLength > maxLength) {
-          validationMessage = `Exceeds maximum length of ${maxLength}`;
-        }
-      }
-      return {
-        ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, title: action.payload },
-          validationMessages: { ...state.form.validationMessages, title: validationMessage },
-        },
-      };
-    }
-    case 'DESCRIPTION_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const maxLength = 65_535;
-        const newLength = (new TextEncoder().encode(action.payload).length);
-        if (newLength > maxLength) {
-          validationMessage = `Exceeds maximum length of ${maxLength}`;
-        }
-      }
-      return {
-        ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, description: action.payload },
-          validationMessages: { ...state.form.validationMessages, description: validationMessage },
-        },
-      };
-    }
     case 'ASSIGNMENT_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
@@ -241,6 +215,60 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
           ...state.form,
           data: { ...state.form.data, assignmentNumber: action.payload },
           validationMessages: { ...state.form.validationMessages, assignmentNumber: validationMessage },
+        },
+      };
+    }
+    case 'TITLE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 191;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          data: { ...state.form.data, title: action.payload },
+          validationMessages: { ...state.form.validationMessages, title: validationMessage },
+        },
+      };
+    }
+    case 'DESCRIPTION_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          data: { ...state.form.data, description: action.payload },
+          validationMessages: { ...state.form.validationMessages, description: validationMessage },
+        },
+      };
+    }
+    case 'MARKING_CRITERIA_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          data: { ...state.form.data, markingCriteria: action.payload },
+          validationMessages: { ...state.form.validationMessages, markingCriteria: validationMessage },
         },
       };
     }
@@ -267,9 +295,10 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         form: {
           ...state.form,
           data: {
+            assignmentNumber: action.payload.assignmentNumber.toString(),
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
-            assignmentNumber: action.payload.assignmentNumber.toString(),
+            markingCriteria: action.payload.markingCriteria ?? '',
             optional: action.payload.optional,
           },
           processingState: 'idle',
@@ -292,9 +321,10 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         form: {
           ...state.form,
           data: {
+            assignmentNumber: '1',
             title: '',
             description: '',
-            assignmentNumber: '1',
+            markingCriteria: '',
             optional: false,
           },
           validationMessages: {},
@@ -307,13 +337,38 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         ...state,
         form: { ...state.form, processingState: 'delete error', errorMessage: action.payload },
       };
+    case 'PART_TEMPLATE_PART_NUMBER_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        const partNumber = parseInt(action.payload, 10);
+        if (isNaN(partNumber)) {
+          validationMessage = 'Invalid number';
+        } else if (partNumber < 0) {
+          validationMessage = 'Cannot be less than zero';
+        } else if (partNumber > 127) {
+          validationMessage = 'Cannot be greater than 127';
+        } else if (state.newAssignmentTemplate?.newPartTemplates.some(p => p.partNumber === partNumber)) {
+          validationMessage = 'Another part already has this part number';
+        }
+      }
+      return {
+        ...state,
+        newPartTemplateForm: {
+          ...state.newPartTemplateForm,
+          data: { ...state.newPartTemplateForm.data, partNumber: action.payload },
+          validationMessages: { ...state.form.validationMessages, partNumber: validationMessage },
+        },
+      };
+    }
     case 'PART_TEMPLATE_TITLE_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = (new TextEncoder().encode(action.payload).length);
+        const newLength = [ ...action.payload ].length;
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -331,7 +386,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload.length) {
         const maxLength = 65_535;
-        const newLength = (new TextEncoder().encode(action.payload).length);
+        const newLength = [ ...action.payload ].length;
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -369,28 +424,21 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         },
       };
     }
-    case 'PART_TEMPLATE_PART_NUMBER_CHANGED': {
+    case 'PART_TEMPLATE_MARKING_CRITERIA_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload.length === 0) {
-        validationMessage = 'Required';
-      } else {
-        const partNumber = parseInt(action.payload, 10);
-        if (isNaN(partNumber)) {
-          validationMessage = 'Invalid number';
-        } else if (partNumber < 0) {
-          validationMessage = 'Cannot be less than zero';
-        } else if (partNumber > 127) {
-          validationMessage = 'Cannot be greater than 127';
-        } else if (state.newAssignmentTemplate?.newPartTemplates.some(p => p.partNumber === partNumber)) {
-          validationMessage = 'Another part already has this part number';
+      if (action.payload.length) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
       }
       return {
         ...state,
         newPartTemplateForm: {
           ...state.newPartTemplateForm,
-          data: { ...state.newPartTemplateForm.data, partNumber: action.payload },
-          validationMessages: { ...state.form.validationMessages, partNumber: validationMessage },
+          data: { ...state.newPartTemplateForm.data, markingCriteria: action.payload },
+          validationMessages: { ...state.newPartTemplateForm.validationMessages, markingCriteria: validationMessage },
         },
       };
     }
@@ -413,10 +461,11 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         newPartTemplateForm: {
           ...state.newPartTemplateForm,
           data: {
+            partNumber: (Math.max(...newPartTemplates.map(p => p.partNumber)) + 1).toString(),
             title: '',
             description: '',
             descriptionType: 'text',
-            partNumber: (Math.max(...newPartTemplates.map(p => p.partNumber)) + 1).toString(),
+            markingCriteria: '',
           },
           processingState: 'idle',
         },
@@ -433,7 +482,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = (new TextEncoder().encode(action.payload).length);
+        const newLength = [ ...action.payload ].length;
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

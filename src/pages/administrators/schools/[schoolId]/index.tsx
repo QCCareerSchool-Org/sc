@@ -2,6 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
 import { SchoolView } from '@/components/administrators/SchoolView';
+import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -19,7 +20,12 @@ const SchoolViewPage: NextPage<Props> = ({ schoolId }) => {
     return <Error statusCode={400} />;
   }
 
-  return <SchoolView administratorId={authState.administratorId} schoolId={schoolId} />;
+  return (
+    <>
+      <Meta title="School View" />
+      <SchoolView administratorId={authState.administratorId} schoolId={schoolId} />
+    </>
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/require-await

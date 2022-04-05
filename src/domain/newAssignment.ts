@@ -6,6 +6,7 @@ export type NewAssignment = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  markingCriteria: string | null;
   optional: boolean;
   complete: boolean;
   points: number;
@@ -23,6 +24,7 @@ export type RawNewAssignment = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  markingCriteria: string | null;
   optional: boolean;
   complete: boolean;
   points: number;

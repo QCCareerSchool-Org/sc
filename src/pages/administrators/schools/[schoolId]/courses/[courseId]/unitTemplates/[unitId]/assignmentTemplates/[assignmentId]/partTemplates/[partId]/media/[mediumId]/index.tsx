@@ -3,6 +3,7 @@ import Error from 'next/error';
 
 import { NewAssignmentMediumEdit } from '@/components/administrators/NewAssignmentMediumEdit';
 import { NewPartMediumEdit } from '@/components/administrators/NewPartMediumEdit';
+import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -25,15 +26,20 @@ const NewAssignmentMediumEditPage: NextPage<Props> = ({ schoolId, courseId, unit
     return <Error statusCode={400} />;
   }
 
-  return <NewPartMediumEdit
-    administratorId={authState.administratorId}
-    schoolId={schoolId}
-    courseId={courseId}
-    unitId={unitId}
-    assignmentId={assignmentId}
-    partId={partId}
-    mediumId={mediumId}
-  />;
+  return (
+    <>
+      <Meta title="Part Media View" />
+      <NewPartMediumEdit
+        administratorId={authState.administratorId}
+        schoolId={schoolId}
+        courseId={courseId}
+        unitId={unitId}
+        assignmentId={assignmentId}
+        partId={partId}
+        mediumId={mediumId}
+      />
+    </>
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/require-await

@@ -9,10 +9,11 @@ type Props = {
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   descriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
+  markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   partNumberChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateFormElements = ({ formData, formValidationMessages, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
+export const NewPartTemplateFormElements = ({ formData, formValidationMessages, titleChange, descriptionChange, descriptionTypeChange, markingCriteriaChange, partNumberChange }: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = Math.random().toString(32).slice(2);
   return (
@@ -39,9 +40,15 @@ export const NewPartTemplateFormElements = ({ formData, formValidationMessages, 
             </div>
           </div>
         </div>
-        <textarea onChange={descriptionChange} value={formData.description} id={id + '_newPartTemplateDescription'} rows={5} className={`form-control ${formValidationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newPartTemplateDescriptionHelp'} />
+        <textarea onChange={descriptionChange} value={formData.description} id={id + '_newPartTemplateDescription'} rows={4} className={`form-control ${formValidationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newPartTemplateDescriptionHelp'} />
         <div id={id + '_newPartTemplateDescriptionHelp'} className="form-text">The description of this part{formData.descriptionType === 'text' ? <span className="fw-bold"> (Two <em>ENTER</em> keys in a row will start a new paragraph)</span> : formData.descriptionType === 'html' ? <span className="fw-bold"> (HTML descriptions should use &lt;p&gt; tags)</span> : null}</div>
         {formValidationMessages.description && <div className="invalid-feedback">{formValidationMessages.description}</div>}
+      </div>
+      <div className="formGroup">
+        <label htmlFor={id + '_newPartTemplateMarkingCriteria'} className="form-label">Marking Criteria</label>
+        <textarea onChange={markingCriteriaChange} value={formData.markingCriteria} id={id + '_newPartTemplateMarkingCriteria'} rows={4} className={`form-control ${formValidationMessages.markingCriteria ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newPartTemplateMarkingCriteriaHelp'} />
+        <div id={id + '_newPartTemplateMarkingCriteriaHelp'} className="form-text">The description of this part <span className="fw-bold"> (Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
+        {formValidationMessages.markingCriteria && <div className="invalid-feedback">{formValidationMessages.markingCriteria}</div>}
       </div>
       <div className="formGroup">
         <label htmlFor={id + '_newPartTemplatePartNumber'} className="form-label">Part Number <span className="text-danger">*</span></label>
@@ -51,8 +58,8 @@ export const NewPartTemplateFormElements = ({ formData, formValidationMessages, 
       </div>
 
       <style jsx>{`
-        .formGroup { margin-bottom: 1rem; }
-        .form-text { font-size: 0.75rem; }
+      .formGroup { margin-bottom: 1rem; }
+      .form-text { font-size: 0.75rem; }
       `}</style>
     </>
   );

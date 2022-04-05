@@ -39,10 +39,10 @@ export const NewTextBoxForm = memo(({ textBox, update, save }: Props): ReactElem
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ save, update, textBox.partId, textBox.textBoxId ]);
 
-  const characters = (new TextEncoder().encode(textBox.text).length);
+  const characters = [ ...textBox.text ].length;
 
   const onChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
-    const newLength = (new TextEncoder().encode(e.target.value).length);
+    const newLength = [ ...e.target.value ].length;
     if (newLength <= maxLength) {
       textChange$.current.next(e.target.value);
     }

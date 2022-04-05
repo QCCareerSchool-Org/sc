@@ -30,7 +30,7 @@ export interface INewUnitService {
   uploadFeedback: (tutorId: number, studentId: number, unitId: string, file: File) => Observable<ProgressResponse<NewUnit>>;
   deleteFeedback: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnit>;
   closeUnit: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnit>;
-  returnUnit: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnit>;
+  returnUnit: (tutorId: number, studentId: number, unitId: string, comment: string) => Observable<NewUnit>;
 }
 
 export class NewUnitService implements INewUnitService {
@@ -73,9 +73,9 @@ export class NewUnitService implements INewUnitService {
     );
   }
 
-  public returnUnit(tutorId: number, studentId: number, unitId: string): Observable<NewUnit> {
+  public returnUnit(tutorId: number, studentId: number, unitId: string, comment: string): Observable<NewUnit> {
     const url = `${this.getUrl(tutorId, studentId)}/${unitId}/returns`;
-    return this.httpService.post<RawNewUnit>(url).pipe(
+    return this.httpService.post<RawNewUnit>(url, { comment }).pipe(
       map(this.mapNewUnit),
     );
   }

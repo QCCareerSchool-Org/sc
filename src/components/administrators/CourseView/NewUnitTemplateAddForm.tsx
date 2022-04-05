@@ -15,12 +15,13 @@ type Props = {
   insert$: Subject<UnitInsertPayload>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   unitLetterChange: ChangeEventHandler<HTMLInputElement>;
   orderChange: ChangeEventHandler<HTMLInputElement>;
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUnitTemplateAddForm = memo(({ administratorId, schoolId, courseId, formState, insert$, titleChange, descriptionChange, unitLetterChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewUnitTemplateAddForm = memo(({ administratorId, schoolId, courseId, formState, insert$, titleChange, descriptionChange, markingCriteriaChange, unitLetterChange, orderChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -43,9 +44,10 @@ export const NewUnitTemplateAddForm = memo(({ administratorId, schoolId, courseI
       courseId,
       processingState: formState.processingState,
       payload: {
+        unitLetter: formState.data.unitLetter,
         title: formState.data.title || null,
         description: formState.data.description || null,
-        unitLetter: formState.data.unitLetter,
+        markingCriteria: formState.data.markingCriteria || null,
         order: parseInt(formState.data.order, 10),
         optional: formState.data.optional,
       },
@@ -62,6 +64,7 @@ export const NewUnitTemplateAddForm = memo(({ administratorId, schoolId, courseI
             formValidationMessages={formState.validationMessages}
             titleChange={titleChange}
             descriptionChange={descriptionChange}
+            markingCriteriaChange={markingCriteriaChange}
             unitLetterChange={unitLetterChange}
             orderChange={orderChange}
             optionalChange={optionalChange}

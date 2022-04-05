@@ -1,6 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
+import { Meta } from '@/components/Meta';
 import { NewAssignmentView } from '@/components/students/NewAssignmentView';
 import { useAuthState } from '@/hooks/useAuthState';
 
@@ -21,12 +22,17 @@ const NewAssignmentViewPage: NextPage<Props> = ({ courseId, unitId, assignmentId
     return <Error statusCode={400} />;
   }
 
-  return <NewAssignmentView
-    studentId={authState.studentId}
-    courseId={courseId}
-    unitId={unitId}
-    assignmentId={assignmentId}
-  />;
+  return (
+    <>
+      <Meta title="Assignment View" />
+      <NewAssignmentView
+        studentId={authState.studentId}
+        courseId={courseId}
+        unitId={unitId}
+        assignmentId={assignmentId}
+      />
+    </>
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/require-await

@@ -23,10 +23,13 @@ type Props = {
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   descriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
+  markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   partNumberChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, partTemplate, formState, save$, delete$, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
+export const NewPartTemplateEditForm = memo((props: Props): ReactElement => {
+  const { administratorId, schoolId, courseId, unitId, assignmentId, partId, partTemplate, formState, save$, delete$ } = props;
+
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -55,10 +58,11 @@ export const NewPartTemplateEditForm = memo(({ administratorId, schoolId, course
       partId,
       processingState: formState.processingState,
       payload: {
+        partNumber: parseInt(formState.data.partNumber, 10),
         title: formState.data.title,
         description: formState.data.description.length === 0 ? null : formState.data.descriptionType === 'text' ? formState.data.description : formState.meta.sanitizedHtml,
         descriptionType: formState.data.descriptionType,
-        partNumber: parseInt(formState.data.partNumber, 10),
+        markingCriteria: formState.data.markingCriteria || null,
       },
     });
   };
@@ -82,10 +86,11 @@ export const NewPartTemplateEditForm = memo(({ administratorId, schoolId, course
       <NewPartTemplateFormElements
         formData={formState.data}
         formValidationMessages={formState.validationMessages}
-        titleChange={titleChange}
-        descriptionChange={descriptionChange}
-        descriptionTypeChange={descriptionTypeChange}
-        partNumberChange={partNumberChange}
+        titleChange={props.titleChange}
+        descriptionChange={props.descriptionChange}
+        descriptionTypeChange={props.descriptionTypeChange}
+        markingCriteriaChange={props.markingCriteriaChange}
+        partNumberChange={props.partNumberChange}
       />
       <div className="d-flex align-items-center">
         <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>

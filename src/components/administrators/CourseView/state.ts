@@ -5,16 +5,18 @@ export type State = {
   course?: CourseWithSchoolAndUnits;
   newUnitTemplateForm: {
     data: {
+      unitLetter: string;
       title: string;
       description: string;
-      unitLetter: string;
+      markingCriteria: string;
       order: string;
       optional: boolean;
     };
     validationMessages: {
+      unitLetter?: string;
       title?: string;
       description?: string;
-      unitLetter?: string;
+      markingCriteria?: string;
       order?: string;
       optional?: string;
     };
@@ -28,9 +30,10 @@ export type State = {
 export type Action =
   | { type: 'LOAD_COURSE_SUCCEEDED'; payload: CourseWithSchoolAndUnits }
   | { type: 'LOAD_COURSE_FAILED'; payload?: number }
+  | { type: 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_TITLE_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
-  | { type: 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED'; payload: string }
+  | { type: 'UNIT_TEMPLATE_MARKING_CRITERIA_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_ORDER_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'ADD_UNIT_TEMPLATE_STARTED' }
@@ -40,9 +43,10 @@ export type Action =
 export const initialState: State = {
   newUnitTemplateForm: {
     data: {
+      unitLetter: 'A',
       title: '',
       description: '',
-      unitLetter: 'A',
+      markingCriteria: '',
       order: '0',
       optional: false,
     },
@@ -68,9 +72,10 @@ export const reducer = (state: State, action: Action): State => {
         course: action.payload,
         newUnitTemplateForm: {
           data: {
+            unitLetter,
             title: '',
             description: '',
-            unitLetter,
+            markingCriteria: '',
             order: action.payload.newUnitTemplates.length === 0 ? '0' : Math.max(...action.payload.newUnitTemplates.map(u => u.order)).toString(),
             optional: false,
           },
@@ -83,42 +88,6 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'LOAD_COURSE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'UNIT_TEMPLATE_TITLE_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const maxLength = 191;
-        const newLength = (new TextEncoder().encode(action.payload).length);
-        if (newLength > maxLength) {
-          validationMessage = `Exceeds maximum length of ${maxLength}`;
-        }
-      }
-      return {
-        ...state,
-        newUnitTemplateForm: {
-          ...state.newUnitTemplateForm,
-          data: { ...state.newUnitTemplateForm.data, title: action.payload },
-          validationMessages: { ...state.newUnitTemplateForm.validationMessages, title: validationMessage },
-        },
-      };
-    }
-    case 'UNIT_TEMPLATE_DESCRIPTION_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const maxLength = 65_535;
-        const newLength = (new TextEncoder().encode(action.payload).length);
-        if (newLength > maxLength) {
-          validationMessage = `Exceeds maximum length of ${maxLength}`;
-        }
-      }
-      return {
-        ...state,
-        newUnitTemplateForm: {
-          ...state.newUnitTemplateForm,
-          data: { ...state.newUnitTemplateForm.data, description: action.payload },
-          validationMessages: { ...state.newUnitTemplateForm.validationMessages, description: validationMessage },
-        },
-      };
-    }
     case 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
@@ -136,6 +105,60 @@ export const reducer = (state: State, action: Action): State => {
           ...state.newUnitTemplateForm,
           data: { ...state.newUnitTemplateForm.data, unitLetter: action.payload.toUpperCase() },
           validationMessages: { ...state.newUnitTemplateForm.validationMessages, unitLetter: validationMessage },
+        },
+      };
+    }
+    case 'UNIT_TEMPLATE_TITLE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 191;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        newUnitTemplateForm: {
+          ...state.newUnitTemplateForm,
+          data: { ...state.newUnitTemplateForm.data, title: action.payload },
+          validationMessages: { ...state.newUnitTemplateForm.validationMessages, title: validationMessage },
+        },
+      };
+    }
+    case 'UNIT_TEMPLATE_DESCRIPTION_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        newUnitTemplateForm: {
+          ...state.newUnitTemplateForm,
+          data: { ...state.newUnitTemplateForm.data, description: action.payload },
+          validationMessages: { ...state.newUnitTemplateForm.validationMessages, description: validationMessage },
+        },
+      };
+    }
+    case 'UNIT_TEMPLATE_MARKING_CRITERIA_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        newUnitTemplateForm: {
+          ...state.newUnitTemplateForm,
+          data: { ...state.newUnitTemplateForm.data, markingCriteria: action.payload },
+          validationMessages: { ...state.newUnitTemplateForm.validationMessages, markingCriteria: validationMessage },
         },
       };
     }
@@ -197,9 +220,10 @@ export const reducer = (state: State, action: Action): State => {
         newUnitTemplateForm: {
           ...state.newUnitTemplateForm,
           data: {
+            unitLetter,
             title: '',
             description: '',
-            unitLetter,
+            markingCriteria: '',
             order: Math.max(...newUnitTemplates.map(u => u.order)).toString(),
             optional: false,
           },

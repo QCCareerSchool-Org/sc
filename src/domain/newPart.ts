@@ -9,6 +9,8 @@ export type NewPart = {
   title: string;
   description: string | null;
   descriptionType: NewDescriptionType;
+  markingCriteria: string | null;
+  markingComments: string | null;
   complete: boolean;
   points: number;
   mark: number | null;
@@ -25,6 +27,8 @@ export type RawNewPart = {
   title: string;
   description: string | null;
   descriptionType: NewDescriptionType;
+  markingCriteria: string | null;
+  markingComments: string | null;
   optional: boolean;
   complete: boolean;
   points: number;

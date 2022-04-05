@@ -2,6 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
 import { NewAssignmentTemplateEdit } from '@/components/administrators/NewAssignmentTemplateEdit';
+import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -22,13 +23,18 @@ const NewAssignmentTemplateEditPage: NextPage<Props> = ({ schoolId, courseId, un
     return <Error statusCode={400} />;
   }
 
-  return <NewAssignmentTemplateEdit
-    administratorId={authState.administratorId}
-    schoolId={schoolId}
-    courseId={courseId}
-    unitId={unitId}
-    assignmentId={assignmentId}
-  />;
+  return (
+    <>
+      <Meta title="Assignment Template View" />
+      <NewAssignmentTemplateEdit
+        administratorId={authState.administratorId}
+        schoolId={schoolId}
+        courseId={courseId}
+        unitId={unitId}
+        assignmentId={assignmentId}
+      />
+    </>
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/require-await

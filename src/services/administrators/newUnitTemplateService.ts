@@ -8,9 +8,10 @@ import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export type NewUnitTemplatePayload = {
+  unitLetter: string;
   title: string | null;
   description: string | null;
-  unitLetter: string;
+  markingCriteria: string | null;
   order: number;
   optional: boolean;
 };

@@ -16,11 +16,12 @@ type Props = {
   insert$: Subject<AssignementInsertPayload>;
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   assignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
   optionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentTemplateAddForm = memo(({ administratorId, schoolId, courseId, unitId, formState, insert$, titleChange, descriptionChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
+export const NewAssignmentTemplateAddForm = memo(({ administratorId, schoolId, courseId, unitId, formState, insert$, titleChange, descriptionChange, markingCriteriaChange, assignmentNumberChange, optionalChange }: Props): ReactElement => {
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -44,9 +45,10 @@ export const NewAssignmentTemplateAddForm = memo(({ administratorId, schoolId, c
       unitId,
       processingState: formState.processingState,
       payload: {
+        assignmentNumber: parseInt(formState.data.assignmentNumber, 10),
         title: formState.data.title || null,
         description: formState.data.description || null,
-        assignmentNumber: parseInt(formState.data.assignmentNumber, 10),
+        markingCriteria: formState.data.markingCriteria || null,
         optional: formState.data.optional,
       },
     });
@@ -62,6 +64,7 @@ export const NewAssignmentTemplateAddForm = memo(({ administratorId, schoolId, c
             formValidationMessages={formState.validationMessages}
             titleChange={titleChange}
             descriptionChange={descriptionChange}
+            markingCriteriaChange={markingCriteriaChange}
             assignmentNumberChange={assignmentNumberChange}
             optionalChange={optionalChange}
           />

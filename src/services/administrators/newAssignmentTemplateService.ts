@@ -12,9 +12,10 @@ import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export type NewAssignmentTemplatePayload = {
+  assignmentNumber: number;
   title: string | null;
   description: string | null;
-  assignmentNumber: number;
+  markingCriteria: string | null;
   optional: boolean;
 };
 

@@ -11,10 +11,11 @@ import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export type NewPartTemplatePayload = {
+  partNumber: number;
   title: string;
   description: string | null;
   descriptionType: NewDescriptionType;
-  partNumber: number;
+  markingCriteria: string | null;
 };
 
 type RawNewPartTemplateWithAssignmentAndInputs = RawNewPartTemplate & {

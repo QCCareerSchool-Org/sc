@@ -6,6 +6,7 @@ export type NewUnit = {
   unitLetter: string;
   title: string | null;
   description: string | null;
+  markingCriteria: string | null;
   optional: boolean;
   order: number;
   adminComment: string | null;
@@ -32,6 +33,7 @@ export type RawNewUnit = {
   unitLetter: string;
   title: string | null;
   description: string | null;
+  markingCriteria: string | null;
   optional: boolean;
   order: number;
   adminComment: string | null;

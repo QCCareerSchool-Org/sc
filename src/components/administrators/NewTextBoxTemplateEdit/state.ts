@@ -82,7 +82,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = (new TextEncoder().encode(action.payload).length);
+        const newLength = [ ...action.payload ].length;
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

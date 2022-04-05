@@ -6,16 +6,18 @@ export type State = {
   newUnitTemplate?: NewUnitTemplateWithCourseAndAssignments;
   form: {
     data: {
+      unitLetter: string;
       title: string;
       description: string;
-      unitLetter: string;
+      markingCriteria: string;
       order: string;
       optional: boolean;
     };
     validationMessages: {
+      unitLetter?: string;
       title?: string;
       description?: string;
-      unitLetter?: string;
+      markingCriteria?: string;
       order?: string;
       optional?: string;
     };
@@ -24,15 +26,17 @@ export type State = {
   };
   newAssignmentTemplateForm: {
     data: {
+      assignmentNumber: string;
       title: string;
       description: string;
-      assignmentNumber: string;
+      markingCriteria: string;
       optional: boolean;
     };
     validationMessages: {
+      assignmentNumber?: string;
       title?: string;
       description?: string;
-      assignmentNumber?: string;
+      markingCriteria?: string;
       optional?: string;
     };
     processingState: 'idle' | 'inserting' | 'insert error';
@@ -45,9 +49,10 @@ export type State = {
 export type Action =
   | { type: 'LOAD_UNIT_TEMPLATE_SUCCEEDED'; payload: NewUnitTemplateWithCourseAndAssignments }
   | { type: 'LOAD_UNIT_TEMPLATE_FAILED'; payload?: number }
+  | { type: 'UNIT_LETTER_CHANGED'; payload: string }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
-  | { type: 'UNIT_LETTER_CHANGED'; payload: string }
+  | { type: 'MARKING_CRITERIA_CHANGED'; payload: string }
   | { type: 'ORDER_CHANGED'; payload: string }
   | { type: 'OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'SAVE_UNIT_TEMPLATE_STARTED' }
@@ -56,9 +61,10 @@ export type Action =
   | { type: 'DELETE_UNIT_TEMPLATE_STARTED' }
   | { type: 'DELETE_UNIT_TEMPLATE_SUCCEEDED' }
   | { type: 'DELETE_UNIT_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'ASSIGNMENT_TEMPLATE_ASSIGNMENT_NUMBER_CHANGED'; payload: string }
   | { type: 'ASSIGNMENT_TEMPLATE_TITLE_CHANGED'; payload: string }
   | { type: 'ASSIGNMENT_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
-  | { type: 'ASSIGNMENT_TEMPLATE_ASSIGNMENT_NUMBER_CHANGED'; payload: string }
+  | { type: 'ASSIGNMENT_TEMPLATE_MARKING_CRITERIA_CHANGED'; payload: string }
   | { type: 'ASSIGNMENT_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'ADD_ASSIGNMENT_TEMPLATE_STARTED' }
   | { type: 'ADD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplate }
@@ -67,9 +73,10 @@ export type Action =
 export const initialState: State = {
   form: {
     data: {
+      unitLetter: 'A',
       title: '',
       description: '',
-      unitLetter: 'A',
+      markingCriteria: '',
       order: '0',
       optional: false,
     },
@@ -79,9 +86,10 @@ export const initialState: State = {
   },
   newAssignmentTemplateForm: {
     data: {
+      assignmentNumber: '1',
       title: '',
       description: '',
-      assignmentNumber: '1',
+      markingCriteria: '',
       optional: false,
     },
     validationMessages: {},
@@ -99,9 +107,10 @@ export const reducer = (state: State, action: Action): State => {
         newUnitTemplate: action.payload,
         form: {
           data: {
+            unitLetter: action.payload.unitLetter,
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
-            unitLetter: action.payload.unitLetter,
+            markingCriteria: action.payload.markingCriteria ?? '',
             order: action.payload.order.toString(),
             optional: action.payload.optional,
           },
@@ -111,9 +120,10 @@ export const reducer = (state: State, action: Action): State => {
         },
         newAssignmentTemplateForm: {
           data: {
+            assignmentNumber: action.payload.newAssignmentTemplates.length === 0 ? '1' : (Math.max(...action.payload.newAssignmentTemplates.map(a => a.assignmentNumber)) + 1).toString(),
             title: '',
             description: '',
-            assignmentNumber: action.payload.newAssignmentTemplates.length === 0 ? '1' : (Math.max(...action.payload.newAssignmentTemplates.map(a => a.assignmentNumber)) + 1).toString(),
+            markingCriteria: '',
             optional: false,
           },
           validationMessages: {},
@@ -124,11 +134,29 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'LOAD_UNIT_TEMPLATE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
+    case 'UNIT_LETTER_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else if (action.payload.length > 1) {
+        validationMessage = 'Maximum of one character allowed';
+      } else if (!/[a-z0-9]/iu.test(action.payload)) {
+        validationMessage = 'Only letters A to Z and number 0 to 9 are allowed';
+      }
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          data: { ...state.form.data, unitLetter: action.payload.toUpperCase() },
+          validationMessages: { ...state.form.validationMessages, unitLetter: validationMessage },
+        },
+      };
+    }
     case 'TITLE_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
-        const newLength = (new TextEncoder().encode(action.payload).length);
+        const newLength = [ ...action.payload ].length;
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -146,7 +174,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = (new TextEncoder().encode(action.payload).length);
+        const newLength = [ ...action.payload ].length;
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -160,21 +188,21 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'UNIT_LETTER_CHANGED': {
+    case 'MARKING_CRITERIA_CHANGED': {
       let validationMessage: string | undefined;
-      if (action.payload.length === 0) {
-        validationMessage = 'Required';
-      } else if (action.payload.length > 1) {
-        validationMessage = 'Maximum of one character allowed';
-      } else if (!/[a-z0-9]/iu.test(action.payload)) {
-        validationMessage = 'Only letters A to Z and number 0 to 9 are allowed';
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
       }
       return {
         ...state,
         form: {
           ...state.form,
-          data: { ...state.form.data, unitLetter: action.payload.toUpperCase() },
-          validationMessages: { ...state.form.validationMessages, unitLetter: validationMessage },
+          data: { ...state.form.data, markingCriteria: action.payload },
+          validationMessages: { ...state.form.validationMessages, markingCriteria: validationMessage },
         },
       };
     }
@@ -224,9 +252,10 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           data: {
+            unitLetter: action.payload.unitLetter,
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
-            unitLetter: action.payload.unitLetter,
+            markingCriteria: action.payload.markingCriteria ?? '',
             order: action.payload.order.toString(),
             optional: action.payload.optional,
           },
@@ -256,9 +285,10 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           data: {
+            unitLetter: 'A',
             title: '',
             description: '',
-            unitLetter: 'A',
+            markingCriteria: '',
             order: '0',
             optional: false,
           },
@@ -273,42 +303,6 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         form: { ...state.form, processingState: 'save error', errorMessage: action.payload },
       };
-    case 'ASSIGNMENT_TEMPLATE_TITLE_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const maxLength = 191;
-        const newLength = (new TextEncoder().encode(action.payload).length);
-        if (newLength > maxLength) {
-          validationMessage = `Exceeds maximum length of ${maxLength}`;
-        }
-      }
-      return {
-        ...state,
-        newAssignmentTemplateForm: {
-          ...state.newAssignmentTemplateForm,
-          data: { ...state.newAssignmentTemplateForm.data, title: action.payload },
-          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, title: validationMessage },
-        },
-      };
-    }
-    case 'ASSIGNMENT_TEMPLATE_DESCRIPTION_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const maxLength = 65_535;
-        const newLength = (new TextEncoder().encode(action.payload).length);
-        if (newLength > maxLength) {
-          validationMessage = `Exceeds maximum length of ${maxLength}`;
-        }
-      }
-      return {
-        ...state,
-        newAssignmentTemplateForm: {
-          ...state.newAssignmentTemplateForm,
-          data: { ...state.newAssignmentTemplateForm.data, description: action.payload },
-          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, title: validationMessage },
-        },
-      };
-    }
     case 'ASSIGNMENT_TEMPLATE_ASSIGNMENT_NUMBER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
@@ -331,6 +325,60 @@ export const reducer = (state: State, action: Action): State => {
           ...state.newAssignmentTemplateForm,
           data: { ...state.newAssignmentTemplateForm.data, assignmentNumber: action.payload },
           validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, assignmentNumber: validationMessage },
+        },
+      };
+    }
+    case 'ASSIGNMENT_TEMPLATE_TITLE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 191;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        newAssignmentTemplateForm: {
+          ...state.newAssignmentTemplateForm,
+          data: { ...state.newAssignmentTemplateForm.data, title: action.payload },
+          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, title: validationMessage },
+        },
+      };
+    }
+    case 'ASSIGNMENT_TEMPLATE_DESCRIPTION_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        newAssignmentTemplateForm: {
+          ...state.newAssignmentTemplateForm,
+          data: { ...state.newAssignmentTemplateForm.data, description: action.payload },
+          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, description: validationMessage },
+        },
+      };
+    }
+    case 'ASSIGNMENT_TEMPLATE_MARKING_CRITERIA_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        newAssignmentTemplateForm: {
+          ...state.newAssignmentTemplateForm,
+          data: { ...state.newAssignmentTemplateForm.data, markingCriteria: action.payload },
+          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, markingCriteria: validationMessage },
         },
       };
     }
@@ -359,9 +407,10 @@ export const reducer = (state: State, action: Action): State => {
         newAssignmentTemplateForm: {
           ...state.newAssignmentTemplateForm,
           data: {
+            assignmentNumber: (Math.max(...newAssignmentTemplates.map(a => a.assignmentNumber)) + 1).toString(),
             title: '',
             description: '',
-            assignmentNumber: (Math.max(...newAssignmentTemplates.map(a => a.assignmentNumber)) + 1).toString(),
+            markingCriteria: '',
             optional: false,
           },
           validationMessages: {},

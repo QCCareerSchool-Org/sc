@@ -5,6 +5,7 @@ export type NewUnitTemplate = {
   unitLetter: string;
   title: string | null;
   description: string | null;
+  markingCriteria: string | null;
   optional: boolean;
   order: number;
   enabled: boolean;
@@ -19,6 +20,7 @@ export type RawNewUnitTemplate = {
   unitLetter: string;
   title: string | null;
   description: string | null;
+  markingCriteria: string | null;
   optional: boolean;
   order: number;
   enabled: boolean;

@@ -2,6 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Error from 'next/error';
 
 import { NewUnitTemplateEdit } from '@/components/administrators/NewUnitTemplateEdit';
+import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -21,12 +22,17 @@ const NewUnitTemplateEditPage: NextPage<Props> = ({ schoolId, courseId, unitId }
     return <Error statusCode={400} />;
   }
 
-  return <NewUnitTemplateEdit
-    administratorId={authState.administratorId}
-    schoolId={schoolId}
-    courseId={courseId}
-    unitId={unitId}
-  />;
+  return (
+    <>
+      <Meta title="Unit Template View" />
+      <NewUnitTemplateEdit
+        administratorId={authState.administratorId}
+        schoolId={schoolId}
+        courseId={courseId}
+        unitId={unitId}
+      />
+    </>
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/require-await

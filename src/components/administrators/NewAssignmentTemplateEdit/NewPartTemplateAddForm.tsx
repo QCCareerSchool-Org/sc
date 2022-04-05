@@ -18,10 +18,13 @@ type Props = {
   titleChange: ChangeEventHandler<HTMLInputElement>;
   descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   descriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
+  markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   partNumberChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateAddForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, formState, insert$, titleChange, descriptionChange, descriptionTypeChange, partNumberChange }: Props): ReactElement => {
+export const NewPartTemplateAddForm = memo((props: Props): ReactElement => {
+  const { administratorId, schoolId, courseId, unitId, assignmentId, formState, insert$ } = props;
+
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -49,10 +52,11 @@ export const NewPartTemplateAddForm = memo(({ administratorId, schoolId, courseI
       assignmentId,
       processingState: formState.processingState,
       payload: {
-        title: formState.data.title,
-        description: formState.data.description || null,
-        descriptionType: formState.data.descriptionType,
         partNumber: parseInt(formState.data.partNumber, 10),
+        title: formState.data.title,
+        description: formState.data.description.length === 0 ? null : formState.data.descriptionType === 'text' ? formState.data.description : formState.meta.sanitizedHtml,
+        descriptionType: formState.data.descriptionType,
+        markingCriteria: formState.data.markingCriteria || null,
       },
     });
   };
@@ -65,10 +69,11 @@ export const NewPartTemplateAddForm = memo(({ administratorId, schoolId, courseI
           <NewPartTemplateFormElements
             formData={formState.data}
             formValidationMessages={formState.validationMessages}
-            titleChange={titleChange}
-            descriptionChange={descriptionChange}
-            descriptionTypeChange={descriptionTypeChange}
-            partNumberChange={partNumberChange}
+            titleChange={props.titleChange}
+            descriptionChange={props.descriptionChange}
+            descriptionTypeChange={props.descriptionTypeChange}
+            markingCriteriaChange={props.markingCriteriaChange}
+            partNumberChange={props.partNumberChange}
           />
           {/* <div className="formGroup">
               <label htmlFor="newPartTemplateTitle" className="form-label">Title <span className="text-danger">*</span></label>

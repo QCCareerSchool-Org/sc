@@ -6,7 +6,7 @@ type InitializerFunction<State> = (state: State) => State;
 
 type ThunkFunction<State, Action extends Record<string, unknown>> = (dispatch: Dispatch<Action>, getState: () => State) => void;
 
-export const useThunkReducer = <State, Action extends Record<string, unknown>>(reducer: ReducerFunction<State, Action>, initialArg: State, init: InitializerFunction<State> = a => a): [ State, (action: Action | ThunkFunction<State, Action>) => void ] => {
+export const useThunkReducer = <State, Action extends Record<string, unknown>>(reducer: ReducerFunction<State, Action>, initialArg: State, init: InitializerFunction<State> = a => a): [ state: State, dispatch: (action: Action | ThunkFunction<State, Action>) => void ] => {
   const [ hookState, setHookState ] = useState(init(initialArg));
 
   // state management
@@ -31,3 +31,32 @@ export const useThunkReducer = <State, Action extends Record<string, unknown>>(r
 
   return [ hookState, dispatch ];
 };
+
+/**
+type MyState = {
+  x: number;
+};
+
+type MyAction = { type: 'INCREMENT'; payload: number };
+
+const myReducer = (state: MyState, action: MyAction): MyState => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { ...state, x: state.x + 1 };
+  }
+};
+
+const getFoo = (dispatch: Dispatch<MyAction>): void => {
+  void fetch('').then(async response => {
+    return response.json();
+  }).then(body => {
+    dispatch({ type: 'INCREMENT', payload: body.count });
+  });
+};
+
+export const useFoo = (): void => {
+  const [ state, dispatch ] = useThunkReducer(myReducer, { x: 0 });
+  dispatch({ type: 'INCREMENT', payload: 2 });
+  dispatch(getFoo);
+};
+ */

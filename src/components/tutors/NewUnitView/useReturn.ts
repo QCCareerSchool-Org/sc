@@ -13,6 +13,7 @@ export type ReturnPayload = {
   studentId: number;
   courseId: number;
   unitId: string;
+  comment: string;
   processingState: State['processingState'];
 };
 
@@ -28,8 +29,8 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
     return$.current.pipe(
       filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'delete error' || processingState === 'close error' || processingState === 'return error'),
       tap(() => dispatch({ type: 'RETURN_UNIT_STARTED' })),
-      exhaustMap(({ tutorId, studentId, unitId }) => {
-        return newUnitService.returnUnit(tutorId, studentId, unitId).pipe(
+      exhaustMap(({ tutorId, studentId, unitId, comment }) => {
+        return newUnitService.returnUnit(tutorId, studentId, unitId, comment).pipe(
           tap({
             next: newUnit => {
               dispatch({ type: 'RETURN_UNIT_SUCCEEDED', payload: newUnit });

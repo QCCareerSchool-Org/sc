@@ -66,7 +66,7 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
   };
 
   const returnClick: MouseEventHandler<HTMLButtonElement> = () => {
-    return$.next({ tutorId, studentId, courseId, unitId, processingState: state.processingState });
+    return$.next({ tutorId, studentId, courseId, unitId, comment: state.returnForm.message, processingState: state.processingState });
   };
 
   const messageChange: ChangeEventHandler<HTMLTextAreaElement> = e => {

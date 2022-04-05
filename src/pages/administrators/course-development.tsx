@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import Error from 'next/error';
 
 import { CourseDevelopmentOverview } from '@/components/administrators/CourseDevelopmentOverview';
+import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
 const CourseDevelopmentPage: NextPage = () => {
@@ -11,7 +12,12 @@ const CourseDevelopmentPage: NextPage = () => {
     return <Error statusCode={403} />;
   }
 
-  return <CourseDevelopmentOverview administratorId={authState.administratorId} />;
+  return (
+    <>
+      <Meta title="Course Development" />
+      <CourseDevelopmentOverview administratorId={authState.administratorId} />
+    </>
+  );
 };
 
 export default CourseDevelopmentPage;

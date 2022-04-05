@@ -10,6 +10,16 @@
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 
+interface NextHistoryState {
+  url: string;
+  as: string;
+  options: {
+    shallow?: boolean;
+    locale?: string | false;
+    scroll?: boolean;
+  };
+}
+
 export const useWarnIfUnsavedChanges = (notSaved?: boolean, message = 'Changes you made may not be saved.'): void => {
   const router = useRouter();
   const popStateAlreadyChecked = useRef(false);
@@ -17,6 +27,7 @@ export const useWarnIfUnsavedChanges = (notSaved?: boolean, message = 'Changes y
 
   useEffect(() => {
     // make a copy of the history so we can restore the url in beforePopStateCallback
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     lastHistory.current = { ...window.history, state: { ...window.history.state, options: { ...window.history.state.options } } };
 
     if (notSaved) {
@@ -27,9 +38,10 @@ export const useWarnIfUnsavedChanges = (notSaved?: boolean, message = 'Changes y
       };
 
       // back or forward button, manual url change, but not clicking a Next/Link
-      const beforePopStateCallback = (s: any): boolean => {
+      const beforePopStateCallback = (s: NextHistoryState): boolean => {
         if (!confirm(message)) {
           // restore the url (TODO: this messes up the foward button)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
           window.history.pushState(lastHistory.current, '', lastHistory.current?.state.as);
 
           return false;

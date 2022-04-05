@@ -6,6 +6,7 @@ export type NewAssignmentTemplate = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  markingCriteria: string | null;
   optional: boolean;
   created: Date;
   modified: Date | null;
@@ -19,6 +20,7 @@ export type RawNewAssignmentTemplate = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  markingCriteria: string | null;
   optional: boolean;
   /** date string */
   created: string;

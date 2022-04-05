@@ -71,6 +71,10 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
+  const markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'MARKING_CRITERIA_CHANGED', payload: e.target.value });
+  }, []);
+
   const assignmentNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_NUMBER_CHANGED', payload: e.target.value });
   }, []);
@@ -97,6 +101,10 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
 
   const partDescriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_DESCRIPTION_TYPE_CHANGED', payload: e.target.value });
+  }, []);
+
+  const partMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'PART_TEMPLATE_MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
 
   const partPartNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
@@ -152,6 +160,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 delete$={assignmentDelete$}
                 titleChange={titleChange}
                 descriptionChange={descriptionChange}
+                markingCriteriaChange={markingCriteriaChange}
                 assignmentNumberChange={assignmentNumberChange}
                 optionalChange={optionalChange}
               />
@@ -191,6 +200,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
                 titleChange={partTitleChange}
                 descriptionChange={partDescriptionChange}
                 descriptionTypeChange={partDescriptionTypeChange}
+                markingCriteriaChange={partMarkingCriteriaChange}
                 partNumberChange={partPartNumberChange}
               />
             </div>
