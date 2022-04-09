@@ -26,13 +26,11 @@ export const UnitsTable = memo(({ newUnits, newUnitClick }: Props): ReactElement
               {newUnits.map(u => (
                 <tr key={u.unitId} onClick={e => newUnitClick(e, u.unitId)}>
                   <td>{u.unitLetter}</td>
-                  {u.marked
-                    ? <td>Marked {formatDate(u.marked)}</td>
-                    : u.skipped
-                      ? <td>Skipped {formatDate(u.skipped)}</td>
-                      : u.submitted
-                        ? <td>Submitted {formatDate(u.submitted)}</td>
-                        : <td>In Progress</td>
+                  {u.closed
+                    ? <td>Marked {formatDate(u.closed)}</td>
+                    : u.submitted
+                      ? <td>{u.skipped ? 'Skipped' : 'Submitted'} {formatDate(u.submitted)}</td>
+                      : <td>In Progress</td>
                   }
                 </tr>
               ))}

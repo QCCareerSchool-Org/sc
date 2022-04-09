@@ -11,9 +11,9 @@ export type NewUnit = {
   order: number;
   adminComment: string | null;
   submitted: Date | null;
-  skipped: Date | null;
   transferred: Date | null;
-  marked: Date | null;
+  closed: Date | null;
+  skipped: boolean;
   responseFilename: string | null;
   responseFilesize: number | null;
   responseMimeTypeId: string | null;
@@ -38,9 +38,9 @@ export type RawNewUnit = {
   order: number;
   adminComment: string | null;
   submitted: string | null;
-  skipped: string | null;
   transferred: string | null;
-  marked: string | null;
+  closed: string | null;
+  skipped: boolean;
   responseFilename: string | null;
   responseFilesize: number | null;
   responseMimeTypeId: string | null;

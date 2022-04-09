@@ -5,7 +5,9 @@ export default class QCDocument extends Document {
     return (
       <Html>
         <Head>
-          <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,700,300italic,400italic,500italic,700italic|Material+Icons&display=swap" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:300,400,500,700,300italic,400italic,500italic,700italic|Material+Icons&display=swap" />
         </Head>
         <body>
           <Main />

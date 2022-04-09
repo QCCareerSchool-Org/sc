@@ -15,15 +15,17 @@ export const NewUnitInfoTable = memo(({ newUnit }: Props): ReactElement => {
     <table className="table table-bordered bg-white w-auto">
       <tbody>
         <tr><th scope="row">Started</th><td>{formatDate(newUnit.created)}</td></tr>
-        {newUnit.skipped
-          ? <tr><th scope="row">Skipped</th><td>{formatDate(newUnit.skipped)}</td></tr>
-          : (
-            <>
-              <tr><th scope="row">Submitted</th><td>{newUnit.submitted ? formatDate(newUnit.submitted) : '---'}</td></tr>
-              <tr><th scope="row">Marked</th><td>{newUnit.marked ? formatDate(newUnit.marked) : '---'}</td></tr>
-              {newUnit.marked && <tr><th scope="row">Grade</th><td>{grade}</td></tr>}
-            </>
-          )
+        {newUnit.submitted
+          ? newUnit.skipped
+            ? <tr><th scope="row">Skipped</th><td>{formatDate(newUnit.submitted)}</td></tr>
+            : (
+              <>
+                <tr><th scope="row">Submitted</th><td>{formatDate(newUnit.submitted)}</td></tr>
+                <tr><th scope="row">Marked</th><td>{newUnit.closed ? formatDate(newUnit.closed) : '---'}</td></tr>
+                {newUnit.closed && <tr><th scope="row">Grade</th><td>{grade}</td></tr>}
+              </>
+            )
+          : <tr><th scope="row">Submitted</th><td>---</td></tr>
         }
       </tbody>
     </table>

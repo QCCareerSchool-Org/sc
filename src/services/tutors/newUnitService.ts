@@ -88,9 +88,8 @@ export class NewUnitService implements INewUnitService {
     return {
       ...newUnit,
       submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
-      skipped: newUnit.skipped === null ? null : new Date(newUnit.skipped),
       transferred: newUnit.transferred === null ? null : new Date(newUnit.transferred),
-      marked: newUnit.marked === null ? null : new Date(newUnit.marked),
+      closed: newUnit.closed === null ? null : new Date(newUnit.closed),
       created: new Date(newUnit.created),
       modified: newUnit.modified === null ? null : new Date(newUnit.modified),
     };
@@ -100,9 +99,8 @@ export class NewUnitService implements INewUnitService {
     return {
       ...newUnit,
       submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
-      skipped: newUnit.skipped === null ? null : new Date(newUnit.skipped),
       transferred: newUnit.transferred === null ? null : new Date(newUnit.transferred),
-      marked: newUnit.marked === null ? null : new Date(newUnit.marked),
+      closed: newUnit.closed === null ? null : new Date(newUnit.closed),
       created: new Date(newUnit.created),
       modified: newUnit.modified === null ? null : new Date(newUnit.modified),
       enrollment: {

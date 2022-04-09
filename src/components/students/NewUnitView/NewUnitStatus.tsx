@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const NewUnitStatus = memo(({ studentId, courseId, newUnit }: Props): ReactElement | null => {
-  if (newUnit.marked) {
+  if (newUnit.closed) {
     const responseSrc = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${newUnit.unitId}/response`;
     return (
       <div className="alert alert-success">
@@ -23,16 +23,16 @@ export const NewUnitStatus = memo(({ studentId, courseId, newUnit }: Props): Rea
     );
   }
 
-  if (newUnit.skipped) {
-    return (
-      <div className="alert alert-info">
-        <h5>Unit Skipped</h5>
-        <p className="fw-bold mb-0">This unit has been skipped. You won't receive a grade for this unit.</p>
-      </div>
-    );
-  }
-
   if (newUnit.submitted) {
+    if (newUnit.skipped) {
+      return (
+        <div className="alert alert-info">
+          <h5>Unit Skipped</h5>
+          <p className="fw-bold mb-0">This unit has been skipped. You won't receive a grade for this unit.</p>
+        </div>
+      );
+    }
+
     return (
       <div className="alert alert-success">
         <h5>Unit Submitted</h5>

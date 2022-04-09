@@ -69,9 +69,8 @@ export class EnrollmentService implements IEnrollmentService {
       newUnits: enrollment.newUnits.map(u => ({
         ...u,
         submitted: u.submitted === null ? null : new Date(u.submitted),
-        skipped: u.skipped === null ? null : new Date(u.skipped),
         transferred: u.transferred === null ? null : new Date(u.transferred),
-        marked: u.marked === null ? null : new Date(u.marked),
+        closed: u.closed === null ? null : new Date(u.closed),
         created: new Date(u.created),
         modified: u.modified === null ? null : new Date(u.modified),
       })),

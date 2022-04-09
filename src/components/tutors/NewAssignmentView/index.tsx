@@ -3,9 +3,10 @@ import type { ReactElement } from 'react';
 import { useReducer } from 'react';
 
 import { InaccessibleUnit } from '../InaccessibleUnit';
+import { Part } from './Part';
 import { initialState, reducer } from './state';
-import { useFoo } from './useFoo';
 import { useInitialData } from './useInitialData';
+import { useMarkSave } from './useMarkSave';
 import { Section } from '@/components/Section';
 
 type Props = {
@@ -21,7 +22,7 @@ export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assign
 
   useInitialData(tutorId, studentId, courseId, unitId, assignmentId, dispatch);
 
-  const foo$ = useFoo(tutorId, studentId, courseId, unitId, assignmentId, dispatch);
+  const markSave$ = useMarkSave(dispatch);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -40,13 +41,30 @@ export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assign
   }
 
   return (
-    <Section>
-      <div className="container">
-        <h1>Assignment View</h1>
-        <pre>
-          {JSON.stringify(state.newAssignment, undefined, ' ')}
-        </pre>
-      </div>
-    </Section>
+    <>
+      <Section>
+        <div className="container assignmentContainer">
+          <h1>Assignment {state.newAssignment.assignmentNumber}{state.newAssignment.title && <>: {state.newAssignment.title}</>}</h1>
+          {state.newAssignment.description?.split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+          {state.newAssignment.markingCriteria && (
+            <div className="alert alert-secondary">
+              <h3 className="h6">Assignment Marking Criteria</h3>
+              {state.newAssignment.markingCriteria.replace(/\r\n/gu, '\n').split('\n\n').map((m, i) => <p key={i}>{m}</p>)}
+            </div>
+          )}
+        </div>
+      </Section>
+      {state.newAssignment.newParts.map(n => (
+        <Section key={n.partId}>
+          <div className="container">
+            <Part tutorId={tutorId} newPart={n} markSave$={markSave$} />
+          </div>
+        </Section>
+      ))}
+      <style jsx>{`
+      .alert p:last-of-type { margin-bottom: 0; }
+      .assignmentContainer *:last-child { margin-bottom: 0; }
+      `}</style>
+    </>
   );
 };

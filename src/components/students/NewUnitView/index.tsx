@@ -108,7 +108,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
     return null;
   }
 
-  const showAssignments = (!!state.newUnit.marked || !(!!state.newUnit.skipped || !!state.newUnit.submitted));
+  const showAssignments = (!!state.newUnit.closed || !state.newUnit.submitted);
 
   return (
     <>
@@ -125,7 +125,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
         </div>
       </Section>
       {showAssignments && <AssignmentSection unit={state.newUnit} />}
-      {!state.newUnit.submitted && !state.newUnit.skipped && (
+      {!state.newUnit.submitted && (
         <>
           <SubmitSection
             submit$={submit$.current}

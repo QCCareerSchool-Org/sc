@@ -53,7 +53,6 @@ export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<MediumInser
                 }
               }
               dispatch({ type: 'ADD_PART_MEDIUM_FAILED', payload: message });
-              console.log(err);
             },
           }),
           catchError(() => EMPTY),

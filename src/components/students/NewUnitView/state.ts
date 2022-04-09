@@ -38,7 +38,7 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newUnit: { ...state.newUnit, submitted: new Date() },
+        newUnit: { ...state.newUnit, submitted: new Date(), skipped: false },
         processingState: 'idle',
       };
     case 'SUBMIT_FAILED':
@@ -51,7 +51,7 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newUnit: { ...state.newUnit, skipped: new Date() },
+        newUnit: { ...state.newUnit, submitted: new Date(), skipped: true },
         processingState: 'idle',
       };
     case 'SKIP_FAILED':

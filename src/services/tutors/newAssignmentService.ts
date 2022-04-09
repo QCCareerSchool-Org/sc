@@ -38,6 +38,8 @@ type RawNewAssignmentWithUnitAndChildren = RawNewAssignment & {
 
 export interface INewAssignmentService {
   getAssignment: (tutorId: number, studentId: number, unitId: string, assignmentId: string) => Observable<NewAssignmentWithUnitAndChildren>;
+  saveTextBoxMark: (tutorId: number, textBoxId: string, mark: number | null) => Observable<NewTextBox>;
+  saveUploadSlotMark: (tutorId: number, uploadSlotId: string, mark: number | null) => Observable<NewUploadSlot>;
 }
 
 export class NewAssignmentService implements INewAssignmentService {
@@ -48,6 +50,28 @@ export class NewAssignmentService implements INewAssignmentService {
     const url = `${this.getUrl(tutorId, studentId, unitId)}/${assignmentId}`;
     return this.httpService.get<RawNewAssignmentWithUnitAndChildren>(url).pipe(
       map(this.mapNewAssignmentWithUnitAndChildren),
+    );
+  }
+
+  public saveTextBoxMark(tutorId: number, textBoxId: string, mark: number | null): Observable<NewTextBox> {
+    const url = `${endpoint}/tutors/${tutorId}/newTextBoxes/${textBoxId}/mark`;
+    return this.httpService.put<RawNewTextBox>(url, { mark }).pipe(
+      map(raw => ({
+        ...raw,
+        created: new Date(raw.created),
+        modified: raw.modified === null ? null : new Date(raw.modified),
+      })),
+    );
+  }
+
+  public saveUploadSlotMark(tutorId: number, uploadSlotId: string, mark: number | null): Observable<NewUploadSlot> {
+    const url = `${endpoint}/tutors/${tutorId}/newUploadSlots/${uploadSlotId}/mark`;
+    return this.httpService.put<RawNewUploadSlot>(url, { mark }).pipe(
+      map(raw => ({
+        ...raw,
+        created: new Date(raw.created),
+        modified: raw.modified === null ? null : new Date(raw.modified),
+      })),
     );
   }
 
@@ -63,9 +87,8 @@ export class NewAssignmentService implements INewAssignmentService {
       newUnit: {
         ...newAssignment.newUnit,
         submitted: newAssignment.newUnit.submitted === null ? null : new Date(newAssignment.newUnit.submitted),
-        skipped: newAssignment.newUnit.skipped === null ? null : new Date(newAssignment.newUnit.skipped),
         transferred: newAssignment.newUnit.transferred === null ? null : new Date(newAssignment.newUnit.transferred),
-        marked: newAssignment.newUnit.marked === null ? null : new Date(newAssignment.newUnit.marked),
+        closed: newAssignment.newUnit.closed === null ? null : new Date(newAssignment.newUnit.closed),
         created: new Date(newAssignment.newUnit.created),
         modified: newAssignment.newUnit.modified === null ? null : new Date(newAssignment.newUnit.modified),
         enrollment: {
