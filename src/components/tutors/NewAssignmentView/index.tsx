@@ -1,12 +1,13 @@
 import NextError from 'next/error';
 import type { ReactElement } from 'react';
-import { useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 
 import { InaccessibleUnit } from '../InaccessibleUnit';
 import { Part } from './Part';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
-import { useMarkSave } from './useMarkSave';
+import { useInputSave } from './useInputSave';
+import type { InputType } from './useInputSave';
 import { Section } from '@/components/Section';
 
 type Props = {
@@ -22,7 +23,11 @@ export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assign
 
   useInitialData(tutorId, studentId, courseId, unitId, assignmentId, dispatch);
 
-  const markSave$ = useMarkSave(dispatch);
+  const inputSave$ = useInputSave(dispatch);
+
+  const saveInput = useCallback((inputType: InputType, partId: string, id: string, mark: number | null, notes: string | null): void => {
+    inputSave$.next({ inputType, tutorId, partId, id, mark, notes });
+  }, [ inputSave$, tutorId ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -57,7 +62,7 @@ export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assign
       {state.newAssignment.newParts.map(n => (
         <Section key={n.partId}>
           <div className="container">
-            <Part tutorId={tutorId} newPart={n} markSave$={markSave$} />
+            <Part tutorId={tutorId} newPart={n} saveInput={saveInput} />
           </div>
         </Section>
       ))}

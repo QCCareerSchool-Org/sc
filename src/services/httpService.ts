@@ -27,6 +27,7 @@ export interface IHttpService {
   postFile: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<ProgressResponse<T>>;
   put: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
   putFile: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<ProgressResponse<T>>;
+  patch: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
   delete: <T = unknown>(url: string, config?: Config) => Observable<T>;
   download: (url: string, config?: Config) => Observable<void>;
 }
@@ -104,6 +105,13 @@ export class AxiosHttpService implements IHttpService {
 
   public delete<T>(url: string, config?: Config): Observable<T> {
     return this.instance.delete<T>(url, config).pipe(
+      map((response, index) => this.handleResponse(response, index)),
+      catchError((err, caught) => this.handleError(err, caught)),
+    );
+  }
+
+  public patch<T>(url: string, body: unknown, config?: Config): Observable<T> {
+    return this.instance.patch<T>(url, body, config).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );

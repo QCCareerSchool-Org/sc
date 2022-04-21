@@ -8,18 +8,33 @@ import type { NewUnit } from '@/domain/newUnit';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignmentWithUnitAndChildren } from '@/services/tutors/newAssignmentService';
 
-export type ProcessingState = 'idle' | 'saving' | 'save error';
+/**
+ * For keeping track of the form state
+ *
+ * Form values and validation messages are stored lower down in the tree,
+ * inside child components
+ */
+export type InputForm = {
+  state: 'idle' | 'saving' | 'save error';
+  errorMessage?: string;
+};
+
+export type WithInputForm<Input> = Input & {
+  form: InputForm;
+};
+
+export type PartWithForms = NewPart & {
+  newTextBoxes: WithInputForm<NewTextBox>[];
+  newUploadSlots: WithInputForm<NewUploadSlot>[];
+  newPartMedia: NewPartMedium[];
+};
 
 export type State = {
   newAssignment?: NewAssignment & {
     newUnit: Omit<NewUnit, 'complete' | 'points' | 'mark'> & {
       enrollment: Enrollment;
     };
-    newParts: Array<NewPart & {
-      newTextBoxes: Array<NewTextBox & { state: ProcessingState; errorMessage?: string }>;
-      newUploadSlots: Array<NewUploadSlot & { state: ProcessingState; errorMessage?: string }>;
-      newPartMedia: NewPartMedium[];
-    }>;
+    newParts: PartWithForms[];
     newAssignmentMedia: NewAssignmentMedium[];
   };
   error: boolean;
@@ -30,10 +45,10 @@ export type Action =
   | { type: 'LOAD_ASSIGNMENT_SUCCEEDED'; payload: NewAssignmentWithUnitAndChildren }
   | { type: 'LOAD_ASSIGNMENT_FAILED'; payload?: number }
   | { type: 'SAVE_TEXT_BOX_STARTED'; payload: { partId: string; textBoxId: string } }
-  | { type: 'SAVE_TEXT_BOX_SUCCEEDED'; payload: { partId: string; textBoxId: string; mark: number | null } }
+  | { type: 'SAVE_TEXT_BOX_SUCCEEDED'; payload: { partId: string; textBoxId: string; mark: number | null; notes: string | null } }
   | { type: 'SAVE_TEXT_BOX_FAILED'; payload: { partId: string; textBoxId: string; message?: string } }
   | { type: 'SAVE_UPLOAD_SLOT_STARTED'; payload: { partId: string; uploadSlotId: string } }
-  | { type: 'SAVE_UPLOAD_SLOT_SUCCEEDED'; payload: { partId: string; uploadSlotId: string; mark: number | null } }
+  | { type: 'SAVE_UPLOAD_SLOT_SUCCEEDED'; payload: { partId: string; uploadSlotId: string; mark: number | null; notes: string | null } }
   | { type: 'SAVE_UPLOAD_SLOT_FAILED'; payload: { partId: string; uploadSlotId: string; message?: string } };
 
 export const initialState: State = {
@@ -49,8 +64,14 @@ export const reducer = (state: State, action: Action): State => {
           ...action.payload,
           newParts: action.payload.newParts.filter(p => p.complete).map(p => ({
             ...p,
-            newTextBoxes: p.newTextBoxes.filter(t => t.complete).map(t => ({ ...t, state: 'idle' })),
-            newUploadSlots: p.newUploadSlots.filter(u => u.complete).map(u => ({ ...u, state: 'idle' })),
+            newTextBoxes: p.newTextBoxes.filter(t => t.complete).map(t => ({
+              ...t,
+              form: { state: 'idle' },
+            })),
+            newUploadSlots: p.newUploadSlots.filter(u => u.complete).map(u => ({
+              ...u,
+              form: { state: 'idle' },
+            })),
           })),
         },
         error: false,
@@ -78,36 +99,62 @@ export const reducer = (state: State, action: Action): State => {
                 if (t.textBoxId !== action.payload.textBoxId) {
                   return t;
                 }
-                return { ...t, state: 'saving', errorMessage: undefined };
+                return { ...t, form: { ...t.form, state: 'saving', errorMessage: undefined } };
               }),
             };
           }),
         },
       };
-    case 'SAVE_TEXT_BOX_SUCCEEDED':
+    case 'SAVE_TEXT_BOX_SUCCEEDED': {
       if (typeof state.newAssignment === 'undefined') {
         throw Error('newAssignment is undefined');
       }
+      let assignmentMarked = true;
+      let assignmentMark = 0;
       return {
         ...state,
         newAssignment: {
           ...state.newAssignment,
           newParts: state.newAssignment.newParts.map(p => {
             if (p.partId !== action.payload.partId) {
+              if (p.mark === null) {
+                assignmentMarked = false;
+              }
+              assignmentMark += p.mark ?? 0;
               return p;
             }
-            return {
+            let partMarked = true;
+            let partMark = 0;
+            const part: PartWithForms = {
               ...p,
               newTextBoxes: p.newTextBoxes.map(t => {
                 if (t.textBoxId !== action.payload.textBoxId) {
+                  if (t.mark === null && t.points > 0) {
+                    partMarked = false;
+                  }
+                  partMark += t.mark ?? 0;
                   return t;
                 }
-                return { ...t, mark: action.payload.mark, state: 'idle' };
+                if (action.payload.mark === null && t.points > 0) {
+                  partMarked = false;
+                }
+                partMark += action.payload.mark ?? 0;
+                return {
+                  ...t,
+                  mark: action.payload.mark,
+                  notes: action.payload.notes,
+                  form: { ...t.form, state: 'idle' },
+                };
               }),
+              mark: partMarked ? partMark : null,
             };
+            assignmentMark += partMark;
+            return part;
           }),
+          mark: assignmentMarked ? assignmentMark : null,
         },
       };
+    }
     case 'SAVE_TEXT_BOX_FAILED':
       if (typeof state.newAssignment === 'undefined') {
         throw Error('newAssignment is undefined');
@@ -126,7 +173,10 @@ export const reducer = (state: State, action: Action): State => {
                 if (t.textBoxId !== action.payload.textBoxId) {
                   return t;
                 }
-                return { ...t, state: 'save error', errorMessage: action.payload.message };
+                return {
+                  ...t,
+                  form: { ...t.form, state: 'save error', errorMessage: action.payload.message },
+                };
               }),
             };
           }),
@@ -150,7 +200,10 @@ export const reducer = (state: State, action: Action): State => {
                 if (u.uploadSlotId !== action.payload.uploadSlotId) {
                   return u;
                 }
-                return { ...u, state: 'saving', errorMessage: undefined };
+                return {
+                  ...u,
+                  form: { ...u.form, state: 'saving', errorMessage: undefined },
+                };
               }),
             };
           }),
@@ -174,7 +227,12 @@ export const reducer = (state: State, action: Action): State => {
                 if (u.uploadSlotId !== action.payload.uploadSlotId) {
                   return u;
                 }
-                return { ...u, mark: action.payload.mark, state: 'idle' };
+                return {
+                  ...u,
+                  mark: action.payload.mark,
+                  notes: action.payload.notes,
+                  form: { ...u.form, state: 'idle' },
+                };
               }),
             };
           }),
@@ -198,7 +256,10 @@ export const reducer = (state: State, action: Action): State => {
                 if (u.uploadSlotId !== action.payload.uploadSlotId) {
                   return u;
                 }
-                return { ...u, state: 'save error', errorMessage: action.payload.message };
+                return {
+                  ...u,
+                  form: { ...u.form, state: 'save error', errorMessage: action.payload.message },
+                };
               }),
             };
           }),

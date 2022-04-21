@@ -38,8 +38,8 @@ type RawNewAssignmentWithUnitAndChildren = RawNewAssignment & {
 
 export interface INewAssignmentService {
   getAssignment: (tutorId: number, studentId: number, unitId: string, assignmentId: string) => Observable<NewAssignmentWithUnitAndChildren>;
-  saveTextBoxMark: (tutorId: number, textBoxId: string, mark: number | null) => Observable<NewTextBox>;
-  saveUploadSlotMark: (tutorId: number, uploadSlotId: string, mark: number | null) => Observable<NewUploadSlot>;
+  saveTextBox: (tutorId: number, textBoxId: string, mark: number | null, notes: string | null) => Observable<NewTextBox>;
+  saveUploadSlot: (tutorId: number, uploadSlotId: string, mark: number | null, notes: string | null) => Observable<NewUploadSlot>;
 }
 
 export class NewAssignmentService implements INewAssignmentService {
@@ -53,9 +53,9 @@ export class NewAssignmentService implements INewAssignmentService {
     );
   }
 
-  public saveTextBoxMark(tutorId: number, textBoxId: string, mark: number | null): Observable<NewTextBox> {
-    const url = `${endpoint}/tutors/${tutorId}/newTextBoxes/${textBoxId}/mark`;
-    return this.httpService.put<RawNewTextBox>(url, { mark }).pipe(
+  public saveTextBox(tutorId: number, textBoxId: string, mark: number | null, notes: string | null): Observable<NewTextBox> {
+    const url = `${endpoint}/tutors/${tutorId}/newTextBoxes/${textBoxId}`;
+    return this.httpService.patch<RawNewTextBox>(url, { mark, notes }).pipe(
       map(raw => ({
         ...raw,
         created: new Date(raw.created),
@@ -64,9 +64,9 @@ export class NewAssignmentService implements INewAssignmentService {
     );
   }
 
-  public saveUploadSlotMark(tutorId: number, uploadSlotId: string, mark: number | null): Observable<NewUploadSlot> {
-    const url = `${endpoint}/tutors/${tutorId}/newUploadSlots/${uploadSlotId}/mark`;
-    return this.httpService.put<RawNewUploadSlot>(url, { mark }).pipe(
+  public saveUploadSlot(tutorId: number, uploadSlotId: string, mark: number | null, notes: string | null): Observable<NewUploadSlot> {
+    const url = `${endpoint}/tutors/${tutorId}/newUploadSlots/${uploadSlotId}`;
+    return this.httpService.patch<RawNewUploadSlot>(url, { mark, notes }).pipe(
       map(raw => ({
         ...raw,
         created: new Date(raw.created),

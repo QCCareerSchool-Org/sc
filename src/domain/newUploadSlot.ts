@@ -7,6 +7,7 @@ export type NewUploadSlot = {
   allowedTypes: string[];
   points: number;
   mark: number | null;
+  notes: string | null;
   optional: boolean;
   order: number;
   filename: string | null;
@@ -26,6 +27,7 @@ export type RawNewUploadSlot = {
   allowedTypes: string[];
   points: number;
   mark: number | null;
+  notes: string | null;
   optional: boolean;
   order: number;
   filename: string | null;

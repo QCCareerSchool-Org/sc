@@ -8,35 +8,38 @@ import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
+export type InputType = 'text box' | 'upload slot';
+
 export type MarkSavePayload = {
-  type: 'textBox' | 'uploadSlot';
+  inputType: InputType;
   tutorId: number;
   partId: string;
   id: string;
   mark: number | null;
+  notes: string | null;
 };
 
-export const useMarkSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayload> => {
+export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayload> => {
   const router = useRouter();
   const { newAssignmentService } = useTutorServices();
 
-  const markSave$ = useRef(new Subject<MarkSavePayload>());
+  const save$ = useRef(new Subject<MarkSavePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    markSave$.current.pipe(
-      tap(({ type, partId, id }) => {
-        if (type === 'textBox') {
+    save$.current.pipe(
+      tap(({ inputType, partId, id }) => {
+        if (inputType === 'text box') {
           dispatch({ type: 'SAVE_TEXT_BOX_STARTED', payload: { partId, textBoxId: id } });
         } else {
           dispatch({ type: 'SAVE_UPLOAD_SLOT_STARTED', payload: { partId, uploadSlotId: id } });
         }
       }),
       concatMap(payload => {
-        const { type, tutorId, partId, id, mark } = payload;
-        if (type === 'textBox') {
-          return newAssignmentService.saveTextBoxMark(tutorId, id, mark).pipe(
+        const { inputType, tutorId, partId, id, mark, notes } = payload;
+        if (inputType === 'text box') {
+          return newAssignmentService.saveTextBox(tutorId, id, mark, notes).pipe(
             tap({
               next: newTextBox => dispatch({ type: 'SAVE_TEXT_BOX_SUCCEEDED', payload: newTextBox }),
               error: err => {
@@ -55,7 +58,7 @@ export const useMarkSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayload
             catchError(() => EMPTY),
           );
         }
-        return newAssignmentService.saveUploadSlotMark(tutorId, id, mark).pipe(
+        return newAssignmentService.saveUploadSlot(tutorId, id, mark, notes).pipe(
           tap({
             next: newUploadSlot => dispatch({ type: 'SAVE_UPLOAD_SLOT_SUCCEEDED', payload: newUploadSlot }),
             error: err => {
@@ -80,5 +83,5 @@ export const useMarkSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayload
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, router, newAssignmentService ]);
 
-  return markSave$.current;
+  return save$.current;
 };
