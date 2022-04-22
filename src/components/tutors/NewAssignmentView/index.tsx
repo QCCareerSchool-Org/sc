@@ -3,12 +3,14 @@ import type { ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { InaccessibleUnit } from '../InaccessibleUnit';
+import { Medium } from './Medium';
 import { Part } from './Part';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useInputSave } from './useInputSave';
 import type { InputType } from './useInputSave';
 import { Section } from '@/components/Section';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   tutorId: number;
@@ -51,6 +53,15 @@ export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assign
         <div className="container assignmentContainer">
           <h1>Assignment {state.newAssignment.assignmentNumber}{state.newAssignment.title && <>: {state.newAssignment.title}</>}</h1>
           {state.newAssignment.description?.split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+          {state.newAssignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => {
+            const src = `${endpoint}/tutors/${tutorId}/newAssignmentMedia/${m.assignmentMediumId}/file`;
+            return (
+              <figure key={m.assignmentMediumId} className={`figure ${m.type}Figure d-block`}>
+                <Medium className="figure-img mb-0 mw-100" medium={m} src={src} />
+                <figcaption className="figure-caption">{m.caption}</figcaption>
+              </figure>
+            );
+          })}
           {state.newAssignment.markingCriteria && (
             <div className="alert alert-secondary">
               <h3 className="h6">Assignment Marking Criteria</h3>

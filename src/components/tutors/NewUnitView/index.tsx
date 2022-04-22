@@ -132,14 +132,14 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
       <Section>
         <div className="container">
           <h2 className="h3">Close Unit</h2>
-          {!state.newUnit.marked
+          {!state.newUnit.mark === null
             ? <p className="lead">This unit is not yet marked.</p>
             : state.newUnit.responseFilename === null
               ? <p className="lead">No feedback has been provided</p>
               : <p className="lead">You can now close this unit.</p>
           }
           <div className="d-flex align-items-center">
-            <button onClick={closeClick} className="btn btn-primary" style={{ width: 80 }} disabled={!state.newUnit.marked || state.newUnit.responseFilename === null || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
+            <button onClick={closeClick} className="btn btn-primary" style={{ width: 80 }} disabled={!state.newUnit.mark === null || state.newUnit.responseFilename === null || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
               {state.processingState === 'closing' ? <Spinner size="sm" /> : 'Close'}
             </button>
             {state.processingState === 'close error' && <span className="text-danger ms-2">{state.errorMessage ?? 'error'}</span>}

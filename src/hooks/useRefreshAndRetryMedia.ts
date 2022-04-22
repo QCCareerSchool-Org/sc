@@ -8,7 +8,7 @@ import { useServices } from '@/hooks/useServices';
 import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
-export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | HTMLVideoElement>): Subject<void> => {
+export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | HTMLVideoElement | HTMLImageElement>): Subject<void> => {
   const { loginService } = useServices();
   const authDispatch = useAuthDispatch();
   const router = useRouter();
@@ -31,8 +31,10 @@ export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | H
             if (mediaRef.current) {
               // eslint-disable-next-line no-self-assign
               mediaRef.current.src = mediaRef.current.src;
-              mediaRef.current.load();
-              void mediaRef.current?.play();
+              if ('load' in mediaRef.current) {
+                mediaRef.current.load();
+                void mediaRef.current?.play();
+              }
             }
           },
           error: err => {
