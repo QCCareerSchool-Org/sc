@@ -1,4 +1,3 @@
-import { json } from 'stream/consumers';
 import NextError from 'next/error';
 import type { MouseEvent, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
