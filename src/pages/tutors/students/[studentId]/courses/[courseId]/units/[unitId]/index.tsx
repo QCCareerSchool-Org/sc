@@ -25,7 +25,7 @@ const NewUnitViewPage: NextPage<Props> = ({ studentId, courseId, unitId }: Props
   return (
     <>
       <Meta title="Unit View" />
-      <NewUnitView tutorId={authState.tutorId} studentId={studentId} courseId={courseId} unitId={unitId} />;
+      <NewUnitView tutorId={authState.tutorId} studentId={studentId} courseId={courseId} unitId={unitId} />
     </>
   );
 };

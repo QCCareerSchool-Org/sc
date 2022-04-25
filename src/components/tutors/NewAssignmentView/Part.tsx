@@ -26,7 +26,7 @@ export const Part = memo(({ tutorId, newPart, saveInput }: Props): ReactElement 
 
   return (
     <>
-      <h2 className="h3"><span className="text-danger">{newPart.partNumber}.</span> {newPart.title}</h2>
+      <h2 className="h3" id={newPart.partId}><span className="text-danger">{newPart.partNumber}.</span> {newPart.title}</h2>
       {newPart.description && (
         <>
           {newPart.descriptionType === 'text' && newPart.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}

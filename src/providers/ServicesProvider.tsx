@@ -1,6 +1,8 @@
 import type { ReactElement, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
+import type { IGradeService } from '@/services/gradeService';
+import { GradeService } from '@/services/gradeService';
 import type { IHttpService } from '@/services/httpService';
 import { AxiosHttpService } from '@/services/httpService';
 import type { ILoginService } from '@/services/loginService';
@@ -13,6 +15,7 @@ export type Services = {
   httpService: IHttpService;
   loginService: ILoginService;
   uuidService: IUUIDService;
+  gradeService: IGradeService;
 };
 
 export const ServicesContext = createContext<Services | undefined>(undefined);
@@ -28,6 +31,7 @@ export const ServicesProvider = ({ children }: Props): ReactElement => {
     httpService: axiosHttpService,
     loginService: new LoginService(axiosHttpService),
     uuidService: new UUIDService(),
+    gradeService: new GradeService(),
   });
 
   return (

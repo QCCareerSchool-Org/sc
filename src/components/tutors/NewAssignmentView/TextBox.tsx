@@ -14,7 +14,7 @@ const padding = 14;
 export const TextBox = ({ newTextBox }: Props): ReactElement => {
   const minHeight = (lineHeight * (newTextBox.lines ?? 4)) + padding;
   return (
-    <div className="row">
+    <div className="row" id={newTextBox.textBoxId}>
       {newTextBox.description && <label className="form-label">{newTextBox.description}</label>}
       <div className="col-12 col-lg-8 textBoxColumn">
         <div className="form-control" style={{ minHeight }}>{newTextBox.text.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => {

@@ -3,7 +3,6 @@ import { memo, useEffect, useRef, useState } from 'react';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 
 import type { InputForm } from './state';
-import { Spinner } from '@/components/Spinner';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 
 type Props = {

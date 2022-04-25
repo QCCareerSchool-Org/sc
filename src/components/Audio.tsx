@@ -1,5 +1,5 @@
 import type { ReactElement, ReactEventHandler } from 'react';
-import { memo, useRef, useState } from 'react';
+import { memo, useRef } from 'react';
 
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
 

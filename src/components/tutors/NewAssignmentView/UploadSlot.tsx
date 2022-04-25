@@ -14,12 +14,11 @@ type Props = {
 export const UploadSlot = ({ tutorId, newUploadSlot }: Props): ReactElement => {
   // const id = useId(); // React 18
   const id = useRef('x' + Math.random().toString(32).slice(2)).current;
-  console.log(id);
 
   const src = `${endpoint}/tutors/${tutorId}/newUploadSlots/${newUploadSlot.uploadSlotId}/file`;
 
   return (
-    <div className="row">
+    <div className="row" id={newUploadSlot.uploadSlotId}>
       <label className="form-label">{newUploadSlot.label}:</label>
       <div className="col-12 col-lg-8 uploadSlotColumn">
         {newUploadSlot.mimeTypeId?.startsWith('image/')

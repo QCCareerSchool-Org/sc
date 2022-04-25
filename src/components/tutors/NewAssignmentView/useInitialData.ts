@@ -20,7 +20,6 @@ export const useInitialData = (tutorId: number, studentId: number, courseId: num
     ).subscribe({
       next: newAssignment => {
         dispatch({ type: 'LOAD_ASSIGNMENT_SUCCEEDED', payload: newAssignment });
-        console.log('here');
       },
       error: err => {
         let errorCode: number | undefined;

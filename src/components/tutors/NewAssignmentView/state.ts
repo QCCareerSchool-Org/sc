@@ -123,7 +123,7 @@ export const reducer = (state: State, action: Action): State => {
               assignmentMark += p.mark ?? 0;
               return p;
             }
-            let partMarked = true;
+            let partMarked = p.newUploadSlots.every(u => u.mark !== null);
             let partMark = 0;
             const part: PartWithForms = {
               ...p,
@@ -148,6 +148,9 @@ export const reducer = (state: State, action: Action): State => {
               }),
               mark: partMarked ? partMark : null,
             };
+            if (!partMarked) {
+              assignmentMarked = false;
+            }
             assignmentMark += partMark;
             return part;
           }),
@@ -209,24 +212,40 @@ export const reducer = (state: State, action: Action): State => {
           }),
         },
       };
-    case 'SAVE_UPLOAD_SLOT_SUCCEEDED':
+    case 'SAVE_UPLOAD_SLOT_SUCCEEDED': {
       if (typeof state.newAssignment === 'undefined') {
         throw Error('newAssignment is undefined');
       }
+      let assignmentMarked = true;
+      let assignmentMark = 0;
       return {
         ...state,
         newAssignment: {
           ...state.newAssignment,
           newParts: state.newAssignment.newParts.map(p => {
             if (p.partId !== action.payload.partId) {
+              if (p.mark === null) {
+                assignmentMarked = false;
+              }
+              assignmentMark += p.mark ?? 0;
               return p;
             }
-            return {
+            let partMarked = p.newTextBoxes.every(t => t.mark !== null);
+            let partMark = 0;
+            const part: PartWithForms = {
               ...p,
               newUploadSlots: p.newUploadSlots.map(u => {
                 if (u.uploadSlotId !== action.payload.uploadSlotId) {
+                  if (u.mark === null && u.points > 0) {
+                    partMarked = false;
+                  }
+                  partMark += u.mark ?? 0;
                   return u;
                 }
+                if (action.payload.mark === null && u.points > 0) {
+                  partMarked = false;
+                }
+                partMark += action.payload.mark ?? 0;
                 return {
                   ...u,
                   mark: action.payload.mark,
@@ -234,10 +253,18 @@ export const reducer = (state: State, action: Action): State => {
                   form: { ...u.form, state: 'idle' },
                 };
               }),
+              mark: partMarked ? partMark : null,
             };
+            if (!partMarked) {
+              assignmentMarked = false;
+            }
+            assignmentMark += partMark;
+            return part;
           }),
+          mark: assignmentMarked ? assignmentMark : null,
         },
       };
+    }
     case 'SAVE_UPLOAD_SLOT_FAILED':
       if (typeof state.newAssignment === 'undefined') {
         throw Error('newAssignment is undefined');

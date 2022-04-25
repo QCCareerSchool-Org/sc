@@ -7,15 +7,13 @@ type Props = {
   children: ReactNode;
 };
 
-export const Layout = ({ children }: Props): ReactElement => {
-  return (
-    <div className="d-flex flex-column vh-100">
-      <SiteHeader />
-      <SiteNav />
-      <main className="d-flex flex-column flex-shrink-0">
-        {children}
-      </main>
-      <SiteFooter />
-    </div>
-  );
-};
+export const Layout = ({ children }: Props): ReactElement => (
+  <div className="d-flex flex-column vh-100">
+    <SiteHeader />
+    <SiteNav />
+    <main className="d-flex flex-column flex-shrink-0">
+      {children}
+    </main>
+    <SiteFooter />
+  </div>
+);
