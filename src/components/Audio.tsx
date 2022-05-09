@@ -13,11 +13,11 @@ type Props = {
   onEnded?: ReactEventHandler<HTMLAudioElement>;
 };
 
-export const Audio = memo(({ controls, src, preload, className, onPlay, onTimeUpdate, onEnded }: Props): ReactElement => {
+export const Audio = memo((props: Props): ReactElement => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const retry$ = useRefreshAndRetryMedia(audioRef);
 
-  const audioError: ReactEventHandler<HTMLAudioElement> = () => {
+  const handleError: ReactEventHandler<HTMLAudioElement> = () => {
     if (audioRef.current?.error?.code === 2) { // MEDIA_ERR_NETWORK
       retry$.next();
     }
@@ -26,16 +26,16 @@ export const Audio = memo(({ controls, src, preload, className, onPlay, onTimeUp
   return (
     <audio
       ref={audioRef}
-      controls={controls}
-      src={src}
-      preload={preload}
-      className={className}
-      onError={audioError}
-      onPlay={onPlay}
-      onTimeUpdate={onTimeUpdate}
-      onEnded={onEnded}
+      controls={props.controls}
+      src={props.src}
+      preload={props.preload}
+      className={props.className}
+      onError={handleError}
+      onPlay={props.onPlay}
+      onTimeUpdate={props.onTimeUpdate}
+      onEnded={props.onEnded}
     >
-      <p>Your browser doesn't support HTML5 audio. Here is a <a href={src}>link to download the audio</a> instead.</p>
+      <p>Your browser doesn't support HTML5 audio. Here is a <a href={props.src}>link to download the audio</a> instead.</p>
     </audio>
   );
 });

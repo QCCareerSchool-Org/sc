@@ -1,24 +1,19 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { endpoint } from '../../../basePath';
 import { Audio } from '@/components/Audio';
 import { Video } from '@/components/Video';
 import type { NewPartMedium } from '@/domain/newPartMedium';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   className: string;
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
   newPartMedium: NewPartMedium;
 };
 
-export const NewPartMediumView = memo(({ className, administratorId, schoolId, courseId, unitId, assignmentId, partId, newPartMedium }: Props): ReactElement | null => {
-  const src = `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts/${partId}/media/${newPartMedium.partMediumId}/file`;
+export const NewPartMediumView = memo(({ className, administratorId, newPartMedium }: Props): ReactElement | null => {
+  const src = `${endpoint}/administrators/${administratorId}/newPartMedia/${newPartMedium.partMediumId}/file`;
 
   if (newPartMedium.type === 'image') {
     // eslint-disable-next-line @next/next/no-img-element

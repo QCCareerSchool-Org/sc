@@ -2,6 +2,8 @@ import NextError from 'next/error';
 import type { MouseEvent, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
+import { endpoint } from '../../../basePath';
+import { scrollToId } from '../../../scrollToId';
 import { InaccessibleUnit } from '../InaccessibleUnit';
 import { Medium } from './Medium';
 import { Part } from './Part';
@@ -10,8 +12,6 @@ import { useInitialData } from './useInitialData';
 import { useInputSave } from './useInputSave';
 import type { InputType } from './useInputSave';
 import { Section } from '@/components/Section';
-import { endpoint } from 'src/basePath';
-import { scrollToId } from 'src/scrollToId';
 
 type Props = {
   tutorId: number;
@@ -48,7 +48,7 @@ export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assign
     return <InaccessibleUnit reason="not submitted" />;
   }
 
-  const unmarkedIdClick = (e: MouseEvent<HTMLAnchorElement>, id: string): void => {
+  const handleUnmarkedIdClick = (e: MouseEvent<HTMLAnchorElement>, id: string): void => {
     e.preventDefault();
     scrollToId(id);
   };
@@ -93,13 +93,13 @@ export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assign
                 {state.newAssignment.newParts.filter(p => p.mark === null).map(p => (
                   // we don't use an anchor link because we don't want the history to change
                   <li key={p.partId}>
-                    <a onClick={e => unmarkedIdClick(e, p.partId)} href={`#${p.partId}`} className="link-light text-decoration-none">{p.title}</a>
+                    <a onClick={e => handleUnmarkedIdClick(e, p.partId)} href={`#${p.partId}`} className="link-light text-decoration-none">{p.title}</a>
                     <ul>
                       {p.newTextBoxes.filter(t => t.mark === null).map((t, i) => (
-                        <li key={t.textBoxId}><a onClick={e => unmarkedIdClick(e, t.textBoxId)} href={`#${t.textBoxId}`} className="link-light text-decoration-none">Text Box: {t.description ?? `#${i + 1}`}</a></li>
+                        <li key={t.textBoxId}><a onClick={e => handleUnmarkedIdClick(e, t.textBoxId)} href={`#${t.textBoxId}`} className="link-light text-decoration-none">Text Box: {t.description ?? `#${i + 1}`}</a></li>
                       ))}
                       {p.newUploadSlots.filter(u => u.mark === null).map(u => (
-                        <li key={u.uploadSlotId}><a onClick={e => unmarkedIdClick(e, u.uploadSlotId)} href={`#${u.uploadSlotId}`} className="link-light text-decoration-none">Upload Slot: {u.label}</a></li>
+                        <li key={u.uploadSlotId}><a onClick={e => handleUnmarkedIdClick(e, u.uploadSlotId)} href={`#${u.uploadSlotId}`} className="link-light text-decoration-none">Upload Slot: {u.label}</a></li>
                       ))}
                     </ul>
                   </li>

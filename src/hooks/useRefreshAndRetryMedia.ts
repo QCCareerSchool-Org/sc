@@ -3,10 +3,10 @@ import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../navigateToLogin';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useServices } from '@/hooks/useServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | HTMLVideoElement | HTMLImageElement>): Subject<void> => {
   const { loginService } = useServices();

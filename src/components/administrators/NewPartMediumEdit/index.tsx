@@ -1,7 +1,10 @@
 import NextError from 'next/error';
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
+import { endpoint } from '../../../basePath';
+import { formatDateTime } from '../../../formatDate';
+import { humanReadableFileSize } from '../../../humanReadableFilesize';
 import { NewPartMediumEditForm } from './NewPartMediumEditForm';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
@@ -11,33 +14,27 @@ import { Audio } from '@/components/Audio';
 import { FileIcon } from '@/components/FileIcon';
 import { Section } from '@/components/Section';
 import { Video } from '@/components/Video';
-import { endpoint } from 'src/basePath';
-import { formatDateTime } from 'src/formatDate';
-import { humanReadableFileSize } from 'src/humanReadableFilesize';
+import { useAdminServices } from '@/hooks/useAdminServices';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
   mediumId: string;
 };
 
-export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId }: Props): ReactElement | null => {
+export const NewPartMediumEdit = ({ administratorId, mediumId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const { newPartMediumService } = useAdminServices();
 
-  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, dispatch);
+  useInitialData(administratorId, mediumId, dispatch);
 
   const mediumSave$ = useMediumSave(dispatch);
   const mediumDelete$ = useMediumDelete(dispatch);
 
-  const captionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleCaptionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'CAPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const orderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ORDER_CHANGED', payload: e.target.value });
   }, []);
 
@@ -49,7 +46,12 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
     return null;
   }
 
-  const src = `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts/${partId}/media/${state.newPartMedium.partMediumId}/file`;
+  const src = `${endpoint}/administrators/${administratorId}/newPartMedia/${state.newPartMedium.partMediumId}/file`;
+
+  const handleDownloadClick: MouseEventHandler = e => {
+    e.preventDefault();
+    newPartMediumService.downloadPartMediumFile(administratorId, mediumId).subscribe();
+  };
 
   return (
     <>
@@ -60,17 +62,12 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewPartMediumEditForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
-                assignmentId={assignmentId}
-                partId={partId}
                 mediumId={mediumId}
                 formState={state.form}
                 save$={mediumSave$}
                 delete$={mediumDelete$}
-                captionChange={captionChange}
-                orderChange={orderChange}
+                onCaptionChange={handleCaptionChange}
+                onOrderChange={handleOrderChange}
               />
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
@@ -105,7 +102,7 @@ export const NewPartMediumEdit = ({ administratorId, schoolId, courseId, unitId,
             <Audio src={src} controls preload="auto" />
           )}
           {state.newPartMedium.type === 'download' && (
-            <a href={src} download><FileIcon mimeType={state.newPartMedium.mimeTypeId} size={96} /></a>
+            <a onClick={handleDownloadClick} href={src} download><FileIcon mimeType={state.newPartMedium.mimeTypeId} size={96} /></a>
           )}
         </div>
       </Section>

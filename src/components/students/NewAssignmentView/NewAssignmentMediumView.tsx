@@ -1,10 +1,10 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { endpoint } from '../../../basePath';
 import { Audio } from '@/components/Audio';
 import { Video } from '@/components/Video';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   className: string;

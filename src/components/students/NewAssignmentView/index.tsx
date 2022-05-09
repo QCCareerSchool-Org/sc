@@ -4,6 +4,9 @@ import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useEffect, useReducer } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
+import { endpoint } from '../../../basePath';
+import { navigateToLogin } from '../../../navigateToLogin';
+import { scrollToId } from '../../../scrollToId';
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
@@ -12,9 +15,6 @@ import { Section } from '@/components/Section';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { HttpServiceError } from '@/services/httpService';
-import { endpoint } from 'src/basePath';
-import { navigateToLogin } from 'src/navigateToLogin';
-import { scrollToId } from 'src/scrollToId';
 
 export type UploadSlotFunction = (partId: string, uploadSlotId: string, file?: File) => Observable<unknown>;
 export type TextBoxFunction = (partId: string, textBoxId: string, text: string) => Observable<unknown>;
@@ -160,11 +160,11 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
     return null;
   }
 
-  const backButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleBackButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     void router.back();
   };
 
-  const incompletePartClick = (e: MouseEvent, partId: string): void => {
+  const handleIncompletePartClick = (e: MouseEvent, partId: string): void => {
     e.preventDefault();
     scrollToId(partId);
   };
@@ -222,12 +222,12 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
               <ul className="ps-3">
                 {state.assignment.parts.filter(p => !p.complete).map(p => (
                   // we don't use an anchor link because we don't want the history to change
-                  <li key={p.partId}><a onClick={e => incompletePartClick(e, p.partId)} href={`#${p.partId}`} className="link-light text-decoration-none">{p.title}</a></li>
+                  <li key={p.partId}><a onClick={e => handleIncompletePartClick(e, p.partId)} href={`#${p.partId}`} className="link-light text-decoration-none">{p.title}</a></li>
                 ))}
               </ul>
             </div>
           )}
-          <button onClick={backButtonClick} className="btn btn-primary" disabled={state.assignment.saveState !== 'saved'}>Return to Unit Overview</button>
+          <button onClick={handleBackButtonClick} className="btn btn-primary" disabled={state.assignment.saveState !== 'saved'}>Return to Unit Overview</button>
         </div>
       </Section>
       <style jsx>{`

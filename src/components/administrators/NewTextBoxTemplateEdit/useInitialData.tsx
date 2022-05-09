@@ -3,19 +3,19 @@ import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export const useInitialData = (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, dispatch: Dispatch<Action>): void => {
+export const useInitialData = (administratorId: number, textBoxId: string, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
   const { newTextBoxTemplateService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newTextBoxTemplateService.getTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId).pipe(
+    newTextBoxTemplateService.getTextBox(administratorId, textBoxId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: textBoxTemplate => {
@@ -34,5 +34,5 @@ export const useInitialData = (administratorId: number, schoolId: number, course
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, dispatch, router, newTextBoxTemplateService ]);
+  }, [ administratorId, textBoxId, dispatch, router, newTextBoxTemplateService ]);
 };

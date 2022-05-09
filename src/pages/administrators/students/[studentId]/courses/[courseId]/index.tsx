@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
-import Error from 'next/error';
+import ErrorPage from 'next/error';
 
 type Props = {
   studentId: number | null;
@@ -8,7 +8,7 @@ type Props = {
 
 const NewUnitListPage: NextPage<Props> = ({ studentId, courseId }) => {
   if (studentId === null || courseId === null) {
-    return <Error statusCode={400} />;
+    return <ErrorPage statusCode={400} />;
   }
 
   return null;

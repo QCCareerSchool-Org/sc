@@ -3,29 +3,24 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewPartMediumEditPayload } from '@/services/administrators/newPartMediumService';
+import type { NewPartMediumSavePayload } from '@/services/administrators/newPartMediumService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type MediumSavePayload = {
+export type NewPartMediumSaveEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
   mediumId: string;
+  payload: NewPartMediumSavePayload;
   processingState: State['form']['processingState'];
-  payload: NewPartMediumEditPayload;
 };
 
-export const useMediumSave = (dispatch: Dispatch<Action>): Subject<MediumSavePayload> => {
+export const useMediumSave = (dispatch: Dispatch<Action>): Subject<NewPartMediumSaveEvent> => {
   const router = useRouter();
   const { newPartMediumService } = useAdminServices();
 
-  const mediumSave$ = useRef(new Subject<MediumSavePayload>());
+  const mediumSave$ = useRef(new Subject<NewPartMediumSaveEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -33,8 +28,8 @@ export const useMediumSave = (dispatch: Dispatch<Action>): Subject<MediumSavePay
     mediumSave$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'SAVE_PART_MEDIUM_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, payload }) => {
-        return newPartMediumService.savePartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, payload).pipe(
+      exhaustMap(({ administratorId, mediumId, payload }) => {
+        return newPartMediumService.savePartMedium(administratorId, mediumId, payload).pipe(
           tap({
             next: updatedAssignmentMedium => {
               dispatch({ type: 'SAVE_PART_MEDIUM_SUCCEEDED', payload: updatedAssignmentMedium });

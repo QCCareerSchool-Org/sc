@@ -8,5 +8,7 @@ export type Course = {
   quizzesEnabled: boolean;
   noTutor: boolean;
   unitType: number;
+  order: number;
+  enabled: boolean;
   newUnitsEnabled: boolean;
 };

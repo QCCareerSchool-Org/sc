@@ -3,28 +3,23 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
+import type { NewTextBoxTemplateAddPayload } from '@/services/administrators/newTextBoxTemplateService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type TextBoxInsertPayload = {
+export type NewTextBoxTemplateInsertEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
+  payload: NewTextBoxTemplateAddPayload;
   processingState: State['newTextBoxTemplateForm']['processingState'];
-  payload: NewTextBoxTemplatePayload;
 };
 
-export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<TextBoxInsertPayload> => {
+export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<NewTextBoxTemplateInsertEvent> => {
   const router = useRouter();
   const { newTextBoxTemplateService } = useAdminServices();
 
-  const textBoxInsert$ = useRef(new Subject<TextBoxInsertPayload>());
+  const textBoxInsert$ = useRef(new Subject<NewTextBoxTemplateInsertEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -32,8 +27,8 @@ export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<TextBoxIns
     textBoxInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
       tap(() => dispatch({ type: 'ADD_TEXT_BOX_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, payload }) => {
-        return newTextBoxTemplateService.addTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+      exhaustMap(({ administratorId, payload }) => {
+        return newTextBoxTemplateService.addTextBox(administratorId, payload).pipe(
           tap({
             next: insertedTextBox => {
               dispatch({ type: 'ADD_TEXT_BOX_TEMPLATE_SUCCEEDED', payload: insertedTextBox });

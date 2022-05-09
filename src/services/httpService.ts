@@ -4,8 +4,8 @@ import { saveAs } from 'file-saver';
 import type { Observable } from 'rxjs';
 import { catchError, from, map, merge, Subject, tap, throwError } from 'rxjs';
 
-import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError, AxiosUnauthorizedError } from 'src/axiosInstance';
-import { endpoint } from 'src/basePath';
+import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError } from '../axiosInstance';
+import { endpoint } from '../basePath';
 
 type Config = {
   params?: Record<string, string | number | boolean>;

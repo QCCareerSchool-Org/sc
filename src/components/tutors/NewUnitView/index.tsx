@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
+import { formatDate } from '../../../formatDate';
 import { InaccessibleUnit } from '../InaccessibleUnit';
 import { AssignmentTable } from './AssignmentTable';
 import { FeebackUploadForm } from './FeebackUploadForm';
@@ -15,7 +16,6 @@ import { useInitialData } from './useInitialData';
 import { useReturn } from './useReturn';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
-import { formatDate } from 'src/formatDate';
 
 type Props = {
   tutorId: number;
@@ -35,11 +35,11 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
   const close$ = useClose(dispatch);
   const return$ = useReturn(dispatch);
 
-  const assignmentClick = useCallback((e: MouseEvent, assignmentId: string): void => {
+  const handleAssignmentClick = useCallback((e: MouseEvent, assignmentId: string): void => {
     void router.push(`${router.asPath}/assignments/${assignmentId}`);
   }, [ router ]);
 
-  const fileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     if (e.target.files?.[0]) {
       dispatch({ type: 'FILE_CHANGED', payload: e.target.files[0] });
     }
@@ -61,15 +61,15 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
     return <InaccessibleUnit reason="not submitted" />;
   }
 
-  const closeClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleCloseClick: MouseEventHandler<HTMLButtonElement> = () => {
     close$.next({ tutorId, studentId, courseId, unitId, processingState: state.processingState });
   };
 
-  const returnClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleReturnClick: MouseEventHandler<HTMLButtonElement> = () => {
     return$.next({ tutorId, studentId, courseId, unitId, comment: state.returnForm.message, processingState: state.processingState });
   };
 
-  const messageChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
+  const handleMessageChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
     dispatch({ type: 'MESSAGE_CHANGED', payload: e.target.value });
   };
 
@@ -91,7 +91,7 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
       <Section>
         <div className="container">
           <h2 className="h3">Assignments</h2>
-          <AssignmentTable unit={state.newUnit} onClick={assignmentClick} />
+          <AssignmentTable unit={state.newUnit} onClick={handleAssignmentClick} />
         </div>
       </Section>
       <Section>
@@ -107,7 +107,7 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
                     courseId={courseId}
                     unitId={unitId}
                     state={state}
-                    fileChange={fileChange}
+                    onFileChange={handleFileChange}
                     upload$={feedbackUpload$}
                   />
                 )
@@ -139,7 +139,7 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
               : <p className="lead">You can now close this unit.</p>
           }
           <div className="d-flex align-items-center">
-            <button onClick={closeClick} className="btn btn-primary" style={{ width: 80 }} disabled={state.newUnit.mark === null || state.newUnit.responseFilename === null || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
+            <button onClick={handleCloseClick} className="btn btn-primary" style={{ width: 80 }} disabled={state.newUnit.mark === null || state.newUnit.responseFilename === null || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
               {state.processingState === 'closing' ? <Spinner size="sm" /> : 'Close'}
             </button>
             {state.processingState === 'close error' && <span className="text-danger ms-2">{state.errorMessage ?? 'error'}</span>}
@@ -160,10 +160,10 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
               <p>To send this assignment back to the student, enter a brief reason below and then click the &ldquo;Return&rdquo; button. We'll read your message and write our own message to the student.</p>
               <div className="mb-3">
                 <label htmlFor={'returnMessage' + unitId} className="form-label fw-bold">Message to Student</label>
-                <textarea onChange={messageChange} value={state.returnForm.message} maxLength={1000} id={'returnMessage' + unitId} className="form-control" rows={7} />
+                <textarea onChange={handleMessageChange} value={state.returnForm.message} maxLength={1000} id={'returnMessage' + unitId} className="form-control" rows={7} />
               </div>
               <div className="d-flex align-items-center">
-                <button onClick={returnClick} className="btn btn-danger" style={{ width: 80 }} disabled={state.returnForm.message.length === 0 || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
+                <button onClick={handleReturnClick} className="btn btn-danger" style={{ width: 80 }} disabled={state.returnForm.message.length === 0 || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
                   {state.processingState === 'returning' ? <Spinner size="sm" /> : 'Return'}
                 </button>
                 {state.processingState === 'return error' && <span className="text-danger ms-2">{state.errorMessage ?? 'error'}</span>}

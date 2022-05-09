@@ -3,28 +3,23 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import type { NewPartMediumAddPayload } from '@/services/administrators/newPartMediumService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type MediumInsertPayload = {
+export type NewPartMediumInsertEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
-  processingState: State['partMediaForm']['processingState'];
   payload: NewPartMediumAddPayload;
+  processingState: State['partMediaForm']['processingState'];
 };
 
-export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<MediumInsertPayload> => {
+export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<NewPartMediumInsertEvent> => {
   const router = useRouter();
   const { newPartMediumService } = useAdminServices();
 
-  const mediumInsert$ = useRef(new Subject<MediumInsertPayload>());
+  const mediumInsert$ = useRef(new Subject<NewPartMediumInsertEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -32,8 +27,8 @@ export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<MediumInser
     mediumInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
       tap(() => dispatch({ type: 'ADD_PART_MEDIUM_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, payload }) => {
-        return newPartMediumService.addPartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+      exhaustMap(({ administratorId, payload }) => {
+        return newPartMediumService.addPartMedium(administratorId, payload).pipe(
           tap({
             next: progressResponse => {
               if (progressResponse.type === 'progress') {

@@ -13,13 +13,13 @@ export const Img = memo(({ src, alt, className }: Props): ReactElement => {
   const imageRef = useRef<HTMLImageElement>(null);
   const retry$ = useRefreshAndRetryMedia(imageRef);
 
-  const imageError: ReactEventHandler<HTMLImageElement> = () => {
+  const handleError: ReactEventHandler<HTMLImageElement> = () => {
     retry$.next();
   };
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} onError={imageError} className={className} />
+    <img src={src} alt={alt} onError={handleError} className={className} />
   );
 });
 

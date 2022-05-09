@@ -4,24 +4,25 @@ import type { Subject } from 'rxjs';
 
 import { NewUnitTemplateFormElements } from '../NewUnitTemplateEdit/NewUnitTemplateFormElements';
 import type { State } from './state';
-import type { UnitInsertPayload } from './useUnitInsert';
+import type { NewUnitTemplateInsertEvent } from './useUnitInsert';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
   courseId: number;
   formState: State['newUnitTemplateForm'];
-  insert$: Subject<UnitInsertPayload>;
-  titleChange: ChangeEventHandler<HTMLInputElement>;
-  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
-  markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
-  unitLetterChange: ChangeEventHandler<HTMLInputElement>;
-  orderChange: ChangeEventHandler<HTMLInputElement>;
-  optionalChange: ChangeEventHandler<HTMLInputElement>;
+  insert$: Subject<NewUnitTemplateInsertEvent>;
+  onTitleChange: ChangeEventHandler<HTMLInputElement>;
+  onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onUnitLetterChange: ChangeEventHandler<HTMLInputElement>;
+  onOrderChange: ChangeEventHandler<HTMLInputElement>;
+  onOptionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUnitTemplateAddForm = memo(({ administratorId, schoolId, courseId, formState, insert$, titleChange, descriptionChange, markingCriteriaChange, unitLetterChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewUnitTemplateAddForm = memo((props: Props): ReactElement => {
+  const { administratorId, courseId, formState, insert$ } = props;
+
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -33,17 +34,15 @@ export const NewUnitTemplateAddForm = memo(({ administratorId, schoolId, courseI
     }
   }
 
-  const formSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
     }
     insert$.next({
       administratorId,
-      schoolId,
-      courseId,
-      processingState: formState.processingState,
       payload: {
+        courseId,
         unitLetter: formState.data.unitLetter,
         title: formState.data.title || null,
         description: formState.data.description || null,
@@ -51,6 +50,7 @@ export const NewUnitTemplateAddForm = memo(({ administratorId, schoolId, courseI
         order: parseInt(formState.data.order, 10),
         optional: formState.data.optional,
       },
+      processingState: formState.processingState,
     });
   };
 
@@ -58,16 +58,16 @@ export const NewUnitTemplateAddForm = memo(({ administratorId, schoolId, courseI
     <div className="card">
       <div className="card-body">
         <h3 className="h5">New Unit Template</h3>
-        <form onSubmit={formSubmit}>
+        <form onSubmit={handleFormSubmit}>
           <NewUnitTemplateFormElements
             formData={formState.data}
             formValidationMessages={formState.validationMessages}
-            titleChange={titleChange}
-            descriptionChange={descriptionChange}
-            markingCriteriaChange={markingCriteriaChange}
-            unitLetterChange={unitLetterChange}
-            orderChange={orderChange}
-            optionalChange={optionalChange}
+            onTitleChange={props.onTitleChange}
+            onDescriptionChange={props.onDescriptionChange}
+            onMarkingCriteriaChange={props.onMarkingCriteriaChange}
+            onUnitLetterChange={props.onUnitLetterChange}
+            onOrderChange={props.onOrderChange}
+            onOptionalChange={props.onOptionalChange}
           />
           <div className="d-flex align-items-center">
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>

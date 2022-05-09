@@ -3,27 +3,24 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentTemplateSavePayload } from '@/services/administrators/newAssignmentTemplateService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type AssignmentSavePayload = {
+export type NewAssignmentTemplateSaveEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
   assignmentId: string;
+  payload: NewAssignmentTemplateSavePayload;
   processingState: State['form']['processingState'];
-  payload: NewAssignmentTemplatePayload;
 };
 
-export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<AssignmentSavePayload> => {
+export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<NewAssignmentTemplateSaveEvent> => {
   const router = useRouter();
   const { newAssignmentTemplateService } = useAdminServices();
 
-  const assignmentSave$ = useRef(new Subject<AssignmentSavePayload>());
+  const assignmentSave$ = useRef(new Subject<NewAssignmentTemplateSaveEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -31,8 +28,8 @@ export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<Assignmen
     assignmentSave$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, payload }) => {
-        return newAssignmentTemplateService.saveAssignment(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
+      exhaustMap(({ administratorId, assignmentId, payload }) => {
+        return newAssignmentTemplateService.saveAssignment(administratorId, assignmentId, payload).pipe(
           tap({
             next: updatedAssignment => {
               dispatch({ type: 'SAVE_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: updatedAssignment });

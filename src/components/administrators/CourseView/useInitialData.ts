@@ -3,19 +3,19 @@ import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export const useInitialData = (administratorId: number, schoolId: number, courseId: number, dispatch: Dispatch<Action>): void => {
+export const useInitialData = (administratorId: number, courseId: number, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
   const { courseService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    courseService.getCourse(administratorId, schoolId, courseId).pipe(
+    courseService.getCourse(administratorId, courseId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: schools => {
@@ -32,5 +32,5 @@ export const useInitialData = (administratorId: number, schoolId: number, course
         dispatch({ type: 'LOAD_COURSE_FAILED', payload: errorCode });
       },
     });
-  }, [ administratorId, schoolId, courseId, dispatch, router, courseService ]);
+  }, [ administratorId, courseId, dispatch, router, courseService ]);
 };

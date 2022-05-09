@@ -3,28 +3,23 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewUploadSlotTemplatePayload } from '@/services/administrators/newUploadSlotTemplateService';
+import type { NewUploadSlotTemplateAddPayload } from '@/services/administrators/newUploadSlotTemplateService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type UploadSlotInsertPayload = {
+export type NewUploadSlotTemplateInsertEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
+  payload: NewUploadSlotTemplateAddPayload;
   processingState: State['newUoloadSlotTemplateForm']['processingState'];
-  payload: NewUploadSlotTemplatePayload;
 };
 
-export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<UploadSlotInsertPayload> => {
+export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<NewUploadSlotTemplateInsertEvent> => {
   const router = useRouter();
   const { newUploadSlotTemplateService } = useAdminServices();
 
-  const uploadSlotInsert$ = useRef(new Subject<UploadSlotInsertPayload>());
+  const uploadSlotInsert$ = useRef(new Subject<NewUploadSlotTemplateInsertEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -32,8 +27,8 @@ export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<UploadS
     uploadSlotInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
       tap(() => dispatch({ type: 'ADD_UPLOAD_SLOT_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, payload }) => {
-        return newUploadSlotTemplateService.addUploadSlot(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+      exhaustMap(({ administratorId, payload }) => {
+        return newUploadSlotTemplateService.addUploadSlot(administratorId, payload).pipe(
           tap({
             next: insertedTextBox => {
               dispatch({ type: 'ADD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED', payload: insertedTextBox });

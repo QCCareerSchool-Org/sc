@@ -4,25 +4,23 @@ import type { Subject } from 'rxjs';
 
 import { NewAssignmentMediumFormElements } from './NewAssignmentMediumFormElements';
 import type { State } from './state';
-import type { MediumDeletePayload } from './useMediumDelete';
-import type { MediumSavePayload } from './useMediumSave';
+import type { AssignmentMediumDeleteEvent } from './useMediumDelete';
+import type { AssignmentMediumSaveEvent } from './useMediumSave';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
   mediumId: string;
   formState: State['form'];
-  save$: Subject<MediumSavePayload>;
-  delete$: Subject<MediumDeletePayload>;
-  captionChange: ChangeEventHandler<HTMLInputElement>;
-  orderChange: ChangeEventHandler<HTMLInputElement>;
+  save$: Subject<AssignmentMediumSaveEvent>;
+  delete$: Subject<AssignmentMediumDeleteEvent>;
+  onCaptionChange: ChangeEventHandler<HTMLInputElement>;
+  onOrderChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentMediumEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, mediumId, formState, save$, delete$, captionChange, orderChange }: Props): ReactElement => {
+export const NewAssignmentMediumEditForm = memo((props: Props): ReactElement => {
+  const { administratorId, mediumId, formState, save$, delete$ } = props;
+
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -34,17 +32,13 @@ export const NewAssignmentMediumEditForm = memo(({ administratorId, schoolId, co
     }
   }
 
-  const formSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
     }
     save$.next({
       administratorId,
-      schoolId,
-      courseId,
-      unitId,
-      assignmentId,
       mediumId,
       processingState: formState.processingState,
       payload: {
@@ -54,14 +48,10 @@ export const NewAssignmentMediumEditForm = memo(({ administratorId, schoolId, co
     });
   };
 
-  const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm(`Are you sure you want to delete this assignment medium?`)) {
       delete$.next({
         administratorId,
-        schoolId,
-        courseId,
-        unitId,
-        assignmentId,
         mediumId,
         processingState: formState.processingState,
       });
@@ -69,19 +59,19 @@ export const NewAssignmentMediumEditForm = memo(({ administratorId, schoolId, co
   };
 
   return (
-    <form onSubmit={formSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <NewAssignmentMediumFormElements
         formType="edit"
         formData={formState.data}
         formValidationMessages={formState.validationMessages}
-        captionChange={captionChange}
-        orderChange={orderChange}
+        onCaptionChange={props.onCaptionChange}
+        onOrderChange={props.onOrderChange}
       />
       <div className="d-flex align-items-center">
         <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>
           {formState.processingState === 'saving' ? <Spinner size="sm" /> : 'Save'}
         </button>
-        <button type="button" onClick={deleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
+        <button type="button" onClick={handleDeleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
           {formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
         {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Save Error'}</span>}

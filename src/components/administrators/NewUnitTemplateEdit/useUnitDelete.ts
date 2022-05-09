@@ -3,24 +3,22 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type UnitDeletePayload = {
+export type NewUnitTemplateDeleteEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
   unitId: string;
   processingState: State['form']['processingState'];
 };
 
-export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<UnitDeletePayload> => {
+export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<NewUnitTemplateDeleteEvent> => {
   const router = useRouter();
   const { newUnitTemplateService } = useAdminServices();
 
-  const unitDelete$ = useRef(new Subject<UnitDeletePayload>());
+  const unitDelete$ = useRef(new Subject<NewUnitTemplateDeleteEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -28,7 +26,7 @@ export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<UnitDeletePay
     unitDelete$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'DELETE_UNIT_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId }) => newUnitTemplateService.deleteUnit(administratorId, schoolId, courseId, unitId).pipe(
+      exhaustMap(({ administratorId, unitId }) => newUnitTemplateService.deleteUnit(administratorId, unitId).pipe(
         tap({
           next: () => {
             dispatch({ type: 'DELETE_UNIT_TEMPLATE_SUCCEEDED' });

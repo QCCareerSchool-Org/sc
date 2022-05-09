@@ -4,27 +4,24 @@ import type { Subject } from 'rxjs';
 
 import { NewPartMediumFormElements } from '../NewPartMediumEdit/NewPartMediumFormElements';
 import type { State } from './state';
-import type { MediumInsertPayload } from './useMediumInsert';
+import type { NewPartMediumInsertEvent } from './useMediumInsert';
 import { Spinner } from '@/components/Spinner';
 import type { NewPartMediumAddPayload } from '@/services/administrators/newPartMediumService';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
   partId: string;
   formState: State['partMediaForm'];
-  insert$: Subject<MediumInsertPayload>;
-  dataSourceChange: (dataSource: 'file upload' | 'url') => void;
-  captionChange: ChangeEventHandler<HTMLInputElement>;
-  orderChange: ChangeEventHandler<HTMLInputElement>;
-  fileChange: ChangeEventHandler<HTMLInputElement>;
-  externalDataChange: ChangeEventHandler<HTMLInputElement>;
+  insert$: Subject<NewPartMediumInsertEvent>;
+  onDataSourceChange: (dataSource: 'file upload' | 'url') => void;
+  onCaptionChange: ChangeEventHandler<HTMLInputElement>;
+  onOrderChange: ChangeEventHandler<HTMLInputElement>;
+  onFileChange: ChangeEventHandler<HTMLInputElement>;
+  onExternalDataChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartMediumAddForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, formState, insert$, dataSourceChange, captionChange, orderChange, fileChange, externalDataChange }: Props): ReactElement => {
+export const NewPartMediumAddForm = memo((props: Props): ReactElement => {
+  const { administratorId, partId, formState, insert$ } = props;
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -36,7 +33,7 @@ export const NewPartMediumAddForm = memo(({ administratorId, schoolId, courseId,
     }
   }
 
-  const formSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -44,6 +41,7 @@ export const NewPartMediumAddForm = memo(({ administratorId, schoolId, courseId,
     let payload: NewPartMediumAddPayload | null = null;
     if (formState.data.dataSource === 'file upload' && formState.data.file) {
       payload = {
+        partId,
         sourceData: 'file upload',
         caption: formState.data.caption,
         order: parseInt(formState.data.order, 10),
@@ -51,6 +49,7 @@ export const NewPartMediumAddForm = memo(({ administratorId, schoolId, courseId,
       };
     } else if (formState.data.dataSource === 'url' && formState.data.externalData) {
       payload = {
+        partId,
         sourceData: 'url',
         caption: formState.data.caption,
         order: parseInt(formState.data.order, 10),
@@ -62,13 +61,8 @@ export const NewPartMediumAddForm = memo(({ administratorId, schoolId, courseId,
     }
     insert$.next({
       administratorId,
-      schoolId,
-      courseId,
-      unitId,
-      assignmentId,
-      partId,
-      processingState: formState.processingState,
       payload,
+      processingState: formState.processingState,
     });
   };
 
@@ -76,18 +70,18 @@ export const NewPartMediumAddForm = memo(({ administratorId, schoolId, courseId,
     <div className="card">
       <div className="card-body">
         <h3 className="h5">New Part Medium</h3>
-        <form onSubmit={formSubmit}>
+        <form onSubmit={handleFormSubmit}>
           <NewPartMediumFormElements
             formType="add"
             formData={formState.data}
             formValidationMessages={formState.validationMessages}
             inserting={formState.processingState === 'inserting'}
             progress={formState.progress}
-            dataSourceChange={dataSourceChange}
-            captionChange={captionChange}
-            orderChange={orderChange}
-            fileChange={fileChange}
-            externalDataChange={externalDataChange}
+            onDataSourceChange={props.onDataSourceChange}
+            onCaptionChange={props.onCaptionChange}
+            onOrderChange={props.onOrderChange}
+            onFileChange={props.onFileChange}
+            onExternalDataChange={props.onExternalDataChange}
           />
           <div className="d-flex align-items-center">
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>

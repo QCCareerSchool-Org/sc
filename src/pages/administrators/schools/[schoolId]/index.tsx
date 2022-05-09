@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
-import Error from 'next/error';
+import ErrorPage from 'next/error';
 
 import { SchoolView } from '@/components/administrators/SchoolView';
 import { Meta } from '@/components/Meta';
@@ -13,11 +13,11 @@ const SchoolViewPage: NextPage<Props> = ({ schoolId }) => {
   const authState = useAuthState();
 
   if (typeof authState.administratorId === 'undefined') {
-    return <Error statusCode={403} />;
+    return <ErrorPage statusCode={403} />;
   }
 
   if (schoolId === null) {
-    return <Error statusCode={400} />;
+    return <ErrorPage statusCode={400} />;
   }
 
   return (

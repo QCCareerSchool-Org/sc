@@ -1,24 +1,23 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
+import { endpoint } from '../../basePath';
 import type { NewPart, RawNewPart } from '@/domain/newPart';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
-import { endpoint } from 'src/basePath';
+
+type FileUploadOrUrl =
+  | { sourceData: 'file upload'; file: File }
+  | { sourceData: 'url'; externalData: string };
 
 export type NewPartMediumAddPayload = {
+  partId: string;
   caption: string;
   order: number;
-} & ({
-  sourceData: 'file upload';
-  file: File;
-} | {
-  sourceData: 'url';
-  externalData: string;
-});
+} & FileUploadOrUrl;
 
-export type NewPartMediumEditPayload = {
+export type NewPartMediumSavePayload = {
   caption: string;
   order: number;
 };
@@ -34,22 +33,24 @@ export type NewPartMediumWithPart = NewPartMedium & {
 };
 
 export interface INewPartMediumService {
-  addPartMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewPartMediumAddPayload) => Observable<ProgressResponse<NewPartMedium>>;
-  getPartMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, mediumId: string) => Observable<NewPartMediumWithPart>;
-  savePartMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, mediumId: string, payload: NewPartMediumEditPayload) => Observable<NewPartMedium>;
-  deletePartMedium: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, mediumId: string) => Observable<void>;
+  addPartMedium: (administratorId: number, payload: NewPartMediumAddPayload) => Observable<ProgressResponse<NewPartMedium>>;
+  getPartMedium: (administratorId: number, mediumId: string) => Observable<NewPartMediumWithPart>;
+  savePartMedium: (administratorId: number, mediumId: string, payload: NewPartMediumSavePayload) => Observable<NewPartMedium>;
+  deletePartMedium: (administratorId: number, mediumId: string) => Observable<void>;
+  downloadPartMediumFile: (administratorId: number, mediumId: string) => Observable<void>;
 }
 
 export class NewPartMediumService implements INewPartMediumService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public addPartMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewPartMediumAddPayload): Observable<ProgressResponse<NewPartMedium>> {
-    const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId);
+  public addPartMedium(administratorId: number, payload: NewPartMediumAddPayload): Observable<ProgressResponse<NewPartMedium>> {
+    const url = this.getBaseUrl(administratorId);
     let body: FormData | NewPartMediumAddPayload;
     let headers: Record<string, string>;
     if (payload.sourceData === 'file upload') {
       body = new FormData();
+      body.append('partId', payload.partId);
       body.append('caption', payload.caption);
       body.append('order', payload.order.toString());
       body.append('file', payload.file);
@@ -70,32 +71,32 @@ export class NewPartMediumService implements INewPartMediumService {
     );
   }
 
-  public getPartMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, mediumId: string): Observable<NewPartMediumWithPart> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${mediumId}`;
+  public getPartMedium(administratorId: number, mediumId: string): Observable<NewPartMediumWithPart> {
+    const url = `${this.getBaseUrl(administratorId)}/${mediumId}`;
     return this.httpService.get<RawNewPartMediumWithPart>(url).pipe(
       map(this.mapNewPartMediumWithAssignment),
     );
   }
 
-  public savePartMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, mediumId: string, payload: NewPartMediumEditPayload): Observable<NewPartMedium> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${mediumId}`;
+  public savePartMedium(administratorId: number, mediumId: string, payload: NewPartMediumSavePayload): Observable<NewPartMedium> {
+    const url = `${this.getBaseUrl(administratorId)}/${mediumId}`;
     return this.httpService.put<RawNewPartMedium>(url, payload).pipe(
       map(this.mapNewPartMedium),
     );
   }
 
-  public deletePartMedium(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, mediumId: string): Observable<void> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${mediumId}`;
+  public deletePartMedium(administratorId: number, mediumId: string): Observable<void> {
+    const url = `${this.getBaseUrl(administratorId)}/${mediumId}`;
     return this.httpService.delete<void>(url);
   }
 
-  public downloadPartMediumFile(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, mediumId: string): Observable<void> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${mediumId}/file`;
+  public downloadPartMediumFile(administratorId: number, mediumId: string): Observable<void> {
+    const url = `${this.getBaseUrl(administratorId)}/${mediumId}/file`;
     return this.httpService.download(url);
   }
 
-  private getBaseUrl(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): string {
-    return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts/${partId}/media`;
+  private getBaseUrl(administratorId: number): string {
+    return `${endpoint}/administrators/${administratorId}/newPartMedia`;
   }
 
   private readonly mapNewPartMedium = (medium: RawNewPartMedium): NewPartMedium => {

@@ -83,7 +83,7 @@ type EmptySlotProps = {
 };
 
 const EmptySlot = ({ uploadSlot, upload$ }: EmptySlotProps): ReactElement => {
-  const onFileInputChange: ChangeEventHandler<HTMLInputElement> = e => {
+  const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = e => {
     const files = e.target.files;
     if (files?.length !== 1) {
       return;
@@ -100,7 +100,7 @@ const EmptySlot = ({ uploadSlot, upload$ }: EmptySlotProps): ReactElement => {
 
   return (
     <>
-      <input onChange={onFileInputChange} type="file" accept={accept(uploadSlot.allowedTypes)} className="form-control" id={uploadSlot.uploadSlotId} />
+      <input onChange={handleFileInputChange} type="file" accept={accept(uploadSlot.allowedTypes)} className="form-control" id={uploadSlot.uploadSlotId} />
       {uploadSlot.saveState === 'save error' && <small className="text-danger me-2">Error saving file</small>}
     </>
   );
@@ -113,12 +113,12 @@ type FullSlotProps = {
 };
 
 const FullSlot = ({ uploadSlot, delete$, download$ }: FullSlotProps): ReactElement => {
-  const deleteClick: MouseEventHandler<HTMLButtonElement> = e => {
+  const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
     delete$.next(uploadSlot);
   };
 
-  const downloadClick: MouseEventHandler<HTMLAnchorElement> = e => {
+  const handleDownloadClick: MouseEventHandler<HTMLAnchorElement> = e => {
     e.preventDefault();
     download$.next(uploadSlot);
   };
@@ -126,10 +126,10 @@ const FullSlot = ({ uploadSlot, delete$, download$ }: FullSlotProps): ReactEleme
   return (
     <>
       <div className="d-flex flex-column-reverse flex-md-row align-items-md-center">
-        <button onClick={deleteClick} className="btn btn-danger me-0 me-md-3 mt-3 mt-md-0" style={{ width: 90 }} disabled={uploadSlot.saveState === 'deleting'}>
+        <button onClick={handleDeleteClick} className="btn btn-danger me-0 me-md-3 mt-3 mt-md-0" style={{ width: 90 }} disabled={uploadSlot.saveState === 'deleting'}>
           {uploadSlot.saveState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
-        <div>{uploadSlot.filename && <><a href="#" onClick={downloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.filesize && <>({humanReadablefilesize(uploadSlot.filesize)})</>}</>}</div>
+        <div>{uploadSlot.filename && <><a href="#" onClick={handleDownloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.filesize && <>({humanReadablefilesize(uploadSlot.filesize)})</>}</>}</div>
       </div>
       {uploadSlot.saveState === 'delete error' && <small className="text-danger me-2">Error deleting file</small>}
     </>

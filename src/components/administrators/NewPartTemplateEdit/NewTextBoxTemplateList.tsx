@@ -8,41 +8,44 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, textBoxId: string) => void;
 };
 
-export const NewTextBoxTemplateList = memo(({ textBoxes, onClick }: Props): ReactElement => (
-  <>
-    {textBoxes.length === 0
-      ? <p>no text boxes</p>
-      : (
-        <table className="newTextBoxTemplatesTable table table-bordered table-hover w-auto bg-white">
-          <thead>
-            <tr>
-              <th>Description</th>
-              <th className="text-center">Points</th>
-              <th className="text-center">Lines</th>
-              <th className="text-center">Order</th>
-              <th className="text-center">Optional</th>
-            </tr>
-          </thead>
-          <tbody>
-            {textBoxes.map(t => (
-              <tr key={t.textBoxTemplateId} onClick={e => onClick(e, t.textBoxTemplateId)} title={t.description ?? undefined}>
-                <td>{t.description === null ? '(none)' : trimDescription(t.description)}</td>
-                <td className="text-center">{t.points}</td>
-                <td className="text-center">{t.lines ?? '(default)'}</td>
-                <td className="text-center">{t.order}</td>
-                <td className="text-center">{t.optional ? 'yes' : 'no'}</td>
+export const NewTextBoxTemplateList = memo((props: Props): ReactElement => {
+  const { textBoxes } = props;
+  return (
+    <>
+      {textBoxes.length === 0
+        ? <p>no text boxes</p>
+        : (
+          <table className="newTextBoxTemplatesTable table table-bordered table-hover w-auto bg-white">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th className="text-center">Points</th>
+                <th className="text-center">Lines</th>
+                <th className="text-center">Order</th>
+                <th className="text-center">Optional</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )
-    }
+            </thead>
+            <tbody>
+              {textBoxes.map(t => (
+                <tr key={t.textBoxTemplateId} onClick={e => props.onClick(e, t.textBoxTemplateId)} title={t.description ?? undefined}>
+                  <td>{t.description === null ? '(none)' : trimDescription(t.description)}</td>
+                  <td className="text-center">{t.points}</td>
+                  <td className="text-center">{t.lines ?? '(default)'}</td>
+                  <td className="text-center">{t.order}</td>
+                  <td className="text-center">{t.optional ? 'yes' : 'no'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      }
 
-    <style jsx>{`
+      <style jsx>{`
       .newTextBoxTemplatesTable tr { cursor: pointer }
-    `}</style>
-  </>
-));
+      `}</style>
+    </>
+  );
+});
 
 NewTextBoxTemplateList.displayName = 'NewTextBoxTemplateList';
 

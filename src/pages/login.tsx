@@ -70,20 +70,20 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, authDispatch, loginService ]);
 
-  const formSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     logIn$.current.next({ username, password, stayLoggedIn, returnUrl });
   };
 
-  const usernameChange: ChangeEventHandler<HTMLInputElement> = e => {
+  const handleUsernameChange: ChangeEventHandler<HTMLInputElement> = e => {
     setUsername(e.target.value);
   };
 
-  const passwordChange: ChangeEventHandler<HTMLInputElement> = e => {
+  const handlePasswordChange: ChangeEventHandler<HTMLInputElement> = e => {
     setPassword(e.target.value);
   };
 
-  const stayLoggedInChange: ChangeEventHandler<HTMLInputElement> = e => {
+  const handleStayLoggedInChange: ChangeEventHandler<HTMLInputElement> = e => {
     setStayLoggedIn(e.target.checked);
   };
 
@@ -94,18 +94,18 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
           <h1>Student Center Login</h1>
           <div className="row">
             <div className="col-6">
-              <form onSubmit={formSubmit}>
+              <form onSubmit={handleFormSubmit}>
                 <div className="formGroup">
                   <label htmlFor="username" className="form-label">Username / Student Number</label>
-                  <input type="text" id="username" name="username" value={username} onChange={usernameChange} className="form-control" required />
+                  <input type="text" id="username" name="username" value={username} onChange={handleUsernameChange} className="form-control" required />
                 </div>
                 <div className="formGroup">
                   <label htmlFor="password" className="form-label">Password</label>
-                  <input type="password" id="password" name="password" value={password} onChange={passwordChange} className="form-control" required />
+                  <input type="password" id="password" name="password" value={password} onChange={handlePasswordChange} className="form-control" required />
                 </div>
                 <div className="formGroup">
                   <div className="form-check">
-                    <input onChange={stayLoggedInChange} checked={stayLoggedIn} type="checkbox" id="stayLoggedIn" className="form-check-input" />
+                    <input onChange={handleStayLoggedInChange} checked={stayLoggedIn} type="checkbox" id="stayLoggedIn" className="form-check-input" />
                     <label htmlFor="stayLoggedIn" className="form-check-label">Stay Logged In</label>
                   </div>
                 </div>

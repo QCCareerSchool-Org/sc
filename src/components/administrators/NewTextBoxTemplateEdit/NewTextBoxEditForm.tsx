@@ -4,29 +4,25 @@ import type { Subject } from 'rxjs';
 
 import { NewTextBoxFormElements } from './NewTextBoxFormElements';
 import type { State } from './state';
-import type { TextBoxDeletePayload } from './useTextBoxDelete';
-import type { TextBoxSavePayload } from './useTextBoxSave';
+import type { NewTextBoxTemplateDeleteEvent } from './useTextBoxDelete';
+import type { NewTextBoxTemplateSaveEvent } from './useTextBoxSave';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
   textBoxId: string;
   formState: State['form'];
-  save$: Subject<TextBoxSavePayload>;
-  delete$: Subject<TextBoxDeletePayload>;
-  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
-  pointsChange: ChangeEventHandler<HTMLInputElement>;
-  linesChange: ChangeEventHandler<HTMLInputElement>;
-  orderChange: ChangeEventHandler<HTMLInputElement>;
-  optionalChange: ChangeEventHandler<HTMLInputElement>;
+  save$: Subject<NewTextBoxTemplateSaveEvent>;
+  delete$: Subject<NewTextBoxTemplateDeleteEvent>;
+  onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onPointsChange: ChangeEventHandler<HTMLInputElement>;
+  onLinesChange: ChangeEventHandler<HTMLInputElement>;
+  onOrderChange: ChangeEventHandler<HTMLInputElement>;
+  onOptionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewTextBoxEditForm = memo(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, formState, save$, delete$, descriptionChange, pointsChange, linesChange, orderChange, optionalChange }: Props): ReactElement => {
+export const NewTextBoxEditForm = memo((props: Props): ReactElement => {
+  const { administratorId, textBoxId, formState, save$, delete$ } = props;
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -38,20 +34,14 @@ export const NewTextBoxEditForm = memo(({ administratorId, schoolId, courseId, u
     }
   }
 
-  const formSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
     }
     save$.next({
       administratorId,
-      schoolId,
-      courseId,
-      unitId,
-      assignmentId,
-      partId,
       textBoxId,
-      processingState: formState.processingState,
       payload: {
         description: formState.data.description || null,
         points: parseInt(formState.data.points, 10),
@@ -59,18 +49,14 @@ export const NewTextBoxEditForm = memo(({ administratorId, schoolId, courseId, u
         order: parseInt(formState.data.order, 10),
         optional: formState.data.optional,
       },
+      processingState: formState.processingState,
     });
   };
 
-  const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm('Are you sure you want to delete this text box template?')) {
       delete$.next({
         administratorId,
-        schoolId,
-        courseId,
-        unitId,
-        assignmentId,
-        partId,
         textBoxId,
         processingState: formState.processingState,
       });
@@ -78,21 +64,21 @@ export const NewTextBoxEditForm = memo(({ administratorId, schoolId, courseId, u
   };
 
   return (
-    <form onSubmit={formSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <NewTextBoxFormElements
         formData={formState.data}
         formValidationMessages={formState.validationMessages}
-        descriptionChange={descriptionChange}
-        pointsChange={pointsChange}
-        linesChange={linesChange}
-        orderChange={orderChange}
-        optionalChange={optionalChange}
+        onDescriptionChange={props.onDescriptionChange}
+        onPointsChange={props.onPointsChange}
+        onLinesChange={props.onLinesChange}
+        onOrderChange={props.onOrderChange}
+        onOptionalChange={props.onOptionalChange}
       />
       <div className="d-flex align-items-center">
         <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>
           {formState.processingState === 'saving' ? <Spinner size="sm" /> : 'Save'}
         </button>
-        <button onClick={deleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
+        <button onClick={handleDeleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
           {formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
         {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Save Error'}</span>}

@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import type { MouseEvent, ReactElement } from 'react';
-import { useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 
 import { CourseList } from './CourseList';
 import { initialState, reducer } from './state';
@@ -19,6 +19,10 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
 
   useInitialData(administratorId, schoolId, dispatch);
 
+  const handleCourseRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, courseId: number): void => {
+    void router.push(`/administrators/courses/${courseId}`);
+  }, [ router ]);
+
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
@@ -26,10 +30,6 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
   if (!state.school) {
     return null;
   }
-
-  const courseRowClick = (e: MouseEvent<HTMLTableRowElement>, courseId: number): void => {
-    void router.push(`${router.asPath}/courses/${courseId}`);
-  };
 
   return (
     <>
@@ -41,7 +41,7 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
       <Section>
         <div className="container">
           <h2 className="h3">Courses</h2>
-          <CourseList courses={state.school.courses} onClick={courseRowClick} />
+          <CourseList courses={state.school.courses} onClick={handleCourseRowClick} />
         </div>
       </Section>
     </>

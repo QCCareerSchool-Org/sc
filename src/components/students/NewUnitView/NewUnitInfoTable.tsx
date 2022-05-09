@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { formatDate } from '../../../formatDate';
 import type { NewUnit } from '@/domain/newUnit';
-import { formatDate } from 'src/formatDate';
 
 type Props = {
   newUnit: NewUnit;

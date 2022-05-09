@@ -3,27 +3,22 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type MediumDeletePayload = {
+export type NewPartMediumDeleteEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
   mediumId: string;
   processingState: State['form']['processingState'];
 };
 
-export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<MediumDeletePayload> => {
+export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<NewPartMediumDeleteEvent> => {
   const router = useRouter();
   const { newPartMediumService } = useAdminServices();
 
-  const mediumDelete$ = useRef(new Subject<MediumDeletePayload>());
+  const mediumDelete$ = useRef(new Subject<NewPartMediumDeleteEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -31,8 +26,8 @@ export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<MediumDelet
     mediumDelete$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'DELETE_PART_MEDIUM_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId }) => {
-        return newPartMediumService.deletePartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId).pipe(
+      exhaustMap(({ administratorId, mediumId }) => {
+        return newPartMediumService.deletePartMedium(administratorId, mediumId).pipe(
           tap({
             next: () => {
               dispatch({ type: 'DELETE_PART_MEDIUM_SUCCEEDED' });

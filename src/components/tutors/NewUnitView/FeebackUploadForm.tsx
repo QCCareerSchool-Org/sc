@@ -13,15 +13,16 @@ type Props = {
   courseId: number;
   unitId: string;
   state: State;
-  fileChange: ChangeEventHandler<HTMLInputElement>;
+  onFileChange: ChangeEventHandler<HTMLInputElement>;
   upload$: Subject<FeedbackUploadPayload>;
 };
 
-export const FeebackUploadForm = memo(({ tutorId, studentId, courseId, unitId, state, fileChange, upload$ }: Props): ReactElement => {
+export const FeebackUploadForm = memo((props: Props): ReactElement => {
+  const { tutorId, studentId, courseId, unitId, state, upload$ } = props;
 
   const disabled = typeof state.feedbackForm.errorMessage !== 'undefined' || state.feedbackForm.file === null || state.processingState === 'uploading' || state.processingState === 'deleting' || state.processingState === 'closing' || state.processingState === 'returning';
 
-  const buttonClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (!disabled && state.feedbackForm.file !== null) {
       upload$.next({ tutorId, studentId, courseId, unitId, file: state.feedbackForm.file, processingState: state.processingState });
     }
@@ -32,11 +33,11 @@ export const FeebackUploadForm = memo(({ tutorId, studentId, courseId, unitId, s
       <div className="mb-3">
         {state.processingState === 'uploading'
           ? <ProgressBar progress={state.feedbackForm.progress}>{state.feedbackForm.progress}%</ProgressBar>
-          : <input onChange={fileChange} type="file" accept="audio/*" className="form-control" id={unitId} />
+          : <input onChange={props.onFileChange} type="file" accept="audio/*" className="form-control" id={unitId} />
         }
       </div>
       <div className="d-flex align-items-center">
-        <button onClick={buttonClick} className="btn btn-primary" style={{ width: 80 }} disabled={disabled}>
+        <button onClick={handleButtonClick} className="btn btn-primary" style={{ width: 80 }} disabled={disabled}>
           {state.processingState === 'uploading' ? <Spinner size="sm" /> : 'Upload'}
         </button>
         {state.feedbackForm.errorMessage && <small className="text-danger ms-2">{state.feedbackForm.errorMessage}</small>}

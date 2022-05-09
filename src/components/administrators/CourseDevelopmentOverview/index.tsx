@@ -26,7 +26,7 @@ export const CourseDevelopmentOverview = ({ administratorId }: Props): ReactElem
     return null;
   }
 
-  const schoolRowClick = (e: MouseEvent<HTMLTableRowElement>, schoolId: number): void => {
+  const handleSchoolRowClick = (e: MouseEvent<HTMLTableRowElement>, schoolId: number): void => {
     void router.push(`/administrators/schools/${schoolId}`);
   };
 
@@ -40,7 +40,7 @@ export const CourseDevelopmentOverview = ({ administratorId }: Props): ReactElem
       <Section>
         <div className="container">
           <h2 className="h3">Schools</h2>
-          <SchoolList schools={state.schools} onClick={schoolRowClick} />
+          <SchoolList schools={state.schools} onClick={handleSchoolRowClick} />
         </div>
       </Section>
     </>

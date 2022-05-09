@@ -3,27 +3,23 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import type { NewAssignmentMediumAddPayload } from '@/services/administrators/newAssignmentMediumService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type MediumInsertPayload = {
+export type NewAssignmentMediumInsertEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  processingState: State['assignmentMediaForm']['processingState'];
   payload: NewAssignmentMediumAddPayload;
+  processingState: State['assignmentMediaForm']['processingState'];
 };
 
-export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<MediumInsertPayload> => {
+export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<NewAssignmentMediumInsertEvent> => {
   const router = useRouter();
   const { newAssignmentMediumService } = useAdminServices();
 
-  const mediumInsert$ = useRef(new Subject<MediumInsertPayload>());
+  const mediumInsert$ = useRef(new Subject<NewAssignmentMediumInsertEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -31,8 +27,8 @@ export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<MediumInser
     mediumInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
       tap(() => dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, payload }) => {
-        return newAssignmentMediumService.addAssignmentMedium(administratorId, schoolId, courseId, unitId, assignmentId, payload).pipe(
+      exhaustMap(({ administratorId, payload }) => {
+        return newAssignmentMediumService.addAssignmentMedium(administratorId, payload).pipe(
           tap({
             next: progressResponse => {
               if (progressResponse.type === 'progress') {

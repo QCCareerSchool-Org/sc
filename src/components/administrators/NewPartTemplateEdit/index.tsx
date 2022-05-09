@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
+import { formatDateTime } from '../../../formatDate';
 import { NewPartMediumAddForm } from './NewPartMediumAddForm';
 import { NewPartMediumList } from './NewPartMediumList';
 import { NewPartTemplateEditForm } from './NewPartTemplateEditForm';
@@ -22,14 +23,9 @@ import { Section } from '@/components/Section';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import { useServices } from '@/hooks/useServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
   partId: string;
 };
 
@@ -49,14 +45,14 @@ const changesPreset = (partTemplate: NewPartTemplate | undefined, formData: Stat
   return false;
 };
 
-export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId }: Props): ReactElement | null => {
+export const NewPartTemplateEdit = ({ administratorId, partId }: Props): ReactElement | null => {
   const router = useRouter();
   const { uuidService } = useServices();
   const [ state, dispatch ] = useReducer(createReducer(uuidService), initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newPartTemplate, state.form.data));
 
-  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, partId, dispatch);
+  useInitialData(administratorId, partId, dispatch);
 
   const partSave$ = usePartSave(dispatch);
   const partDelete$ = usePartDelete(dispatch);
@@ -64,107 +60,107 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
   const uploadSlotInsert$ = useUploadSlotInsert(dispatch);
   const mediumInsert$ = useMediumInsert(dispatch);
 
-  const titleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const descriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const descriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleDescriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'DESCRIPTION_TYPE_CHANGED', payload: e.target.value });
   }, []);
 
-  const markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
 
-  const partNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePartNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_NUMBER_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
-    void router.push(`${router.asPath}/textBoxTemplates/${textBoxId}`);
+  const handleTextBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
+    void router.push(`/administrators/newTextBoxTemplates/${textBoxId}`);
   }, [ router ]);
 
-  const uploadSlotRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
-    void router.push(`${router.asPath}/uploadSlotTemplates/${uploadSlotId}`);
+  const handleUploadSlotRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
+    void router.push(`/administrators/newUploadSlotTemplates/${uploadSlotId}`);
   }, [ router ]);
 
-  const mediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
-    void router.push(`${router.asPath}/media/${mediumId}`);
+  const handleMediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
+    void router.push(`/administrators/newPartMedia/${mediumId}`);
   }, [ router ]);
 
-  const textBoxDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleTextBoxDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'TEXT_BOX_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxPointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleTextBoxPointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TEXT_BOX_TEMPLATE_POINTS_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxLinesChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleTextBoxLinesChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TEXT_BOX_TEMPLATE_LINES_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleTextBoxOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TEXT_BOX_TEMPLATE_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const textBoxOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleTextBoxOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TEXT_BOX_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotLabelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUploadSlotLabelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_LABEL_CHANGED', payload: e.target.value });
   }, []);
 
-  const uploadSlotPointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUploadSlotPointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_POINTS_CHANGED', payload: e.target.value });
   }, []);
 
-  const uploadSlotOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUploadSlotOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const uploadSlotImageChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUploadSlotImageChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_IMAGE_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotPdfChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUploadSlotPdfChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_PDF_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotWordChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUploadSlotWordChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_WORD_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotExcelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUploadSlotExcelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_EXCEL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const uploadSlotOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUploadSlotOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UPLOAD_SLOT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const partMediumCaptionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePartMediumCaptionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_MEDIA_CAPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const partMediumOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePartMediumOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_MEDIA_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const partMediumDataSourceChange = useCallback((dataSource: 'file upload' | 'url'): void => {
+  const handlePartMediumDataSourceChange = useCallback((dataSource: 'file upload' | 'url'): void => {
     dispatch({ type: 'PART_MEDIA_DATA_SOURCE_CHANGED', payload: dataSource });
   }, []);
 
-  const partMediumFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePartMediumFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_MEDIA_FILE_CHANGED', payload: e.target.files?.[0] ?? null });
   }, []);
 
-  const partMediumExternalDataChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePartMediumExternalDataChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_MEDIA_EXTERNAL_DATA_CHANGED', payload: e.target.value });
   }, []);
 
@@ -188,20 +184,16 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewPartTemplateEditForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
-                assignmentId={assignmentId}
                 partId={partId}
                 partTemplate={state.newPartTemplate}
                 formState={state.form}
                 save$={partSave$}
                 delete$={partDelete$}
-                titleChange={titleChange}
-                descriptionChange={descriptionChange}
-                descriptionTypeChange={descriptionTypeChange}
-                markingCriteriaChange={markingCriteriaChange}
-                partNumberChange={partNumberChange}
+                onTitleChange={handleTitleChange}
+                onDescriptionChange={handleDescriptionChange}
+                onDescriptionTypeChange={handleDescriptionTypeChange}
+                onMarkingCriteriaChange={handleMarkingCriteriaChange}
+                onPartNumberChange={handlePartNumberChange}
               />
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
@@ -247,23 +239,19 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Text Box Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewTextBoxTemplateList textBoxes={state.newPartTemplate.newTextBoxTemplates} onClick={textBoxRowClick} />
+              <NewTextBoxTemplateList textBoxes={state.newPartTemplate.newTextBoxTemplates} onClick={handleTextBoxRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewTextBoxTemplateAddForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
-                assignmentId={assignmentId}
                 partId={partId}
                 formState={state.newTextBoxTemplateForm}
                 insert$={textBoxInsert$}
-                descriptionChange={textBoxDescriptionChange}
-                pointsChange={textBoxPointsChange}
-                linesChange={textBoxLinesChange}
-                orderChange={textBoxOrderChange}
-                optionalChange={textBoxOptionalChange}
+                onDescriptionChange={handleTextBoxDescriptionChange}
+                onPointsChange={handleTextBoxPointsChange}
+                onLinesChange={handleTextBoxLinesChange}
+                onOrderChange={handleTextBoxOrderChange}
+                onOptionalChange={handleTextBoxOptionalChange}
               />
             </div>
           </div>
@@ -274,26 +262,22 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Upload Slot Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewUploadSlotTemplateList uploadSlots={state.newPartTemplate.newUploadSlotTemplates} onClick={uploadSlotRowClick} />
+              <NewUploadSlotTemplateList uploadSlots={state.newPartTemplate.newUploadSlotTemplates} onClick={handleUploadSlotRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewUploadSlotTemplateAddForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
-                assignmentId={assignmentId}
                 partId={partId}
                 formState={state.newUoloadSlotTemplateForm}
                 insert$={uploadSlotInsert$}
-                labelChange={uploadSlotLabelChange}
-                pointsChange={uploadSlotPointsChange}
-                orderChange={uploadSlotOrderChange}
-                imageChange={uploadSlotImageChange}
-                pdfChange={uploadSlotPdfChange}
-                wordChange={uploadSlotWordChange}
-                excelChange={uploadSlotExcelChange}
-                optionalChange={uploadSlotOptionalChange}
+                onLabelChange={handleUploadSlotLabelChange}
+                onPointsChange={handleUploadSlotPointsChange}
+                onOrderChange={handleUploadSlotOrderChange}
+                onImageChange={handleUploadSlotImageChange}
+                onPdfChange={handleUploadSlotPdfChange}
+                onWordChange={handleUploadSlotWordChange}
+                onExcelChange={handleUploadSlotExcelChange}
+                onOptionalChange={handleUploadSlotOptionalChange}
               />
             </div>
           </div>
@@ -304,23 +288,19 @@ export const NewPartTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Part Media</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewPartMediumList media={state.newPartTemplate.newPartMedia} onClick={mediumRowClick} />
+              <NewPartMediumList media={state.newPartTemplate.newPartMedia} onClick={handleMediumRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewPartMediumAddForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
-                assignmentId={assignmentId}
                 partId={partId}
                 formState={state.partMediaForm}
                 insert$={mediumInsert$}
-                dataSourceChange={partMediumDataSourceChange}
-                captionChange={partMediumCaptionChange}
-                orderChange={partMediumOrderChange}
-                fileChange={partMediumFileChange}
-                externalDataChange={partMediumExternalDataChange}
+                onDataSourceChange={handlePartMediumDataSourceChange}
+                onCaptionChange={handlePartMediumCaptionChange}
+                onOrderChange={handlePartMediumOrderChange}
+                onFileChange={handlePartMediumFileChange}
+                onExternalDataChange={handlePartMediumExternalDataChange}
               />
             </div>
           </div>

@@ -1,6 +1,7 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
+import { endpoint } from '../../basePath';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
@@ -8,9 +9,17 @@ import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTempla
 import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import type { IHttpService } from '@/services/httpService';
-import { endpoint } from 'src/basePath';
 
-export type NewPartTemplatePayload = {
+export type NewPartTemplateAddPayload = {
+  assignmentId: string;
+  partNumber: number;
+  title: string;
+  description: string | null;
+  descriptionType: NewDescriptionType;
+  markingCriteria: string | null;
+};
+
+export type NewPartTemplateSavePayload = {
   partNumber: number;
   title: string;
   description: string | null;
@@ -33,44 +42,44 @@ export type NewPartTemplateWithAssignmentAndInputs = NewPartTemplate & {
 };
 
 export interface INewPartTemplateService {
-  addPart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, data: NewPartTemplatePayload) => Observable<NewPartTemplate>;
-  getPart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string) => Observable<NewPartTemplateWithAssignmentAndInputs>;
-  savePart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, data: NewPartTemplatePayload) => Observable<NewPartTemplate>;
-  deletePart: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string) => Observable<void>;
+  addPart: (administratorId: number, data: NewPartTemplateAddPayload) => Observable<NewPartTemplate>;
+  getPart: (administratorId: number, partId: string) => Observable<NewPartTemplateWithAssignmentAndInputs>;
+  savePart: (administratorId: number, partId: string, data: NewPartTemplateSavePayload) => Observable<NewPartTemplate>;
+  deletePart: (administratorId: number, partId: string) => Observable<void>;
 }
 
 export class NewPartTemplateService implements INewPartTemplateService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public addPart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, data: NewPartTemplatePayload): Observable<NewPartTemplate> {
-    const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId);
+  public addPart(administratorId: number, data: NewPartTemplateAddPayload): Observable<NewPartTemplate> {
+    const url = this.getBaseUrl(administratorId);
     return this.httpService.post<RawNewPartTemplate>(url, data).pipe(
       map(this.mapNewPartTemplate),
     );
   }
 
-  public getPart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): Observable<NewPartTemplateWithAssignmentAndInputs> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${partId}`;
+  public getPart(administratorId: number, partId: string): Observable<NewPartTemplateWithAssignmentAndInputs> {
+    const url = `${this.getBaseUrl(administratorId)}/${partId}`;
     return this.httpService.get<RawNewPartTemplateWithAssignmentAndInputs>(url).pipe(
       map(this.mapNewParTemplateWithAssignmentAndInputs),
     );
   }
 
-  public savePart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, data: NewPartTemplatePayload): Observable<NewPartTemplate> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${partId}`;
+  public savePart(administratorId: number, partId: string, data: NewPartTemplateSavePayload): Observable<NewPartTemplate> {
+    const url = `${this.getBaseUrl(administratorId)}/${partId}`;
     return this.httpService.put<RawNewPartTemplate>(url, data).pipe(
       map(this.mapNewPartTemplate),
     );
   }
 
-  public deletePart(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): Observable<void> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId)}/${partId}`;
+  public deletePart(administratorId: number, partId: string): Observable<void> {
+    const url = `${this.getBaseUrl(administratorId)}/${partId}`;
     return this.httpService.delete<void>(url);
   }
 
-  private getBaseUrl(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string): string {
-    return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts`;
+  private getBaseUrl(administratorId: number): string {
+    return `${endpoint}/administrators/${administratorId}/newPartTemplates`;
   }
 
   private readonly mapNewPartTemplate = (part: RawNewPartTemplate): NewPartTemplate => {

@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 import { useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import { AssignmentSection } from './AssignmentSection';
 import { NewUnitInfoTable } from './NewUnitInfoTable';
 import { NewUnitStatus } from './NewUnitStatus';
@@ -14,7 +15,6 @@ import { SubmitSection } from './SubmitSection';
 import { Section } from '@/components/Section';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   studentId: number;

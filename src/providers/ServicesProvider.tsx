@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
+import { instance } from '../axiosInstance';
 import type { IGradeService } from '@/services/gradeService';
 import { GradeService } from '@/services/gradeService';
 import type { IHttpService } from '@/services/httpService';
@@ -9,7 +10,6 @@ import type { ILoginService } from '@/services/loginService';
 import { LoginService } from '@/services/loginService';
 import type { IUUIDService } from '@/services/uuidService';
 import { UUIDService } from '@/services/uuidService';
-import { instance } from 'src/axiosInstance';
 
 export type Services = {
   httpService: IHttpService;

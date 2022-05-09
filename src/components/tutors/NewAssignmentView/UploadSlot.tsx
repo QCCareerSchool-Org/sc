@@ -1,10 +1,10 @@
 import type { ReactElement } from 'react';
 import { useRef } from 'react';
 
+import { endpoint } from '../../../basePath';
 import type { WithInputForm } from './state';
 import { Img } from '@/components/Img';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   tutorId: number;

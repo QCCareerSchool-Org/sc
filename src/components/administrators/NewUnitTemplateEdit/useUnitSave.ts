@@ -3,26 +3,24 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
+import type { NewUnitTemplateSavePayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type UnitSavePayload = {
+export type NewUnitTemplateSaveEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
   unitId: string;
+  payload: NewUnitTemplateSavePayload;
   processingState: State['form']['processingState'];
-  payload: NewUnitTemplatePayload;
 };
 
-export const useUnitSave = (dispatch: Dispatch<Action>): Subject<UnitSavePayload> => {
+export const useUnitSave = (dispatch: Dispatch<Action>): Subject<NewUnitTemplateSaveEvent> => {
   const router = useRouter();
   const { newUnitTemplateService } = useAdminServices();
 
-  const unitSave$ = useRef(new Subject<UnitSavePayload>());
+  const unitSave$ = useRef(new Subject<NewUnitTemplateSaveEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -30,7 +28,7 @@ export const useUnitSave = (dispatch: Dispatch<Action>): Subject<UnitSavePayload
     unitSave$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'SAVE_UNIT_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, payload }) => newUnitTemplateService.saveUnit(administratorId, schoolId, courseId, unitId, payload).pipe(
+      exhaustMap(({ administratorId, unitId, payload }) => newUnitTemplateService.saveUnit(administratorId, unitId, payload).pipe(
         tap({
           next: updatedAssignment => {
             dispatch({ type: 'SAVE_UNIT_TEMPLATE_SUCCEEDED', payload: updatedAssignment });

@@ -48,7 +48,7 @@ export const MarkForm = memo(({ id, partId, points, mark, notes, form, save }: P
    *
    * @param e the change event
    */
-  const markChange: ChangeEventHandler<HTMLInputElement> = e => {
+  const handleMarkChange: ChangeEventHandler<HTMLInputElement> = e => {
     if (e.target.value === '') {
       setMarkFormValue(null);
       immediateMark.current = null;
@@ -72,7 +72,7 @@ export const MarkForm = memo(({ id, partId, points, mark, notes, form, save }: P
    *
    * @param e the change event
    */
-  const notesChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
+  const handleNotesChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
     if (e.target.value === '') {
       setNotesFormValue(null);
       immediateNotes.current = null;
@@ -88,14 +88,14 @@ export const MarkForm = memo(({ id, partId, points, mark, notes, form, save }: P
   return (
     <div className="row markForm">
       <div className="col-12 col-lg-8">
-        <textarea onChange={notesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
+        <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
       </div>
       {(points > 0 || form.state === 'saving') && (
         <div className="col-lg-4 mt-3 mt-lg-0">
           {/* <div className="d-flex align-items-center"> */}
           {points > 0 && (
             <div className="fw-bold text-nowrap">
-              <input onChange={markChange} value={markFormValue ?? ''} type="number" min={0} max={points} step={1} className="form-control mark tutorFillable" /> / {points}
+              <input onChange={handleMarkChange} value={markFormValue ?? ''} type="number" min={0} max={points} step={1} className="form-control mark tutorFillable" /> / {points}
             </div>
           )}
           {/* {form.state === 'saving' && <div className="ms-2"><Spinner size="sm" /></div>} */}
