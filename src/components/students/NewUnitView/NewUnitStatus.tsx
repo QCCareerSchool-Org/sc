@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { endpoint } from '../../../basePath';
 import { Audio } from '@/components/Audio';
 import type { NewUnit } from '@/domain/newUnit';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;

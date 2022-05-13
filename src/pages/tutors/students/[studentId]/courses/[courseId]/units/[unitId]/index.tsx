@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
-import Error from 'next/error';
+import ErrorPage from 'next/error';
 
 import { Meta } from '@/components/Meta';
 import { NewUnitView } from '@/components/tutors/NewUnitView';
@@ -15,11 +15,11 @@ const NewUnitViewPage: NextPage<Props> = ({ studentId, courseId, unitId }: Props
   const authState = useAuthState();
 
   if (typeof authState.tutorId === 'undefined') {
-    return <Error statusCode={500} />;
+    return <ErrorPage statusCode={500} />;
   }
 
   if (studentId === null || courseId === null || !unitId) {
-    return <Error statusCode={400} />;
+    return <ErrorPage statusCode={400} />;
   }
 
   return (

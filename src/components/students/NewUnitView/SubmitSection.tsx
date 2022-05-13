@@ -14,7 +14,7 @@ type Props = {
 };
 
 export const SubmitSection = ({ submit$, unitComplete, optionalAssignmentsIncomplete, processingState, errorMessage }: Props): ReactElement | null => {
-  const submitUnit: MouseEventHandler<HTMLButtonElement> = e => {
+  const handleButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
     if (!optionalAssignmentsIncomplete || confirm('Are you sure you want to submit your unit without completing your optional assignments?')) {
       submit$.next(processingState);
@@ -37,7 +37,7 @@ export const SubmitSection = ({ submit$, unitComplete, optionalAssignmentsIncomp
           <p>Your unit is <u>not yet complete</u>. Please complete all assignments before submitting your unit.</p>
         )}
         <div className="d-flex align-items-center">
-          <button onClick={submitUnit} className="btn btn-primary" disabled={buttonDisabled}>Submit Unit</button>
+          <button onClick={handleButtonClick} className="btn btn-primary" disabled={buttonDisabled}>Submit Unit</button>
           {processingState === 'submitting' && <div className="ms-2"><Spinner /></div>}
           {processingState === 'submit error' && <span className="text-danger ms-2">{errorMessage ? errorMessage : 'Error'}</span>}
         </div>

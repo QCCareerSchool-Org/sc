@@ -8,41 +8,44 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string) => void;
 };
 
-export const NewUploadSlotTemplateList = memo(({ uploadSlots, onClick }: Props): ReactElement => (
-  <>
-    {uploadSlots.length === 0
-      ? <p>no upload slots</p>
-      : (
-        <table className="newUploadSlotTemplatesTable table table-bordered table-hover w-auto bg-white">
-          <thead>
-            <tr>
-              <th>Label</th>
-              <th>Allowed Types</th>
-              <th className="text-center">Points</th>
-              <th className="text-center">Order</th>
-              <th className="text-center">Optional</th>
-            </tr>
-          </thead>
-          <tbody>
-            {uploadSlots.map(u => (
-              <tr key={u.uploadSlotTemplateId} onClick={e => onClick(e, u.uploadSlotTemplateId)}>
-                <td>{trimLabel(u.label)}</td>
-                <td>{u.allowedTypes.join(',')}</td>
-                <td className="text-center">{u.points}</td>
-                <td className="text-center">{u.order}</td>
-                <td className="text-center">{u.optional ? 'yes' : 'no'}</td>
+export const NewUploadSlotTemplateList = memo((props: Props): ReactElement => {
+  const { uploadSlots } = props;
+  return (
+    <>
+      {uploadSlots.length === 0
+        ? <p>no upload slots</p>
+        : (
+          <table className="newUploadSlotTemplatesTable table table-bordered table-hover w-auto bg-white">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>Allowed Types</th>
+                <th className="text-center">Points</th>
+                <th className="text-center">Order</th>
+                <th className="text-center">Optional</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )
-    }
+            </thead>
+            <tbody>
+              {uploadSlots.map(u => (
+                <tr key={u.uploadSlotTemplateId} onClick={e => props.onClick(e, u.uploadSlotTemplateId)}>
+                  <td>{trimLabel(u.label)}</td>
+                  <td>{u.allowedTypes.join(',')}</td>
+                  <td className="text-center">{u.points}</td>
+                  <td className="text-center">{u.order}</td>
+                  <td className="text-center">{u.optional ? 'yes' : 'no'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      }
 
-    <style jsx>{`
+      <style jsx>{`
       .newUploadSlotTemplatesTable tr { cursor: pointer }
-    `}</style>
-  </>
-));
+      `}</style>
+    </>
+  );
+});
 
 NewUploadSlotTemplateList.displayName = 'NewUploadSlotTemplateList';
 

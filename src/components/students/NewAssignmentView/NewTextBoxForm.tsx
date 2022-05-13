@@ -41,14 +41,14 @@ export const NewTextBoxForm = memo(({ textBox, update, save }: Props): ReactElem
 
   const characters = [ ...textBox.text ].length;
 
-  const onChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
+  const handleTextareaChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
     const newLength = [ ...e.target.value ].length;
     if (newLength <= maxLength) {
       textChange$.current.next(e.target.value);
     }
   };
 
-  const retrySave: MouseEventHandler<HTMLAnchorElement> = (e): void => {
+  const handleRetryClick: MouseEventHandler<HTMLAnchorElement> = (e): void => {
     e.preventDefault();
     textChange$.current.next(textBox.text);
   };
@@ -57,7 +57,7 @@ export const NewTextBoxForm = memo(({ textBox, update, save }: Props): ReactElem
     <>
       <div className="textBox">
         {textBox.description && <label htmlFor={textBox.textBoxId} className="form-label fw-bold">{textBox.description}</label>}
-        <textarea maxLength={maxLength} onChange={onChange} value={textBox.text} id={textBox.textBoxId} className="form-control" rows={textBox.lines ?? 7} />
+        <textarea maxLength={maxLength} onChange={handleTextareaChange} value={textBox.text} id={textBox.textBoxId} className="form-control" rows={textBox.lines ?? 7} />
         <div className="row">
           <div className="col">
             {textBox.formState === 'dirty' && (
@@ -67,7 +67,7 @@ export const NewTextBoxForm = memo(({ textBox, update, save }: Props): ReactElem
                   : (
                     <>
                       {textBox.savedText === textBox.text ? 'saved' : 'unsaved'}{textBox.saveState === 'error' && (
-                        <span className="text-danger"> (error saving <a href="#" onClick={retrySave} className="link-primary">retry</a>)</span>
+                        <span className="text-danger"> (error saving <a href="#" onClick={handleRetryClick} className="link-primary">retry</a>)</span>
                       )}
                     </>
                   )}

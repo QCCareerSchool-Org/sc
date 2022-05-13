@@ -4,14 +4,15 @@ import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import { initialState, reducer } from './state';
 import { UnitsTable } from './UnitsTable';
 import { Section } from '@/components/Section';
+import { Spinner } from '@/components/Spinner';
 import type { NewUnit } from '@/domain/newUnit';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 type Props = {
   studentId: number;
@@ -75,7 +76,7 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, studentId, courseId, enrollmentService, newUnitService ]);
 
-  const newUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
+  const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
     void router.push(router.asPath + '/units/' + unitId);
   }, [ router ]);
 
@@ -89,7 +90,7 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
 
   const nextUnit = getNextUnit(state.enrollment.course.newUnitTemplates, state.enrollment.newUnits);
 
-  const initializeButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleInitializeButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     initialize$.current.next();
   };
 
@@ -97,8 +98,18 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
     <Section>
       <div className="container">
         <h1>{state.enrollment.course.name}</h1>
-        <UnitsTable newUnits={state.enrollment.newUnits} newUnitClick={newUnitClick} />
-        {nextUnit && <button onClick={initializeButtonClick} className="btn btn-primary">Start Unit {nextUnit}</button>}
+        <UnitsTable newUnits={state.enrollment.newUnits} onNewUnitClick={handleNewUnitClick} />
+        {nextUnit && (
+          <div className="d-flex align-items-center">
+            <button onClick={handleInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
+              {state.form.processingState === 'initializing'
+                ? <Spinner size="sm" />
+                : <>Start Unit {nextUnit}</>
+              }
+            </button>
+            {state.form.processingState === 'initialize error' && <span className="text-danger ms-2">{state.form.errorMessage ?? 'initializing'}</span>}
+          </div>
+        )}
       </div>
     </Section>
   );

@@ -8,9 +8,9 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, unitId: string) => void;
 };
 
-export const NewUnitTemplateList = memo(({ units, onClick }: Props): ReactElement => (
+export const NewUnitTemplateList = memo((props: Props): ReactElement => (
   <>
-    {units.length === 0
+    {props.units.length === 0
       ? <p>no units</p>
       : (
         <table className="newUnitTemplatesTable table table-bordered table-hover w-auto bg-white">
@@ -22,8 +22,8 @@ export const NewUnitTemplateList = memo(({ units, onClick }: Props): ReactElemen
             </tr>
           </thead>
           <tbody>
-            {units.map(u => (
-              <tr key={u.unitTemplateId} onClick={e => onClick(e, u.unitTemplateId)}>
+            {props.units.map(u => (
+              <tr key={u.unitTemplateId} onClick={e => props.onClick(e, u.unitTemplateId)}>
                 <td className="text-center">{u.unitLetter}</td>
                 <td>{u.title ?? '(none)'}</td>
                 <td className="text-center">{u.optional ? 'yes' : 'no'}</td>

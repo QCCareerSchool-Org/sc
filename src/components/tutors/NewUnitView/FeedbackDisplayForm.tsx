@@ -2,12 +2,12 @@ import type { MouseEventHandler, ReactElement } from 'react';
 import { memo, useMemo } from 'react';
 import type { Subject } from 'rxjs';
 
+import { endpoint } from '../../../basePath';
+import { humanReadableFileSize } from '../../../humanReadableFilesize';
 import type { State } from './state';
 import type { FeedbackDeletePayload } from './useFeedbackDelete';
 import { Audio } from '@/components/Audio';
 import { Spinner } from '@/components/Spinner';
-import { endpoint } from 'src/basePath';
-import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
 type Props = {
   tutorId: number;
@@ -22,10 +22,11 @@ type Props = {
   delete$: Subject<FeedbackDeletePayload>;
 };
 
-export const FeedbackDisplayForm = memo(({ tutorId, studentId, courseId, unitId, responseFilename, responseFilesize, responseMimeTypeId, processingState, errorMessage, delete$ }: Props): ReactElement => {
+export const FeedbackDisplayForm = memo((props: Props): ReactElement => {
+  const { tutorId, studentId, courseId, unitId, responseFilename, responseFilesize, responseMimeTypeId, processingState, errorMessage, delete$ } = props;
   const audioSrc = useMemo(() => `${endpoint}/tutors/${tutorId}/students/${studentId}/newUnits/${unitId}/response`, [ tutorId, studentId, unitId ]);
 
-  const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm('Are you sure you want to delete your audio feedback?')) {
       delete$.next({ tutorId, studentId, courseId, unitId, processingState });
     }
@@ -40,7 +41,7 @@ export const FeedbackDisplayForm = memo(({ tutorId, studentId, courseId, unitId,
         </figure>
       </div>
       <div className="d-flex align-items-center">
-        <button onClick={deleteClick} className="btn btn-danger" style={{ width: 80 }}>
+        <button onClick={handleDeleteClick} className="btn btn-danger" style={{ width: 80 }}>
           {processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
         {processingState === 'delete error' && <span className="text-danger ms-2">{errorMessage ?? 'Delete error'}</span>}

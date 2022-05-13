@@ -2,6 +2,7 @@ import NextError from 'next/error';
 import type { ChangeEventHandler, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
+import { formatDateTime } from '../../../formatDate';
 import { NewUploadSlotTemplateEditForm } from './NewUploadSlotTemplateEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
@@ -11,15 +12,9 @@ import { useUploadSlotSave } from './useUploadSlotSave';
 import { Section } from '@/components/Section';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
   uploadSlotId: string;
 };
 
@@ -54,45 +49,45 @@ const changesPreset = (uploadSlotTemplate: NewUploadSlotTemplate | undefined, fo
   return false;
 };
 
-export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId }: Props): ReactElement | null => {
+export const NewUploadSlotTemplateEdit = ({ administratorId, uploadSlotId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newUploadSlotTemplate, state.form.data));
 
-  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, partId, uploadSlotId, dispatch);
+  useInitialData(administratorId, uploadSlotId, dispatch);
 
   const uploadSlotSave$ = useUploadSlotSave(dispatch);
   const uploadSlotDelete$ = useUploadSlotDelete(dispatch);
 
-  const labelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleLabelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'LABEL_CHANGED', payload: e.target.value });
   }, []);
 
-  const pointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePointsChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'POINTS_CHANGED', payload: e.target.value });
   }, []);
 
-  const imageChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleImageChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'IMAGE_CHANGED', payload: e.target.checked });
   }, []);
 
-  const pdfChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePdfChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PDF_CHANGED', payload: e.target.checked });
   }, []);
 
-  const wordChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleWordChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'WORD_CHANGED', payload: e.target.checked });
   }, []);
 
-  const excelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleExcelChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'EXCEL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const orderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
@@ -113,23 +108,18 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, schoolId, courseId,
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewUploadSlotTemplateEditForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
-                assignmentId={assignmentId}
-                partId={partId}
                 uploadSlotId={uploadSlotId}
                 formState={state.form}
                 save$={uploadSlotSave$}
                 delete$={uploadSlotDelete$}
-                labelChange={labelChange}
-                pointsChange={pointsChange}
-                imageChange={imageChange}
-                pdfChange={pdfChange}
-                wordChange={wordChange}
-                excelChange={excelChange}
-                orderChange={orderChange}
-                optionalChange={optionalChange}
+                onLabelChange={handleLabelChange}
+                onPointsChange={handlePointsChange}
+                onImageChange={handleImageChange}
+                onPdfChange={handlePdfChange}
+                onWordChange={handleWordChange}
+                onExcelChange={handleExcelChange}
+                onOrderChange={handleOrderChange}
+                onOptionalChange={handleOptionalChange}
               />
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">

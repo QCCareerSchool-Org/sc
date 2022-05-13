@@ -2,11 +2,11 @@ import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, concatMap, EMPTY, Subject, takeUntil, tap } from 'rxjs';
-import type { Action } from './state';
 
+import { navigateToLogin } from '../../../navigateToLogin';
+import type { Action } from './state';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 export type InputType = 'text box' | 'upload slot';
 

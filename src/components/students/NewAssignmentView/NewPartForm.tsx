@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 
+import { endpoint } from '../../../basePath';
 import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
@@ -9,7 +10,6 @@ import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import type { PartState } from '@/components/students/NewAssignmentView/state';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;

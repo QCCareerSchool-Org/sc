@@ -3,12 +3,12 @@ import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export const useInitialData = (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, dispatch: Dispatch<Action>): void => {
+export const useInitialData = (administratorId: number, assignmentId: string, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
   const { newAssignmentTemplateService } = useAdminServices();
 
@@ -16,7 +16,7 @@ export const useInitialData = (administratorId: number, schoolId: number, course
     const destroy$ = new Subject<void>();
 
     // load the initial data
-    newAssignmentTemplateService.getAssignment(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
+    newAssignmentTemplateService.getAssignment(administratorId, assignmentId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: assignmentTemplate => {
@@ -35,5 +35,5 @@ export const useInitialData = (administratorId: number, schoolId: number, course
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, schoolId, courseId, unitId, assignmentId, dispatch, router, newAssignmentTemplateService ]);
+  }, [ administratorId, assignmentId, dispatch, router, newAssignmentTemplateService ]);
 };

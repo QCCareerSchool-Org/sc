@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react';
 
+import { endpoint } from '../../../basePath';
 import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxTemplatePreview } from './NewTextBoxTemplatePreview';
 import { NewUploadSlotTemplatePreview } from './NewUploadSlotTemplatePreview';
@@ -10,7 +11,6 @@ import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
-import { endpoint } from 'src/basePath';
 
 type NewPartTemplateWithInputs = NewPartTemplate & {
   newTextBoxTemplates: NewTextBoxTemplate[];
@@ -20,14 +20,10 @@ type NewPartTemplateWithInputs = NewPartTemplate & {
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
   newPartTemplate: NewPartTemplateWithInputs;
 };
 
-export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, unitId, assignmentId, newPartTemplate }: Props): ReactElement => {
+export const NewPartTemplatePreview = ({ administratorId, newPartTemplate }: Props): ReactElement => {
   return (
     <Section>
       <div className="container">
@@ -37,12 +33,12 @@ export const NewPartTemplatePreview = ({ administratorId, schoolId, courseId, un
           <div className="col-12 col-lg-10 col-xl-8">
             {newPartTemplate.newPartMedia.filter(m => m.type !== 'download').map(m => (
               <figure key={m.partMediumId} className={`figure ${m.type}Figure`}>
-                <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} schoolId={schoolId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={newPartTemplate.partTemplateId} newPartMedium={m} />
+                <NewPartMediumView className="figure-img mb-0 mw-100" administratorId={administratorId} newPartMedium={m} />
                 <figcaption className="figure-caption">{m.caption}</figcaption>
               </figure>
             ))}
             {newPartTemplate.newPartMedia.filter(m => m.type === 'download').map(m => {
-              const href = `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/media/${m.partMediumId}/file`;
+              const href = `${endpoint}/administrators/${administratorId}/newAssignmentMedia/${m.partMediumId}/file`;
               return (
                 <div key={m.partMediumId} className="downloadMedium">
                   <a href={href} download>

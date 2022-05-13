@@ -11,24 +11,20 @@ import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administ
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
   partId: string;
   partTemplate: NewPartTemplateWithAssignmentAndInputs;
   formState: State['form'];
   save$: Subject<PartSavePayload>;
   delete$: Subject<PartDeletePayload>;
-  titleChange: ChangeEventHandler<HTMLInputElement>;
-  descriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
-  descriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
-  markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
-  partNumberChange: ChangeEventHandler<HTMLInputElement>;
+  onTitleChange: ChangeEventHandler<HTMLInputElement>;
+  onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onDescriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
+  onMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onPartNumberChange: ChangeEventHandler<HTMLInputElement>;
 };
 
 export const NewPartTemplateEditForm = memo((props: Props): ReactElement => {
-  const { administratorId, schoolId, courseId, unitId, assignmentId, partId, partTemplate, formState, save$, delete$ } = props;
+  const { administratorId, partId, partTemplate, formState, save$, delete$ } = props;
 
   let valid = true;
   // check if there are any validation messages
@@ -41,7 +37,7 @@ export const NewPartTemplateEditForm = memo((props: Props): ReactElement => {
     }
   }
 
-  const formSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -51,10 +47,6 @@ export const NewPartTemplateEditForm = memo((props: Props): ReactElement => {
     }
     save$.next({
       administratorId,
-      schoolId,
-      courseId,
-      unitId,
-      assignmentId,
       partId,
       processingState: formState.processingState,
       payload: {
@@ -67,14 +59,10 @@ export const NewPartTemplateEditForm = memo((props: Props): ReactElement => {
     });
   };
 
-  const deleteClick: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (confirm(`Are you sure you want to delete this part template and all its media and inputs?\n\nmedia: ${partTemplate.newPartMedia.length}\ntext boxes: ${partTemplate?.newTextBoxTemplates.length}\nupload slots: ${partTemplate?.newUploadSlotTemplates.length}`)) {
       delete$.next({
         administratorId,
-        schoolId,
-        courseId,
-        unitId,
-        assignmentId,
         partId,
         processingState: formState.processingState,
       });
@@ -82,21 +70,21 @@ export const NewPartTemplateEditForm = memo((props: Props): ReactElement => {
   };
 
   return (
-    <form onSubmit={formSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <NewPartTemplateFormElements
         formData={formState.data}
         formValidationMessages={formState.validationMessages}
-        titleChange={props.titleChange}
-        descriptionChange={props.descriptionChange}
-        descriptionTypeChange={props.descriptionTypeChange}
-        markingCriteriaChange={props.markingCriteriaChange}
-        partNumberChange={props.partNumberChange}
+        onTitleChange={props.onTitleChange}
+        onDescriptionChange={props.onDescriptionChange}
+        onDescriptionTypeChange={props.onDescriptionTypeChange}
+        onMarkingCriteriaChange={props.onMarkingCriteriaChange}
+        onPartNumberChange={props.onPartNumberChange}
       />
       <div className="d-flex align-items-center">
         <button type="submit" className="btn btn-primary me-2" style={{ width: 80 }} disabled={!valid || formState.processingState === 'saving' || formState.processingState === 'deleting'}>
           {formState.processingState === 'saving' ? <Spinner size="sm" /> : 'Save'}
         </button>
-        <button type="button" onClick={deleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
+        <button type="button" onClick={handleDeleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
           {formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
         {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Save Error'}</span>}

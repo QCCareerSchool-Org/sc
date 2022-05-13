@@ -1,10 +1,10 @@
 import type { ReactElement } from 'react';
 import { FaDownload } from 'react-icons/fa';
 
+import { humanReadableFileSize } from '../humanReadableFilesize';
 import { FileIcon } from './FileIcon';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium } from '@/domain/newPartMedium';
-import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
 type Props = {
   medium: NewAssignmentMedium | NewPartMedium;

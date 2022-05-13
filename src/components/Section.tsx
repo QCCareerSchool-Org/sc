@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from 'react';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   id?: string;
@@ -11,7 +11,7 @@ export const Section = ({ id, className, children }: Props): ReactElement => {
   const sectionRef = useRef<HTMLElement>(null);
   const [ scrollOffset, setScrollOffset ] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (sectionRef.current) {
       const distanceFromTop = sectionRef.current.getBoundingClientRect().top + window.scrollY;
       if (distanceFromTop < 780) {

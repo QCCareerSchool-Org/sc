@@ -3,26 +3,23 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewAssignmentTemplatePayload } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentTemplateAddPayload } from '@/services/administrators/newAssignmentTemplateService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type AssignementInsertPayload = {
+export type NewAssignementTemplateInsertEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
+  payload: NewAssignmentTemplateAddPayload;
   processingState: State['newAssignmentTemplateForm']['processingState'];
-  payload: NewAssignmentTemplatePayload;
 };
 
-export const useAssignmentInsert = (dispatch: Dispatch<Action>): Subject<AssignementInsertPayload> => {
+export const useAssignmentInsert = (dispatch: Dispatch<Action>): Subject<NewAssignementTemplateInsertEvent> => {
   const router = useRouter();
   const { newAssignmentTemplateService } = useAdminServices();
 
-  const assignmentInsert$ = useRef(new Subject<AssignementInsertPayload>());
+  const assignmentInsert$ = useRef(new Subject<NewAssignementTemplateInsertEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -30,7 +27,7 @@ export const useAssignmentInsert = (dispatch: Dispatch<Action>): Subject<Assigne
     assignmentInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
       tap(() => dispatch({ type: 'ADD_ASSIGNMENT_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, payload }) => newAssignmentTemplateService.addAssignment(administratorId, schoolId, courseId, unitId, payload).pipe(
+      exhaustMap(({ administratorId, payload }) => newAssignmentTemplateService.addAssignment(administratorId, payload).pipe(
         tap({
           next: insertedAssignment => dispatch({ type: 'ADD_ASSIGNMENT_TEMPLATE_SUCCEEDED', payload: insertedAssignment }),
           error: err => {

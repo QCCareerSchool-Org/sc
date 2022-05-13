@@ -1,8 +1,18 @@
+import type { Course } from '@/domain/course';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
-import type { CourseWithSchoolAndUnits } from '@/services/administrators/courseService';
+import type { School } from '@/domain/school';
+
+type CourseWithSchoolAndUnitTemplates = Course & {
+  school: School;
+  newUnitTemplates: NewUnitTemplate[];
+};
 
 export type State = {
-  course?: CourseWithSchoolAndUnits;
+  course?: CourseWithSchoolAndUnitTemplates;
+  enableForm: {
+    processingState: 'idle' | 'saving' | 'save error';
+    errorMessage?: string;
+  };
   newUnitTemplateForm: {
     data: {
       unitLetter: string;
@@ -28,8 +38,11 @@ export type State = {
 };
 
 export type Action =
-  | { type: 'LOAD_COURSE_SUCCEEDED'; payload: CourseWithSchoolAndUnits }
+  | { type: 'LOAD_COURSE_SUCCEEDED'; payload: CourseWithSchoolAndUnitTemplates }
   | { type: 'LOAD_COURSE_FAILED'; payload?: number }
+  | { type: 'ENABLE_COURSE_STARTED' }
+  | { type: 'ENABLE_COURSE_SUCCEEDED'; payload: Course }
+  | { type: 'ENABLE_COURSE_FAILED'; payload?: string }
   | { type: 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_TITLE_CHANGED'; payload: string }
   | { type: 'UNIT_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
@@ -41,6 +54,9 @@ export type Action =
   | { type: 'ADD_UNIT_TEMPLATE_FAILED'; payload?: string };
 
 export const initialState: State = {
+  enableForm: {
+    processingState: 'idle',
+  },
   newUnitTemplateForm: {
     data: {
       unitLetter: 'A',
@@ -88,6 +104,22 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'LOAD_COURSE_FAILED':
       return { ...state, error: true, errorCode: action.payload };
+    case 'ENABLE_COURSE_STARTED':
+      return { ...state, enableForm: { processingState: 'saving', errorMessage: undefined } };
+    case 'ENABLE_COURSE_SUCCEEDED':
+      if (typeof state.course === 'undefined') {
+        throw Error('course is undefined');
+      }
+      return {
+        ...state,
+        enableForm: { processingState: 'idle' },
+        course: {
+          ...state.course,
+          ...action.payload,
+        },
+      };
+    case 'ENABLE_COURSE_FAILED':
+      return { ...state, enableForm: { processingState: 'save error', errorMessage: action.payload } };
     case 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {

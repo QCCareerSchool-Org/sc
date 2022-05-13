@@ -1,8 +1,10 @@
 import NextError from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
+import { formatDateTime } from '../../../formatDate';
 import { NewAssignmentTemplateAddForm } from './NewAssignmentTemplateAddForm';
 import { NewAssignmentTemplateList } from './NewAssignmentTemplateList';
 import { NewUnitTemplateEditForm } from './NewUnitTemplateEditForm';
@@ -13,14 +15,13 @@ import { useInitialData } from './useInitialData';
 import { useUnitDelete } from './useUnitDelete';
 import { useUnitSave } from './useUnitSave';
 import { Section } from '@/components/Section';
+import type { Country } from '@/domain/country';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
+import type { NewUnitTemplatePrice } from '@/domain/newUnitTemplatePrice';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
   unitId: string;
 };
 
@@ -46,63 +47,63 @@ const changesPreset = (unitTemplate: NewUnitTemplate | undefined, formData: Stat
   return false;
 };
 
-export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitId }: Props): ReactElement | null => {
+export const NewUnitTemplateEdit = ({ administratorId, unitId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newUnitTemplate, state.form.data));
 
-  useInitialData(administratorId, schoolId, courseId, unitId, dispatch);
+  useInitialData(administratorId, unitId, dispatch);
 
   const unitSave$ = useUnitSave(dispatch);
   const unitDelete$ = useUnitDelete(dispatch);
   const assignmentInsert$ = useAssignmentInsert(dispatch);
 
-  const titleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const descriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
 
-  const unitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UNIT_LETTER_CHANGED', payload: e.target.value });
   }, []);
 
-  const orderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const assignmentRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
-    void router.push(`${router.asPath}/assignmentTemplates/${assignmentId}`);
+  const handleAssignmentRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
+    void router.push(`/administrators/new-assignment-templates/${assignmentId}`);
   }, [ router ]);
 
-  const assignmentTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleAssignmentTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleAssignmentDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleAssignmentMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_TEMPLATE_MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentAssignmentNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleAssignmentAssignmentNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_TEMPLATE_ASSIGNMENT_NUMBER_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleAssignmentOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
@@ -114,6 +115,8 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
     return null;
   }
 
+  const courseId = state.newUnitTemplate.courseId;
+
   return (
     <>
       <Section>
@@ -123,19 +126,17 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewUnitTemplateEditForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
                 unitId={unitId}
                 unitTemplate={state.newUnitTemplate}
                 formState={state.form}
                 save$={unitSave$}
                 delete$={unitDelete$}
-                titleChange={titleChange}
-                descriptionChange={descriptionChange}
-                markingCriteriaChange={markingCriteriaChange}
-                unitLetterChange={unitLetterChange}
-                orderChange={orderChange}
-                optionalChange={optionalChange}
+                onTitleChange={handleTitleChange}
+                onDescriptionChange={handleDescriptionChange}
+                onMarkingCriteriaChange={handleMarkingCriteriaChange}
+                onUnitLetterChange={handleUnitLetterChange}
+                onOrderChange={handleOrderChange}
+                onOptionalChange={handleOptionalChange}
               />
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
@@ -146,6 +147,21 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
                     <tr><th scope="row">Assignment Templates</th><td>{state.newUnitTemplate.newAssignmentTemplates.length}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newUnitTemplate.created)}</td></tr>
                     {state.newUnitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newUnitTemplate.modified)}</td></tr>}
+                    <tr>
+                      <th scope="row">Prices</th>
+                      <td>
+                        {state.newUnitTemplate.prices.length === 0
+                          ? <span className="text-danger">None</span>
+                          : state.newUnitTemplate.prices.sort(priceSort).map(p => {
+                            const href = `/administrators/unit-prices/edit?courseId=${encodeURIComponent(courseId)}`;
+                            if (p.country === null) {
+                              return <Link key={p.unitTemplatePriceId} href={href}><a className="me-1">Default</a></Link>;
+                            }
+                            return <Link key={p.unitTemplatePriceId} href={href + '&countryId=' + encodeURIComponent(p.country.countryId)}><a className="me-1">{p.country.code}</a></Link>;
+                          })
+                        }
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -158,21 +174,19 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
           <h2 className="h3">Assignment Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewAssignmentTemplateList assignments={state.newUnitTemplate.newAssignmentTemplates} onClick={assignmentRowClick} />
+              <NewAssignmentTemplateList assignments={state.newUnitTemplate.newAssignmentTemplates} onClick={handleAssignmentRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentTemplateAddForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
                 unitId={unitId}
                 formState={state.newAssignmentTemplateForm}
                 insert$={assignmentInsert$}
-                titleChange={assignmentTitleChange}
-                descriptionChange={assignmentDescriptionChange}
-                markingCriteriaChange={assignmentMarkingCriteriaChange}
-                assignmentNumberChange={assignmentAssignmentNumberChange}
-                optionalChange={assignmentOptionalChange}
+                onTitleChange={handleAssignmentTitleChange}
+                onDescriptionChange={handleAssignmentDescriptionChange}
+                onMarkingCriteriaChange={handleAssignmentMarkingCriteriaChange}
+                onAssignmentNumberChange={handleAssignmentAssignmentNumberChange}
+                onOptionalChange={handleAssignmentOptionalChange}
               />
             </div>
           </div>
@@ -180,4 +194,17 @@ export const NewUnitTemplateEdit = ({ administratorId, schoolId, courseId, unitI
       </Section>
     </>
   );
+};
+
+type Price = NewUnitTemplatePrice & { country: Country | null };
+
+const priceSort = (a: Price, b: Price): number => {
+  if (a.country === null && b.country === null) {
+    return 0;
+  } else if (a.country === null) {
+    return -1;
+  } else if (b.country === null) {
+    return 1;
+  }
+  return a.country.code.localeCompare(b.country.code);
 };

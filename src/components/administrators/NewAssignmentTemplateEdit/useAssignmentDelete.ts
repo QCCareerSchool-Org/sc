@@ -3,25 +3,22 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type AssignmentDeletePayload = {
+export type NewAssignmentTemplateDeleteEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
   assignmentId: string;
   processingState: State['form']['processingState'];
 };
 
-export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<AssignmentDeletePayload> => {
+export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<NewAssignmentTemplateDeleteEvent> => {
   const router = useRouter();
   const { newAssignmentTemplateService } = useAdminServices();
 
-  const assignmentDelete$ = useRef(new Subject<AssignmentDeletePayload>());
+  const assignmentDelete$ = useRef(new Subject<NewAssignmentTemplateDeleteEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -29,8 +26,8 @@ export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<Assignm
     assignmentDelete$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId }) => {
-        return newAssignmentTemplateService.deleteAssignment(administratorId, schoolId, courseId, unitId, assignmentId).pipe(
+      exhaustMap(({ administratorId, assignmentId }) => {
+        return newAssignmentTemplateService.deleteAssignment(administratorId, assignmentId).pipe(
           tap({
             next: () => {
               dispatch({ type: 'DELETE_ASSIGNMENT_TEMPLATE_SUCCEEDED' });

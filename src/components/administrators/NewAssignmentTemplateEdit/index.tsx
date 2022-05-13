@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
+import { formatDateTime } from '../../../formatDate';
 import { NewAssignmentMediumAddForm } from './NewAssignmentMediumAddForm';
 import { NewAssignmentMediumList } from './NewAssignmentMediumList';
 import { NewAssignmentTemplateEditForm } from './NewAssignmentTemplateEditForm';
@@ -20,13 +21,9 @@ import { Section } from '@/components/Section';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { useServices } from '@/hooks/useServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
-import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
   assignmentId: string;
 };
 
@@ -49,85 +46,85 @@ const changesPreset = (assignmentTemplate: NewAssignmentTemplate | undefined, fo
   return false;
 };
 
-export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
+export const NewAssignmentTemplateEdit = ({ administratorId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
   const { uuidService } = useServices();
   const [ state, dispatch ] = useReducer(createReducer(uuidService), initialState);
 
   useWarnIfUnsavedChanges(changesPreset(state.newAssignmentTemplate, state.form.data));
 
-  useInitialData(administratorId, schoolId, courseId, unitId, assignmentId, dispatch);
+  useInitialData(administratorId, assignmentId, dispatch);
 
   const assignmentSave$ = useAssignmentSave(dispatch);
   const assignmentDelete$ = useAssignmentDelete(dispatch);
   const partInsert$ = usePartInsert(dispatch);
   const mediumInsert$ = useMediumInsert(dispatch);
 
-  const titleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const descriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const markingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleAssignmentNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_NUMBER_CHANGED', payload: e.target.value });
   }, []);
 
-  const optionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const partRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, partId: string): void => {
-    void router.push(`${router.asPath}/partTemplates/${partId}`);
+  const handlePartRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, partId: string): void => {
+    void router.push(`/administrators/new-part-templates/${partId}`);
   }, [ router ]);
 
-  const mediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
-    void router.push(`${router.asPath}/media/${mediumId}`);
+  const handleMediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
+    void router.push(`/administrators/new-assignment-media/${mediumId}`);
   }, [ router ]);
 
-  const partTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePartTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const partDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handlePartDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const partDescriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePartDescriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_DESCRIPTION_TYPE_CHANGED', payload: e.target.value });
   }, []);
 
-  const partMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handlePartMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
 
-  const partPartNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handlePartPartNumberChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'PART_TEMPLATE_PART_NUMBER_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentMediumCaptionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleAssignmentMediumCaptionChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_MEDIA_CAPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentMediumOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleAssignmentMediumOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_MEDIA_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const assignmentMediumDataSourceChange = useCallback((dataSource: 'file upload' | 'url'): void => {
+  const handleAssignmentMediumDataSourceChange = useCallback((dataSource: 'file upload' | 'url'): void => {
     dispatch({ type: 'ASSIGNMENT_MEDIA_DATA_SOURCE_CHANGED', payload: dataSource });
   }, []);
 
-  const assignmentMediumFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleAssignmentMediumFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_MEDIA_FILE_CHANGED', payload: e.target.files?.[0] ?? null });
   }, []);
 
-  const assignmentMediumExternalDataChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleAssignmentMediumExternalDataChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_MEDIA_EXTERNAL_DATA_CHANGED', payload: e.target.value });
   }, []);
 
@@ -150,19 +147,16 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewAssignmentTemplateEditForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
                 assignmentId={assignmentId}
                 assignmentTemplate={state.newAssignmentTemplate}
                 formState={state.form}
                 save$={assignmentSave$}
                 delete$={assignmentDelete$}
-                titleChange={titleChange}
-                descriptionChange={descriptionChange}
-                markingCriteriaChange={markingCriteriaChange}
-                assignmentNumberChange={assignmentNumberChange}
-                optionalChange={optionalChange}
+                onTitleChange={handleTitleChange}
+                onDescriptionChange={handleDescriptionChange}
+                onMarkingCriteriaChange={handleMarkingCriteriaChange}
+                onAssignmentNumberChange={handleAssignmentNumberChange}
+                onOptionalChange={handleOptionalChange}
               />
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
@@ -186,22 +180,19 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <h2 className="h3">Part Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewPartTemplateList parts={state.newAssignmentTemplate.newPartTemplates} onClick={partRowClick} />
+              <NewPartTemplateList parts={state.newAssignmentTemplate.newPartTemplates} onClick={handlePartRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewPartTemplateAddForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
                 assignmentId={assignmentId}
                 formState={state.newPartTemplateForm}
                 insert$={partInsert$}
-                titleChange={partTitleChange}
-                descriptionChange={partDescriptionChange}
-                descriptionTypeChange={partDescriptionTypeChange}
-                markingCriteriaChange={partMarkingCriteriaChange}
-                partNumberChange={partPartNumberChange}
+                onTitleChange={handlePartTitleChange}
+                onDescriptionChange={handlePartDescriptionChange}
+                onDescriptionTypeChange={handlePartDescriptionTypeChange}
+                onMarkingCriteriaChange={handlePartMarkingCriteriaChange}
+                onPartNumberChange={handlePartPartNumberChange}
               />
             </div>
           </div>
@@ -212,22 +203,19 @@ export const NewAssignmentTemplateEdit = ({ administratorId, schoolId, courseId,
           <h2 className="h3">Assignment Media</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewAssignmentMediumList media={state.newAssignmentTemplate.newAssignmentMedia} onClick={mediumRowClick} />
+              <NewAssignmentMediumList media={state.newAssignmentTemplate.newAssignmentMedia} onClick={handleMediumRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentMediumAddForm
                 administratorId={administratorId}
-                schoolId={schoolId}
-                courseId={courseId}
-                unitId={unitId}
                 assignmentId={assignmentId}
                 formState={state.assignmentMediaForm}
                 insert$={mediumInsert$}
-                dataSourceChange={assignmentMediumDataSourceChange}
-                captionChange={assignmentMediumCaptionChange}
-                orderChange={assignmentMediumOrderChange}
-                fileChange={assignmentMediumFileChange}
-                externalDataChange={assignmentMediumExternalDataChange}
+                onDataSourceChange={handleAssignmentMediumDataSourceChange}
+                onCaptionChange={handleAssignmentMediumCaptionChange}
+                onOrderChange={handleAssignmentMediumOrderChange}
+                onFileChange={handleAssignmentMediumFileChange}
+                onExternalDataChange={handleAssignmentMediumExternalDataChange}
               />
             </div>
           </div>

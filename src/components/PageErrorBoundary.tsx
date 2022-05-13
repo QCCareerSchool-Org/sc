@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import { Component } from 'react';
 
-import { TrackJS } from 'src/trackjs-isomorphic';
+import { TrackJS } from '../trackjs-isomorphic';
 
 type Props = {
   fallback: ReactElement;

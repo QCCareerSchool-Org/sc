@@ -3,19 +3,19 @@ import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export const useInitialData = (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, mediumId: string, dispatch: Dispatch<Action>): void => {
+export const useInitialData = (administratorId: number, mediumId: string, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
   const { newPartMediumService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newPartMediumService.getPartMedium(administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId).pipe(
+    newPartMediumService.getPartMedium(administratorId, mediumId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: newAssignmentMedium => {
@@ -34,5 +34,5 @@ export const useInitialData = (administratorId: number, schoolId: number, course
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, schoolId, courseId, unitId, assignmentId, partId, mediumId, dispatch, router, newPartMediumService ]);
+  }, [ administratorId, mediumId, dispatch, router, newPartMediumService ]);
 };

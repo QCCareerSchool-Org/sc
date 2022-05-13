@@ -1,54 +1,56 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
+import type { ChangeEventHandler, MouseEvent, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { NewUnitTemplateAddForm } from './NewUnitTemplateAddForm';
 import { NewUnitTemplateList } from './NewUnitTemplateList';
 import { initialState, reducer } from './state';
+import { useCourseEnable } from './useCourseEnable';
 import { useInitialData } from './useInitialData';
 import { useUnitInsert } from './useUnitInsert';
 import { Section } from '@/components/Section';
+import { Spinner } from '@/components/Spinner';
 
 type Props = {
   administratorId: number;
-  schoolId: number;
   courseId: number;
 };
 
-export const CourseView = ({ administratorId, schoolId, courseId }: Props): ReactElement | null => {
+export const CourseView = ({ administratorId, courseId }: Props): ReactElement | null => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, schoolId, courseId, dispatch);
+  useInitialData(administratorId, courseId, dispatch);
 
   const unitInsert$ = useUnitInsert(dispatch);
+  const courseEnable$ = useCourseEnable(dispatch);
 
-  const unitRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
-    void router.push(`${router.asPath}/unitTemplates/${unitId}`);
+  const handleUnitRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
+    void router.push(`/administrators/new-unit-templates/${unitId}`);
   }, [ router ]);
 
-  const unitTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUnitTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UNIT_TEMPLATE_TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const unitDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleUnitDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'UNIT_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
-  const unitMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+  const handleUnitMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'UNIT_TEMPLATE_MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
 
-  const unitUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUnitUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED', payload: e.target.value });
   }, []);
 
-  const unitOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUnitOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UNIT_TEMPLATE_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
-  const unitOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+  const handleUnitOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UNIT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
@@ -59,6 +61,25 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
   if (!state.course) {
     return null;
   }
+
+  const enableCourse = (enable: boolean): void => {
+    courseEnable$.next({
+      administratorId,
+      courseId,
+      enable,
+      processingState: state.enableForm.processingState,
+    });
+  };
+
+  const handleDisableClick: MouseEventHandler<HTMLButtonElement> = () => {
+    if (confirm('Disabling this course will prevent any student from initializing a new unit')) {
+      enableCourse(false);
+    }
+  };
+
+  const handleEnableClick: MouseEventHandler<HTMLButtonElement> = () => {
+    enableCourse(true);
+  };
 
   return (
     <>
@@ -77,6 +98,23 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
               <tr><th scope="row">Unit Templates</th><td>{state.course.newUnitTemplates.length}</td></tr>
             </tbody>
           </table>
+          {state.course.unitType === 1 && (
+            <div className="d-flex align-items-center">
+              {state.course.newUnitsEnabled
+                ? (
+                  <button onClick={handleDisableClick} className="btn btn-danger" style={{ width: 140 }} disabled={state.enableForm.processingState === 'saving'}>
+                    {state.enableForm.processingState === 'saving' ? <Spinner size="sm" /> : 'Disable Units'}
+                  </button>
+                )
+                : (
+                  <button onClick={handleEnableClick} className="btn btn-success" style={{ width: 140 }} disabled={state.enableForm.processingState === 'saving'}>
+                    {state.enableForm.processingState === 'saving' ? <Spinner size="sm" /> : 'Enable Units'}
+                  </button>
+                )
+              }
+              {state.enableForm.processingState === 'save error' && <span className="text-danger ms-2">{state.enableForm.errorMessage ? state.enableForm.errorMessage : 'Error'}</span>}
+            </div>
+          )}
         </div>
       </Section>
       {state.course.unitType === 1 && (
@@ -85,22 +123,21 @@ export const CourseView = ({ administratorId, schoolId, courseId }: Props): Reac
             <h2 className="h3">Unit Templates</h2>
             <div className="row">
               <div className="col-12 col-xl-6">
-                <NewUnitTemplateList units={state.course.newUnitTemplates} onClick={unitRowClick} />
+                <NewUnitTemplateList units={state.course.newUnitTemplates} onClick={handleUnitRowClick} />
                 <div className="alert alert-info"><h3 className="h6">Unit Ordering</h3>Units are ordered by &ldquo;order&rdquo; then &ldquo;unit letter&rdquo;. As long as you follow a standard unit lettering scheme (e.g., &ldquo;A, B, C, ...&rdquo; or &ldquo;1, 2, 3, ...&rdquo;), you can leave each unit's &ldquo;order&rdquo; value set to 0.</div>
               </div>
               <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
                 <NewUnitTemplateAddForm
                   administratorId={administratorId}
-                  schoolId={schoolId}
                   courseId={courseId}
                   formState={state.newUnitTemplateForm}
                   insert$={unitInsert$}
-                  titleChange={unitTitleChange}
-                  descriptionChange={unitDescriptionChange}
-                  markingCriteriaChange={unitMarkingCriteriaChange}
-                  unitLetterChange={unitUnitLetterChange}
-                  orderChange={unitOrderChange}
-                  optionalChange={unitOptionalChange}
+                  onTitleChange={handleUnitTitleChange}
+                  onDescriptionChange={handleUnitDescriptionChange}
+                  onMarkingCriteriaChange={handleUnitMarkingCriteriaChange}
+                  onUnitLetterChange={handleUnitUnitLetterChange}
+                  onOrderChange={handleUnitOrderChange}
+                  onOptionalChange={handleUnitOptionalChange}
                 />
               </div>
             </div>

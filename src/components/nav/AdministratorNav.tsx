@@ -33,6 +33,11 @@ export const AdministratorNav = (props: AdministratorNavProps): ReactElement | n
 
   const index = navState.type === 'administrator' ? navState.index : null;
 
+  const handleForumLinkClick = (): false => {
+    window.open('/administrators/forum/login.php');
+    return false;
+  };
+
   return (
     <>
       <nav className="navbar sticky-top navbar-expand-md navbar-light bg-white mainNav shadow">
@@ -116,7 +121,7 @@ export const AdministratorNav = (props: AdministratorNavProps): ReactElement | n
                   <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/administrators/units/list-unmarked.php">Unmarked Units</a></li>
                   <li><a className="dropdown-item d-none d-md-block d-xl-none" href="/administrators/invoices/select-tutor.php">Invoices</a></li>
                   <li><a className="dropdown-item d-none d-md-block d-xl-none" href="/administrators/returned-units/index.php">Returned Units</a></li>
-                  <li><a className="dropdown-item" href="/administrators/forum/login.php" onClick={() => { window.open('/administrators/forum/login.php'); return false; }}>Student Forum</a></li>
+                  <li><a className="dropdown-item" href="/administrators/forum/login.php" onClick={handleForumLinkClick}>Student Forum</a></li>
                   <li><a className="dropdown-item" href="/administrators/final-submissions/">Final Submissions</a></li>
                   <li><Link href="/administrators/course-development"><a className="dropdown-item">Course Development</a></Link></li>
                   <li><a className="dropdown-item" href="/administrators/materials/">Course Materials</a></li>

@@ -7,7 +7,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, schoolId: number) => void;
 };
 
-export const SchoolList = memo(({ schools, onClick }: Props): ReactElement => (
+export const SchoolList = memo((props: Props): ReactElement => (
   <>
     <table className="schoolTable table table-bordered table-hover w-auto bg-white">
       <thead>
@@ -16,8 +16,8 @@ export const SchoolList = memo(({ schools, onClick }: Props): ReactElement => (
         </tr>
       </thead>
       <tbody>
-        {schools.map(s => (
-          <tr key={s.schoolId} onClick={e => onClick(e, s.schoolId)}>
+        {props.schools.map(s => (
+          <tr key={s.schoolId} onClick={e => props.onClick(e, s.schoolId)}>
             <td>{s.name}</td>
           </tr>
         ))}
@@ -25,7 +25,7 @@ export const SchoolList = memo(({ schools, onClick }: Props): ReactElement => (
     </table>
 
     <style jsx>{`
-      .schoolTable tr { cursor: pointer }
+    .schoolTable tr { cursor: pointer }
     `}</style>
   </>
 ));

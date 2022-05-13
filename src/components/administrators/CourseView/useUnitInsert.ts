@@ -3,25 +3,23 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewUnitTemplatePayload } from '@/services/administrators/newUnitTemplateService';
+import type { NewUnitTemplateAddPayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type UnitInsertPayload = {
-  processingState: State['newUnitTemplateForm']['processingState'];
+export type NewUnitTemplateInsertEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  payload: NewUnitTemplatePayload;
+  payload: NewUnitTemplateAddPayload;
+  processingState: State['newUnitTemplateForm']['processingState'];
 };
 
-export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<UnitInsertPayload> => {
+export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<NewUnitTemplateInsertEvent> => {
   const router = useRouter();
   const { newUnitTemplateService } = useAdminServices();
 
-  const unitInsert$ = useRef(new Subject<UnitInsertPayload>());
+  const unitInsert$ = useRef(new Subject<NewUnitTemplateInsertEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -29,7 +27,7 @@ export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<UnitInsertPay
     unitInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
       tap(() => dispatch({ type: 'ADD_UNIT_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, payload }) => newUnitTemplateService.addUnit(administratorId, schoolId, courseId, payload).pipe(
+      exhaustMap(({ administratorId, payload }) => newUnitTemplateService.addUnit(administratorId, payload).pipe(
         tap({
           next: insertedUnit => dispatch({ type: 'ADD_UNIT_TEMPLATE_SUCCEEDED', payload: insertedUnit }),
           error: err => {

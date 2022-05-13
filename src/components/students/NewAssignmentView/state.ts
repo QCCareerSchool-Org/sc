@@ -1,3 +1,4 @@
+import { sanitize } from '../../../sanitize';
 import type { NewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart } from '@/domain/newPart';
@@ -5,7 +6,6 @@ import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignmentWithChildren } from '@/services/students/newAssignmentService';
-import { sanitize } from 'src/sanitize';
 
 type FormState = 'pristine' | 'dirty';
 

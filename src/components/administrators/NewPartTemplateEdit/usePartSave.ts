@@ -3,21 +3,17 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewPartTemplatePayload } from '@/services/administrators/newPartTemplateService';
+import type { NewPartTemplateSavePayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 export type PartSavePayload = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
   partId: string;
   processingState: State['form']['processingState'];
-  payload: NewPartTemplatePayload;
+  payload: NewPartTemplateSavePayload;
 };
 
 export const usePartSave = (dispatch: Dispatch<Action>): Subject<PartSavePayload> => {
@@ -32,8 +28,8 @@ export const usePartSave = (dispatch: Dispatch<Action>): Subject<PartSavePayload
     partSave$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'SAVE_PART_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, payload }) => {
-        return newPartTemplateService.savePart(administratorId, schoolId, courseId, unitId, assignmentId, partId, payload).pipe(
+      exhaustMap(({ administratorId, partId, payload }) => {
+        return newPartTemplateService.savePart(administratorId, partId, payload).pipe(
           tap({
             next: updatedPart => {
               dispatch({ type: 'SAVE_PART_TEMPLATE_SUCCEEDED', payload: updatedPart });

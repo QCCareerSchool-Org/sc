@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
-import Error from 'next/error';
+import ErrorPage from 'next/error';
 
 import { NewUnitView } from '@/components/administrators/NewUnitView';
 
@@ -11,7 +11,7 @@ type Props = {
 
 const NewUnitViewPage: NextPage<Props> = ({ studentId, courseId, unitId }) => {
   if (studentId === null || courseId === null || !unitId) {
-    return <Error statusCode={400} />;
+    return <ErrorPage statusCode={400} />;
   }
 
   return <NewUnitView studentId={studentId} courseId={courseId} unitId={unitId} />;

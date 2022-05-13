@@ -13,11 +13,11 @@ type Props = {
   onEnded?: ReactEventHandler<HTMLAudioElement>;
 };
 
-export const Video = memo(({ controls, src, preload, className, onPlay, onTimeUpdate, onEnded }: Props): ReactElement => {
+export const Video = memo((props: Props): ReactElement => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const retry$ = useRefreshAndRetryMedia(videoRef);
 
-  const videoError: ReactEventHandler<HTMLAudioElement> = () => {
+  const handleError: ReactEventHandler<HTMLAudioElement> = () => {
     if (videoRef.current?.error?.code === 2) { // MEDIA_ERR_NETWORK
       retry$.next();
     }
@@ -26,16 +26,16 @@ export const Video = memo(({ controls, src, preload, className, onPlay, onTimeUp
   return (
     <video
       ref={videoRef}
-      controls={controls}
-      src={src}
-      preload={preload}
-      className={className}
-      onError={videoError}
-      onPlay={onPlay}
-      onTimeUpdate={onTimeUpdate}
-      onEnded={onEnded}
+      controls={props.controls}
+      src={props.src}
+      preload={props.preload}
+      className={props.className}
+      onError={handleError}
+      onPlay={props.onPlay}
+      onTimeUpdate={props.onTimeUpdate}
+      onEnded={props.onEnded}
     >
-      <p>Your browser doesn't support HTML5 video. Here is a <a href={src}>link to download the video</a> instead.</p>
+      <p>Your browser doesn't support HTML5 video. Here is a <a href={props.src}>link to download the video</a> instead.</p>
     </video>
   );
 });

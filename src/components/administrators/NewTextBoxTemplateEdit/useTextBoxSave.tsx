@@ -3,29 +3,24 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewTextBoxTemplatePayload } from '@/services/administrators/newTextBoxTemplateService';
+import type { NewTextBoxTemplateSavePayload } from '@/services/administrators/newTextBoxTemplateService';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type TextBoxSavePayload = {
+export type NewTextBoxTemplateSaveEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
   textBoxId: string;
+  payload: NewTextBoxTemplateSavePayload;
   processingState: State['form']['processingState'];
-  payload: NewTextBoxTemplatePayload;
 };
 
-export const useTextBoxSave = (dispatch: Dispatch<Action>): Subject<TextBoxSavePayload> => {
+export const useTextBoxSave = (dispatch: Dispatch<Action>): Subject<NewTextBoxTemplateSaveEvent> => {
   const router = useRouter();
   const { newTextBoxTemplateService } = useAdminServices();
 
-  const textBoxSave$ = useRef(new Subject<TextBoxSavePayload>());
+  const textBoxSave$ = useRef(new Subject<NewTextBoxTemplateSaveEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -33,8 +28,8 @@ export const useTextBoxSave = (dispatch: Dispatch<Action>): Subject<TextBoxSaveP
     textBoxSave$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'SAVE_TEXT_BOX_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, payload }) => {
-        return newTextBoxTemplateService.saveTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId, payload).pipe(
+      exhaustMap(({ administratorId, textBoxId, payload }) => {
+        return newTextBoxTemplateService.saveTextBox(administratorId, textBoxId, payload).pipe(
           tap({
             next: updatedTextBox => {
               dispatch({ type: 'SAVE_TEXT_BOX_TEMPLATE_SUCCEEDED', payload: updatedTextBox });

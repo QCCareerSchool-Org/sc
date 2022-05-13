@@ -1,10 +1,27 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
+import { endpoint } from '../../basePath';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { IHttpService } from '@/services/httpService';
-import { endpoint } from 'src/basePath';
+
+export type NewTextBoxTemplateAddPayload = {
+  partId: string;
+  description: string | null;
+  points: number;
+  lines: number | null;
+  order: number;
+  optional: boolean;
+};
+
+export type NewTextBoxTemplateSavePayload = {
+  description: string | null;
+  points: number;
+  lines: number | null;
+  order: number;
+  optional: boolean;
+};
 
 type RawNewTextBoxTemplateWithPart = RawNewTextBoxTemplate & {
   newPartTemplate: RawNewPartTemplate;
@@ -14,53 +31,45 @@ export type NewTextBoxTemplateWithPart = NewTextBoxTemplate & {
   newPartTemplate: NewPartTemplate;
 };
 
-export type NewTextBoxTemplatePayload = {
-  description: string | null;
-  points: number;
-  lines: number | null;
-  order: number;
-  optional: boolean;
-};
-
 export interface INewTextBoxTemplateService {
-  addTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxTemplatePayload) => Observable<NewTextBoxTemplate>;
-  getTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string) => Observable<NewTextBoxTemplateWithPart>;
-  saveTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxTemplatePayload) => Observable<NewTextBoxTemplate>;
-  deleteTextBox: (administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string) => Observable<void>;
+  addTextBox: (administratorId: number, payload: NewTextBoxTemplateAddPayload) => Observable<NewTextBoxTemplate>;
+  getTextBox: (administratorId: number, textBoxId: string) => Observable<NewTextBoxTemplateWithPart>;
+  saveTextBox: (administratorId: number, textBoxId: string, payload: NewTextBoxTemplateSavePayload) => Observable<NewTextBoxTemplate>;
+  deleteTextBox: (administratorId: number, textBoxId: string) => Observable<void>;
 }
 
 export class NewTextBoxTemplateService implements INewTextBoxTemplateService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public addTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, payload: NewTextBoxTemplatePayload): Observable<NewTextBoxTemplate> {
-    const url = this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId);
+  public addTextBox(administratorId: number, payload: NewTextBoxTemplateAddPayload): Observable<NewTextBoxTemplate> {
+    const url = this.getBaseUrl(administratorId);
     return this.httpService.post<RawNewTextBoxTemplate>(url, payload).pipe(
       map(this.mapNewTextBoxTemplate),
     );
   }
 
-  public getTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string): Observable<NewTextBoxTemplateWithPart> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
+  public getTextBox(administratorId: number, textBoxId: string): Observable<NewTextBoxTemplateWithPart> {
+    const url = `${this.getBaseUrl(administratorId)}/${textBoxId}`;
     return this.httpService.get<RawNewTextBoxTemplateWithPart>(url).pipe(
       map(this.mapNewTextBoxTemplateWithPart),
     );
   }
 
-  public saveTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, payload: NewTextBoxTemplatePayload): Observable<NewTextBoxTemplate> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
+  public saveTextBox(administratorId: number, textBoxId: string, payload: NewTextBoxTemplateSavePayload): Observable<NewTextBoxTemplate> {
+    const url = `${this.getBaseUrl(administratorId)}/${textBoxId}`;
     return this.httpService.put<RawNewTextBoxTemplate>(url, payload).pipe(
       map(this.mapNewTextBoxTemplate),
     );
   }
 
-  public deleteTextBox(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string): Observable<void> {
-    const url = `${this.getBaseUrl(administratorId, schoolId, courseId, unitId, assignmentId, partId)}/${textBoxId}`;
+  public deleteTextBox(administratorId: number, textBoxId: string): Observable<void> {
+    const url = `${this.getBaseUrl(administratorId)}/${textBoxId}`;
     return this.httpService.delete<void>(url);
   }
 
-  private getBaseUrl(administratorId: number, schoolId: number, courseId: number, unitId: string, assignmentId: string, partId: string): string {
-    return `${endpoint}/administrators/${administratorId}/schools/${schoolId}/courses/${courseId}/newUnitTemplates/${unitId}/assignments/${assignmentId}/parts/${partId}/textBoxes`;
+  private getBaseUrl(administratorId: number): string {
+    return `${endpoint}/administrators/${administratorId}/newTextBoxTemplates`;
   }
 
   private readonly mapNewTextBoxTemplate = (textBox: RawNewTextBoxTemplate): NewTextBoxTemplate => {

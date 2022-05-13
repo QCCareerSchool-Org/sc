@@ -4,13 +4,13 @@ import type { ReactElement } from 'react';
 import { useEffect } from 'react';
 
 import { StateProvider } from '../providers';
+import { TrackJS } from '../trackjs-isomorphic';
 import { AppErrorBoundary } from '@/components/AppErrorBoundary';
 import { ErrorFallback } from '@/components/ErrorFallback';
 import { Layout } from '@/components/Layout';
 import { PageErrorBoundary } from '@/components/PageErrorBoundary';
 import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
-import { TrackJS } from 'src/trackjs-isomorphic';
 
 import '../style.scss';
 

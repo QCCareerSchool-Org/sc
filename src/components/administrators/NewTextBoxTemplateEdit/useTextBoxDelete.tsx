@@ -3,27 +3,22 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
+import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
-export type TextBoxDeletePayload = {
+export type NewTextBoxTemplateDeleteEvent = {
   administratorId: number;
-  schoolId: number;
-  courseId: number;
-  unitId: string;
-  assignmentId: string;
-  partId: string;
   textBoxId: string;
   processingState: State['form']['processingState'];
 };
 
-export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<TextBoxDeletePayload> => {
+export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<NewTextBoxTemplateDeleteEvent> => {
   const router = useRouter();
   const { newTextBoxTemplateService } = useAdminServices();
 
-  const textBoxDelete$ = useRef(new Subject<TextBoxDeletePayload>());
+  const textBoxDelete$ = useRef(new Subject<NewTextBoxTemplateDeleteEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -31,8 +26,8 @@ export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<TextBoxDel
     textBoxDelete$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'DELETE_TEXT_BOX_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId }) => {
-        return newTextBoxTemplateService.deleteTextBox(administratorId, schoolId, courseId, unitId, assignmentId, partId, textBoxId).pipe(
+      exhaustMap(({ administratorId, textBoxId }) => {
+        return newTextBoxTemplateService.deleteTextBox(administratorId, textBoxId).pipe(
           tap({
             next: () => {
               dispatch({ type: 'DELETE_TEXT_BOX_TEMPLATE_SUCCEEDED' });

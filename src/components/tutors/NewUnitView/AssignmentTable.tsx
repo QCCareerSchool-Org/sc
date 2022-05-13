@@ -9,7 +9,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
 };
 
-export const AssignmentTable = memo(({ unit, onClick }: Props): ReactElement => {
+export const AssignmentTable = memo((props: Props): ReactElement => {
   const { gradeService } = useServices();
 
   return (
@@ -20,34 +20,34 @@ export const AssignmentTable = memo(({ unit, onClick }: Props): ReactElement => 
           <th>Title</th>
           <th className="text-center">Mark</th>
           <th className="text-center">Points</th>
-          {unit.mark !== null && <th className="text-center">Grade</th>}
+          {props.unit.mark !== null && <th className="text-center">Grade</th>}
         </tr>
       </thead>
       <tbody>
-        {unit.newAssignments.filter(a => a.complete).map(a => (
-          <tr onClick={e => onClick(e, a.assignmentId)} key={a.assignmentId}>
+        {props.unit.newAssignments.filter(a => a.complete).map(a => (
+          <tr onClick={e => props.onClick(e, a.assignmentId)} key={a.assignmentId}>
             <td className="text-center">{a.assignmentNumber}</td>
             <td>{a.title ?? '(none)'}</td>
             {a.points === 0
-              ? <td colSpan={unit.mark === null ? 2 : 3} className="text-center">n/a</td>
+              ? <td colSpan={props.unit.mark === null ? 2 : 3} className="text-center">n/a</td>
               : (
                 <>
                   <td className="text-center">{a.mark === null ? '---' : a.mark}</td>
                   <td className="text-center">{a.points}</td>
-                  {a.mark !== null && <td className="text-center">{gradeService.calculate(a.mark, a.points, unit.created)}</td>}
+                  {a.mark !== null && <td className="text-center">{gradeService.calculate(a.mark, a.points, props.unit.created)}</td>}
                 </>
               )
             }
           </tr>
         ))}
       </tbody>
-      {unit.mark !== null && (
+      {props.unit.mark !== null && (
         <tfoot>
           <tr>
             <td colSpan={2} />
-            <td className="text-center">{unit.mark}</td>
-            <td className="text-center">{unit.points}</td>
-            <td className="text-center">{gradeService.calculate(unit.mark, unit.points, unit.created)}</td>
+            <td className="text-center">{props.unit.mark}</td>
+            <td className="text-center">{props.unit.points}</td>
+            <td className="text-center">{gradeService.calculate(props.unit.mark, props.unit.points, props.unit.created)}</td>
           </tr>
         </tfoot>
       )}

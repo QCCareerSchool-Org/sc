@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import Error from 'next/error';
+import ErrorPage from 'next/error';
 
 import { CourseDevelopmentOverview } from '@/components/administrators/CourseDevelopmentOverview';
 import { Meta } from '@/components/Meta';
@@ -9,7 +9,7 @@ const CourseDevelopmentPage: NextPage = () => {
   const authState = useAuthState();
 
   if (typeof authState.administratorId === 'undefined') {
-    return <Error statusCode={403} />;
+    return <ErrorPage statusCode={403} />;
   }
 
   return (
