@@ -1,4 +1,5 @@
 import NextError from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
@@ -14,7 +15,9 @@ import { useInitialData } from './useInitialData';
 import { useUnitDelete } from './useUnitDelete';
 import { useUnitSave } from './useUnitSave';
 import { Section } from '@/components/Section';
+import type { Country } from '@/domain/country';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
+import type { NewUnitTemplatePrice } from '@/domain/newUnitTemplatePrice';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 
 type Props = {
@@ -81,7 +84,7 @@ export const NewUnitTemplateEdit = ({ administratorId, unitId }: Props): ReactEl
   }, []);
 
   const handleAssignmentRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
-    void router.push(`/administrators/newAssignmentTemplates/${assignmentId}`);
+    void router.push(`/administrators/new-assignment-templates/${assignmentId}`);
   }, [ router ]);
 
   const handleAssignmentTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
@@ -111,6 +114,8 @@ export const NewUnitTemplateEdit = ({ administratorId, unitId }: Props): ReactEl
   if (!state.newUnitTemplate) {
     return null;
   }
+
+  const courseId = state.newUnitTemplate.courseId;
 
   return (
     <>
@@ -142,6 +147,21 @@ export const NewUnitTemplateEdit = ({ administratorId, unitId }: Props): ReactEl
                     <tr><th scope="row">Assignment Templates</th><td>{state.newUnitTemplate.newAssignmentTemplates.length}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newUnitTemplate.created)}</td></tr>
                     {state.newUnitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newUnitTemplate.modified)}</td></tr>}
+                    <tr>
+                      <th scope="row">Prices</th>
+                      <td>
+                        {state.newUnitTemplate.prices.length === 0
+                          ? <span className="text-danger">None</span>
+                          : state.newUnitTemplate.prices.sort(priceSort).map(p => {
+                            const href = `/administrators/unit-prices/edit?courseId=${encodeURIComponent(courseId)}`;
+                            if (p.country === null) {
+                              return <Link key={p.unitTemplatePriceId} href={href}><a className="me-1">Default</a></Link>;
+                            }
+                            return <Link key={p.unitTemplatePriceId} href={href + '&countryId=' + encodeURIComponent(p.country.countryId)}><a className="me-1">{p.country.code}</a></Link>;
+                          })
+                        }
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -174,4 +194,17 @@ export const NewUnitTemplateEdit = ({ administratorId, unitId }: Props): ReactEl
       </Section>
     </>
   );
+};
+
+type Price = NewUnitTemplatePrice & { country: Country | null };
+
+const priceSort = (a: Price, b: Price): number => {
+  if (a.country === null && b.country === null) {
+    return 0;
+  } else if (a.country === null) {
+    return -1;
+  } else if (b.country === null) {
+    return 1;
+  }
+  return a.country.code.localeCompare(b.country.code);
 };

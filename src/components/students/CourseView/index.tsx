@@ -8,6 +8,7 @@ import { navigateToLogin } from '../../../navigateToLogin';
 import { initialState, reducer } from './state';
 import { UnitsTable } from './UnitsTable';
 import { Section } from '@/components/Section';
+import { Spinner } from '@/components/Spinner';
 import type { NewUnit } from '@/domain/newUnit';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import { useStudentServices } from '@/hooks/useStudentServices';
@@ -98,7 +99,17 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
       <div className="container">
         <h1>{state.enrollment.course.name}</h1>
         <UnitsTable newUnits={state.enrollment.newUnits} onNewUnitClick={handleNewUnitClick} />
-        {nextUnit && <button onClick={handleInitializeButtonClick} className="btn btn-primary">Start Unit {nextUnit}</button>}
+        {nextUnit && (
+          <div className="d-flex align-items-center">
+            <button onClick={handleInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
+              {state.form.processingState === 'initializing'
+                ? <Spinner size="sm" />
+                : <>Start Unit {nextUnit}</>
+              }
+            </button>
+            {state.form.processingState === 'initialize error' && <span className="text-danger ms-2">{state.form.errorMessage ?? 'initializing'}</span>}
+          </div>
+        )}
       </div>
     </Section>
   );

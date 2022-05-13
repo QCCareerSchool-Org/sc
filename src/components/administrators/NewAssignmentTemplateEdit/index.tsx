@@ -81,11 +81,11 @@ export const NewAssignmentTemplateEdit = ({ administratorId, assignmentId }: Pro
   }, []);
 
   const handlePartRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, partId: string): void => {
-    void router.push(`/administrators/newPartTemplates/${partId}`);
+    void router.push(`/administrators/new-part-templates/${partId}`);
   }, [ router ]);
 
   const handleMediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
-    void router.push(`/administrators/newPartMedia/${mediumId}`);
+    void router.push(`/administrators/new-assignment-media/${mediumId}`);
   }, [ router ]);
 
   const handlePartTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {

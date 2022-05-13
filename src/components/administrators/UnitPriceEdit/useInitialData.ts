@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { forkJoin, Subject, takeUntil } from 'rxjs';
+import { forkJoin, of, Subject, takeUntil } from 'rxjs';
 
 import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
@@ -10,22 +10,24 @@ import { HttpServiceError } from '@/services/httpService';
 
 export const useInitialData = (administratorId: number, courseId: number, countryId: number | null, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
-  const { courseService, currencyService } = useAdminServices();
+  const { courseService, countryService, currencyService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
     dispatch({ type: 'LOAD_DATA_STARTED' });
     forkJoin([
-      currencyService.getAllCurrencies(administratorId),
       courseService.getCourse(administratorId, courseId),
+      countryId === null ? of(null) : countryService.getCountry(administratorId, countryId),
+      currencyService.getAllCurrencies(administratorId),
     ]).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: ([ currencies, course ]) => {
+      next: ([ course, country, currencies ]) => {
         const payload = {
           currencies,
           course,
+          country,
           formData: course.newUnitTemplates.flatMap(u => {
             const unitTemplatePrice = u.prices.find(p => p.countryId === countryId);
             if (unitTemplatePrice) {
@@ -40,7 +42,7 @@ export const useInitialData = (administratorId: number, courseId: number, countr
               unitTemplateId: u.unitTemplateId,
               unitLetter: u.unitLetter,
               price: '',
-              currencyId: '',
+              currencyId: currencies[0].currencyId.toString(),
             };
           }),
         };
@@ -59,5 +61,5 @@ export const useInitialData = (administratorId: number, courseId: number, countr
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, courseId, countryId, dispatch, router, courseService, currencyService ]);
+  }, [ administratorId, courseId, countryId, dispatch, router, courseService, countryService, currencyService ]);
 };

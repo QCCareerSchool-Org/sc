@@ -2,9 +2,12 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
+import type { Country } from '@/domain/country';
 import type { Course } from '@/domain/course';
+import type { Currency } from '@/domain/currency';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
+import type { NewUnitTemplatePrice, RawNewUnitTemplatePrice } from '@/domain/newUnitTemplatePrice';
 import type { IHttpService } from '@/services/httpService';
 
 export type NewUnitTemplateAddPayload = {
@@ -29,11 +32,13 @@ export type NewUnitTemplateSavePayload = {
 type RawNewUnitTemplateWithCourseAndAssignments = RawNewUnitTemplate & {
   course: Course;
   newAssignmentTemplates: RawNewAssignmentTemplate[];
+  prices: Array<RawNewUnitTemplatePrice & { country: Country | null; currency: Currency }>;
 };
 
 export type NewUnitTemplateWithCourseAndAssignments = NewUnitTemplate & {
   course: Course;
   newAssignmentTemplates: NewAssignmentTemplate[];
+  prices: Array<NewUnitTemplatePrice & { country: Country | null; currency: Currency }>;
 };
 
 export interface INewUnitTemplateService {
@@ -94,6 +99,11 @@ export class NewUnitTemplateService implements INewUnitTemplateService {
         ...a,
         created: new Date(a.created),
         modified: a.modified === null ? null : new Date(a.modified),
+      })),
+      prices: unit.prices.map(p => ({
+        ...p,
+        created: new Date(p.created),
+        modified: p.modified === null ? null : new Date(p.modified),
       })),
     };
   };

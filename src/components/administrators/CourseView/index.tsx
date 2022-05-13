@@ -27,7 +27,7 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
   const courseEnable$ = useCourseEnable(dispatch);
 
   const handleUnitRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
-    void router.push(`/administrators/newUnitTemplates/${unitId}`);
+    void router.push(`/administrators/new-unit-templates/${unitId}`);
   }, [ router ]);
 
   const handleUnitTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {

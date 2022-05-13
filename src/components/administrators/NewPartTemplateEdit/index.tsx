@@ -81,15 +81,15 @@ export const NewPartTemplateEdit = ({ administratorId, partId }: Props): ReactEl
   }, []);
 
   const handleTextBoxRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, textBoxId: string): void => {
-    void router.push(`/administrators/newTextBoxTemplates/${textBoxId}`);
+    void router.push(`/administrators/new-text-box-templates/${textBoxId}`);
   }, [ router ]);
 
   const handleUploadSlotRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string): void => {
-    void router.push(`/administrators/newUploadSlotTemplates/${uploadSlotId}`);
+    void router.push(`/administrators/new-upload-slot-templates/${uploadSlotId}`);
   }, [ router ]);
 
   const handleMediumRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, mediumId: string): void => {
-    void router.push(`/administrators/newPartMedia/${mediumId}`);
+    void router.push(`/administrators/new-part-media/${mediumId}`);
   }, [ router ]);
 
   const handleTextBoxDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {

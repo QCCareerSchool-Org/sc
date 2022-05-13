@@ -18,10 +18,10 @@ import type { INewPartTemplateService } from '@/services/administrators/newPartT
 import { NewPartTemplateService } from '@/services/administrators/newPartTemplateService';
 import type { INewTextBoxTemplateService } from '@/services/administrators/newTextBoxTemplateService';
 import { NewTextBoxTemplateService } from '@/services/administrators/newTextBoxTemplateService';
-import type { INewUnitPriceService } from '@/services/administrators/newUnitPriceService';
-import { NewUnitPriceService } from '@/services/administrators/newUnitPriceService';
 import type { INewUnitService } from '@/services/administrators/newUnitService';
 import { NewUnitService } from '@/services/administrators/newUnitService';
+import type { INewUnitTemplatePriceService } from '@/services/administrators/newUnitTemplatePriceService';
+import { NewUnitTemplatePriceService } from '@/services/administrators/newUnitTemplatePriceService';
 import type { INewUnitTemplateService } from '@/services/administrators/newUnitTemplateService';
 import { NewUnitTemplateService } from '@/services/administrators/newUnitTemplateService';
 import type { INewUploadSlotTemplateService } from '@/services/administrators/newUploadSlotTemplateService';
@@ -41,7 +41,7 @@ export type AdminServices = Readonly<{
   readonly newUnitService: Readonly<INewUnitService>;
   readonly newUnitTemplateService: Readonly<INewUnitTemplateService>;
   readonly newUploadSlotTemplateService: Readonly<INewUploadSlotTemplateService>;
-  readonly newUnitPriceService: Readonly<INewUnitPriceService>;
+  readonly newUnitTemplatePriceService: Readonly<INewUnitTemplatePriceService>;
   readonly schoolService: Readonly<ISchoolService>;
 }>;
 
@@ -65,7 +65,7 @@ export const AdminServicesProvider = ({ children }: Props): ReactElement => {
     newUnitService: new NewUnitService(httpService),
     newUnitTemplateService: new NewUnitTemplateService(httpService),
     newUploadSlotTemplateService: new NewUploadSlotTemplateService(httpService),
-    newUnitPriceService: new NewUnitPriceService(httpService),
+    newUnitTemplatePriceService: new NewUnitTemplatePriceService(httpService),
     schoolService: new SchoolService(httpService),
   } as const);
 

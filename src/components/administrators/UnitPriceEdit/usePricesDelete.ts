@@ -6,33 +6,31 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewUnitPricePayload } from '@/services/administrators/newUnitPriceService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewUnitPricesSaveEvent = {
+export type NewUnitPricesDeleteEvent = {
   administratorId: number;
   courseId: number;
   countryId: number | null;
-  payload: NewUnitPricePayload;
   processingState: State['form']['processingState'];
 };
 
-export const usePriceSave = (dispatch: Dispatch<Action>): Subject<NewUnitPricesSaveEvent> => {
+export const usePricesDelete = (dispatch: Dispatch<Action>): Subject<NewUnitPricesDeleteEvent> => {
   const router = useRouter();
-  const { newUnitPriceService } = useAdminServices();
+  const { newUnitTemplatePriceService } = useAdminServices();
 
-  const unitSave$ = useRef(new Subject<NewUnitPricesSaveEvent>());
+  const pricesDelete$ = useRef(new Subject<NewUnitPricesDeleteEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    unitSave$.current.pipe(
-      filter(({ processingState }) => processingState !== 'saving'),
-      tap(() => dispatch({ type: 'UNIT_PRICES_SAVE_STARTED' })),
-      exhaustMap(({ administratorId, courseId, countryId, payload }) => newUnitPriceService.replacePrices(administratorId, courseId, countryId, payload).pipe(
+    pricesDelete$.current.pipe(
+      filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
+      tap(() => dispatch({ type: 'UNIT_PRICES_DELETE_STARTED' })),
+      exhaustMap(({ administratorId, courseId, countryId }) => newUnitTemplatePriceService.deletePrices(administratorId, courseId, countryId).pipe(
         tap({
           next: () => {
-            dispatch({ type: 'UNIT_PRICES_SAVE_SUCCEEDED' });
+            dispatch({ type: 'UNIT_PRICES_DELETE_SUCCEEDED' });
           },
           error: err => {
             let message = 'Save failed';
@@ -44,7 +42,7 @@ export const usePriceSave = (dispatch: Dispatch<Action>): Subject<NewUnitPricesS
                 message = err.message;
               }
             }
-            dispatch({ type: 'UNIT_PRICES_SAVE_FAILED', payload: message });
+            dispatch({ type: 'UNIT_PRICES_DELETE_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -53,7 +51,7 @@ export const usePriceSave = (dispatch: Dispatch<Action>): Subject<NewUnitPricesS
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUnitPriceService ]);
+  }, [ dispatch, router, newUnitTemplatePriceService ]);
 
-  return unitSave$.current;
+  return pricesDelete$.current;
 };
