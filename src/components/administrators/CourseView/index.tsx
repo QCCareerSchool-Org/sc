@@ -72,7 +72,7 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
   };
 
   const handleDisableClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm('Disabling this course will prevent any student from initializing a new unit')) {
+    if (confirm('Enabling editing will prevent students from initializing a new unit')) {
       enableCourse(false);
     }
   };
@@ -86,6 +86,11 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
       <Section>
         <div className="container">
           <h1>Course: {state.course.name}</h1>
+          {!state.course.enabled && (
+            <div className="alert alert-danger">
+              This course is disabled. No additional students will be enrolled in this course.
+            </div>
+          )}
           <table className="table table-bordered w-auto">
             <tbody>
               <tr><th scope="row">School</th><td>{state.course.school.name}</td></tr>
@@ -99,21 +104,30 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
             </tbody>
           </table>
           {state.course.unitType === 1 && (
-            <div className="d-flex align-items-center">
+            <>
               {state.course.newUnitsEnabled
                 ? (
-                  <button onClick={handleDisableClick} className="btn btn-danger" style={{ width: 140 }} disabled={state.enableForm.processingState === 'saving'}>
-                    {state.enableForm.processingState === 'saving' ? <Spinner size="sm" /> : 'Disable Units'}
-                  </button>
+                  <div className="d-flex align-items-center">
+                    <button onClick={handleDisableClick} className="btn btn-danger" style={{ width: 140 }} disabled={state.enableForm.processingState === 'saving'}>
+                      {state.enableForm.processingState === 'saving' ? <Spinner size="sm" /> : 'Enable Editing'}
+                    </button>
+                  </div>
                 )
                 : (
-                  <button onClick={handleEnableClick} className="btn btn-success" style={{ width: 140 }} disabled={state.enableForm.processingState === 'saving'}>
-                    {state.enableForm.processingState === 'saving' ? <Spinner size="sm" /> : 'Enable Units'}
-                  </button>
+                  <>
+                    <div className="d-flex align-items-center mb-3">
+                      <button onClick={handleEnableClick} className="btn btn-warning" style={{ width: 140 }} disabled={state.enableForm.processingState === 'saving'}>
+                        {state.enableForm.processingState === 'saving' ? <Spinner size="sm" /> : 'Disable Editing'}
+                      </button>
+                    </div>
+                    <div className="alert alert-warning">
+                      Editing is enabled. Students will not be able to initialize new units until editing has been disabled.
+                    </div>
+                  </>
                 )
               }
               {state.enableForm.processingState === 'save error' && <span className="text-danger ms-2">{state.enableForm.errorMessage ? state.enableForm.errorMessage : 'Error'}</span>}
-            </div>
+            </>
           )}
         </div>
       </Section>
