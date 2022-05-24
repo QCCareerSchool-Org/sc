@@ -9,6 +9,7 @@ export type NewUnit = {
   markingCriteria: string | null;
   optional: boolean;
   order: number;
+  tutorComment: string | null;
   adminComment: string | null;
   submitted: Date | null;
   transferred: Date | null;
@@ -36,6 +37,7 @@ export type RawNewUnit = {
   markingCriteria: string | null;
   optional: boolean;
   order: number;
+  tutorComment: string | null;
   adminComment: string | null;
   submitted: string | null;
   transferred: string | null;

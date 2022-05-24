@@ -22,7 +22,7 @@ const NewTextBoxTemplateEditPage: NextPage<Props> = ({ textBoxId }) => {
 
   return (
     <>
-      <Meta title="Text Box Template View" />
+      <Meta title="Text Box Template Edit" />
       <NewTextBoxTemplateEdit administratorId={authState.administratorId} textBoxId={textBoxId} />
     </>
   );
