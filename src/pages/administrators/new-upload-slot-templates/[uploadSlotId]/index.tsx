@@ -22,7 +22,7 @@ const NewTextBoxTemplateEditPage: NextPage<Props> = ({ uploadSlotId }) => {
 
   return (
     <>
-      <Meta title="Upload Slot Template View" />
+      <Meta title="Upload Slot Template Edit" />
       <NewUploadSlotTemplateEdit administratorId={authState.administratorId} uploadSlotId={uploadSlotId} />
     </>
   );

@@ -1,11 +1,10 @@
 import type { ReactElement } from 'react';
 
 type Props = {
-  studentId: number;
-  courseId: number;
+  administratorId: number;
   unitId: string;
 };
 
-export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElement => (
+export const NewUnitView = ({ administratorId, unitId }: Props): ReactElement => (
   <div />
 );

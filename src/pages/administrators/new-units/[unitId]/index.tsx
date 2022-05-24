@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
 
-import { NewUnitTemplateEdit } from '@/components/administrators/NewUnitTemplateEdit';
+import { NewUnitView } from '@/components/administrators/NewUnitView';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
@@ -9,7 +9,7 @@ type Props = {
   unitId: string | null;
 };
 
-const NewUnitTemplateEditPage: NextPage<Props> = ({ unitId }) => {
+const NewUnitViewPage: NextPage<Props> = ({ unitId }) => {
   const authState = useAuthState();
 
   if (typeof authState.administratorId === 'undefined') {
@@ -22,8 +22,8 @@ const NewUnitTemplateEditPage: NextPage<Props> = ({ unitId }) => {
 
   return (
     <>
-      <Meta title="Unit Template Edit" />
-      <NewUnitTemplateEdit administratorId={authState.administratorId} unitId={unitId} />
+      <Meta title="Unit View" />
+      <NewUnitView administratorId={authState.administratorId} unitId={unitId} />
     </>
   );
 };
@@ -35,4 +35,4 @@ export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   return { props: { unitId } };
 };
 
-export default NewUnitTemplateEditPage;
+export default NewUnitViewPage;

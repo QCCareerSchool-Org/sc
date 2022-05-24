@@ -22,7 +22,7 @@ const NewPartTemplateEditPage: NextPage<Props> = ({ partId }) => {
 
   return (
     <>
-      <Meta title="Part Template View" />
+      <Meta title="Part Template Edit" />
       <NewPartTemplateEdit administratorId={authState.administratorId} partId={partId} />
     </>
   );

@@ -1,6 +1,7 @@
 export type Enrollment = {
   enrollmentId: number;
   courseId: number;
+  studentId: number;
   studentNumber: number;
   tutorId: number | null;
   maxAssignments: number | null;
@@ -21,6 +22,7 @@ export type Enrollment = {
 export type RawEnrollment = {
   enrollmentId: number;
   courseId: number;
+  studentId: number;
   studentNumber: number;
   tutorId: number | null;
   maxAssignments: number | null;

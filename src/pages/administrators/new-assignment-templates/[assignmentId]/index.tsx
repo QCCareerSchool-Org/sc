@@ -22,7 +22,7 @@ const NewAssignmentTemplateEditPage: NextPage<Props> = ({ assignmentId }) => {
 
   return (
     <>
-      <Meta title="Assignment Template View" />
+      <Meta title="Assignment Template Edit" />
       <NewAssignmentTemplateEdit administratorId={authState.administratorId} assignmentId={assignmentId} />
     </>
   );

@@ -18,6 +18,8 @@ import type { INewPartTemplateService } from '@/services/administrators/newPartT
 import { NewPartTemplateService } from '@/services/administrators/newPartTemplateService';
 import type { INewTextBoxTemplateService } from '@/services/administrators/newTextBoxTemplateService';
 import { NewTextBoxTemplateService } from '@/services/administrators/newTextBoxTemplateService';
+import type { INewUnitReturnService } from '@/services/administrators/newUnitReturnService';
+import { NewUnitReturnService } from '@/services/administrators/newUnitReturnService';
 import type { INewUnitService } from '@/services/administrators/newUnitService';
 import { NewUnitService } from '@/services/administrators/newUnitService';
 import type { INewUnitTemplatePriceService } from '@/services/administrators/newUnitTemplatePriceService';
@@ -42,6 +44,7 @@ export type AdminServices = Readonly<{
   readonly newUnitTemplateService: Readonly<INewUnitTemplateService>;
   readonly newUploadSlotTemplateService: Readonly<INewUploadSlotTemplateService>;
   readonly newUnitTemplatePriceService: Readonly<INewUnitTemplatePriceService>;
+  readonly newUnitReturnService: Readonly<INewUnitReturnService>;
   readonly schoolService: Readonly<ISchoolService>;
 }>;
 
@@ -66,6 +69,7 @@ export const AdminServicesProvider = ({ children }: Props): ReactElement => {
     newUnitTemplateService: new NewUnitTemplateService(httpService),
     newUploadSlotTemplateService: new NewUploadSlotTemplateService(httpService),
     newUnitTemplatePriceService: new NewUnitTemplatePriceService(httpService),
+    newUnitReturnService: new NewUnitReturnService(httpService),
     schoolService: new SchoolService(httpService),
   } as const);
 
