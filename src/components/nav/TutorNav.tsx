@@ -34,7 +34,7 @@ export const TutorNav = (props: TutorNavProps): ReactElement | null => {
 
   return (
     <>
-      <nav className="navbar sticky-top navbar-expand-md navbar-light bg-white mainNav shadow">
+      <nav className={`mainNav navbar sticky-top navbar-expand-md navbar-light bg-white ${otherNavPresent ? '' : 'shadow'}`}>
         <div className="container">
           <a className="d-md-none navbar-brand" href="#">Tutor Menu</a>
           <button className={`navbar-toggler collapsed`} type="button" data-bs-toggle="collapse" data-bs-target="#tutorNav" aria-controls="tutorNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,6 +77,7 @@ export const TutorNav = (props: TutorNavProps): ReactElement | null => {
       <style jsx>{`
         .mainNav {
           ${otherNavPresent && 'border-bottom: 1px solid #ccc;'}
+          z-index: 1021;
         }
       `}</style>
     </>

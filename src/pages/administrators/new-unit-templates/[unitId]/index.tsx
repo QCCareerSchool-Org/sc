@@ -22,7 +22,7 @@ const NewUnitTemplateEditPage: NextPage<Props> = ({ unitId }) => {
 
   return (
     <>
-      <Meta title="Unit Template Edit" />
+      <Meta title="Edit Unit Template" />
       <NewUnitTemplateEdit administratorId={authState.administratorId} unitId={unitId} />
     </>
   );

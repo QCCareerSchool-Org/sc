@@ -1,38 +1,38 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
 
-import { SchoolView } from '@/components/administrators/SchoolView';
+import { NewMaterialEdit } from '@/components/administrators/NewMaterialEdit';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
-  schoolId: number | null;
+  materialId: string | null;
 };
 
-const SchoolViewPage: NextPage<Props> = ({ schoolId }) => {
+const NewUnitTemplateEditPage: NextPage<Props> = ({ materialId }) => {
   const authState = useAuthState();
 
   if (typeof authState.administratorId === 'undefined') {
     return <ErrorPage statusCode={403} />;
   }
 
-  if (schoolId === null) {
+  if (!materialId) {
     return <ErrorPage statusCode={400} />;
   }
 
   return (
     <>
-      <Meta title="View School" />
-      <SchoolView administratorId={authState.administratorId} schoolId={schoolId} />
+      <Meta title="Edit Material" />
+      <NewMaterialEdit administratorId={authState.administratorId} materialId={materialId} />
     </>
   );
 };
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
-  const schoolIdParam = ctx.params?.schoolId;
-  const schoolId = typeof schoolIdParam === 'string' ? parseInt(schoolIdParam, 10) : null;
-  return { props: { schoolId } };
+  const materialIdParam = ctx.params?.materialId;
+  const materialId = typeof materialIdParam === 'string' ? materialIdParam : null;
+  return { props: { materialId } };
 };
 
-export default SchoolViewPage;
+export default NewUnitTemplateEditPage;

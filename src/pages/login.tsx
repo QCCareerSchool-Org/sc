@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FormEventHandler } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
@@ -120,7 +121,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
             <div className="col-6">
               <h2>Missing your username or password?</h2>
               <p>You'll find your username and password in your welcome email from the School or call us at 1-833-600-3751 and one of our student support specialists will be happy to help.</p>
-              <button className="btn btn-primary">Forgot Your Password?</button>
+              <Link href="/password-resets"><a><button className="btn btn-primary">Forgot Your Password?</button></a></Link>
             </div>
           </div>
         </div>

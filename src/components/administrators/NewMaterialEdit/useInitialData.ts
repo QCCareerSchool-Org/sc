@@ -1,28 +1,25 @@
 import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { forkJoin, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useInitialData = (administratorId: number, courseId: number, dispatch: Dispatch<Action>): void => {
+export const useInitialData = (administratorId: number, materialId: string, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
-  const { courseService, newMaterialService } = useAdminServices();
+  const { newMaterialService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    forkJoin([
-      courseService.getCourse(administratorId, courseId),
-      newMaterialService.getAllMaterials(administratorId, courseId),
-    ]).pipe(
+    newMaterialService.getMaterial(administratorId, materialId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: ([ course, newMaterials ]) => {
-        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: { ...course, newMaterials } });
+      next: newMaterial => {
+        dispatch({ type: 'LOAD_MATERIAL_SUCCEEDED', payload: newMaterial });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -32,8 +29,8 @@ export const useInitialData = (administratorId: number, courseId: number, dispat
           }
           errorCode = err.code;
         }
-        dispatch({ type: 'LOAD_DATA_FAILED', payload: errorCode });
+        dispatch({ type: 'LOAD_MATERIAL_FAILED', payload: errorCode });
       },
     });
-  }, [ administratorId, courseId, dispatch, router, courseService, newMaterialService ]);
+  }, [ administratorId, materialId, dispatch, router, newMaterialService ]);
 };
