@@ -22,7 +22,7 @@ const NewAssignmentMediumEditPage: NextPage<Props> = ({ mediumId }) => {
 
   return (
     <>
-      <Meta title="Assignment Media View" />
+      <Meta title="Edit Assignment Media" />
       <NewAssignmentMediumEdit administratorId={authState.administratorId} mediumId={mediumId} />
     </>
   );

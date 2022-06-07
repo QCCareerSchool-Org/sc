@@ -22,7 +22,7 @@ const NewUnitViewPage: NextPage<Props> = ({ unitId }) => {
 
   return (
     <>
-      <Meta title="Unit View" />
+      <Meta title="View Unit" />
       <NewUnitView administratorId={authState.administratorId} unitId={unitId} />
     </>
   );

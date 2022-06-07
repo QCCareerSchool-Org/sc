@@ -22,7 +22,7 @@ const NewPartMediumEditPage: NextPage<Props> = ({ mediumId }) => {
 
   return (
     <>
-      <Meta title="Part Media View" />
+      <Meta title="Edit Part Media" />
       <NewPartMediumEdit administratorId={authState.administratorId} mediumId={mediumId} />
     </>
   );

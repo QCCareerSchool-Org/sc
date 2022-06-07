@@ -1,10 +1,11 @@
 import NextError from 'next/error';
 import Link from 'next/link';
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, MouseEventHandler, ReactElement } from 'react';
 import { Fragment, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
+import { useUnitReturnClose } from './useUnitReturnClose';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
@@ -19,6 +20,7 @@ export const NewUnitReturnView = ({ administratorId, unitReturnId }: Props): Rea
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(administratorId, unitReturnId, dispatch);
+  const unitReturnClose$ = useUnitReturnClose(dispatch);
 
   const unsavedChanges = state.newUnitReturn && state.form.adminComment !== state.newUnitReturn.newUnit.adminComment && !(state.form.adminComment === '' && state.newUnitReturn.newUnit.adminComment === null);
 
@@ -34,6 +36,15 @@ export const NewUnitReturnView = ({ administratorId, unitReturnId }: Props): Rea
 
   const handleAdminCommentChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
     dispatch({ type: 'ADMIN_COMMENT_CHANGED', payload: e.target.value });
+  };
+
+  const handleCloseButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
+    unitReturnClose$.next({
+      processingState: state.form.processingState,
+      administratorId,
+      unitReturnId,
+      adminComment: state.form.adminComment,
+    });
   };
 
   const enrollment = state.newUnitReturn.newUnit.enrollment;
@@ -75,21 +86,21 @@ export const NewUnitReturnView = ({ administratorId, unitReturnId }: Props): Rea
             </table>
           </div>
           <div className="col-12 col-md-10 col-lg-7 col-xl-8">
-            <div className="mb-3">
+            <div className="mb-3 mt-lg-4">
               <label htmlFor="tutorComment">Tutor's Comments</label>
-              <div id="tutorComment" className="form-control">{state.newUnitReturn.newUnit.tutorComment?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => {
+              <div id="tutorComment" className="form-control">{state.newUnitReturn.newUnit.tutorComment?.replace(/\r\n/gu, '\n').split('\n').map((p, i) => {
                 if (i === 0) {
                   return <Fragment key={i}>{p}</Fragment>;
                 }
-                return <Fragment key={i}><br /><br />{p}</Fragment>;
+                return <Fragment key={i}><br />{p}</Fragment>;
               })}</div>
             </div>
             <div className="mb-3">
               <label htmlFor="adminComment">Your Comments</label>
-              <textarea onChange={handleAdminCommentChange} value={state.form.adminComment} className="form-control" rows={8} />
+              <textarea onChange={handleAdminCommentChange} value={state.form.adminComment} className="form-control" rows={8} disabled={!!state.newUnitReturn.completed} />
             </div>
             <div className="d-flex align-items-center">
-              <button className="btn btn-primary" style={{ width: 80 }} disabled={state.form.processingState === 'saving' || state.form.adminComment.length === 0 || !unsavedChanges}>
+              <button onClick={handleCloseButtonClick} className="btn btn-primary" style={{ width: 80 }} disabled={state.form.processingState === 'saving' || state.form.adminComment.length === 0 || !unsavedChanges}>
                 {state.form.processingState === 'saving' ? <Spinner size="sm" /> : 'Save'}
               </button>
               {state.form.processingState === 'save error' && <span className="text-danger ms-2">{state.form.errorMessage ?? 'Error saving'}</span>}

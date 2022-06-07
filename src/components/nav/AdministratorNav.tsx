@@ -40,7 +40,7 @@ export const AdministratorNav = (props: AdministratorNavProps): ReactElement | n
 
   return (
     <>
-      <nav className="navbar sticky-top navbar-expand-md navbar-light bg-white mainNav shadow">
+      <nav className="mainNav navbar sticky-top navbar-expand-md navbar-light bg-white shadow">
         <div className="container">
           <a className="d-md-none navbar-brand" href="#">Administrator Menu</a>
           <button className={`navbar-toggler collapsed`} type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="adminNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,12 +50,15 @@ export const AdministratorNav = (props: AdministratorNavProps): ReactElement | n
             {otherNavPresent && <span className="d-none d-md-inline"><strong>A:</strong>&nbsp;&nbsp;</span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/administrators">Home{index === 0 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item">
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/administrators/accounts">Students{index === 1 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item">
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/administrators/tutors">Tutors{index === 2 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item dropdown">

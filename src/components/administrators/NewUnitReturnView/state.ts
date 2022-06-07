@@ -1,4 +1,5 @@
-import type { NewUnitReturnWithUnitWithTutorAndEnrollment } from '@/services/administrators/newUnitReturnService';
+import type { NewUnitReturn } from '@/domain/newUnitReturn';
+import type { NewUnitReturnWithUnit, NewUnitReturnWithUnitWithTutorAndEnrollment } from '@/services/administrators/newUnitReturnService';
 
 export type State = {
   newUnitReturn?: NewUnitReturnWithUnitWithTutorAndEnrollment;
@@ -17,7 +18,7 @@ export type Action =
   | { type: 'LOAD_UNIT_RETURN_FAILED'; payload?: number }
   | { type: 'ADMIN_COMMENT_CHANGED'; payload: string }
   | { type: 'SAVE_ADMIN_COMMENT_STARTED' }
-  | { type: 'SAVE_ADMIN_COMMENT_SUCEEDED'; payload: string }
+  | { type: 'SAVE_ADMIN_COMMENT_SUCEEDED'; payload: NewUnitReturnWithUnit }
   | { type: 'SAVE_ADMIN_COMMENT_FAILED'; payload?: string };
 
 export const initialState: State = {
@@ -62,7 +63,11 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         newUnitReturn: {
           ...state.newUnitReturn,
-          newUnit: { ...state.newUnitReturn.newUnit, adminComment: action.payload },
+          ...action.payload,
+          newUnit: {
+            ...state.newUnitReturn.newUnit,
+            ...action.payload.newUnit,
+          },
         },
         form: { ...state.form, processingState: 'idle' },
       };

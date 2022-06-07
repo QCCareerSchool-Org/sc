@@ -11,7 +11,7 @@ export type State = {
   errorCode?: number;
 };
 
-type Action =
+export type Action =
   | { type: 'LOAD_ENROLLMENT_SUCCEEDED'; payload: EnrollmentWithStudentCourseAndUnits }
   | { type: 'LOAD_ENROLLMENT_FAILED'; payload?: number }
   | { type: 'INITIALIZE_UNIT_STARTED' }

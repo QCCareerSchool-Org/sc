@@ -3,11 +3,14 @@ import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
+import { NewMaterialAddForm } from './NewMaterialAddForm';
+import { NewMaterialsTable } from './NewMaterialsTable';
 import { NewUnitTemplateAddForm } from './NewUnitTemplateAddForm';
 import { NewUnitTemplateList } from './NewUnitTemplateList';
 import { initialState, reducer } from './state';
 import { useCourseEnable } from './useCourseEnable';
 import { useInitialData } from './useInitialData';
+import { useMaterialInsert } from './useMaterialInsert';
 import { useUnitInsert } from './useUnitInsert';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
@@ -24,6 +27,7 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
   useInitialData(administratorId, courseId, dispatch);
 
   const unitInsert$ = useUnitInsert(dispatch);
+  const materialInsert$ = useMaterialInsert(dispatch);
   const courseEnable$ = useCourseEnable(dispatch);
 
   const handleUnitRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
@@ -52,6 +56,35 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
 
   const handleUnitOptionalChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
     dispatch({ type: 'UNIT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
+  }, []);
+
+  const handleMaterialTypeChange: ChangeEventHandler<HTMLSelectElement> = useCallback(e => {
+    dispatch({ type: 'MATERIAL_TYPE_CHANGED', payload: e.target.value });
+  }, []);
+
+  const handleMaterialTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'MATERIAL_TITLE_CHANGED', payload: e.target.value });
+  }, []);
+
+  const handleMaterialDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
+    dispatch({ type: 'MATERIAL_DESCRIPTION_CHANGED', payload: e.target.value });
+  }, []);
+
+  const handleMaterialUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'MATERIAL_UNIT_LETTER_CHANGED', payload: e.target.value });
+  }, []);
+
+  const handleMaterialOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'MATERIAL_ORDER_CHANGED', payload: e.target.value });
+  }, []);
+
+  const handleMaterialFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    const files = e.target.files;
+    if (files?.length) {
+      dispatch({ type: 'MATERIAL_FILE_CHANGED', payload: files[0] });
+    } else {
+      dispatch({ type: 'MATERIAL_FILE_CHANGED', payload: null });
+    }
   }, []);
 
   if (state.error) {
@@ -132,31 +165,60 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
         </div>
       </Section>
       {state.course.unitType === 1 && (
-        <Section>
-          <div className="container">
-            <h2 className="h3">Unit Templates</h2>
-            <div className="row">
-              <div className="col-12 col-xl-6">
-                <NewUnitTemplateList units={state.course.newUnitTemplates} onClick={handleUnitRowClick} />
-                <div className="alert alert-info"><h3 className="h6">Unit Ordering</h3>Units are ordered by &ldquo;order&rdquo; then &ldquo;unit letter&rdquo;. As long as you follow a standard unit lettering scheme (e.g., &ldquo;A, B, C, ...&rdquo; or &ldquo;1, 2, 3, ...&rdquo;), you can leave each unit's &ldquo;order&rdquo; value set to 0.</div>
-              </div>
-              <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
-                <NewUnitTemplateAddForm
-                  administratorId={administratorId}
-                  courseId={courseId}
-                  formState={state.newUnitTemplateForm}
-                  insert$={unitInsert$}
-                  onTitleChange={handleUnitTitleChange}
-                  onDescriptionChange={handleUnitDescriptionChange}
-                  onMarkingCriteriaChange={handleUnitMarkingCriteriaChange}
-                  onUnitLetterChange={handleUnitUnitLetterChange}
-                  onOrderChange={handleUnitOrderChange}
-                  onOptionalChange={handleUnitOptionalChange}
-                />
+        <>
+          <Section>
+            <div className="container">
+              <h2 className="h3">Unit Templates</h2>
+              <div className="row">
+                <div className="col-12 col-xl-6">
+                  <NewUnitTemplateList units={state.course.newUnitTemplates} onClick={handleUnitRowClick} />
+                  <div className="alert alert-info"><h3 className="h6">Unit Ordering</h3>Units are ordered by &ldquo;order&rdquo; then &ldquo;unit letter&rdquo;. As long as you follow a standard unit lettering scheme (e.g., &ldquo;A, B, C, ...&rdquo; or &ldquo;1, 2, 3, ...&rdquo;), you can leave each unit's &ldquo;order&rdquo; value set to 0.</div>
+                </div>
+                <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
+                  <NewUnitTemplateAddForm
+                    administratorId={administratorId}
+                    courseId={courseId}
+                    formState={state.newUnitTemplateForm}
+                    insert$={unitInsert$}
+                    onTitleChange={handleUnitTitleChange}
+                    onDescriptionChange={handleUnitDescriptionChange}
+                    onMarkingCriteriaChange={handleUnitMarkingCriteriaChange}
+                    onUnitLetterChange={handleUnitUnitLetterChange}
+                    onOrderChange={handleUnitOrderChange}
+                    onOptionalChange={handleUnitOptionalChange}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </Section>
+          </Section>
+          <Section>
+            <div className="container">
+              <h2 className="h3">Course Materials</h2>
+              <div className="row">
+                <div className="col-12 col-xl-6">
+                  {state.course.newMaterials.length === 0
+                    ? <p>No materials found</p>
+                    : <NewMaterialsTable newMaterials={state.course.newMaterials} />
+                  }
+                </div>
+                <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
+                  <NewMaterialAddForm
+                    administratorId={administratorId}
+                    courseId={courseId}
+                    formState={state.newMaterialForm}
+                    insert$={materialInsert$}
+                    onTypeChange={handleMaterialTypeChange}
+                    onTitleChange={handleMaterialTitleChange}
+                    onDescriptionChange={handleMaterialDescriptionChange}
+                    onUnitLetterChange={handleMaterialUnitLetterChange}
+                    onOrderChange={handleMaterialOrderChange}
+                    onFileChange={handleMaterialFileChange}
+                  />
+                </div>
+              </div>
+            </div>
+          </Section>
+        </>
       )}
     </>
   );

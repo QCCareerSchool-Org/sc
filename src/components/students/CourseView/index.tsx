@@ -1,4 +1,5 @@
 import NextError from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useEffect, useReducer, useRef } from 'react';
@@ -7,12 +8,16 @@ import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { navigateToLogin } from '../../../navigateToLogin';
 import { initialState, reducer } from './state';
 import { UnitsTable } from './UnitsTable';
+import { useInitialData } from './useInitialData';
+import { useInitializeNextUnit } from './useInitializeNextUnit';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 import type { NewUnit } from '@/domain/newUnit';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
+import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;
@@ -21,60 +26,15 @@ type Props = {
 
 export const CourseView = ({ studentId, courseId }: Props): ReactElement | null => {
   const router = useRouter();
-  const { enrollmentService, newUnitService } = useStudentServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  const initialize$ = useRef(new Subject<void>());
+  // we're going to be linking to static resources that require the user to be
+  // logged in, and those resources don't have a refresh built-in mechanism
+  useStayLoggedIn();
 
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
+  useInitialData(studentId, courseId, dispatch);
 
-    enrollmentService.getEnrollment(studentId, courseId).pipe(
-      takeUntil(destroy$),
-    ).subscribe({
-      next: enrollment => {
-        dispatch({ type: 'LOAD_ENROLLMENT_SUCCEEDED', payload: enrollment });
-      },
-      error: err => {
-        let errorCode: number | undefined;
-        if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin(router);
-          }
-          errorCode = err.code;
-        }
-        dispatch({ type: 'LOAD_ENROLLMENT_FAILED', payload: errorCode });
-      },
-    });
-
-    initialize$.current.pipe(
-      tap(() => dispatch({ type: 'INITIALIZE_UNIT_STARTED' })),
-      switchMap(() => newUnitService.initializeNextUnit(studentId, courseId).pipe(
-        tap({
-          next: newUnit => {
-            dispatch({ type: 'INITIALIZE_UNIT_SUCCEEDED', payload: newUnit });
-            void router.push(router.asPath + '/units/' + newUnit.unitId);
-          },
-          error: err => {
-            let message = 'Initialize failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
-              }
-              if (err.message) {
-                message = err.message;
-              }
-            }
-            dispatch({ type: 'INITIALIZE_UNIT_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
-      takeUntil(destroy$),
-    ).subscribe();
-
-    return () => { destroy$.next(); destroy$.complete(); };
-  }, [ router, studentId, courseId, enrollmentService, newUnitService ]);
+  const initializeNextUnit$ = useInitializeNextUnit(dispatch);
 
   const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
     void router.push(router.asPath + '/units/' + unitId);
@@ -91,27 +51,39 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
   const nextUnit = getNextUnit(state.enrollment.course.newUnitTemplates, state.enrollment.newUnits);
 
   const handleInitializeButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
-    initialize$.current.next();
+    initializeNextUnit$.next({
+      processingState: state.form.processingState,
+      studentId,
+      courseId,
+    });
   };
 
   return (
-    <Section>
-      <div className="container">
-        <h1>{state.enrollment.course.name}</h1>
-        <UnitsTable newUnits={state.enrollment.newUnits} onNewUnitClick={handleNewUnitClick} />
-        {nextUnit && (
-          <div className="d-flex align-items-center">
-            <button onClick={handleInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
-              {state.form.processingState === 'initializing'
-                ? <Spinner size="sm" />
-                : <>Start Unit {nextUnit}</>
-              }
-            </button>
-            {state.form.processingState === 'initialize error' && <span className="text-danger ms-2">{state.form.errorMessage ?? 'initializing'}</span>}
-          </div>
-        )}
-      </div>
-    </Section>
+    <>
+      <Section>
+        <div className="container">
+          <h1>{state.enrollment.course.name}</h1>
+          <UnitsTable newUnits={state.enrollment.newUnits} onNewUnitClick={handleNewUnitClick} />
+          {nextUnit && (
+            <div className="d-flex align-items-center">
+              <button onClick={handleInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
+                {state.form.processingState === 'initializing'
+                  ? <Spinner size="sm" />
+                  : <>Start Unit {nextUnit}</>
+                }
+              </button>
+              {state.form.processingState === 'initialize error' && <span className="text-danger ms-2">{state.form.errorMessage ?? 'initializing'}</span>}
+            </div>
+          )}
+        </div>
+      </Section>
+      <Section>
+        <div className="container">
+          <h1>Lessons</h1>
+          <Link href={`${endpoint}/students/${studentId}/static/lessons/95/6630b210-de75-11ec-bbd6-b5db70b35693/content`}><a target="_blank" rel="noopener noreferrer">sdkjfhsdkjfhdsf</a></Link>
+        </div>
+      </Section>
+    </>
   );
 };
 

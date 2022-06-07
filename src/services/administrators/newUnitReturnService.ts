@@ -30,8 +30,17 @@ type RawNewUnitReturnWithUnitWithTutorAndEnrollment = RawNewUnitReturn & {
   };
 };
 
+export type NewUnitReturnWithUnit = NewUnitReturn & {
+  newUnit: Omit<NewUnit, 'points' | 'mark' | 'complete'>;
+};
+
+type RawNewUnitReturnWithUnit = RawNewUnitReturn & {
+  newUnit: Omit<RawNewUnit, 'points' | 'mark' | 'complete'>;
+};
+
 export interface INewUnitReturnService {
   getUnitReturn: (administratorId: number, unitReturnId: string) => Observable<NewUnitReturnWithUnitWithTutorAndEnrollment>;
+  closeUnitReturn: (administratorId: number, unitReturnId: string, adminComment: string) => Observable<NewUnitReturnWithUnit>;
 }
 
 export class NewUnitReturnService implements INewUnitReturnService {
@@ -41,6 +50,13 @@ export class NewUnitReturnService implements INewUnitReturnService {
   public getUnitReturn(administratorId: number, unitReturnId: string): Observable<NewUnitReturnWithUnitWithTutorAndEnrollment> {
     const url = `${this.getUrl(administratorId)}/${unitReturnId}`;
     return this.httpService.get<RawNewUnitReturnWithUnitWithTutorAndEnrollment>(url).pipe(
+      map(this.mapNewUnitReturnWithUnitWithTutorAndEnrollment),
+    );
+  }
+
+  public closeUnitReturn(administratorId: number, unitReturnId: string, adminComment: string): Observable<NewUnitReturnWithUnit> {
+    const url = `${this.getUrl(administratorId)}/${unitReturnId}`;
+    return this.httpService.put<RawNewUnitReturnWithUnit>(url, { adminComment }).pipe(
       map(this.mapNewUnitReturnWithUnit),
     );
   }
@@ -49,7 +65,23 @@ export class NewUnitReturnService implements INewUnitReturnService {
     return `${endpoint}/administrators/${administratorId}/newUnitReturns`;
   }
 
-  private readonly mapNewUnitReturnWithUnit = (raw: RawNewUnitReturnWithUnitWithTutorAndEnrollment): NewUnitReturnWithUnitWithTutorAndEnrollment => {
+  private readonly mapNewUnitReturnWithUnit = (raw: RawNewUnitReturnWithUnit): NewUnitReturnWithUnit => {
+    return {
+      ...raw,
+      returned: new Date(raw.returned),
+      completed: raw.completed === null ? null : new Date(raw.completed),
+      newUnit: {
+        ...raw.newUnit,
+        submitted: raw.newUnit.submitted === null ? null : new Date(raw.newUnit.submitted),
+        transferred: raw.newUnit.transferred === null ? null : new Date(raw.newUnit.transferred),
+        closed: raw.newUnit.closed === null ? null : new Date(raw.newUnit.closed),
+        created: new Date(raw.newUnit.created),
+        modified: raw.newUnit.modified === null ? null : new Date(raw.newUnit.modified),
+      },
+    };
+  };
+
+  private readonly mapNewUnitReturnWithUnitWithTutorAndEnrollment = (raw: RawNewUnitReturnWithUnitWithTutorAndEnrollment): NewUnitReturnWithUnitWithTutorAndEnrollment => {
     return {
       ...raw,
       returned: new Date(raw.returned),

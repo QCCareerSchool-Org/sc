@@ -22,7 +22,7 @@ const CourseViewPage: NextPage<Props> = ({ courseId }) => {
 
   return (
     <>
-      <Meta title="Course View" />
+      <Meta title="View Course" />
       <CourseView administratorId={authState.administratorId} courseId={courseId} />
     </>
   );

@@ -34,7 +34,7 @@ export const StudentNav = (props: StudentNavProps): ReactElement | null => {
 
   return (
     <>
-      <nav className="navbar sticky-top navbar-expand-md navbar-light bg-white mainNav shadow">
+      <nav className={`mainNav navbar sticky-top navbar-expand-md navbar-light bg-white ${otherNavPresent ? '' : 'shadow'}`}>
         <div className="container">
           <a className="d-md-none navbar-brand" href="#">Student Menu</a>
           <button className={`navbar-toggler collapsed`} type="button" data-bs-toggle="collapse" data-bs-target="#studentNav" aria-controls="studentNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,6 +80,7 @@ export const StudentNav = (props: StudentNavProps): ReactElement | null => {
       <style jsx>{`
         .mainNav {
           ${otherNavPresent && 'border-bottom: 1px solid #ccc;'}
+          z-index: 1022;
         }
       `}</style>
     </>

@@ -23,7 +23,7 @@ const UnitPriceEditPage: NextPage<Props> = ({ courseId, countryId }) => {
 
   return (
     <>
-      <Meta title="Unit Price Edit" />
+      <Meta title="Edit Unit Price" />
       <UnitPriceEdit administratorId={authState.administratorId} courseId={courseId} countryId={countryId} />
     </>
   );

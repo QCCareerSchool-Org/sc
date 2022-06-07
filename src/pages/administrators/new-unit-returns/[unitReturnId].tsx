@@ -22,7 +22,7 @@ const NewUnitReturnViewPage: NextPage<Props> = ({ unitReturnId }) => {
 
   return (
     <>
-      <Meta title="Unit Return View" />
+      <Meta title="Returned Unit" />
       <NewUnitReturnView administratorId={authState.administratorId} unitReturnId={unitReturnId} />
     </>
   );
