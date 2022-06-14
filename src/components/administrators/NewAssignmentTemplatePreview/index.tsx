@@ -9,6 +9,7 @@ import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
+import type { NewDescriptionType } from '@/domain/newDescriptionType';
 
 type Props = {
   administratorId: number;
@@ -34,7 +35,7 @@ export const NewAssignmentTemplatePreview = ({ administratorId, assignmentId }: 
         <div className="container">
           {state.assignmentTemplate.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.assignmentTemplate.assignmentNumber}{state.assignmentTemplate.title && <>: {state.assignmentTemplate.title}</>}</h1>
-          {state.assignmentTemplate.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+          {state.assignmentTemplate.description && <Description description={state.assignmentTemplate.description} descriptionType={state.assignmentTemplate.descriptionType} />}
           <div className="row">
             <div className="col-12 col-lg-10 col-xl-8">
               {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
@@ -78,4 +79,23 @@ export const NewAssignmentTemplatePreview = ({ administratorId, assignmentId }: 
       `}</style>
     </>
   );
+};
+
+type DescriptionProps = {
+  description: string;
+  descriptionType: NewDescriptionType;
+};
+
+const Description = ({ description, descriptionType }: DescriptionProps): ReactElement | null => {
+  if (descriptionType === 'text') {
+    return (
+      <>
+        {description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+      </>
+    );
+  }
+  if (descriptionType === 'html') {
+    return <div className="htmlDescription" dangerouslySetInnerHTML={{ __html: description }} />;
+  }
+  return null;
 };
