@@ -14,6 +14,7 @@ type Props = {
   insert$: Subject<NewAssignementTemplateInsertEvent>;
   onTitleChange: ChangeEventHandler<HTMLInputElement>;
   onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onDescriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
   onMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   onAssignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
@@ -44,6 +45,7 @@ export const NewAssignmentTemplateAddForm = memo((props: Props): ReactElement =>
         assignmentNumber: parseInt(formState.data.assignmentNumber, 10),
         title: formState.data.title || null,
         description: formState.data.description || null,
+        descriptionType: formState.data.descriptionType,
         markingCriteria: formState.data.markingCriteria || null,
         optional: formState.data.optional,
       },
@@ -61,6 +63,7 @@ export const NewAssignmentTemplateAddForm = memo((props: Props): ReactElement =>
             formValidationMessages={formState.validationMessages}
             onTitleChange={props.onTitleChange}
             onDescriptionChange={props.onDescriptionChange}
+            onDescriptionTypeChange={props.onDescriptionTypeChange}
             onMarkingCriteriaChange={props.onMarkingCriteriaChange}
             onAssignmentNumberChange={props.onAssignmentNumberChange}
             onOptionalChange={props.onOptionalChange}

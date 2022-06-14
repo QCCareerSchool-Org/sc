@@ -1,6 +1,7 @@
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import type { NewUnitTemplateWithCourseAndAssignments } from '@/services/administrators/newUnitTemplateService';
+import { sanitize } from 'src/sanitize';
 
 export type State = {
   newUnitTemplate?: NewUnitTemplateWithCourseAndAssignments;
@@ -29,6 +30,7 @@ export type State = {
       assignmentNumber: string;
       title: string;
       description: string;
+      descriptionType: string;
       markingCriteria: string;
       optional: boolean;
     };
@@ -36,8 +38,12 @@ export type State = {
       assignmentNumber?: string;
       title?: string;
       description?: string;
+      descriptionType?: string;
       markingCriteria?: string;
       optional?: string;
+    };
+    meta: {
+      sanitizedHtml: string;
     };
     processingState: 'idle' | 'inserting' | 'insert error';
     errorMessage?: string;
@@ -64,6 +70,7 @@ export type Action =
   | { type: 'ASSIGNMENT_TEMPLATE_ASSIGNMENT_NUMBER_CHANGED'; payload: string }
   | { type: 'ASSIGNMENT_TEMPLATE_TITLE_CHANGED'; payload: string }
   | { type: 'ASSIGNMENT_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
+  | { type: 'ASSIGNMENT_TEMPLATE_DESCRIPTION_TYPE_CHANGED'; payload: string }
   | { type: 'ASSIGNMENT_TEMPLATE_MARKING_CRITERIA_CHANGED'; payload: string }
   | { type: 'ASSIGNMENT_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'ADD_ASSIGNMENT_TEMPLATE_STARTED' }
@@ -89,10 +96,14 @@ export const initialState: State = {
       assignmentNumber: '1',
       title: '',
       description: '',
+      descriptionType: 'text',
       markingCriteria: '',
       optional: false,
     },
     validationMessages: {},
+    meta: {
+      sanitizedHtml: '',
+    },
     processingState: 'idle',
     errorMessage: undefined,
   },
@@ -123,10 +134,14 @@ export const reducer = (state: State, action: Action): State => {
             assignmentNumber: action.payload.newAssignmentTemplates.length === 0 ? '1' : (Math.max(...action.payload.newAssignmentTemplates.map(a => a.assignmentNumber)) + 1).toString(),
             title: '',
             description: '',
+            descriptionType: 'text',
             markingCriteria: '',
             optional: false,
           },
           validationMessages: {},
+          meta: {
+            sanitizedHtml: '',
+          },
           processingState: 'idle',
           errorMessage: undefined,
         },
@@ -364,6 +379,27 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
+    case 'ASSIGNMENT_TEMPLATE_DESCRIPTION_TYPE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        if (![ 'text', 'html' ].includes(action.payload)) {
+          validationMessage = 'Invalid value';
+        }
+      }
+      return {
+        ...state,
+        newAssignmentTemplateForm: {
+          ...state.newAssignmentTemplateForm,
+          data: { ...state.newAssignmentTemplateForm.data, descriptionType: action.payload },
+          validationMessages: { ...state.newAssignmentTemplateForm.validationMessages, descriptionType: validationMessage },
+          meta: {
+            sanitizedHtml: action.payload === 'text' ? '' : sanitize(state.newAssignmentTemplateForm.data.description),
+          },
+        },
+      };
+    }
     case 'ASSIGNMENT_TEMPLATE_MARKING_CRITERIA_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
@@ -410,10 +446,14 @@ export const reducer = (state: State, action: Action): State => {
             assignmentNumber: (Math.max(...newAssignmentTemplates.map(a => a.assignmentNumber)) + 1).toString(),
             title: '',
             description: '',
+            descriptionType: 'text',
             markingCriteria: '',
             optional: false,
           },
           validationMessages: {},
+          meta: {
+            sanitizedHtml: '',
+          },
           processingState: 'idle',
           errorMessage: undefined,
         },

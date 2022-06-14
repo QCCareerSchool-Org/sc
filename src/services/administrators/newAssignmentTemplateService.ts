@@ -16,6 +16,7 @@ export type NewAssignmentTemplateAddPayload = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  descriptionType: string;
   markingCriteria: string | null;
   optional: boolean;
 };
@@ -24,6 +25,7 @@ export type NewAssignmentTemplateSavePayload = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  descriptionType: string;
   markingCriteria: string | null;
   optional: boolean;
 };

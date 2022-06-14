@@ -95,6 +95,10 @@ export const NewUnitTemplateEdit = ({ administratorId, unitId }: Props): ReactEl
     dispatch({ type: 'ASSIGNMENT_TEMPLATE_DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
+  const handleAssignmentDescriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'ASSIGNMENT_TEMPLATE_DESCRIPTION_TYPE_CHANGED', payload: e.target.value });
+  }, []);
+
   const handleAssignmentMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'ASSIGNMENT_TEMPLATE_MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
@@ -184,6 +188,7 @@ export const NewUnitTemplateEdit = ({ administratorId, unitId }: Props): ReactEl
                 insert$={assignmentInsert$}
                 onTitleChange={handleAssignmentTitleChange}
                 onDescriptionChange={handleAssignmentDescriptionChange}
+                onDescriptionTypeChange={handleAssignmentDescriptionTypeChange}
                 onMarkingCriteriaChange={handleAssignmentMarkingCriteriaChange}
                 onAssignmentNumberChange={handleAssignmentAssignmentNumberChange}
                 onOptionalChange={handleAssignmentOptionalChange}

@@ -336,24 +336,6 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         },
       };
     }
-    case 'MARKING_CRITERIA_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const maxLength = 65_535;
-        const newLength = [ ...action.payload ].length;
-        if (newLength > maxLength) {
-          validationMessage = `Exceeds maximum length of ${maxLength}`;
-        }
-      }
-      return {
-        ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, markingCriteria: action.payload },
-          validationMessages: { ...state.form.validationMessages, markingCriteria: validationMessage },
-        },
-      };
-    }
     case 'DESCRIPTION_TYPE_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
@@ -372,6 +354,24 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
           meta: {
             sanitizedHtml: action.payload === 'text' ? '' : sanitize(state.form.data.description),
           },
+        },
+      };
+    }
+    case 'MARKING_CRITERIA_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxLength = 65_535;
+        const newLength = [ ...action.payload ].length;
+        if (newLength > maxLength) {
+          validationMessage = `Exceeds maximum length of ${maxLength}`;
+        }
+      }
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          data: { ...state.form.data, markingCriteria: action.payload },
+          validationMessages: { ...state.form.validationMessages, markingCriteria: validationMessage },
         },
       };
     }
@@ -429,6 +429,9 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
             markingCriteria: '',
           },
           validationMessages: {},
+          meta: {
+            sanitizedHtml: '',
+          },
           processingState: 'idle',
           errorMessage: undefined,
         },

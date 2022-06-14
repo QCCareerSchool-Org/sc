@@ -68,6 +68,10 @@ export const NewAssignmentTemplateEdit = ({ administratorId, assignmentId }: Pro
     dispatch({ type: 'DESCRIPTION_CHANGED', payload: e.target.value });
   }, []);
 
+  const handleDescriptionTypeChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'DESCRIPTION_TYPE_CHANGED', payload: e.target.value });
+  }, []);
+
   const handleMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
     dispatch({ type: 'MARKING_CRITERIA_CHANGED', payload: e.target.value });
   }, []);
@@ -154,6 +158,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, assignmentId }: Pro
                 delete$={assignmentDelete$}
                 onTitleChange={handleTitleChange}
                 onDescriptionChange={handleDescriptionChange}
+                onDescriptionTypeChange={handleDescriptionTypeChange}
                 onMarkingCriteriaChange={handleMarkingCriteriaChange}
                 onAssignmentNumberChange={handleAssignmentNumberChange}
                 onOptionalChange={handleOptionalChange}
@@ -171,6 +176,14 @@ export const NewAssignmentTemplateEdit = ({ administratorId, assignmentId }: Pro
                   </tbody>
                 </table>
               </div>
+              {state.form.meta.sanitizedHtml.length > 0 && (
+                <div>
+                  <div className="alert alert-info">
+                    <h3 className="h6">HTML Preview</h3>
+                    <div className="htmlPreview" dangerouslySetInnerHTML={{ __html: state.form.meta.sanitizedHtml }} />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
