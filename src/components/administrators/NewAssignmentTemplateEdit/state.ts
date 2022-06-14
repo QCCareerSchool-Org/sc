@@ -265,6 +265,9 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
           ...state.form,
           data: { ...state.form.data, description: action.payload },
           validationMessages: { ...state.form.validationMessages, description: validationMessage },
+          meta: {
+            sanitizedHtml: state.form.data.descriptionType === 'html' ? sanitize(action.payload) : '',
+          },
         },
       };
     }
