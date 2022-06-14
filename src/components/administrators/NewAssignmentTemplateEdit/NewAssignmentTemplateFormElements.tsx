@@ -9,6 +9,7 @@ type Props = {
   formValidationMessages: State['form']['validationMessages'];
   onTitleChange: ChangeEventHandler<HTMLInputElement>;
   onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
+  onDescriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
   onMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   onAssignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
@@ -28,8 +29,22 @@ export const NewAssignmentTemplateFormElements = (props: Props): ReactElement =>
       </div>
       <div className="formGroup">
         <label htmlFor={id + '_newAssignmentTemplateDescription'} className="form-label">Description</label>
+        <div className="row gx-3 align-items-center">
+          <div className="col-auto">
+            <div className="form-check">
+              <input onChange={props.onDescriptionTypeChange} checked={formData.descriptionType === 'text'} className="form-check-input" type="radio" name="descriptionType" value="text" id={id + '_newAssignmentTemplateDescriptionTypeText'} />
+              <label className="form-check-label" htmlFor={id + '_newAssignmentTemplateDescriptionTypeText'}>Text</label>
+            </div>
+          </div>
+          <div className="col-auto">
+            <div className="form-check">
+              <input onChange={props.onDescriptionTypeChange} checked={formData.descriptionType === 'html'} className="form-check-input" type="radio" name="descriptionType" value="html" id={id + '_newAssignmentTemplateDescriptionTypeHtml'} />
+              <label className="form-check-label" htmlFor={id + '_newAssignmentTemplateDescriptionTypeHtml'}>HTML</label>
+            </div>
+          </div>
+        </div>
         <textarea onChange={props.onDescriptionChange} value={formData.description} id={id + '_newAssignmentTemplateDescription'} rows={4} className={`form-control ${formValidationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newAssignmentTemplateDescriptionHelp'} />
-        <div id={id + '_newAssignmentTemplateDescriptionHelp'} className="form-text">The description of this assignment <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
+        <div id={id + '_newAssignmentTemplateDescriptionHelp'} className="form-text">The description of this part{formData.descriptionType === 'text' ? <span className="fw-bold"> (Two <em>ENTER</em> keys in a row will start a new paragraph)</span> : formData.descriptionType === 'html' ? <span className="fw-bold"> (HTML descriptions should use &lt;p&gt; tags)</span> : null}</div>
         {formValidationMessages.description && <div className="invalid-feedback">{formValidationMessages.description}</div>}
       </div>
       <div className="formGroup">

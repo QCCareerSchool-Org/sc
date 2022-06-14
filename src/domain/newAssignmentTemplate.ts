@@ -1,3 +1,5 @@
+import type { NewDescriptionType } from './newDescriptionType';
+
 export type NewAssignmentTemplate = {
   /** uuid */
   assignmentTemplateId: string;
@@ -6,6 +8,7 @@ export type NewAssignmentTemplate = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  descriptionType: NewDescriptionType;
   markingCriteria: string | null;
   optional: boolean;
   created: Date;
@@ -20,6 +23,7 @@ export type RawNewAssignmentTemplate = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  descriptionType: NewDescriptionType;
   markingCriteria: string | null;
   optional: boolean;
   /** date string */

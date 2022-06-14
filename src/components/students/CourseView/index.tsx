@@ -2,10 +2,9 @@ import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { useCallback, useReducer } from 'react';
 
-import { navigateToLogin } from '../../../navigateToLogin';
+import { endpoint } from '../../../basePath';
 import { initialState, reducer } from './state';
 import { UnitsTable } from './UnitsTable';
 import { useInitialData } from './useInitialData';
@@ -15,9 +14,6 @@ import { Spinner } from '@/components/Spinner';
 import type { NewUnit } from '@/domain/newUnit';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
-import { useStudentServices } from '@/hooks/useStudentServices';
-import { HttpServiceError } from '@/services/httpService';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;

@@ -12,6 +12,7 @@ export type State = {
       assignmentNumber: string;
       title: string;
       description: string;
+      descriptionType: string;
       markingCriteria: string;
       optional: boolean;
     };
@@ -19,8 +20,12 @@ export type State = {
       assignmentNumber?: string;
       title?: string;
       description?: string;
+      descriptionType?: string;
       markingCriteria?: string;
       optional?: string;
+    };
+    meta: {
+      sanitizedHtml: string;
     };
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
     errorMessage?: string;
@@ -76,6 +81,7 @@ export type Action =
   | { type: 'ASSIGNMENT_NUMBER_CHANGED'; payload: string }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
+  | { type: 'DESCRIPTION_TYPE_CHANGED'; payload: string }
   | { type: 'MARKING_CRITERIA_CHANGED'; payload: string }
   | { type: 'OPTIONAL_CHANGED'; payload: boolean }
   | { type: 'SAVE_ASSIGNMENT_TEMPLATE_STARTED' }
@@ -108,10 +114,14 @@ export const initialState: State = {
       assignmentNumber: '1',
       title: '',
       description: '',
+      descriptionType: 'text',
       markingCriteria: '',
       optional: false,
     },
     validationMessages: {},
+    meta: {
+      sanitizedHtml: '',
+    },
     processingState: 'idle',
   },
   newPartTemplateForm: {
@@ -155,10 +165,14 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
             assignmentNumber: action.payload.assignmentNumber.toString(),
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
+            descriptionType: action.payload.descriptionType,
             markingCriteria: action.payload.markingCriteria ?? '',
             optional: action.payload.optional,
           },
           validationMessages: {},
+          meta: {
+            sanitizedHtml: action.payload.description !== null && action.payload.descriptionType === 'html' ? sanitize(action.payload.description) : '',
+          },
           processingState: 'idle',
           errorMessage: undefined,
         },
@@ -254,6 +268,27 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         },
       };
     }
+    case 'DESCRIPTION_TYPE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload.length === 0) {
+        validationMessage = 'Required';
+      } else {
+        if (![ 'text', 'html' ].includes(action.payload)) {
+          validationMessage = 'Invalid value';
+        }
+      }
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          data: { ...state.form.data, descriptionType: action.payload },
+          validationMessages: { ...state.form.validationMessages, descriptionType: validationMessage },
+          meta: {
+            sanitizedHtml: action.payload === 'text' ? '' : sanitize(state.form.data.description),
+          },
+        },
+      };
+    }
     case 'MARKING_CRITERIA_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
@@ -298,8 +333,12 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
             assignmentNumber: action.payload.assignmentNumber.toString(),
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
+            descriptionType: action.payload.descriptionType,
             markingCriteria: action.payload.markingCriteria ?? '',
             optional: action.payload.optional,
+          },
+          meta: {
+            sanitizedHtml: action.payload.description !== null && action.payload.descriptionType === 'html' ? sanitize(action.payload.description) : '',
           },
           processingState: 'idle',
         },
@@ -324,10 +363,14 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
             assignmentNumber: '1',
             title: '',
             description: '',
+            descriptionType: 'text',
             markingCriteria: '',
             optional: false,
           },
           validationMessages: {},
+          meta: {
+            sanitizedHtml: '',
+          },
           processingState: 'idle',
           errorMessage: undefined,
         },
