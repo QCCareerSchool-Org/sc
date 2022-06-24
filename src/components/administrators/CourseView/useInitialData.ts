@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { forkJoin, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
@@ -15,14 +15,11 @@ export const useInitialData = (administratorId: number, courseId: number, dispat
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    forkJoin([
-      courseService.getCourse(administratorId, courseId),
-      newMaterialService.getAllMaterials(administratorId, courseId),
-    ]).pipe(
+    courseService.getCourse(administratorId, courseId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: ([ course, newMaterials ]) => {
-        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: { ...course, newMaterials } });
+      next: course => {
+        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: course });
       },
       error: err => {
         let errorCode: number | undefined;

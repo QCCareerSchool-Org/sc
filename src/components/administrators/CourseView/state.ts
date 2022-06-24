@@ -1,12 +1,12 @@
 import type { Course } from '@/domain/course';
-import type { NewMaterial, NewMaterialType } from '@/domain/newMaterial';
+import type { NewMaterialUnit } from '@/domain/newMaterialUnit';
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
 import type { School } from '@/domain/school';
 
 type CourseWithSchoolAndUnitTemplates = Course & {
   school: School;
   newUnitTemplates: NewUnitTemplate[];
-  newMaterials: NewMaterial[];
+  newMaterialUnits: NewMaterialUnit[];
 };
 
 export type State = {
@@ -35,24 +35,16 @@ export type State = {
     processingState: 'idle' | 'inserting' | 'insert error';
     errorMessage?: string;
   };
-  newMaterialForm: {
+  newMaterialUnitForm: {
     data: {
-      type: NewMaterialType;
       unitLetter: string;
       title: string;
-      description: string;
       order: string;
-      file: File | null;
-      externalData: string;
     };
     validationMessages: {
-      type?: string;
       unitLetter?: string;
       title?: string;
-      description?: string;
       order?: string;
-      file?: string;
-      externalData?: string;
     };
     processingState: 'idle' | 'inserting' | 'insert error';
     errorMessage?: string;
@@ -79,15 +71,12 @@ export type Action =
   | { type: 'ADD_UNIT_TEMPLATE_SUCCEEDED'; payload: NewUnitTemplate }
   | { type: 'ADD_UNIT_TEMPLATE_FAILED'; payload?: string }
 
-  | { type: 'MATERIAL_TYPE_CHANGED'; payload: string }
-  | { type: 'MATERIAL_UNIT_LETTER_CHANGED'; payload: string }
-  | { type: 'MATERIAL_TITLE_CHANGED'; payload: string }
-  | { type: 'MATERIAL_DESCRIPTION_CHANGED'; payload: string }
-  | { type: 'MATERIAL_ORDER_CHANGED'; payload: string }
-  | { type: 'MATERIAL_FILE_CHANGED'; payload: File | null }
-  | { type: 'ADD_MATERIAL_STARTED' }
-  | { type: 'ADD_MATERIAL_SUCCEEDED'; payload: NewMaterial }
-  | { type: 'ADD_MATERIAL_FAILED'; payload?: string };
+  | { type: 'MATERIAL_UNIT_UNIT_LETTER_CHANGED'; payload: string }
+  | { type: 'MATERIAL_UNIT_TITLE_CHANGED'; payload: string }
+  | { type: 'MATERIAL_UNIT_ORDER_CHANGED'; payload: string }
+  | { type: 'ADD_MATERIAL_UNIT_STARTED' }
+  | { type: 'ADD_MATERIAL_UNIT_SUCCEEDED'; payload: NewMaterialUnit }
+  | { type: 'ADD_MATERIAL_UNIT_FAILED'; payload?: string };
 
 export const initialState: State = {
   enableForm: {
@@ -105,15 +94,11 @@ export const initialState: State = {
     validationMessages: {},
     processingState: 'idle',
   },
-  newMaterialForm: {
+  newMaterialUnitForm: {
     data: {
-      type: 'lesson',
       unitLetter: 'A',
       title: '',
-      description: '',
       order: '0',
-      file: null,
-      externalData: '',
     },
     validationMessages: {},
     processingState: 'idle',
@@ -147,15 +132,11 @@ export const reducer = (state: State, action: Action): State => {
           processingState: 'idle',
           errorMessage: undefined,
         },
-        newMaterialForm: {
+        newMaterialUnitForm: {
           data: {
-            type: 'lesson',
             unitLetter: 'A',
             title: '',
-            description: '',
             order: '0',
-            file: null,
-            externalData: '',
           },
           validationMessages: {},
           processingState: 'idle',
@@ -331,24 +312,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         newUnitTemplateForm: { ...state.newUnitTemplateForm, processingState: 'insert error', errorMessage: action.payload },
       };
-
-    case 'MATERIAL_TYPE_CHANGED': {
-      const type = ([ 'lesson', 'video', 'download', 'assignment' ].includes(action.payload)
-        ? action.payload
-        : 'lesson') as NewMaterialType;
-      const [ file, fileValidationMessage ] = type === state.newMaterialForm.data.type
-        ? [ state.newMaterialForm.data.file, state.newMaterialForm.validationMessages.file ] // keep existing file and validation message, if any
-        : [ null, undefined ]; // set file to null and validation message to undefined
-      return {
-        ...state,
-        newMaterialForm: {
-          ...state.newMaterialForm,
-          data: { ...state.newMaterialForm.data, type, file },
-          validationMessages: { ...state.newMaterialForm.validationMessages, file: fileValidationMessage },
-        },
-      };
-    }
-    case 'MATERIAL_UNIT_LETTER_CHANGED': {
+    case 'MATERIAL_UNIT_UNIT_LETTER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
         validationMessage = 'Required';
@@ -359,14 +323,14 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newMaterialForm: {
-          ...state.newMaterialForm,
-          data: { ...state.newMaterialForm.data, unitLetter: action.payload.toUpperCase() },
-          validationMessages: { ...state.newMaterialForm.validationMessages, unitLetter: validationMessage },
+        newMaterialUnitForm: {
+          ...state.newMaterialUnitForm,
+          data: { ...state.newMaterialUnitForm.data, unitLetter: action.payload.toUpperCase() },
+          validationMessages: { ...state.newMaterialUnitForm.validationMessages, unitLetter: validationMessage },
         },
       };
     }
-    case 'MATERIAL_TITLE_CHANGED': {
+    case 'MATERIAL_UNIT_TITLE_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
@@ -377,32 +341,14 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newMaterialForm: {
-          ...state.newMaterialForm,
-          data: { ...state.newMaterialForm.data, title: action.payload },
-          validationMessages: { ...state.newMaterialForm.validationMessages, title: validationMessage },
+        newMaterialUnitForm: {
+          ...state.newMaterialUnitForm,
+          data: { ...state.newMaterialUnitForm.data, title: action.payload },
+          validationMessages: { ...state.newMaterialUnitForm.validationMessages, title: validationMessage },
         },
       };
     }
-    case 'MATERIAL_DESCRIPTION_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        const maxLength = 65_535;
-        const newLength = [ ...action.payload ].length;
-        if (newLength > maxLength) {
-          validationMessage = `Exceeds maximum length of ${maxLength}`;
-        }
-      }
-      return {
-        ...state,
-        newMaterialForm: {
-          ...state.newMaterialForm,
-          data: { ...state.newMaterialForm.data, description: action.payload },
-          validationMessages: { ...state.newMaterialForm.validationMessages, description: validationMessage },
-        },
-      };
-    }
-    case 'MATERIAL_ORDER_CHANGED': {
+    case 'MATERIAL_UNIT_ORDER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
         validationMessage = 'Required';
@@ -418,70 +364,40 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newMaterialForm: {
-          ...state.newMaterialForm,
-          data: { ...state.newMaterialForm.data, order: action.payload },
-          validationMessages: { ...state.newMaterialForm.validationMessages, order: validationMessage },
+        newMaterialUnitForm: {
+          ...state.newMaterialUnitForm,
+          data: { ...state.newMaterialUnitForm.data, order: action.payload },
+          validationMessages: { ...state.newMaterialUnitForm.validationMessages, order: validationMessage },
         },
       };
     }
-    case 'MATERIAL_FILE_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload) {
-        if (state.newMaterialForm.data.type === 'lesson') {
-          const maxSize = 33554432;
-          if (action.payload.size > maxSize) {
-            validationMessage = 'File exceeds maximum size';
-          }
-        } else if (state.newMaterialForm.data.type === 'download') {
-          const maxSize = 16777216;
-          if (action.payload.size > maxSize) {
-            validationMessage = 'File exceeds maximum size';
-          }
-        } else if (state.newMaterialForm.data.type === 'video' || state.newMaterialForm.data.type === 'assignment') {
-          throw Error(`File not allowed for type ${state.newMaterialForm.data.type}`);
-        }
-      }
+    case 'ADD_MATERIAL_UNIT_STARTED':
       return {
         ...state,
-        newMaterialForm: {
-          ...state.newMaterialForm,
-          data: { ...state.newMaterialForm.data, file: action.payload },
-          validationMessages: { ...state.newMaterialForm.validationMessages, file: validationMessage },
-        },
+        newMaterialUnitForm: { ...state.newMaterialUnitForm, processingState: 'inserting', errorMessage: undefined },
       };
-    }
-    case 'ADD_MATERIAL_STARTED':
-      return {
-        ...state,
-        newMaterialForm: { ...state.newMaterialForm, processingState: 'inserting', errorMessage: undefined },
-      };
-    case 'ADD_MATERIAL_SUCCEEDED': {
+    case 'ADD_MATERIAL_UNIT_SUCCEEDED': {
       if (!state.course) {
         throw Error('course is undefined');
       }
-      const newMaterials = [ ...state.course.newMaterials, action.payload ].sort((a, b) => {
-        if (a.unitLetter === b.unitLetter) {
-          return a.order - b.order;
+      const newMaterialUnits = [ ...state.course.newMaterialUnits, action.payload ].sort((a, b) => {
+        if (a.order === b.order) {
+          return a.unitLetter.localeCompare(b.unitLetter);
         }
-        return a.unitLetter.localeCompare(b.unitLetter);
+        return a.order - b.order;
       });
       return {
         ...state,
         course: {
           ...state.course,
-          newMaterials,
+          newMaterialUnits,
         },
-        newMaterialForm: {
-          ...state.newMaterialForm,
+        newMaterialUnitForm: {
+          ...state.newMaterialUnitForm,
           data: {
-            type: 'lesson',
             unitLetter: 'A',
             title: '',
-            description: '',
             order: '0',
-            file: null,
-            externalData: '',
           },
           validationMessages: {},
           processingState: 'idle',
@@ -489,10 +405,10 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'ADD_MATERIAL_FAILED':
+    case 'ADD_MATERIAL_UNIT_FAILED':
       return {
         ...state,
-        newMaterialForm: { ...state.newMaterialForm, processingState: 'insert error', errorMessage: action.payload },
+        newMaterialUnitForm: { ...state.newMaterialUnitForm, processingState: 'insert error', errorMessage: action.payload },
       };
   }
 };

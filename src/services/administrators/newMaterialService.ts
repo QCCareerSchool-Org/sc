@@ -5,53 +5,46 @@ import { endpoint } from '../../basePath';
 import type { IHttpService } from '../httpService';
 import type { NewMaterial, RawNewMaterial } from '@/domain/newMaterial';
 
-export type NewMaterialPayload = {
-  courseId: number;
+export type NewMaterialInsertPayload = {
   type: 'lesson' | 'video' | 'download' | 'assignment';
   title: string;
   description: string;
-  unitLetter: string;
   order: number;
   externalData: string | null;
 };
 
+export type NewMaterialEditPayload = {
+  title: string;
+  description: string;
+  order: number;
+};
+
 export interface INewMaterialService {
-  getAllMaterials: (administratorId: number, courseId: number) => Observable<NewMaterial[]>;
-  getMaterial: (administratorId: number, materialId: string) => Observable<NewMaterial>;
-  addMaterial: (administratorId: number, data: NewMaterialPayload, file?: File) => Observable<NewMaterial>;
-  saveMaterial: (administratorId: number, materialId: string, data: NewMaterialPayload) => Observable<NewMaterial>;
-  replaceMaterialFile: (administratorId: number, materialId: string, file: File) => Observable<NewMaterial>;
-  deleteMaterial: (administratorId: number, materialId: string) => Observable<void>;
+  getMaterial: (administratorId: number, materialUnitId: string, materialId: string) => Observable<NewMaterial>;
+  addMaterial: (administratorId: number, materialUnitId: string, data: NewMaterialInsertPayload, file?: File) => Observable<NewMaterial>;
+  saveMaterial: (administratorId: number, materialUnitId: string, materialId: string, data: NewMaterialEditPayload) => Observable<NewMaterial>;
+  replaceMaterialFile: (administratorId: number, materialUnitId: string, materialId: string, file: File) => Observable<NewMaterial>;
+  deleteMaterial: (administratorId: number, materialUnitId: string, materialId: string) => Observable<void>;
 }
 
 export class NewMaterialService implements INewMaterialService {
 
   public constructor(private readonly http: IHttpService) { /* empty */ }
 
-  public getAllMaterials(administratorId: number, courseId: number): Observable<NewMaterial[]> {
-    const url = this.getUrl(administratorId);
-    const params = { courseId };
-    return this.http.get<RawNewMaterial[]>(url, { params }).pipe(
-      map(materials => materials.map(this.mapNewMaterial)),
-    );
-  }
-
-  public getMaterial(administratorId: number, materialId: string): Observable<NewMaterial> {
-    const url = `${this.getUrl(administratorId)}/${materialId}`;
+  public getMaterial(administratorId: number, materialUnitId: string, materialId: string): Observable<NewMaterial> {
+    const url = `${this.getUrl(administratorId, materialUnitId)}/${materialId}`;
     return this.http.get<RawNewMaterial>(url).pipe(
       map(this.mapNewMaterial),
     );
   }
 
-  public addMaterial(administratorId: number, data: NewMaterialPayload, file?: File): Observable<NewMaterial> {
-    const url = this.getUrl(administratorId);
+  public addMaterial(administratorId: number, materialUnitId: string, data: NewMaterialInsertPayload, file?: File): Observable<NewMaterial> {
+    const url = this.getUrl(administratorId, materialUnitId);
     const headers = { 'Content-Type': 'multipart/form-data' };
     const body = new FormData();
-    body.append('courseId', data.courseId.toString());
     body.append('type', data.type);
     body.append('title', data.title);
     body.append('description', data.description);
-    body.append('unitLetter', data.unitLetter);
     body.append('order', data.order.toString());
     if (file) {
       body.append('file', file);
@@ -64,13 +57,11 @@ export class NewMaterialService implements INewMaterialService {
     );
   }
 
-  public saveMaterial(administratorId: number, materialId: string, data: NewMaterialPayload): Observable<NewMaterial> {
-    const url = `${this.getUrl(administratorId)}/${materialId}`;
+  public saveMaterial(administratorId: number, materialUnitId: string, materialId: string, data: NewMaterialEditPayload): Observable<NewMaterial> {
+    const url = `${this.getUrl(administratorId, materialUnitId)}/${materialId}`;
     const body = {
-      courseId: data.courseId,
       title: data.title,
       description: data.description,
-      unitLetter: data.unitLetter,
       order: data.order,
     };
     return this.http.put<RawNewMaterial>(url, body).pipe(
@@ -78,8 +69,8 @@ export class NewMaterialService implements INewMaterialService {
     );
   }
 
-  public replaceMaterialFile(administratorId: number, materialId: string, file: File): Observable<NewMaterial> {
-    const url = `${this.getUrl(administratorId)}/${materialId}/file`;
+  public replaceMaterialFile(administratorId: number, materialUnitId: string, materialId: string, file: File): Observable<NewMaterial> {
+    const url = `${this.getUrl(administratorId, materialUnitId)}/${materialId}/file`;
     const headers = { 'Content-Type': 'multipart/form-data' };
     const body = new FormData();
     body.append('file', file);
@@ -88,13 +79,13 @@ export class NewMaterialService implements INewMaterialService {
     );
   }
 
-  public deleteMaterial(administratorId: number, materialId: string): Observable<void> {
-    const url = `${this.getUrl(administratorId)}/${materialId}`;
+  public deleteMaterial(administratorId: number, materialUnitId: string, materialId: string): Observable<void> {
+    const url = `${this.getUrl(administratorId, materialUnitId)}/${materialId}`;
     return this.http.delete<void>(url);
   }
 
-  private getUrl(administratorId: number): string {
-    return `${endpoint}/administrators/${administratorId}/newMaterials`;
+  private getUrl(administratorId: number, materialUnitId: string): string {
+    return `${endpoint}/administrators/${administratorId}/newMaterialUnits/${materialUnitId}/newMaterials`;
   }
 
   private readonly mapNewMaterial = (raw: RawNewMaterial): NewMaterial => ({

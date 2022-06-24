@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import type { ChangeEventHandler, MouseEvent, MouseEventHandler, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
-import { NewMaterialAddForm } from './NewMaterialAddForm';
-import { NewMaterialsTable } from './NewMaterialsTable';
+import { NewMaterialUnitAddForm } from './NewMaterialUnitAddForm';
+import { NewMaterialUnitsTable } from './NewMaterialUnitsTable';
 import { NewUnitTemplateAddForm } from './NewUnitTemplateAddForm';
 import { NewUnitTemplateList } from './NewUnitTemplateList';
 import { initialState, reducer } from './state';
@@ -58,33 +58,16 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
     dispatch({ type: 'UNIT_TEMPLATE_OPTIONAL_CHANGED', payload: e.target.checked });
   }, []);
 
-  const handleMaterialTypeChange: ChangeEventHandler<HTMLSelectElement> = useCallback(e => {
-    dispatch({ type: 'MATERIAL_TYPE_CHANGED', payload: e.target.value });
+  const handleMaterialUnitTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'MATERIAL_UNIT_TITLE_CHANGED', payload: e.target.value });
   }, []);
 
-  const handleMaterialTitleChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'MATERIAL_TITLE_CHANGED', payload: e.target.value });
+  const handleMaterialUnitUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'MATERIAL_UNIT_UNIT_LETTER_CHANGED', payload: e.target.value });
   }, []);
 
-  const handleMaterialDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(e => {
-    dispatch({ type: 'MATERIAL_DESCRIPTION_CHANGED', payload: e.target.value });
-  }, []);
-
-  const handleMaterialUnitLetterChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'MATERIAL_UNIT_LETTER_CHANGED', payload: e.target.value });
-  }, []);
-
-  const handleMaterialOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    dispatch({ type: 'MATERIAL_ORDER_CHANGED', payload: e.target.value });
-  }, []);
-
-  const handleMaterialFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
-    const files = e.target.files;
-    if (files?.length) {
-      dispatch({ type: 'MATERIAL_FILE_CHANGED', payload: files[0] });
-    } else {
-      dispatch({ type: 'MATERIAL_FILE_CHANGED', payload: null });
-    }
+  const handleMaterialUnitOrderChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    dispatch({ type: 'MATERIAL_UNIT_ORDER_CHANGED', payload: e.target.value });
   }, []);
 
   if (state.error) {
@@ -193,26 +176,23 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
           </Section>
           <Section>
             <div className="container">
-              <h2 className="h3">Course Materials</h2>
+              <h2 className="h3">Material Units</h2>
               <div className="row">
                 <div className="col-12 col-xl-6">
-                  {state.course.newMaterials.length === 0
-                    ? <p>No materials found</p>
-                    : <NewMaterialsTable newMaterials={state.course.newMaterials} />
+                  {state.course.newMaterialUnits.length === 0
+                    ? <p>No material units found</p>
+                    : <NewMaterialUnitsTable newMaterialUnits={state.course.newMaterialUnits} />
                   }
                 </div>
                 <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
-                  <NewMaterialAddForm
+                  <NewMaterialUnitAddForm
                     administratorId={administratorId}
                     courseId={courseId}
-                    formState={state.newMaterialForm}
+                    formState={state.newMaterialUnitForm}
                     insert$={materialInsert$}
-                    onTypeChange={handleMaterialTypeChange}
-                    onTitleChange={handleMaterialTitleChange}
-                    onDescriptionChange={handleMaterialDescriptionChange}
-                    onUnitLetterChange={handleMaterialUnitLetterChange}
-                    onOrderChange={handleMaterialOrderChange}
-                    onFileChange={handleMaterialFileChange}
+                    onTitleChange={handleMaterialUnitTitleChange}
+                    onUnitLetterChange={handleMaterialUnitUnitLetterChange}
+                    onOrderChange={handleMaterialUnitOrderChange}
                   />
                 </div>
               </div>
