@@ -4,6 +4,8 @@ import { map } from 'rxjs';
 import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
+import type { NewMaterial, RawNewMaterial } from '@/domain/newMaterial';
+import type { NewMaterialUnit, RawNewMaterialUnit } from '@/domain/newMaterialUnit';
 import type { NewUnit, RawNewUnit } from '@/domain/newUnit';
 import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
 import type { RawStudentStudent, StudentStudent } from '@/domain/student/student';
@@ -14,8 +16,11 @@ export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
   student: StudentStudent;
   course: Course & {
     newUnitTemplates: NewUnitTemplate[];
+    newMaterialUnits: Array<NewMaterialUnit & {
+      newMaterials: NewMaterial[];
+    }>;
   };
-  tutor: StudentTutor;
+  tutor: StudentTutor | null;
   newUnits: NewUnit[];
 };
 
@@ -23,6 +28,9 @@ type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
   student: RawStudentStudent;
   course: Course & {
     newUnitTemplates: RawNewUnitTemplate[];
+    newMaterialUnits: Array<RawNewMaterialUnit & {
+      newMaterials: RawNewMaterial[];
+    }>;
   };
   tutor: StudentTutor;
   newUnits: RawNewUnit[];
@@ -64,6 +72,16 @@ export class EnrollmentService implements IEnrollmentService {
           ...u,
           created: new Date(u.created),
           modified: u.modified === null ? null : new Date(u.modified),
+        })),
+        newMaterialUnits: enrollment.course.newMaterialUnits.map(u => ({
+          ...u,
+          created: new Date(u.created),
+          modified: u.modified === null ? null : new Date(u.modified),
+          newMaterials: u.newMaterials.map(m => ({
+            ...m,
+            created: new Date(m.created),
+            modified: m.modified === null ? null : new Date(m.modified),
+          })),
         })),
       },
       newUnits: enrollment.newUnits.map(u => ({

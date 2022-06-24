@@ -4,13 +4,11 @@ export type State = {
   newMaterial?: NewMaterial;
   form: {
     data: {
-      unitLetter: string;
       title: string;
       description: string;
       order: string;
     };
     validationMessages: {
-      unitLetter?: string;
       title?: string;
       description?: string;
       order?: string;
@@ -25,7 +23,6 @@ export type State = {
 export type Action =
   | { type: 'LOAD_MATERIAL_SUCCEEDED'; payload: NewMaterial }
   | { type: 'LOAD_MATERIAL_FAILED'; payload?: number }
-  | { type: 'UNIT_LETTER_CHANGED'; payload: string }
   | { type: 'TITLE_CHANGED'; payload: string }
   | { type: 'DESCRIPTION_CHANGED'; payload: string }
   | { type: 'ORDER_CHANGED'; payload: string }
@@ -39,7 +36,6 @@ export type Action =
 export const initialState: State = {
   form: {
     data: {
-      unitLetter: 'A',
       title: '',
       description: '',
       order: '0',
@@ -59,7 +55,6 @@ export const reducer = (state: State, action: Action): State => {
         newMaterial: action.payload,
         form: {
           data: {
-            unitLetter: action.payload.unitLetter,
             title: action.payload.title,
             description: action.payload.description,
             order: action.payload.order.toString(),
@@ -72,24 +67,6 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'LOAD_MATERIAL_FAILED':
       return { ...state, error: true, errorCode: action.payload };
-    case 'UNIT_LETTER_CHANGED': {
-      let validationMessage: string | undefined;
-      if (action.payload.length === 0) {
-        validationMessage = 'Required';
-      } else if (action.payload.length > 1) {
-        validationMessage = 'Maximum of one character allowed';
-      } else if (!/[a-z0-9]/iu.test(action.payload)) {
-        validationMessage = 'Only letters A to Z and number 0 to 9 are allowed';
-      }
-      return {
-        ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, unitLetter: action.payload.toUpperCase() },
-          validationMessages: { ...state.form.validationMessages, unitLetter: validationMessage },
-        },
-      };
-    }
     case 'TITLE_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
@@ -167,7 +144,6 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           data: {
-            unitLetter: action.payload.unitLetter,
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
             order: action.payload.order.toString(),
@@ -198,7 +174,6 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           data: {
-            unitLetter: 'A',
             title: '',
             description: '',
             order: '0',

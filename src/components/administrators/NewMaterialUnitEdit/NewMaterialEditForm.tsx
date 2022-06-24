@@ -9,13 +9,12 @@ import { Spinner } from '@/components/Spinner';
 
 type Props = {
   administratorId: number;
-  courseId: number;
-  formState: State['newMaterialForm'];
+  materialUnitId: string;
+  formState: State['form'];
   insert$: Subject<NewMaterialInsertEvent>;
   onTypeChange: ChangeEventHandler<HTMLSelectElement>;
   onTitleChange: ChangeEventHandler<HTMLInputElement>;
   onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
-  onUnitLetterChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
   onFileChange: ChangeEventHandler<HTMLInputElement>;
 };
@@ -32,16 +31,16 @@ const defaultMimeTypes = [
   'application/x-zip-compressed',
 ];
 
-export const NewMaterialAddForm = memo((props: Props): ReactElement => {
+export const NewMaterialEditForm = memo((props: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = useRef('x' + Math.random().toString(32).slice(2)).current;
-  const { administratorId, courseId, formState, insert$ } = props;
+  const { administratorId, materialUnitId, formState, insert$ } = props;
 
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
-      const validationMessage = key as keyof State['newMaterialForm']['validationMessages'];
+      const validationMessage = key as keyof State['form']['validationMessages'];
       if (formState.validationMessages[validationMessage]) {
         valid = false;
       }
@@ -59,10 +58,9 @@ export const NewMaterialAddForm = memo((props: Props): ReactElement => {
     insert$.next({
       processingState: formState.processingState,
       administratorId,
+      materialUnitId,
       payload: {
-        courseId,
         type: 'lesson',
-        unitLetter: formState.data.unitLetter,
         title: formState.data.title,
         description: formState.data.description,
         order: parseInt(formState.data.order, 10),
@@ -104,12 +102,6 @@ export const NewMaterialAddForm = memo((props: Props): ReactElement => {
             <textarea onChange={props.onDescriptionChange} value={formState.data.description} id={id + '_newMaterialDescription'} rows={4} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newMaterialDescriptionHelp'} />
             <div id={id + '_newMaterialDescriptionHelp'} className="form-text">The description for this material <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
             {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
-          </div>
-          <div className="formGroup">
-            <label htmlFor={id + '_newMaterialUnitLetter'} className="form-label">Unit Letter <span className="text-danger">*</span></label>
-            <input onChange={props.onUnitLetterChange} value={formState.data.unitLetter} type="text" id={id + '_newMaterialUnitLetter'} maxLength={1} className={`form-control ${formState.validationMessages.unitLetter ? 'is-invalid' : ''}`} aria-describedby={id + '_newMaterialUnitLetterHelp'} required />
-            <div id={id + '_newMaterialUnitLetterHelp'} className="form-text">The unit for this material</div>
-            {formState.validationMessages.unitLetter && <div className="invalid-feedback">{formState.validationMessages.unitLetter}</div>}
           </div>
           <div className="formGroup">
             <label htmlFor={id + '_newMaterialOrder'} className="form-label">Order <span className="text-danger">*</span></label>
@@ -159,4 +151,4 @@ export const NewMaterialAddForm = memo((props: Props): ReactElement => {
   );
 });
 
-NewMaterialAddForm.displayName = 'NewMaterialAddForm';
+NewMaterialEditForm.displayName = 'NewMaterialEditForm';

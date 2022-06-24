@@ -14,6 +14,8 @@ import type { INewAssignmentTemplateService } from '@/services/administrators/ne
 import { NewAssignmentTemplateService } from '@/services/administrators/newAssignmentTemplateService';
 import type { INewMaterialService } from '@/services/administrators/newMaterialService';
 import { NewMaterialService } from '@/services/administrators/newMaterialService';
+import type { INewMaterialUnitService } from '@/services/administrators/newMaterialUnitService';
+import { NewMaterialUnitService } from '@/services/administrators/newMaterialUnitService';
 import type { INewPartMediumService } from '@/services/administrators/newPartMediumService';
 import { NewPartMediumService } from '@/services/administrators/newPartMediumService';
 import type { INewPartTemplateService } from '@/services/administrators/newPartTemplateService';
@@ -49,6 +51,7 @@ export type AdminServices = Readonly<{
   readonly newUnitReturnService: Readonly<INewUnitReturnService>;
   readonly schoolService: Readonly<ISchoolService>;
   readonly newMaterialService: Readonly<INewMaterialService>;
+  readonly newMaterialUnitService: Readonly<INewMaterialUnitService>;
 }>;
 
 export const AdminServicesContext = createContext<AdminServices | undefined>(undefined);
@@ -75,6 +78,7 @@ export const AdminServicesProvider = ({ children }: Props): ReactElement => {
     newUnitReturnService: new NewUnitReturnService(httpService),
     schoolService: new SchoolService(httpService),
     newMaterialService: new NewMaterialService(httpService),
+    newMaterialUnitService: new NewMaterialUnitService(httpService),
   } as const);
 
   return (

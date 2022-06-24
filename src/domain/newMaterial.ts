@@ -3,11 +3,11 @@ export type NewMaterialType = 'lesson' | 'video' | 'download' | 'assignment';
 export type NewMaterial = {
   /** uuid */
   materialId: string;
-  courseId: number;
+  /** uuid */
+  materialUnitId: string;
   type: NewMaterialType;
   title: string;
   description: string;
-  unitLetter: string;
   order: number;
   filename: string | null;
   mimeTypeId: string | null;
@@ -19,11 +19,11 @@ export type NewMaterial = {
 export type RawNewMaterial = {
   /** uuid */
   materialId: string;
-  courseId: number;
+  /** uuid */
+  materialUnitId: string;
   type: NewMaterialType;
   title: string;
   description: string;
-  unitLetter: string;
   order: number;
   filename: string | null;
   mimeTypeId: string | null;

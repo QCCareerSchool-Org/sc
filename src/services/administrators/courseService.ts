@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Currency } from '@/domain/currency';
+import type { NewMaterialUnit, RawNewMaterialUnit } from '@/domain/newMaterialUnit';
 import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
 import type { NewUnitTemplatePrice, RawNewUnitTemplatePrice } from '@/domain/newUnitTemplatePrice';
 import type { School } from '@/domain/school';
@@ -16,6 +17,7 @@ type RawCourseWithSchoolAndUnitTemplatesAndPrices = Course & {
       currency: Currency;
     }>;
   }>;
+  newMaterialUnits: RawNewMaterialUnit[];
 };
 
 export type CourseWithSchoolAndUnitTemplatesAndPrices = Course & {
@@ -25,6 +27,7 @@ export type CourseWithSchoolAndUnitTemplatesAndPrices = Course & {
       currency: Currency;
     }>;
   }>;
+  newMaterialUnits: NewMaterialUnit[];
 };
 
 export type CourseWithSchool = Course & {
@@ -74,6 +77,11 @@ export class CourseService implements ICourseService {
           created: new Date(p.created),
           modified: p.modified === null ? null : new Date(p.modified),
         })),
+      })),
+      newMaterialUnits: course.newMaterialUnits.map(u => ({
+        ...u,
+        created: new Date(u.created),
+        modified: u.modified === null ? null : new Date(u.modified),
       })),
     };
   };

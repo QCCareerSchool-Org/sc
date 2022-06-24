@@ -1,3 +1,5 @@
+$enable-shadows: true;
+
 // 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
 // @import "~bootstrap/scss/functions";
 
@@ -126,6 +128,8 @@ body {
 main > section {
   padding-top: 2rem;
   padding-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
 }
 
 @include media-breakpoint-up(md) {
@@ -147,7 +151,15 @@ main > section:nth-of-type(2n+1) {
   scroll-margin-top: 56px;
 }
 
+main > section > .container {
+  position: relative;
+}
+
 .htmlPreview > *:last-child { margin-bottom: 0 }
+
+.text-shadow {
+  text-shadow: 1px 1px 4px rgb(0 0 0 / 50%);
+}
 
 // .mediaContent { max-width: 100%; }
 // @include media-breakpoint-up(sm) {
