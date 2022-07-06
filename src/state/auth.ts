@@ -14,17 +14,17 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
   switch (action.type) {
     case 'STUDENT_LOG_IN': {
       const newState: AuthState = { ...state, studentId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
-      window.localStorage?.setItem('authState', JSON.stringify(newState));
+      storeState(newState);
       return newState;
     }
     case 'TUTOR_LOG_IN': {
       const newState: AuthState = { ...state, tutorId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
-      window.localStorage?.setItem('authState', JSON.stringify(newState));
+      storeState(newState);
       return newState;
     }
     case 'ADMINISTRATOR_LOG_IN': {
       const newState: AuthState = { ...state, administratorId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
-      window.localStorage?.setItem('authState', JSON.stringify(newState));
+      storeState(newState);
       return newState;
     }
     default:
@@ -32,11 +32,17 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
   }
 };
 
+const storeState = (state: AuthState): void => {
+  if (typeof window !== 'undefined' && 'localStorage' in window && navigator.cookieEnabled) {
+    window.localStorage?.setItem('authState', JSON.stringify(state));
+  }
+};
+
 export const authInitialState: AuthState = {};
 
 export const authInitializer = (): AuthState => {
   const authState: AuthState = {};
-  if (typeof window !== 'undefined' && navigator.cookieEnabled && 'localStorage' in window) {
+  if (typeof window !== 'undefined' && 'localStorage' in window && navigator.cookieEnabled) {
     const storedAuthState = window.localStorage.getItem('authState');
     if (storedAuthState) {
       try {

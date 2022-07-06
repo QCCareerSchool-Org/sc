@@ -10,8 +10,10 @@ export type NewMaterial = {
   description: string;
   order: number;
   filename: string | null;
-  mimeTypeId: string | null;
+  contentMimeTypeId: string | null;
+  imageMimeTypeId: string | null;
   externalData: string | null;
+  entryPoint: string | null;
   created: Date;
   modified: Date | null;
 };
@@ -26,8 +28,10 @@ export type RawNewMaterial = {
   description: string;
   order: number;
   filename: string | null;
-  mimeTypeId: string | null;
+  contentMimeTypeId: string | null;
+  imageMimeTypeId: string | null;
   externalData: string | null;
+  entryPoint: string | null;
   /** string date */
   created: string;
   /** string date */

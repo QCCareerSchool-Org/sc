@@ -10,11 +10,11 @@ import type { NewMaterialInsertPayload } from '@/services/administrators/newMate
 import { HttpServiceError } from '@/services/httpService';
 
 export type NewMaterialInsertEvent = {
-  processingState: State['form']['processingState'];
+  processingState: State['newMaterialForm']['processingState'];
   administratorId: number;
-  materialUnitId: string;
   payload: NewMaterialInsertPayload;
-  file?: File;
+  content: File | null;
+  image: File | null;
 };
 
 export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMaterialInsertEvent> => {
@@ -29,24 +29,32 @@ export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMateri
     materialInsert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
       tap(() => dispatch({ type: 'ADD_MATERIAL_STARTED' })),
-      exhaustMap(({ administratorId, materialUnitId, payload, file }) => newMaterialService.addMaterial(administratorId, materialUnitId, payload, file).pipe(
-        tap({
-          next: insertedMaterial => dispatch({ type: 'ADD_MATERIAL_SUCCEEDED', payload: insertedMaterial }),
-          error: err => {
-            let message = 'Insert failed';
-            if (err instanceof HttpServiceError) {
-              if (err.login) {
-                return void navigateToLogin(router);
+      exhaustMap(({ administratorId, payload, content, image }) => {
+        return newMaterialService.addMaterialFile(administratorId, payload, content, image).pipe(
+          tap({
+            next: response => {
+              if (response.type === 'progress') {
+                dispatch({ type: 'ADD_MATERIAL_PROGRESSED', payload: response.value });
+              } else {
+                dispatch({ type: 'ADD_MATERIAL_SUCCEEDED', payload: response.value });
               }
-              if (err.message) {
-                message = err.message;
+            },
+            error: err => {
+              let message = 'Insert failed';
+              if (err instanceof HttpServiceError) {
+                if (err.login) {
+                  return void navigateToLogin(router);
+                }
+                if (err.message) {
+                  message = err.message;
+                }
               }
-            }
-            dispatch({ type: 'ADD_MATERIAL_FAILED', payload: message });
-          },
-        }),
-        catchError(() => EMPTY),
-      )),
+              dispatch({ type: 'ADD_MATERIAL_FAILED', payload: message });
+            },
+          }),
+          catchError(() => EMPTY),
+        );
+      }),
       takeUntil(destroy$),
     ).subscribe();
 

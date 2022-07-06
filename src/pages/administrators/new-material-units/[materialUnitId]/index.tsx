@@ -22,7 +22,7 @@ const NewMaterialUnitEditPage: NextPage<Props> = ({ materialUnitId }) => {
 
   return (
     <>
-      <Meta title="Edit Material" />
+      <Meta title="Edit Material Unit" />
       <NewMaterialUnitEdit administratorId={authState.administratorId} materialUnitId={materialUnitId} />
     </>
   );

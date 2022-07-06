@@ -43,7 +43,32 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
   }
 
   if (!state.enrollment) {
-    return null;
+    return (
+      <>
+        <Section>
+          <CourseHeaderImage courseId={courseId} />
+          <div className="container text-white" aria-hidden="true">
+            <div className="row">
+              <div className="col-12 col-lg-6">
+                <h1 className="mb-0 placeholder-glow"><span className="placeholder col-8" /></h1>
+                <p className="lead mb-0 placeholder-glow"><span className="placeholder col-6" /></p>
+                <p className="lead mb-0 placeholder-glow"><span className="placeholder col-6" /></p>
+              </div>
+              <div className="col-12 col-lg-6">
+                <h2 className="h4 placeholder-glow"><span className="placeholder col-6" /></h2>
+                <div className="placeholder-glow mb-4" style={{ height: 80 }}><span className="placeholder col-12 h-100" /></div>
+                <button className="btn btn-primary disabled placeholder" style={{ width: 120 }} />
+              </div>
+            </div>
+          </div>
+        </Section>
+        <Section>
+          <div className="container" aria-hidden="true">
+            <h2>Lessons</h2>
+          </div>
+        </Section>
+      </>
+    );
   }
 
   if (state.enrollment.course.unitType !== 1) {
@@ -92,9 +117,9 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
       </Section>
       <Section>
         <div className="container">
-          <h1>Lessons</h1>
+          <h2>Lessons</h2>
           {state.enrollment.course.newMaterialUnits.map(u => (
-            <MaterialUnit key={u.materialUnitId} unit={u} />
+            <MaterialUnit key={u.materialUnitId} courseId={courseId} unit={u} />
           ))}
           <Link href={`${endpoint}/students/${studentId}/static/lessons/95/6630b210-de75-11ec-bbd6-b5db70b35693/content`}><a target="_blank" rel="noopener noreferrer">sdkjfhsdkjfhdsf</a></Link>
         </div>

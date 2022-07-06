@@ -3,7 +3,7 @@ import { memo, useRef } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
-import type { NewMaterialUnitInsertEvent } from './useMaterialInsert';
+import type { NewMaterialUnitInsertEvent } from './useMaterialUnitInsert';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
@@ -55,7 +55,7 @@ export const NewMaterialUnitAddForm = memo((props: Props): ReactElement => {
         <h3 className="h5">New Material Unit</h3>
         <form onSubmit={handleFormSubmit}>
           <div className="formGroup">
-            <label htmlFor={id + '_newMaterialTitle'} className="form-label">Title <span className="text-danger">*</span></label>
+            <label htmlFor={id + '_newMaterialTitle'} className="form-label">Title</label>
             <input onChange={props.onTitleChange} value={formState.data.title} type="text" id={id + '_newMaterialTitle'} maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newMaterialTitleHelp'} />
             <div id={id + '_newMaterialTitleHelp'} className="form-text">The title of this material</div>
             {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
@@ -69,7 +69,7 @@ export const NewMaterialUnitAddForm = memo((props: Props): ReactElement => {
           <div className="formGroup">
             <label htmlFor={id + '_newMaterialOrder'} className="form-label">Order <span className="text-danger">*</span></label>
             <input onChange={props.onOrderChange} value={formState.data.order} type="number" id={id + '_newMaterialOrder'} min={0} max={127} className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} required aria-describedby={id + '_newMaterialOrderHelp'} />
-            <div id={id + '_newMaterialOrderHelp'} className="form-text">The order in which the material should appear within its unit</div>
+            <div id={id + '_newMaterialOrderHelp'} className="form-text">The order in which the unit should appear (typically, this can be set to zero for all units)</div>
             {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
           </div>
           <div className="d-flex align-items-center">

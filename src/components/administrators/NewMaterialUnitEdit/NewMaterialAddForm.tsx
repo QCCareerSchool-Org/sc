@@ -10,13 +10,15 @@ import { Spinner } from '@/components/Spinner';
 type Props = {
   administratorId: number;
   materialUnitId: string;
-  formState: State['form'];
+  formState: State['newMaterialForm'];
   insert$: Subject<NewMaterialInsertEvent>;
   onTypeChange: ChangeEventHandler<HTMLSelectElement>;
   onTitleChange: ChangeEventHandler<HTMLInputElement>;
   onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
-  onFileChange: ChangeEventHandler<HTMLInputElement>;
+  onContentChange: ChangeEventHandler<HTMLInputElement>;
+  onImageChange: ChangeEventHandler<HTMLInputElement>;
+  onExternalDataChange: ChangeEventHandler<HTMLInputElement>;
 };
 
 const defaultMimeTypes = [
@@ -31,7 +33,7 @@ const defaultMimeTypes = [
   'application/x-zip-compressed',
 ];
 
-export const NewMaterialEditForm = memo((props: Props): ReactElement => {
+export const NewMaterialAddForm = memo((props: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = useRef('x' + Math.random().toString(32).slice(2)).current;
   const { administratorId, materialUnitId, formState, insert$ } = props;
@@ -40,7 +42,7 @@ export const NewMaterialEditForm = memo((props: Props): ReactElement => {
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(formState.validationMessages, key)) {
-      const validationMessage = key as keyof State['form']['validationMessages'];
+      const validationMessage = key as keyof State['newMaterialForm']['validationMessages'];
       if (formState.validationMessages[validationMessage]) {
         valid = false;
       }
@@ -52,21 +54,24 @@ export const NewMaterialEditForm = memo((props: Props): ReactElement => {
     if (!valid) {
       return;
     }
-    if (formState.data.file === null) {
-      throw Error('file is null');
+    if (formState.data.type === 'lesson' || formState.data.type === 'download') {
+      if (formState.data.content === null) {
+        throw Error('file is null');
+      }
     }
     insert$.next({
       processingState: formState.processingState,
       administratorId,
-      materialUnitId,
       payload: {
-        type: 'lesson',
+        materialUnitId,
+        type: formState.data.type,
         title: formState.data.title,
         description: formState.data.description,
         order: parseInt(formState.data.order, 10),
         externalData: formState.data.externalData || null,
       },
-      file: formState.data.file,
+      content: formState.data.content,
+      image: formState.data.image,
     });
   };
 
@@ -79,21 +84,21 @@ export const NewMaterialEditForm = memo((props: Props): ReactElement => {
   return (
     <div className="card">
       <div className="card-body">
-        <h3 className="h5">New Material</h3>
+        <h5>New Material</h5>
         <form onSubmit={handleFormSubmit}>
           <div className="formGroup">
             <label htmlFor={id + '_newMaterialType'} className="form-label">Type <span className="text-danger">*</span></label>
-            <select onChange={props.onTypeChange} value={formState.data.type} id={id + '_newMaterialType'} className={`form-select ${formState.validationMessages.type ? 'is-invalid' : ''}`}>
+            <select onChange={props.onTypeChange} value={formState.data.type} id={id + '_newMaterialType'} className={`form-select ${formState.validationMessages.type ? 'is-invalid' : ''}`} required>
               <option value="lesson">Lesson</option>
               <option value="video">Video</option>
               <option value="download">Download</option>
-              <option value="assignment">Assignment</option>
+              <option value="assignment">Assignment Reminder</option>
             </select>
             {formState.validationMessages.type && <div className="invalid-feedback">{formState.validationMessages.type}</div>}
           </div>
           <div className="formGroup">
             <label htmlFor={id + '_newMaterialTitle'} className="form-label">Title <span className="text-danger">*</span></label>
-            <input onChange={props.onTitleChange} value={formState.data.title} type="text" id={id + '_newMaterialTitle'} maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newMaterialTitleHelp'} />
+            <input onChange={props.onTitleChange} value={formState.data.title} type="text" id={id + '_newMaterialTitle'} maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newMaterialTitleHelp'} required />
             <div id={id + '_newMaterialTitleHelp'} className="form-text">The title of this material</div>
             {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
           </div>
@@ -109,38 +114,35 @@ export const NewMaterialEditForm = memo((props: Props): ReactElement => {
             <div id={id + '_newMaterialOrderHelp'} className="form-text">The order in which the material should appear within its unit</div>
             {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
           </div>
-          {formState.data.type === 'lesson' && (
+          {(formState.data.type === 'lesson' || formState.data.type === 'download') && (
             <div className="formGroup">
-              <label htmlFor={id + '_newMaterialFile1'} className="form-label">File <span className="text-danger">*</span></label>
-              {formState.processingState === 'inserting' && <ProgressBar progress={0}>{(0).toFixed(0)}%</ProgressBar>}
-              <div className={formState.processingState === 'inserting' ? 'd-none' : ''}>
-                <input onChange={props.onFileChange} className={`form-control ${formState.validationMessages.file ? 'is-invalid' : ''}`} type="file" accept={allowedMimeTypes.join(',')} id={id + '_newMaterialFile1'} aria-describedby={id + '_newMaterialFile1Help'} required />
-                <div id={id + '_newMaterialFile1Help'} className="form-text">Select a file from your computer to upload</div>
-                {formState.validationMessages.file && <div className="invalid-feedback">{formState.validationMessages.file}</div>}
-              </div>
+              <label htmlFor={id + '_newMaterialContent'} className="form-label">Content <span className="text-danger">*</span></label>
+              <input key={formState.contentKey} onChange={props.onContentChange} className={`form-control ${formState.validationMessages.content ? 'is-invalid' : ''}`} type="file" accept={allowedMimeTypes.join(',')} id={id + '_newMaterialContent'} aria-describedby={id + '_newMaterialContentHelp'} required />
+              <div id={id + '_newMaterialContentHelp'} className="form-text">Select a file from your computer to upload</div>
+              {formState.validationMessages.content && <div className="invalid-feedback">{formState.validationMessages.content}</div>}
             </div>
           )}
-          {formState.data.type === 'download' && (
+          {formState.data.type === 'video' && (
             <div className="formGroup">
-              <label htmlFor={id + '_newMaterialFile2'} className="form-label">File <span className="text-danger">*</span></label>
-              {formState.processingState === 'inserting'
-                ? <ProgressBar progress={0}>{(0).toFixed(0)}%</ProgressBar>
-                : (
-                  <>
-                    <input onChange={props.onFileChange} className={`form-control ${formState.validationMessages.file ? 'is-invalid' : ''}`} type="file" accept={allowedMimeTypes.join(',')} id={id + '_newMaterialFile2'} aria-describedby={id + '_newMaterialFile2Help'} required />
-                    <div id={id + '_newMaterialFile2Help'} className="form-text">Select a file from your computer to upload</div>
-                  </>
-                )
-              }
-              {formState.validationMessages.file && <div className="invalid-feedback">{formState.validationMessages.file}</div>}
+              <label htmlFor={id + '_newMaterialExternalData'} className="form-label">External Data <span className="text-danger">*</span></label>
+              <input onChange={props.onExternalDataChange} value={formState.data.externalData} className={`form-control ${formState.validationMessages.externalData ? 'is-invalid' : ''}`} type="text" id={id + '_newMaterialExternalData'} aria-describedby={id + '_newMaterialExternalDataHelp'} required />
+              <div id={id + '_newMaterialExternalDataHelp'} className="form-text">The external URL (e.g., &ldquo;http://example.com/color-video.mp4&rdquo;)</div>
+              {formState.validationMessages.externalData && <div className="invalid-feedback">{formState.validationMessages.externalData}</div>}
             </div>
           )}
+          <div className="formGroup">
+            <label htmlFor={id + '_newMaterialImage'} className="form-label">Image</label>
+            <input key={formState.imageKey} onChange={props.onImageChange} className={`form-control ${formState.validationMessages.image ? 'is-invalid' : ''}`} type="file" accept="image/jpeg,image/png" id={id + '_newMaterialImage'} aria-describedby={id + '_newMaterialImageHelp'} />
+            <div id={id + '_newMaterialImageHelp'} className="form-text">Select a file from your computer to upload</div>
+            {formState.validationMessages.image && <div className="invalid-feedback">{formState.validationMessages.image}</div>}
+          </div>
           <div className="d-flex align-items-center">
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
               {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
             </button>
             {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
           </div>
+          {formState.processingState === 'inserting' && <div className="mt-4"><ProgressBar progress={formState.progress}>{formState.progress.toFixed(0)}%</ProgressBar></div>}
         </form>
       </div>
       <style jsx>{`
@@ -151,4 +153,4 @@ export const NewMaterialEditForm = memo((props: Props): ReactElement => {
   );
 });
 
-NewMaterialEditForm.displayName = 'NewMaterialEditForm';
+NewMaterialAddForm.displayName = 'NewMaterialAddForm';
