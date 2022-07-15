@@ -53,7 +53,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
               authDispatch({ type: 'TUTOR_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
               return void router.push(r ?? '/tutors');
             } else if (response.type === 'student') {
-              authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf } });
+              authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: response.id, xsrfToken: response.xsrf, crmId: response.crmId ?? undefined } });
               return void router.push(r ?? '/students');
             }
             void router.push(r ?? basePath);
