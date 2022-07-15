@@ -61,6 +61,9 @@ export const authInitializer = (): AuthState => {
           if (typeof parsedAuthState.xsrfToken === 'string') {
             authState.xsrfToken = parsedAuthState.xsrfToken;
           }
+          if (typeof parsedAuthState.crmId === 'number') {
+            authState.crmId = parsedAuthState.crmId;
+          }
         } else {
           window.localStorage.removeItem('authState'); // it was invalid
         }
