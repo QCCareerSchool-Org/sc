@@ -3,15 +3,15 @@ import { useEffect } from 'react';
 import { useStudentServices } from '@/hooks/useStudentServices';
 
 type Props = {
-  studentId: number;
+  crmId: number;
 };
 
-export const AccountView = ({ studentId }: Props): ReactElement | null => {
+export const AccountView = ({ crmId }: Props): ReactElement | null => {
   const { crmStudentService } = useStudentServices();
 
   useEffect(() => {
-    crmStudentService.getCRMStudent(studentId).subscribe(console.log);
-  }, [ studentId, crmStudentService ]);
+    crmStudentService.getCRMStudent(crmId).subscribe(console.log);
+  }, [ crmId, crmStudentService ]);
 
   return null;
 };

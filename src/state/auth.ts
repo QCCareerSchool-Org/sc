@@ -2,18 +2,19 @@ export type AuthState = {
   studentId?: number;
   tutorId?: number;
   administratorId?: number;
+  crmId?: number;
   xsrfToken?: string;
 };
 
 export type AuthAction =
-  | { type: 'STUDENT_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
+  | { type: 'STUDENT_LOG_IN'; payload: { accountId: number; xsrfToken: string; crmId?: number } }
   | { type: 'TUTOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
   | { type: 'ADMINISTRATOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } };
 
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case 'STUDENT_LOG_IN': {
-      const newState: AuthState = { ...state, studentId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
+      const newState: AuthState = { ...state, studentId: action.payload.accountId, xsrfToken: action.payload.xsrfToken, crmId: action.payload.crmId };
       storeState(newState);
       return newState;
     }

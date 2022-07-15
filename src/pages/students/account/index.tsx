@@ -6,16 +6,16 @@ import { AccountView } from '@/components/students/AccountView';
 import { useAuthState } from '@/hooks/useAuthState';
 
 const AccountPage: NextPage = () => {
-  const { studentId } = useAuthState();
+  const { crmId } = useAuthState();
 
-  if (typeof studentId === 'undefined') {
+  if (typeof crmId === 'undefined') {
     return <ErrorPage statusCode={500} />;
   }
 
   return (
     <>
       <Meta title="Account" />
-      <AccountView studentId={studentId} />
+      <AccountView crmId={crmId} />
     </>
   );
 };
