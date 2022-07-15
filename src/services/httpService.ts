@@ -7,7 +7,7 @@ import { catchError, from, map, merge, Subject, tap, throwError } from 'rxjs';
 import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError } from '../axiosInstance';
 import { endpoint } from '../basePath';
 
-type Config = {
+export type HttpServiceConfig = {
   params?: Record<string, string | number | boolean>;
   headers?: Record<string, string | number | boolean>;
   withCredentials?: boolean;
@@ -22,35 +22,35 @@ export class HttpServiceError extends Error {
 export type ProgressResponse<T> = { type: 'progress'; value: number } | { type: 'data'; value: T };
 
 export interface IHttpService {
-  get: <T = unknown>(url: string, config?: Config) => Observable<T>;
-  post: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
-  postFile: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<ProgressResponse<T>>;
-  put: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
-  putFile: <T = unknown>(url: string, body: unknown, config?: Config) => Observable<ProgressResponse<T>>;
-  patch: <T = unknown>(url: string, body?: unknown, config?: Config) => Observable<T>;
-  delete: <T = unknown>(url: string, config?: Config) => Observable<T>;
-  download: (url: string, config?: Config) => Observable<void>;
+  get: <T = unknown>(url: string, config?: HttpServiceConfig) => Observable<T>;
+  post: <T = unknown>(url: string, body?: unknown, config?: HttpServiceConfig) => Observable<T>;
+  postFile: <T = unknown>(url: string, body: unknown, config?: HttpServiceConfig) => Observable<ProgressResponse<T>>;
+  put: <T = unknown>(url: string, body?: unknown, config?: HttpServiceConfig) => Observable<T>;
+  putFile: <T = unknown>(url: string, body: unknown, config?: HttpServiceConfig) => Observable<ProgressResponse<T>>;
+  patch: <T = unknown>(url: string, body?: unknown, config?: HttpServiceConfig) => Observable<T>;
+  delete: <T = unknown>(url: string, config?: HttpServiceConfig) => Observable<T>;
+  download: (url: string, config?: HttpServiceConfig) => Observable<void>;
 }
 
 export class AxiosHttpService implements IHttpService {
 
   public constructor(private readonly instance: axios) { /* */ }
 
-  public get<T>(url: string, config?: Config): Observable<T> {
+  public get<T>(url: string, config?: HttpServiceConfig): Observable<T> {
     return this.instance.get<T>(url, config).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
   }
 
-  public post<T>(url: string, body: unknown, config?: Config): Observable<T> {
+  public post<T>(url: string, body: unknown, config?: HttpServiceConfig): Observable<T> {
     return this.instance.post<T>(url, body, config).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
   }
 
-  public postFile<T>(url: string, body: unknown, config?: Config): Observable<ProgressResponse<T>> {
+  public postFile<T>(url: string, body: unknown, config?: HttpServiceConfig): Observable<ProgressResponse<T>> {
     const progress$ = new Subject<number>();
     const onUploadProgress = (progressEvent: ProgressEvent): void => {
       const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
@@ -73,14 +73,14 @@ export class AxiosHttpService implements IHttpService {
     );
   }
 
-  public put<T>(url: string, body: unknown, config?: Config): Observable<T> {
+  public put<T>(url: string, body: unknown, config?: HttpServiceConfig): Observable<T> {
     return this.instance.put<T>(url, body, config).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
   }
 
-  public putFile<T>(url: string, body: unknown, config?: Config): Observable<ProgressResponse<T>> {
+  public putFile<T>(url: string, body: unknown, config?: HttpServiceConfig): Observable<ProgressResponse<T>> {
     const progress$ = new Subject<number>();
     const onUploadProgress = (progressEvent: ProgressEvent): void => {
       const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
@@ -103,14 +103,14 @@ export class AxiosHttpService implements IHttpService {
     );
   }
 
-  public delete<T>(url: string, config?: Config): Observable<T> {
+  public delete<T>(url: string, config?: HttpServiceConfig): Observable<T> {
     return this.instance.delete<T>(url, config).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
   }
 
-  public patch<T>(url: string, body: unknown, config?: Config): Observable<T> {
+  public patch<T>(url: string, body: unknown, config?: HttpServiceConfig): Observable<T> {
     return this.instance.patch<T>(url, body, config).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
@@ -125,7 +125,7 @@ export class AxiosHttpService implements IHttpService {
    * @param config the configuration options
    * @returns A void Observable
    */
-  public download(url: string, config?: Config): Observable<void> {
+  public download(url: string, config?: HttpServiceConfig): Observable<void> {
     return this.instance.get(url, { ...config, responseType: 'blob' }).pipe(
       tap(response => {
         const filename = /filename="(.*)"/u.exec(response.headers['content-disposition'])?.[1];

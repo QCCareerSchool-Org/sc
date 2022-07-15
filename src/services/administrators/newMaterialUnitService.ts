@@ -14,8 +14,14 @@ type RawNewMaterialUnitWithMaterials = RawNewMaterialUnit & {
   newMaterials: RawNewMaterial[];
 };
 
-export type NewMaterialUnitPayload = {
+export type NewMaterialUnitInsertPayload = {
   courseId: number;
+  unitLetter: string;
+  title: string | null;
+  order: number;
+};
+
+export type NewMaterialUnitSavePayload = {
   unitLetter: string;
   title: string | null;
   order: number;
@@ -23,8 +29,8 @@ export type NewMaterialUnitPayload = {
 
 export interface INewMaterialUnitService {
   getMaterialUnit: (administratorId: number, materialUnitId: string) => Observable<NewMaterialUnitWithMaterials>;
-  addMaterialUnit: (administratorId: number, data: NewMaterialUnitPayload) => Observable<NewMaterialUnit>;
-  saveMaterialUnit: (administratorId: number, materialUnitId: string, data: NewMaterialUnitPayload) => Observable<NewMaterialUnit>;
+  addMaterialUnit: (administratorId: number, data: NewMaterialUnitInsertPayload) => Observable<NewMaterialUnit>;
+  saveMaterialUnit: (administratorId: number, materialUnitId: string, data: NewMaterialUnitSavePayload) => Observable<NewMaterialUnit>;
   deleteMaterialUnit: (administratorId: number, materialUnitId: string) => Observable<void>;
 }
 
@@ -39,7 +45,7 @@ export class NewMaterialUnitService implements INewMaterialUnitService {
     );
   }
 
-  public addMaterialUnit(administratorId: number, data: NewMaterialUnitPayload): Observable<NewMaterialUnit> {
+  public addMaterialUnit(administratorId: number, data: NewMaterialUnitInsertPayload): Observable<NewMaterialUnit> {
     const url = this.getUrl(administratorId);
     const body = {
       courseId: data.courseId,
@@ -52,10 +58,9 @@ export class NewMaterialUnitService implements INewMaterialUnitService {
     );
   }
 
-  public saveMaterialUnit(administratorId: number, materialUnitId: string, data: NewMaterialUnitPayload): Observable<NewMaterialUnit> {
+  public saveMaterialUnit(administratorId: number, materialUnitId: string, data: NewMaterialUnitSavePayload): Observable<NewMaterialUnit> {
     const url = `${this.getUrl(administratorId)}/${materialUnitId}`;
     const body = {
-      courseId: data.courseId,
       unitLetter: data.unitLetter,
       title: data.title,
       order: data.order,

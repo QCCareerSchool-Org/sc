@@ -8,14 +8,14 @@ import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useInitialData = (administratorId: number, materialUnitId: string, materialId: string, dispatch: Dispatch<Action>): void => {
+export const useInitialData = (administratorId: number, materialId: string, dispatch: Dispatch<Action>): void => {
   const router = useRouter();
   const { newMaterialService } = useAdminServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newMaterialService.getMaterial(administratorId, materialUnitId, materialId).pipe(
+    newMaterialService.getMaterial(administratorId, materialId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: newMaterial => {
@@ -32,5 +32,5 @@ export const useInitialData = (administratorId: number, materialUnitId: string, 
         dispatch({ type: 'LOAD_MATERIAL_FAILED', payload: errorCode });
       },
     });
-  }, [ administratorId, materialUnitId, materialId, dispatch, router, newMaterialService ]);
+  }, [ administratorId, materialId, dispatch, router, newMaterialService ]);
 };

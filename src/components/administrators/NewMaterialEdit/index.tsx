@@ -7,14 +7,13 @@ import { Section } from '@/components/Section';
 
 type Props = {
   administratorId: number;
-  materialUnitId: string;
   materialId: string;
 };
 
-export const NewMaterialEdit = ({ administratorId, materialUnitId, materialId }: Props): ReactElement => {
+export const NewMaterialEdit = ({ administratorId, materialId }: Props): ReactElement => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, materialUnitId, materialId, dispatch);
+  useInitialData(administratorId, materialId, dispatch);
 
   return (
     <Section>

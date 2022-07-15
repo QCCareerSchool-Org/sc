@@ -116,6 +116,13 @@ export const reducer = (state: State, action: Action): State => {
           unitLetter = nextLetter;
         }
       }
+      let materialUnitLetter = 'A';
+      if (action.payload.newMaterialUnits.length) {
+        const nextLetter = String.fromCharCode(Math.max(...action.payload.newMaterialUnits.map(u => u.unitLetter.charCodeAt(0))) + 1);
+        if (nextLetter < 'Z') {
+          materialUnitLetter = nextLetter;
+        }
+      }
       return {
         ...state,
         course: action.payload,
@@ -134,7 +141,7 @@ export const reducer = (state: State, action: Action): State => {
         },
         newMaterialUnitForm: {
           data: {
-            unitLetter: 'A',
+            unitLetter: materialUnitLetter,
             title: '',
             order: '0',
           },
@@ -386,6 +393,11 @@ export const reducer = (state: State, action: Action): State => {
         }
         return a.order - b.order;
       });
+      let unitLetter = 'A';
+      const nextLetter = String.fromCharCode(Math.max(...newMaterialUnits.map(u => u.unitLetter.charCodeAt(0))) + 1);
+      if (nextLetter < 'Z') {
+        unitLetter = nextLetter;
+      }
       return {
         ...state,
         course: {
@@ -395,7 +407,7 @@ export const reducer = (state: State, action: Action): State => {
         newMaterialUnitForm: {
           ...state.newMaterialUnitForm,
           data: {
-            unitLetter: 'A',
+            unitLetter,
             title: '',
             order: '0',
           },

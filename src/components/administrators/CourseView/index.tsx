@@ -10,7 +10,7 @@ import { NewUnitTemplateList } from './NewUnitTemplateList';
 import { initialState, reducer } from './state';
 import { useCourseEnable } from './useCourseEnable';
 import { useInitialData } from './useInitialData';
-import { useMaterialInsert } from './useMaterialInsert';
+import { useMaterialUnitInsert } from './useMaterialUnitInsert';
 import { useUnitInsert } from './useUnitInsert';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
@@ -27,7 +27,7 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
   useInitialData(administratorId, courseId, dispatch);
 
   const unitInsert$ = useUnitInsert(dispatch);
-  const materialInsert$ = useMaterialInsert(dispatch);
+  const materialUnitInsert$ = useMaterialUnitInsert(dispatch);
   const courseEnable$ = useCourseEnable(dispatch);
 
   const handleUnitRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
@@ -189,7 +189,7 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
                     administratorId={administratorId}
                     courseId={courseId}
                     formState={state.newMaterialUnitForm}
-                    insert$={materialInsert$}
+                    insert$={materialUnitInsert$}
                     onTitleChange={handleMaterialUnitTitleChange}
                     onUnitLetterChange={handleMaterialUnitUnitLetterChange}
                     onOrderChange={handleMaterialUnitOrderChange}

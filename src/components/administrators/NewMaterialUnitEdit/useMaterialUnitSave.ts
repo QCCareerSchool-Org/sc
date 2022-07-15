@@ -6,30 +6,31 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import type { NewMaterialUnitPayload } from '@/services/administrators/newMaterialUnitService';
+import type { NewMaterialUnitSavePayload } from '@/services/administrators/newMaterialUnitService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewMaterialUnitInsertEvent = {
-  processingState: State['newMaterialUnitForm']['processingState'];
+export type NewMaterialUnitSaveEvent = {
+  processingState: State['form']['processingState'];
   administratorId: number;
-  payload: NewMaterialUnitPayload;
+  materialUnitId: string;
+  payload: NewMaterialUnitSavePayload;
 };
 
-export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMaterialUnitInsertEvent> => {
+export const useMaterialUnitSave = (dispatch: Dispatch<Action>): Subject<NewMaterialUnitSaveEvent> => {
   const router = useRouter();
   const { newMaterialUnitService } = useAdminServices();
 
-  const materialInsert$ = useRef(new Subject<NewMaterialUnitInsertEvent>());
+  const materialUnitSave$ = useRef(new Subject<NewMaterialUnitSaveEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    materialInsert$.current.pipe(
-      filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_MATERIAL_UNIT_STARTED' })),
-      exhaustMap(({ administratorId, payload }) => newMaterialUnitService.addMaterialUnit(administratorId, payload).pipe(
+    materialUnitSave$.current.pipe(
+      filter(({ processingState }) => processingState !== 'saving'),
+      tap(() => dispatch({ type: 'SAVE_MATERIAL_UNIT_STARTED' })),
+      exhaustMap(({ administratorId, materialUnitId, payload }) => newMaterialUnitService.saveMaterialUnit(administratorId, materialUnitId, payload).pipe(
         tap({
-          next: insertedMaterial => dispatch({ type: 'ADD_MATERIAL_UNIT_SUCCEEDED', payload: insertedMaterial }),
+          next: insertedMaterial => dispatch({ type: 'SAVE_MATERIAL_UNIT_SUCEEDED', payload: insertedMaterial }),
           error: err => {
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
@@ -40,7 +41,7 @@ export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMateri
                 message = err.message;
               }
             }
-            dispatch({ type: 'ADD_MATERIAL_UNIT_FAILED', payload: message });
+            dispatch({ type: 'SAVE_MATERIAL_UNIT_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -51,5 +52,5 @@ export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMateri
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, router, newMaterialUnitService ]);
 
-  return materialInsert$.current;
+  return materialUnitSave$.current;
 };

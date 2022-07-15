@@ -3,7 +3,8 @@ import { catchError, EMPTY, Subject, takeUntil } from 'rxjs';
 
 import { useServices } from './useServices';
 
-const defaultInterval = 1_500_000; // 25 minutes in milliseconds
+// const defaultInterval = 1_500_000; // 25 minutes in milliseconds
+const defaultInterval = 60_000; // 60 seconds in milliseconds
 
 export const useStayLoggedIn = (refreshInterval = defaultInterval): void => {
   const { loginService } = useServices();
