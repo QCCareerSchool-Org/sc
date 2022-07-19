@@ -2,6 +2,10 @@ import type { ReactElement, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
 import { useServices } from '@/hooks/useServices';
+import type { ICRMEnrollmentService } from '@/services/students/crmEnrollmentService';
+import { CRMEnrollmentService } from '@/services/students/crmEnrollmentService';
+import type { ICRMPaymentMethodService } from '@/services/students/crmPaymentMethodService';
+import { CRMPaymentMethodService } from '@/services/students/crmPaymentMethodService';
 import type { ICRMStudentService } from '@/services/students/crmStudentService';
 import { CRMStudentService } from '@/services/students/crmStudentService';
 import type { IEnrollmentService } from '@/services/students/enrollmentService';
@@ -16,6 +20,8 @@ export type StudentServices = {
   newAssignmentService: INewAssignmentService;
   newUnitService: INewUnitService;
   crmStudentService: ICRMStudentService;
+  crmEnrollmentService: ICRMEnrollmentService;
+  crmPaymentMethodService: ICRMPaymentMethodService;
 };
 
 export const StudentServicesContext = createContext<StudentServices | undefined>(undefined);
@@ -31,6 +37,8 @@ export const StudentServicesProvider = ({ children }: Props): ReactElement => {
     newAssignmentService: new NewAssignmentService(httpService),
     newUnitService: new NewUnitService(httpService),
     crmStudentService: new CRMStudentService(crmHttpService),
+    crmEnrollmentService: new CRMEnrollmentService(crmHttpService),
+    crmPaymentMethodService: new CRMPaymentMethodService(crmHttpService),
   });
 
   return (
