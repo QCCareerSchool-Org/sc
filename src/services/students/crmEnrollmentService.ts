@@ -35,7 +35,7 @@ export class CRMEnrollmentService implements ICRMEnrollmentService {
   }
 
   private getUrl(studentId: number): string {
-    return `${crmEndpoint}/students/${studentId}`;
+    return `${crmEndpoint}/students/${studentId}/enrollments`;
   }
 
   private readonly mapCrmEnrollmentWithCourse = (raw: RawCRMEnrollmentWithCourse): CRMEnrollmentWithCourse => ({
