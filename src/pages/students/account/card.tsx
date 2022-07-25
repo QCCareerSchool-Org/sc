@@ -15,9 +15,6 @@ const CardPage: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <script async src="https://hosted.paysafe.com/js/v1/latest/paysafe.min.js" />
-      </Head>
       <Meta title="New Card" />
       <NewCard crmId={crmId} />
     </>

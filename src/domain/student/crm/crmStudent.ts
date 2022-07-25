@@ -6,9 +6,9 @@ export type CRMStudent = {
   address1: string;
   address2: string;
   city: string;
-  province: string | null;
+  provinceId: number | null;
   postalCode: string | null;
-  country: string;
+  countryId: number;
   created: Date;
   modified: Date | null;
 };
@@ -21,9 +21,9 @@ export type RawCRMStudent = {
   address1: string;
   address2: string;
   city: string;
-  province: string | null;
+  provinceId: number | null;
   postalCode: string | null;
-  country: string;
+  countryId: number;
   /** string date */
   created: string;
   /** string date */
