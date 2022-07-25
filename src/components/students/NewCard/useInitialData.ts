@@ -9,16 +9,16 @@ import { HttpServiceError } from '@/services/httpService';
 import { navigateToLogin } from 'src/navigateToLogin';
 
 export const useInitialData = (crmId: number, dispatch: Dispatch<Action>): void => {
-  const { crmEnrollmentService } = useStudentServices();
+  const { crmStudentService } = useStudentServices();
   const router = useRouter();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    crmEnrollmentService.getCRMEnrollments(crmId).pipe(
+    crmStudentService.getCRMStudent(crmId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: enrollments => dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: enrollments }),
+      next: student => dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: student }),
       error: err => {
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
@@ -32,5 +32,5 @@ export const useInitialData = (crmId: number, dispatch: Dispatch<Action>): void 
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ crmId, dispatch, crmEnrollmentService, router ]);
+  }, [ crmId, dispatch, crmStudentService, router ]);
 };

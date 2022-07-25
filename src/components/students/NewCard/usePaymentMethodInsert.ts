@@ -10,9 +10,8 @@ import { navigateToLogin } from 'src/navigateToLogin';
 
 export type PaymentMethodInsertEvent = {
   studentId: number;
-  enrollmentId: number;
-  updateAll: boolean;
-  paymentToken: string;
+  enrollmentIds: number[];
+  singleUseToken: string;
   processingState: State['form']['processingState'];
 };
 
@@ -28,8 +27,8 @@ export const usePaymentMethodInsert = (dispatch: Dispatch<Action>): Subject<Paym
     insert$.current.pipe(
       filter(({ processingState }) => processingState !== 'processing'),
       tap(() => dispatch({ type: 'ADD_PAYMENT_METHOD_STARTED' })),
-      exhaustMap(({ studentId, enrollmentId, updateAll, paymentToken }) => {
-        return crmPaymentMethodService.addCRMPaymentMethod(studentId, enrollmentId, updateAll, paymentToken).pipe(
+      exhaustMap(({ studentId, enrollmentIds, singleUseToken }) => {
+        return crmPaymentMethodService.addCRMPaymentMethod(studentId, enrollmentIds, singleUseToken).pipe(
           tap({
             next: paymentMethod => dispatch({ type: 'ADD_PAYMENT_METHOD_SUCEEDED', payload: paymentMethod }),
             error: err => {

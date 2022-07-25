@@ -6,26 +6,23 @@ import type { CRMPaymentMethod, RawCRMPaymentMethod } from '@/domain/student/crm
 import type { IHttpService } from '@/services/httpService';
 
 export interface ICRMPaymentMethodService {
-  addCRMPaymentMethod: (studentId: number, enrollmentId: number, updateAll: boolean, paymentToken: string) => Observable<CRMPaymentMethod>;
+  addCRMPaymentMethod: (studentId: number, enrollmentIds: number[], singleUseToken: string) => Observable<CRMPaymentMethod>;
 }
 
 export class CRMPaymentMethodService implements ICRMPaymentMethodService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public addCRMPaymentMethod(studentId: number, enrollmentId: number, updateAll: boolean, paymentToken: string): Observable<CRMPaymentMethod> {
-    const url = this.getUrl(studentId, enrollmentId);
-    const body = {
-      updateAll,
-      paymentToken,
-    };
+  public addCRMPaymentMethod(studentId: number, enrollmentIds: number[], singleUseToken: string): Observable<CRMPaymentMethod> {
+    const url = this.getUrl(studentId);
+    const body = { enrollmentIds, singleUseToken };
     return this.httpService.post<RawCRMPaymentMethod>(url, body).pipe(
       map(this.mapCRMPaymentMethod),
     );
   }
 
-  private getUrl(studentId: number, enrollmentId: number): string {
-    return `${crmEndpoint}/students/${studentId}/enrollments/${enrollmentId}/paymentMethods`;
+  private getUrl(studentId: number): string {
+    return `${crmEndpoint}/students/${studentId}/paymentMethods`;
   }
 
   private readonly mapCRMPaymentMethod = (raw: RawCRMPaymentMethod): CRMPaymentMethod => ({

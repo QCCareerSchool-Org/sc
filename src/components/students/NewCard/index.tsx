@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, ReactElement } from 'react';
 import { useReducer } from 'react';
 
 import { NewCardForm } from './NewCardForm';
@@ -28,24 +28,49 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
   };
 
   if (state.error) {
-    return <NextError statusCode={state.errorCode ?? 500} />;
+    return (
+      <Section>
+        <div className="container">
+          <h1>Communications Error</h1>
+          <p className="lead">There was an error reaching the back office. Please try again later.</p>
+        </div>
+      </Section>
+    );
   }
 
-  if (!state.enrollments) {
+  if (!state.student) {
     return null;
   }
 
   return (
     <>
       <Section>
-        <h1>New Card</h1>
-        <NewCardForm
-          crmId={crmId}
-          form={state.form}
-          onEnrollmentIdChange={handleEnrollmentIdChange}
-          onUpdateAllChange={handleUpdateAllChange}
-          insert$={insert$}
-        />
+        <div className="container">
+          <h1>Update Your Payment Method</h1>
+          <div className="row">
+            <div className="col-12 col-lg-7 col-xl-8 order-lg-2">
+              <p className="lead">If you would like to supply the School with a new credit card or debit card please fill out this form.</p>
+              <p><strong>Note:</strong> Please visit <a href="/students/accounts/view.php">the payment page</a> to make payments.</p>
+            </div>
+            <div className="col-12 col-md-7 col-lg-5 col-xl-4 order-lg-1">
+              <div className="card">
+                <div className="card-body">
+                  <NewCardForm
+                    crmId={crmId}
+                    form={state.form}
+                    student={state.student}
+                    currencyCode={state.currencyCode}
+                    currencyName={state.currencyName}
+                    allSameCurrency={state.allSameCurrency}
+                    insert$={insert$}
+                    onEnrollmentIdChange={handleEnrollmentIdChange}
+                    onUpdateAllChange={handleUpdateAllChange}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Section>
     </>
   );
