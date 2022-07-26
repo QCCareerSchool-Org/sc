@@ -3,6 +3,7 @@ import { memo, useEffect, useRef, useState } from 'react';
 
 import type { PaysafeInstance, TokenizeOptions } from '../paysafe';
 import { createInstance, tokenize } from '../paysafe';
+import { Spinner } from './Spinner';
 
 type Props = {
   currencyCode: string;
@@ -15,6 +16,7 @@ type Props = {
   postalCode: string | null;
   countryCode: string;
   buttonText: string;
+  submitting: boolean;
   onTokenize: (singleUseToken: string) => void;
   onChange?: () => void;
 };
@@ -28,7 +30,6 @@ type State = {
   panFilled: boolean;
   expFilled: boolean;
   cvvFilled: boolean;
-  submitted?: boolean;
   errors?: { displayMessage?: string };
 };
 
@@ -112,7 +113,7 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
       instance.fields('expiryDate').invalid(() => setState(s => ({ ...s, expValid: false })));
       instance.fields('cvv').invalid(() => setState(s => ({ ...s, cvvValid: false })));
       instance.fields('cardNumber expiryDate cvv').on('FieldValueChange', () => {
-        setState(s => ({ ...s, submitted: false, errors: undefined }));
+        setState(s => ({ ...s, errors: undefined }));
         onChange?.();
       });
       setState(s => ({ ...s, instance }));
@@ -125,6 +126,7 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
     if (!state.instance) {
       return;
     }
+    setState(s => ({ ...s, submitting: true, errors: undefined }));
     let options: TokenizeOptions | undefined = undefined;
     if (company === 'GB' && currencyCode === 'GBP' && process.env.NODE_ENV === 'production') {
       const accountId = accounts[company][currencyCode];
@@ -164,29 +166,31 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
     });
   };
 
-  const disabled = !(state.instance && state.panFilled && state.expFilled && state.cvvFilled && state.panValid && state.expValid && state.cvvValid);
+  const disabled = props.submitting || !(state.instance && state.panFilled && state.expFilled && state.cvvFilled && state.panValid && state.expValid && state.cvvValid);
 
   return (
     <>
       <div className="mb-4">
         <label htmlFor={id.current + '_newCardPan'}>Credit/Debit Card Number</label>
-        <div className={'form-control' + ((state.submitted || state.panFilled) && !state.panValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardPan'} />
+        <div className={'form-control' + (state.panFilled && !state.panValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardPan'} />
       </div>
       <div className="row g-3">
         <div className="col-6">
           <div className="mb-4">
             <label htmlFor={id.current + '_newCardExpiry'}>Exp. Date</label>
-            <div className={'form-control' + ((state.submitted || state.expFilled) && !state.expValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardExpiry'} />
+            <div className={'form-control' + (state.expFilled && !state.expValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardExpiry'} />
           </div>
         </div>
         <div className="col-6">
           <div className="mb-4">
             <label htmlFor={id.current + '_newCardCvv'}>CSC</label>
-            <div className={'form-control' + ((state.submitted || state.cvvFilled) && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardCvv'} />
+            <div className={'form-control' + (state.cvvFilled && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardCvv'} />
           </div>
         </div>
       </div>
-      <button onClick={handleButtonClick} type="button" className="btn btn-primary" disabled={disabled}>{props.buttonText}</button>
+      <button onClick={handleButtonClick} type="button" className="btn btn-primary" style={{ width: 150 }} disabled={disabled}>
+        {props.submitting ? <Spinner size="sm" /> : props.buttonText}
+      </button>
       {state.errors && (
         <div className="alert alert-danger mt-3 mb-0">
           {state.errors.displayMessage ?? 'Unknown Error'}
