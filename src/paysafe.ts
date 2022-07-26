@@ -60,6 +60,8 @@ interface TokenizeFunction {
 
 export interface PaysafeInstance {
   tokenize: TokenizeFunction;
+  complete: () => void;
+  resetCardDetails: () => void;
   fields: (selector: string) => {
     valid: (callback: PaysafeFieldsCallback) => void;
     invalid: (callback: PaysafeFieldsCallback) => void;
