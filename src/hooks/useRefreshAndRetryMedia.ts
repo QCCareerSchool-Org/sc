@@ -21,12 +21,12 @@ export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | H
       switchMap(() => loginService.refresh().pipe(
         tap({
           next: authenticationPayload => {
-            if (authenticationPayload.type === 'admin') {
-              authDispatch({ type: 'ADMINISTRATOR_LOG_IN', payload: { accountId: authenticationPayload.id, xsrfToken: authenticationPayload.xsrf } });
-            } else if (authenticationPayload.type === 'tutor') {
-              authDispatch({ type: 'TUTOR_LOG_IN', payload: { accountId: authenticationPayload.id, xsrfToken: authenticationPayload.xsrf } });
-            } else if (authenticationPayload.type === 'student') {
-              authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: authenticationPayload.id, xsrfToken: authenticationPayload.xsrf } });
+            if (authenticationPayload.studentCenter.type === 'admin') {
+              authDispatch({ type: 'ADMINISTRATOR_LOG_IN', payload: { accountId: authenticationPayload.studentCenter.id, xsrfToken: authenticationPayload.xsrf } });
+            } else if (authenticationPayload.studentCenter.type === 'tutor') {
+              authDispatch({ type: 'TUTOR_LOG_IN', payload: { accountId: authenticationPayload.studentCenter.id, xsrfToken: authenticationPayload.xsrf } });
+            } else if (authenticationPayload.studentCenter.type === 'student') {
+              authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: authenticationPayload.studentCenter.id, xsrfToken: authenticationPayload.xsrf, crmId: authenticationPayload.crm?.id } });
             }
             if (mediaRef.current) {
               // eslint-disable-next-line no-self-assign

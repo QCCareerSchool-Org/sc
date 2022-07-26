@@ -1,8 +1,13 @@
 export type AuthenticationPayload = {
-  crmId: number | null;
+  studentCenter: {
+    id: number;
+    studentType: 'general' | 'design' | 'event' | 'writing';
+    type: 'admin' | 'tutor' | 'student';
+  };
+  crm?: {
+    id: number;
+    type: 'admin' | 'student';
+  };
   exp: number;
-  id: number;
-  studentType: 'general' | 'design' | 'event' | 'writing';
-  type: 'admin' | 'tutor' | 'student';
   xsrf: string;
 };
