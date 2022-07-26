@@ -1,5 +1,5 @@
 import type { MouseEventHandler, ReactElement } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 import type { PaysafeInstance, TokenizeOptions } from '../paysafe';
 import { createInstance, tokenize } from '../paysafe';
@@ -56,7 +56,7 @@ const accounts = process.env.NODE_ENV === 'production'
     GB: { GBP: 1001091500, AUD: 1001091500, NZD: 1001091500 },
   };
 
-export const PaysafeForm = (props: Props): ReactElement => {
+export const PaysafeForm = memo((props: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = useRef('x' + Math.random().toString(32).slice(2));
 
@@ -194,4 +194,6 @@ export const PaysafeForm = (props: Props): ReactElement => {
       )}
     </>
   );
-};
+});
+
+PaysafeForm.displayName = 'PaysafeForm';
