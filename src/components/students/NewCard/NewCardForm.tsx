@@ -17,6 +17,7 @@ type Props = {
   insert$: Subject<PaymentMethodInsertEvent>;
   onEnrollmentIdChange: ChangeEventHandler<HTMLSelectElement>;
   onUpdateAllChange: ChangeEventHandler<HTMLInputElement>;
+  onCardDataChange: () => void;
 };
 
 export const NewCardForm = (props: Props): ReactElement => {
@@ -71,6 +72,7 @@ export const NewCardForm = (props: Props): ReactElement => {
       )}
       <PaysafeForm
         key={currencyCode}
+        currencyCode={currencyCode}
         firstName={student.firstName}
         lastName={student.lastName}
         address1={student.address1}
@@ -79,10 +81,15 @@ export const NewCardForm = (props: Props): ReactElement => {
         provinceCode={student.province?.code ?? null}
         postalCode={student.postalCode}
         countryCode={student.country.code}
-        currencyCode={currencyCode}
-        onTokenize={handleTokenize}
         buttonText="Update Card"
+        onTokenize={handleTokenize}
+        onChange={props.onCardDataChange}
       />
+      {props.form.processingState === 'success' && (
+        <div className="alert alert-success mt-4 mb-0">
+          Credit card updated!
+        </div>
+      )}
     </form>
   );
 };

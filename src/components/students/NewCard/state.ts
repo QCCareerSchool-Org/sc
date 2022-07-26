@@ -23,6 +23,7 @@ export type Action =
   | { type: 'LOAD_DATA_FAILED'; payload?: number }
   | { type: 'ENROLLMENT_ID_CHANGED'; payload: string }
   | { type: 'UPDATE_ALL_CHANGED'; payload: boolean }
+  | { type: 'CARD_DATA_CHANGED' }
   | { type: 'ADD_PAYMENT_METHOD_STARTED' }
   | { type: 'ADD_PAYMENT_METHOD_SUCEEDED'; payload: CRMPaymentMethod }
   | { type: 'ADD_PAYMENT_METHOD_FAILED'; payload?: string };
@@ -79,6 +80,8 @@ export const reducer = (state: State, action: Action): State => {
           data: { ...state.form.data, updateAll: action.payload },
         },
       };
+    case 'CARD_DATA_CHANGED':
+      return state;
     case 'ADD_PAYMENT_METHOD_STARTED':
       return {
         ...state,
