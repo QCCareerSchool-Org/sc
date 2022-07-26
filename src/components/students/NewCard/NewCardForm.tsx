@@ -82,6 +82,7 @@ export const NewCardForm = (props: Props): ReactElement => {
         postalCode={student.postalCode}
         countryCode={student.country.code}
         buttonText="Update Card"
+        submitting={form.processingState === 'processing'}
         onTokenize={handleTokenize}
         onChange={props.onCardDataChange}
       />
