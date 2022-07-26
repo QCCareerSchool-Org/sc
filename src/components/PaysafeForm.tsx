@@ -61,6 +61,10 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = useRef('x' + Math.random().toString(32).slice(2));
 
+  const panRef = useRef<HTMLDivElement>(null);
+  const expRef = useRef<HTMLDivElement>(null);
+  const cvvRef = useRef<HTMLDivElement>(null);
+
   const { currencyCode, onTokenize, onChange } = props;
 
   let company: 'CA' | 'US' | 'GB';
@@ -105,7 +109,14 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
       },
     };
 
+    let localInstance: PaysafeInstance | undefined;
+
+    const panContainer = panRef.current;
+    const expContainer = expRef.current;
+    const cvvContainer = cvvRef.current;
+
     createInstance(apiKeys[company], options).then(instance => {
+      localInstance = instance;
       instance.fields('cardNumber').valid(() => setState(s => ({ ...s, panValid: true, panFilled: true })));
       instance.fields('expiryDate').valid(() => setState(s => ({ ...s, expValid: true, expFilled: true })));
       instance.fields('cvv').valid(() => setState(s => ({ ...s, cvvValid: true, cvvFilled: true })));
@@ -116,10 +127,18 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
         setState(s => ({ ...s, errors: undefined }));
         onChange?.();
       });
-      setState(s => ({ ...s, instance }));
+      setState(s => ({ ...s, instance, instanceState: 'initialized' }));
     }).catch(err => {
+      setState(s => ({ ...s, instanceState: 'error' }));
       console.error(err);
     });
+
+    return () => {
+      localInstance?.resetCardDetails();
+      panContainer?.replaceChildren();
+      expContainer?.replaceChildren();
+      cvvContainer?.replaceChildren();
+    };
   }, [ company, onChange ]);
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
@@ -170,21 +189,21 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
 
   return (
     <>
-      <div className="mb-4">
+      <div className="mb-4 dd">
         <label htmlFor={id.current + '_newCardPan'}>Credit/Debit Card Number</label>
-        <div className={'form-control' + (state.panFilled && !state.panValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardPan'} />
+        <div ref={panRef} className={'form-control' + (state.panFilled && !state.panValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardPan'} />
       </div>
       <div className="row g-3">
         <div className="col-6">
           <div className="mb-4">
             <label htmlFor={id.current + '_newCardExpiry'}>Exp. Date</label>
-            <div className={'form-control' + (state.expFilled && !state.expValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardExpiry'} />
+            <div ref={expRef} className={'form-control' + (state.expFilled && !state.expValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardExpiry'} />
           </div>
         </div>
         <div className="col-6">
-          <div className="mb-4">
+          <div className="mb-4 dsfd">
             <label htmlFor={id.current + '_newCardCvv'}>CSC</label>
-            <div className={'form-control' + (state.cvvFilled && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardCvv'} />
+            <div ref={cvvRef} className={'form-control' + (state.cvvFilled && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardCvv'} />
           </div>
         </div>
       </div>
