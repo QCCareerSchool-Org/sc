@@ -3,14 +3,14 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import axiosObservable from 'axios-observable';
 import { firstValueFrom, switchMap } from 'rxjs';
 
-import { endpoint } from './basePath';
+import { crmEndpoint, endpoint } from './basePath';
 
 export const instance = axiosObservable.create({});
 
 instance.interceptors.request.use(config => {
   // add cookies to requests to our back end
   // axios automatically adds an x-xsrf-token header based on the XSRF-TOKEN cookie
-  if (config.url?.startsWith(endpoint)) {
+  if (config.url?.startsWith(endpoint) || config.url?.startsWith(crmEndpoint)) {
     return { ...config, withCredentials: true };
   }
   return config;
