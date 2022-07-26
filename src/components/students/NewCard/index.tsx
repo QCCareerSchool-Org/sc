@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 
 import { NewCardForm } from './NewCardForm';
 import { initialState, reducer } from './state';
@@ -27,9 +27,9 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
     dispatch({ type: 'UPDATE_ALL_CHANGED', payload: e.target.checked });
   };
 
-  const handleCardDataChange = (): void => {
+  const handleCardDataChange = useCallback((): void => {
     dispatch({ type: 'CARD_DATA_CHANGED' });
-  };
+  }, []);
 
   if (state.error) {
     return (
