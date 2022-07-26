@@ -27,6 +27,10 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
     dispatch({ type: 'UPDATE_ALL_CHANGED', payload: e.target.checked });
   };
 
+  const handleCardDataChange = (): void => {
+    dispatch({ type: 'CARD_DATA_CHANGED' });
+  };
+
   if (state.error) {
     return (
       <Section>
@@ -65,6 +69,7 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
                     insert$={insert$}
                     onEnrollmentIdChange={handleEnrollmentIdChange}
                     onUpdateAllChange={handleUpdateAllChange}
+                    onCardDataChange={handleCardDataChange}
                   />
                 </div>
               </div>

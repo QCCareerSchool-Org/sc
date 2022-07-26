@@ -6,8 +6,6 @@ import { createInstance, tokenize } from '../paysafe';
 
 type Props = {
   currencyCode: string;
-  onTokenize: (singleUseToken: string) => void;
-  buttonText: string;
   firstName: string;
   lastName: string;
   address1: string;
@@ -16,6 +14,9 @@ type Props = {
   provinceCode: string | null;
   postalCode: string | null;
   countryCode: string;
+  buttonText: string;
+  onTokenize: (singleUseToken: string) => void;
+  onChange?: () => void;
 };
 
 type State = {
@@ -59,12 +60,14 @@ export const PaysafeForm = (props: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = useRef('x' + Math.random().toString(32).slice(2));
 
+  const { currencyCode, onTokenize, onChange } = props;
+
   let company: 'CA' | 'US' | 'GB';
-  if (props.currencyCode === 'USD') {
+  if (currencyCode === 'USD') {
     company = 'US';
-  } else if (props.currencyCode === 'CAD') {
+  } else if (currencyCode === 'CAD') {
     company = 'CA';
-  } else if ([ 'GBP', 'AUD', 'NZD' ].includes(props.currencyCode)) {
+  } else if ([ 'GBP', 'AUD', 'NZD' ].includes(currencyCode)) {
     company = 'GB';
   } else {
     throw Error('Invalid currency');
@@ -108,27 +111,30 @@ export const PaysafeForm = (props: Props): ReactElement => {
       instance.fields('cardNumber').invalid(() => setState(s => ({ ...s, panValid: false })));
       instance.fields('expiryDate').invalid(() => setState(s => ({ ...s, expValid: false })));
       instance.fields('cvv').invalid(() => setState(s => ({ ...s, cvvValid: false })));
-      instance.fields('cardNumber expiryDate cvv').on('FieldValueChange', () => setState(s => ({ ...s, submitted: false, errors: undefined })));
+      instance.fields('cardNumber expiryDate cvv').on('FieldValueChange', () => {
+        setState(s => ({ ...s, submitted: false, errors: undefined }));
+        onChange?.();
+      });
       setState(s => ({ ...s, instance }));
     }).catch(err => {
       console.error(err);
     });
-  }, [ company ]);
+  }, [ company, onChange ]);
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (!state.instance) {
       return;
     }
     let options: TokenizeOptions | undefined = undefined;
-    if (company === 'GB' && props.currencyCode === 'GBP' && process.env.NODE_ENV === 'production') {
-      const accountId = accounts[company][props.currencyCode];
+    if (company === 'GB' && currencyCode === 'GBP' && process.env.NODE_ENV === 'production') {
+      const accountId = accounts[company][currencyCode];
       if (typeof accountId === 'undefined') {
-        throw Error(`Currency ${props.currencyCode} not supported by ${company} company`);
+        throw Error(`Currency ${currencyCode} not supported by ${company} company`);
       }
       options = {
         threeDS: {
           amount: 0,
-          currency: props.currencyCode,
+          currency: currencyCode,
           accountId,
           useThreeDSecureVersion2: true,
         },
@@ -148,7 +154,7 @@ export const PaysafeForm = (props: Props): ReactElement => {
       };
     }
     tokenize(state.instance, options).then(singleUseToken => {
-      props.onTokenize(singleUseToken);
+      onTokenize(singleUseToken);
     }).catch(err => {
       if (err !== null && typeof err === 'object') {
         setState(s => ({ ...s, errors: err as Record<string, unknown> }));
