@@ -31,14 +31,14 @@ type Props = {
 };
 
 export const StudentServicesProvider = ({ children }: Props): ReactElement => {
-  const { httpService, crmHttpService } = useServices();
+  const { httpService } = useServices();
   const [ state ] = useState({
     enrollmentService: new EnrollmentService(httpService),
     newAssignmentService: new NewAssignmentService(httpService),
     newUnitService: new NewUnitService(httpService),
-    crmStudentService: new CRMStudentService(crmHttpService),
-    crmEnrollmentService: new CRMEnrollmentService(crmHttpService),
-    crmPaymentMethodService: new CRMPaymentMethodService(crmHttpService),
+    crmStudentService: new CRMStudentService(httpService),
+    crmEnrollmentService: new CRMEnrollmentService(httpService),
+    crmPaymentMethodService: new CRMPaymentMethodService(httpService),
   });
 
   return (
