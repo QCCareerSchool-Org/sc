@@ -14,8 +14,11 @@ import type { INewAssignmentService } from '@/services/students/newAssignmentSer
 import { NewAssignmentService } from '@/services/students/newAssignmentService';
 import type { INewUnitService } from '@/services/students/newUnitService';
 import { NewUnitService } from '@/services/students/newUnitService';
+import type { IStudentService } from '@/services/students/studentService';
+import { StudentService } from '@/services/students/studentService';
 
 export type StudentServices = {
+  studentService: IStudentService;
   enrollmentService: IEnrollmentService;
   newAssignmentService: INewAssignmentService;
   newUnitService: INewUnitService;
@@ -33,6 +36,7 @@ type Props = {
 export const StudentServicesProvider = ({ children }: Props): ReactElement => {
   const { httpService } = useServices();
   const [ state ] = useState({
+    studentService: new StudentService(httpService),
     enrollmentService: new EnrollmentService(httpService),
     newAssignmentService: new NewAssignmentService(httpService),
     newUnitService: new NewUnitService(httpService),

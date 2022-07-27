@@ -23,6 +23,7 @@ export type StudentStudent = {
   upgradeNotification: boolean;
   entityVersion: number;
   timestamp: Date;
+  hasCASocialInsuranceNumber: boolean;
 };
 
 export type RawStudentStudent = {
@@ -54,4 +55,5 @@ export type RawStudentStudent = {
   entityVersion: number;
   /** string date */
   timestamp: string;
+  hasCASocialInsuranceNumber: boolean;
 };

@@ -4,22 +4,23 @@ import { map } from 'rxjs';
 import { crmEndpoint } from '../../basePath';
 import type { CRMCountry } from '@/domain/student/crm/crmCountry';
 import type { CRMCourse, RawCRMCourse } from '@/domain/student/crm/crmCourse';
-import type { CRMCurrency } from '@/domain/student/crm/crmCurrency';
+import type { CRMCurrency, RawCRMCurrency } from '@/domain/student/crm/crmCurrency';
 import type { CRMEnrollment, RawCRMEnrollment } from '@/domain/student/crm/crmEnrollment';
 import type { CRMProvince } from '@/domain/student/crm/crmProvince';
 import type { CRMStudent, RawCRMStudent } from '@/domain/student/crm/crmStudent';
+import type { CRMTransaction, RawCRMTransaction } from '@/domain/student/crm/crmTransaction';
 import type { IHttpService } from '@/services/httpService';
 
 export type CRMStudentPayload = CRMStudent & {
   province: CRMProvince | null;
   country: CRMCountry;
-  enrollments: Array<CRMEnrollment & { course: CRMCourse; currency: CRMCurrency }>;
+  enrollments: Array<CRMEnrollment & { course: CRMCourse; currency: CRMCurrency; transactions: CRMTransaction[] }>;
 };
 
 type RawCRMStudentPayload = RawCRMStudent & {
   province: CRMProvince | null;
   country: CRMCountry;
-  enrollments: Array<RawCRMEnrollment & { course: RawCRMCourse; currency: CRMCurrency }>;
+  enrollments: Array<RawCRMEnrollment & { course: RawCRMCourse; currency: RawCRMCurrency; transactions: RawCRMTransaction[] }>;
 };
 
 export interface ICRMStudentService {
@@ -62,6 +63,18 @@ export class CRMStudentService implements ICRMStudentService {
         created: new Date(e.course.created),
         modified: e.course.modified === null ? null : new Date(e.course.modified),
       },
+      currency: {
+        ...e.currency,
+        created: new Date(e.currency.created),
+        modified: e.currency.modified === null ? null : new Date(e.currency.modified),
+      },
+      transactions: e.transactions.map(t => ({
+        ...t,
+        transactionDateTime: new Date(t.transactionDateTime),
+        postedDate: t.postedDate === null ? null : new Date(t.postedDate),
+        created: new Date(t.created),
+        modified: t.modified === null ? null : new Date(t.modified),
+      })),
     })),
   });
 }

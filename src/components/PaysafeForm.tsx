@@ -201,7 +201,7 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
           </div>
         </div>
         <div className="col-6">
-          <div className="mb-4 dsfd">
+          <div className="mb-4">
             <label htmlFor={id.current + '_newCardCvv'}>CSC</label>
             <div ref={cvvRef} className={'form-control' + (state.cvvFilled && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id.current + '_newCardCvv'} />
           </div>
