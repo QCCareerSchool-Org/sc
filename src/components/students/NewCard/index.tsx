@@ -1,4 +1,3 @@
-import NextError from 'next/error';
 import type { ChangeEventHandler, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
@@ -55,6 +54,14 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
             <div className="col-12 col-lg-7 col-xl-8 order-lg-2">
               <p className="lead">If you would like to supply the School with a new credit card or debit card please fill out this form.</p>
               <p><strong>Note:</strong> Please visit <a href="/students/accounts/view.php">the payment page</a> to make payments.</p>
+              <h2>Billing Address</h2>
+              <p>
+                {state.student.address1}<br />
+                {state.student.address2 && <>{state.student.address2}<br /></>}
+                {state.student.city}{state.student.province && <> {state.student.province.code}&nbsp;&nbsp;</>}{state.student.postalCode}<br />
+                {state.student.country.name}
+              </p>
+              <p>If this is not correct, please <a href="/students/accounts/address/edit.php">update your billing address</a> before using this form.</p>
             </div>
             <div className="col-12 col-md-7 col-lg-5 col-xl-4 order-lg-1">
               <div className="card">

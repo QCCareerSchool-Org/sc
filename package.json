@@ -10,9 +10,11 @@
     "test": "jest src/*"
   },
   "dependencies": {
+    "@types/big.js": "^6.1.5",
     "@types/file-saver": "^2.0.5",
     "axios": "^0.26.1",
     "axios-observable": "^1.4.0",
+    "big.js": "^6.2.1",
     "bootstrap": "^5.1.3",
     "file-saver": "^2.0.5",
     "next": "^12.1.5",
