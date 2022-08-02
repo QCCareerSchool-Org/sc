@@ -42,22 +42,22 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
     void router.push(`/students/account/enrollments/${enrollmentId}`);
   };
 
-  const handleT2202ReceiptClick = (e: MouseEvent<HTMLTableRowElement>, enrollmentId: number, year: number): void => {
+  const handleT2202ReceiptClick = (e: MouseEvent<HTMLTableRowElement>, t2202ReceiptId: number, year: number): void => {
     switch (year) {
       case 2019:
       case 2020:
       case 2021:
-        window.location.href = `/students/tax-receipts/view-2019.php?id=${encodeURIComponent(enrollmentId)}`;
+        window.location.href = `/students/tax-receipts/view-2019.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
       case 2018:
-        window.location.href = `/students/tax-receipts/view-2018.php?id=${encodeURIComponent(enrollmentId)}`;
+        window.location.href = `/students/tax-receipts/view-2018.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
       case 2017:
-        window.location.href = `/students/tax-receipts/view-2017.php?id=${encodeURIComponent(enrollmentId)}`;
+        window.location.href = `/students/tax-receipts/view-2017.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
       case 2016:
       case 2015:
-        window.location.href = `/students/tax-receipts/view.php?id=${encodeURIComponent(enrollmentId)}`;
+        window.location.href = `/students/tax-receipts/view.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
     }
   };
@@ -207,7 +207,7 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
               </thead>
               <tbody>
                 {state.t2202Receipts.map(t => (
-                  <tr key={t.t2202ReceiptId} onClick={e => handleT2202ReceiptClick(e, t.enrollmentId, t.startYear)} style={{ cursor: 'pointer' }}>
+                  <tr key={t.t2202ReceiptId} onClick={e => handleT2202ReceiptClick(e, t.t2202ReceiptId, t.startYear)} style={{ cursor: 'pointer' }}>
                     <td>{t.startYear}</td>
                     <td>{t.enrollment.course.name}</td>
                   </tr>
