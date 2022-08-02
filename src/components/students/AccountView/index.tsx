@@ -47,17 +47,17 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
       case 2019:
       case 2020:
       case 2021:
-        void router.push(`/students/tax-receipts/view-2019.php?id=${encodeURIComponent(enrollmentId)}`);
+        window.location.href = `/students/tax-receipts/view-2019.php?id=${encodeURIComponent(enrollmentId)}`;
         break;
       case 2018:
-        void router.push(`/students/tax-receipts/view-2018.php?id=${encodeURIComponent(enrollmentId)}`);
+        window.location.href = `/students/tax-receipts/view-2018.php?id=${encodeURIComponent(enrollmentId)}`;
         break;
       case 2017:
-        void router.push(`/students/tax-receipts/view-2017.php?id=${encodeURIComponent(enrollmentId)}`);
+        window.location.href = `/students/tax-receipts/view-2017.php?id=${encodeURIComponent(enrollmentId)}`;
         break;
       case 2016:
       case 2015:
-        void router.push(`/students/tax-receipts/view.php?id=${encodeURIComponent(enrollmentId)}`);
+        window.location.href = `/students/tax-receipts/view.php?id=${encodeURIComponent(enrollmentId)}`;
         break;
     }
   };
