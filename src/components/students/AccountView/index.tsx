@@ -34,12 +34,32 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
     );
   }
 
-  if (!state.student) {
+  if (!state.student || !state.t2202Receipts) {
     return null;
   }
 
   const handleCourseClick = (e: MouseEvent<HTMLTableRowElement>, enrollmentId: number): void => {
     void router.push(`/students/account/enrollments/${enrollmentId}`);
+  };
+
+  const handleT2202ReceiptClick = (e: MouseEvent<HTMLTableRowElement>, enrollmentId: number, year: number): void => {
+    switch (year) {
+      case 2019:
+      case 2020:
+      case 2021:
+        void router.push(`/students/tax-receipts/view-2019.php?id=${encodeURIComponent(enrollmentId)}`);
+        break;
+      case 2018:
+        void router.push(`/students/tax-receipts/view-2018.php?id=${encodeURIComponent(enrollmentId)}`);
+        break;
+      case 2017:
+        void router.push(`/students/tax-receipts/view-2017.php?id=${encodeURIComponent(enrollmentId)}`);
+        break;
+      case 2016:
+      case 2015:
+        void router.push(`/students/tax-receipts/view.php?id=${encodeURIComponent(enrollmentId)}`);
+        break;
+    }
   };
 
   return (
@@ -107,7 +127,7 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
                 <p>Select a course below to review your payment history or to make payments.</p>
                 <table className="table table-bordered table-hover bg-white">
                   <thead>
-                    <tr style={{ cursor: 'pointer' }}>
+                    <tr>
                       <th>Course Name</th>
                       <th>Student Number</th>
                       <th>Status</th>
@@ -116,7 +136,7 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
                   </thead>
                   <tbody>
                     {state.crmStudent.enrollments.map(e => (
-                      <tr key={e.enrollmentId} onClick={ev => handleCourseClick(ev, e.enrollmentId)}>
+                      <tr key={e.enrollmentId} onClick={ev => handleCourseClick(ev, e.enrollmentId)} style={{ cursor: 'pointer' }}>
                         <td>{e.course.name}</td>
                         <td>{e.course.prefix}&thinsp;{e.enrollmentId}</td>
                         <td>{statusName(e.status)}</td>
@@ -170,6 +190,30 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
                 <li key={e.enrollmentId}><a href={`/students/proof-of-enrollment/view.php?id=${encodeURIComponent(e.enrollmentId)}`}>{e.course.name}</a></li>
               ))}
             </ul>
+          </div>
+        </Section>
+      )}
+      {state.t2202Receipts.length > 0 && (
+        <Section>
+          <div className="container">
+            <h2>Tax Receipts</h2>
+            <p>Please retain a copy of these tax receipts for your records.</p>
+            <table className="table table-bordered table-hover w-auto bg-white">
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Course</th>
+                </tr>
+              </thead>
+              <tbody>
+                {state.t2202Receipts.map(t => (
+                  <tr key={t.t2202ReceiptId} onClick={e => handleT2202ReceiptClick(e, t.enrollmentId, t.startYear)} style={{ cursor: 'pointer' }}>
+                    <td>{t.startYear}</td>
+                    <td>{t.enrollment.course.name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </Section>
       )}
