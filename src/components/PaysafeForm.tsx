@@ -179,9 +179,8 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
     }).catch(err => {
       if (err !== null && typeof err === 'object') {
         setState(s => ({ ...s, errors: err as Record<string, unknown> }));
-      } else {
-        console.error('unknown error', err);
       }
+      console.error('tokenize error', err);
     });
   };
 

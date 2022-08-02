@@ -1,5 +1,7 @@
 import Big from 'big.js';
-import type { ReactElement } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import type { MouseEvent, ReactElement } from 'react';
 import { Fragment, useReducer } from 'react';
 
 import { CASocialInsuranceNumberForm } from './caSocialInsuranceNumberForm';
@@ -8,6 +10,7 @@ import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
 import type { CRMEnrollment } from '@/domain/student/crm/crmEnrollment';
 import type { CRMTransaction } from '@/domain/student/crm/crmTransaction';
+import { statusName } from 'src/statusName';
 
 type Props = {
   studentId: number;
@@ -16,6 +19,7 @@ type Props = {
 
 export const AccountView = ({ studentId, crmId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const router = useRouter();
 
   useInitialData(dispatch, studentId, crmId);
 
@@ -33,6 +37,10 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
   if (!state.student) {
     return null;
   }
+
+  const handleCourseClick = (e: MouseEvent<HTMLTableRowElement>, enrollmentId: number): void => {
+    void router.push(`/students/account/enrollments/${enrollmentId}`);
+  };
 
   return (
     <>
@@ -66,22 +74,22 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
                         {state.crmStudent.city}{state.crmStudent.province && <> {state.crmStudent.province.code}&nbsp;&nbsp;</>}{state.crmStudent.postalCode}<br />
                         {state.crmStudent.country.name}
                       </td>
-                      <td style={{ verticalAlign: 'bottom' }}>Change</td>
+                      <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/billing-address"><a>Change</a></Link></td>
                     </tr>
                     <tr>
                       <th scope="col">Email Address</th>
                       <td>{state.crmStudent.emailAddress}</td>
-                      <td style={{ verticalAlign: 'bottom' }}>Change</td>
+                      <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/email-address"><a>Change</a></Link></td>
                     </tr>
                     <tr>
                       <th scope="col">Telephone Number</th>
                       <td>{state.crmStudent.telephoneNumber}</td>
-                      <td style={{ verticalAlign: 'bottom' }}>Change</td>
+                      <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/telephone-number"><a>Change</a></Link></td>
                     </tr>
                     <tr>
                       <th scope="col">Password</th>
                       <td>**********</td>
-                      <td style={{ verticalAlign: 'bottom' }}>Change</td>
+                      <td style={{ verticalAlign: 'bottom' }}><a href="/students/passwords/edit.php">Change</a></td>
                     </tr>
                   </tbody>
                 </table>
@@ -90,7 +98,7 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
             <Section>
               <div className="container">
                 <h2>Update Your Payment Method</h2>
-                <p>If your card has expired or you would like to use a new card, you can update your payment method before making additional payments.</p>
+                <p>If your card has expired or you would like to use a new card, you can <Link href="/students/account/card"><a>update your payment method</a></Link> before making additional payments.</p>
               </div>
             </Section>
             <Section>
@@ -108,7 +116,7 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
                   </thead>
                   <tbody>
                     {state.crmStudent.enrollments.map(e => (
-                      <tr key={e.enrollmentId}>
+                      <tr key={e.enrollmentId} onClick={ev => handleCourseClick(ev, e.enrollmentId)}>
                         <td>{e.course.name}</td>
                         <td>{e.course.prefix}&thinsp;{e.enrollmentId}</td>
                         <td>{statusName(e.status)}</td>
@@ -167,23 +175,6 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
       )}
     </>
   );
-};
-
-const statusName = (statusCode: string | null): string => {
-  switch (statusCode) {
-    case null:
-      return '';
-    case 'W':
-      return 'Withdrawal';
-    case 'H':
-      return 'On Hold';
-    case 'T':
-      return 'Transferred';
-    case 'R':
-      return 'End-of-Course Refund';
-    default:
-      return '';
-  }
 };
 
 const getBalance = (e: CRMEnrollment & { transactions: CRMTransaction[] }): number => {

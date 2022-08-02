@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
-import Head from 'next/head';
 
 import { Meta } from '@/components/Meta';
 import { NewCard } from '@/components/students/NewCard';
