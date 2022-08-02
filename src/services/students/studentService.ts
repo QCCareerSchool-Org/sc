@@ -23,6 +23,7 @@ export type RawStudentWithCountryProvinceAndEnrollments = RawStudentStudent & {
 
 export interface IStudentService {
   getStudent: (studentId: number) => Observable<StudentWithCountryProvinceAndEnrollments>;
+  updateEmailAddress: (studentId: number, emailAddress: string) => Observable<StudentStudent>;
 }
 
 export class StudentService implements IStudentService {
@@ -32,6 +33,14 @@ export class StudentService implements IStudentService {
   public getStudent(studentId: number): Observable<StudentWithCountryProvinceAndEnrollments> {
     const url = this.getUrl(studentId);
     return this.httpService.get<RawStudentWithCountryProvinceAndEnrollments>(url).pipe(
+      map(this.mapStudentWithChildren),
+    );
+  }
+
+  public updateEmailAddress(studentId: number, emailAddress: string): Observable<StudentStudent> {
+    const url = `${this.getUrl(studentId)}/emailAddress`;
+    const body = { emailAddress };
+    return this.httpService.put<RawStudentStudent>(url, body).pipe(
       map(this.mapStudent),
     );
   }
@@ -40,7 +49,17 @@ export class StudentService implements IStudentService {
     return `${endpoint}/students/${studentId}`;
   }
 
-  private readonly mapStudent = (student: RawStudentWithCountryProvinceAndEnrollments): StudentWithCountryProvinceAndEnrollments => {
+  private readonly mapStudent = (student: RawStudentStudent): StudentStudent => {
+    return {
+      ...student,
+      lastLogin: student.lastLogin === null ? null : new Date(student.lastLogin),
+      expiry: student.expiry === null ? null : new Date(student.expiry),
+      creationDate: new Date(student.creationDate),
+      timestamp: new Date(student.timestamp),
+    };
+  };
+
+  private readonly mapStudentWithChildren = (student: RawStudentWithCountryProvinceAndEnrollments): StudentWithCountryProvinceAndEnrollments => {
     return {
       ...student,
       lastLogin: student.lastLogin === null ? null : new Date(student.lastLogin),

@@ -1,8 +1,8 @@
 import type { CRMPaymentMethod } from '@/domain/student/crm/crmPaymentMethod';
-import type { CRMStudentPayload } from '@/services/students/crmStudentService';
+import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 
 export type State = {
-  student?: CRMStudentPayload;
+  crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
   form: {
     data: {
       enrollmentId: string;
@@ -19,7 +19,7 @@ export type State = {
 };
 
 export type Action =
-  | { type: 'LOAD_DATA_SUCCEEDED'; payload: CRMStudentPayload }
+  | { type: 'LOAD_DATA_SUCCEEDED'; payload: CRMStudentWithCountryProvinceAndEnrollments }
   | { type: 'LOAD_DATA_FAILED'; payload?: number }
   | { type: 'ENROLLMENT_ID_CHANGED'; payload: string }
   | { type: 'UPDATE_ALL_CHANGED'; payload: boolean }
@@ -39,7 +39,7 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...initialState,
-        student: action.payload,
+        crmStudent: action.payload,
         form: {
           ...initialState.form,
           data: {
@@ -55,10 +55,10 @@ export const reducer = (state: State, action: Action): State => {
     case 'LOAD_DATA_FAILED':
       return { ...state, error: true, errorCode: action.payload };
     case 'ENROLLMENT_ID_CHANGED': {
-      if (typeof state.student === 'undefined') {
-        throw Error('student is undefined');
+      if (typeof state.crmStudent === 'undefined') {
+        throw Error('crmStudent is undefined');
       }
-      const enrollment = state.student.enrollments.find(e => e.enrollmentId.toString() === action.payload);
+      const enrollment = state.crmStudent.enrollments.find(e => e.enrollmentId.toString() === action.payload);
       if (typeof enrollment === 'undefined') {
         throw Error('enrollment not found');
       }

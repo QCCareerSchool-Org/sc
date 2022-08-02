@@ -1,11 +1,11 @@
 import type { Course } from '@/domain/course';
 import type { Enrollment } from '@/domain/enrollment';
-import type { CRMStudentPayload } from '@/services/students/crmStudentService';
+import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 import type { StudentWithCountryProvinceAndEnrollments } from '@/services/students/studentService';
 
 export type State = {
   student?: StudentWithCountryProvinceAndEnrollments;
-  crmStudent?: CRMStudentPayload;
+  crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
   enrollmentsWithForms?: Array<Enrollment & { course: Course }>;
   recentEnrollment: boolean;
   error: boolean;
@@ -13,7 +13,7 @@ export type State = {
 };
 
 export type Action =
-  | { type: 'LOAD_DATA_SUCCEEDED'; payload: { student: StudentWithCountryProvinceAndEnrollments; crmStudent?: CRMStudentPayload } }
+  | { type: 'LOAD_DATA_SUCCEEDED'; payload: { student: StudentWithCountryProvinceAndEnrollments; crmStudent?: CRMStudentWithCountryProvinceAndEnrollments } }
   | { type: 'LOAD_DATA_FAILED'; payload?: number };
 
 export const reducer = (state: State, action: Action): State => {

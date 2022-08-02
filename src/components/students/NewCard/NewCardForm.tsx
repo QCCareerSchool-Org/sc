@@ -5,12 +5,12 @@ import type { Subject } from 'rxjs';
 import { PaysafeForm } from '../../PaysafeForm';
 import type { State } from './state';
 import type { PaymentMethodInsertEvent } from './usePaymentMethodInsert';
-import type { CRMStudentPayload } from '@/services/students/crmStudentService';
+import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 
 type Props = {
   crmId: number;
   form: State['form'];
-  student: CRMStudentPayload;
+  crmStudent: CRMStudentWithCountryProvinceAndEnrollments;
   currencyCode: string;
   currencyName: string;
   allSameCurrency: boolean;
@@ -23,11 +23,11 @@ type Props = {
 export const NewCardForm = (props: Props): ReactElement => {
   // const id = useId(); // react 18
   const id = useRef('x' + Math.random().toString(32).slice(2));
-  const { crmId, form, student, currencyCode, currencyName, allSameCurrency, insert$ } = props;
+  const { crmId, form, crmStudent, currencyCode, currencyName, allSameCurrency, insert$ } = props;
 
   const handleTokenize = (singleUseToken: string): void => {
     const enrollmentIds = form.data.updateAll
-      ? student.enrollments.map(e => e.enrollmentId)
+      ? crmStudent.enrollments.map(e => e.enrollmentId)
       : [ parseInt(form.data.enrollmentId, 10) ];
     insert$.next({
       studentId: crmId,
@@ -37,15 +37,15 @@ export const NewCardForm = (props: Props): ReactElement => {
     });
   };
 
-  const enrollmentCount = student.enrollments.length;
+  const enrollmentCount = crmStudent.enrollments.length;
 
   return (
     <form>
-      {student.enrollments.length && (
+      {crmStudent.enrollments.length && (
         <div className="mb-4">
           <label htmlFor={id.current + '_newCardEnrollmentId'}>Course to Update</label>
           <select onChange={props.onEnrollmentIdChange} value={form.data.enrollmentId} id={id.current + '_newCardEnrollmentId'} className="form-control" disabled={form.data.updateAll} aria-describedby={id.current + '_newCardEnrollmentIdHelp'}>
-            {student.enrollments.map(e => (<option key={e.enrollmentId} value={e.enrollmentId}>{e.course.name} ({e.course.prefix}{e.enrollmentId})</option>))}
+            {crmStudent.enrollments.map(e => (<option key={e.enrollmentId} value={e.enrollmentId}>{e.course.name} ({e.course.prefix}{e.enrollmentId})</option>))}
           </select>
           <div id={id.current + '_newCardEnrollmentIdHelp'} className="form-text">Charged in {currencyName}</div>
         </div>
@@ -73,14 +73,14 @@ export const NewCardForm = (props: Props): ReactElement => {
       <PaysafeForm
         key={currencyCode}
         currencyCode={currencyCode}
-        firstName={student.firstName}
-        lastName={student.lastName}
-        address1={student.address1}
-        address2={student.address2}
-        city={student.city}
-        provinceCode={student.province?.code ?? null}
-        postalCode={student.postalCode}
-        countryCode={student.country.code}
+        firstName={crmStudent.firstName}
+        lastName={crmStudent.lastName}
+        address1={crmStudent.address1}
+        address2={crmStudent.address2}
+        city={crmStudent.city}
+        provinceCode={crmStudent.province?.code ?? null}
+        postalCode={crmStudent.postalCode}
+        countryCode={crmStudent.country.code}
         buttonText="Update Card"
         submitting={form.processingState === 'processing'}
         onTokenize={handleTokenize}

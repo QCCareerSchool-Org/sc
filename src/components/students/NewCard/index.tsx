@@ -41,7 +41,7 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
     );
   }
 
-  if (!state.student) {
+  if (!state.crmStudent) {
     return null;
   }
 
@@ -56,10 +56,10 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
               <p><strong>Note:</strong> Please visit <a href="/students/accounts/view.php">the payment page</a> to make payments.</p>
               <h2>Billing Address</h2>
               <p>
-                {state.student.address1}<br />
-                {state.student.address2 && <>{state.student.address2}<br /></>}
-                {state.student.city}{state.student.province && <> {state.student.province.code}&nbsp;&nbsp;</>}{state.student.postalCode}<br />
-                {state.student.country.name}
+                {state.crmStudent.address1}<br />
+                {state.crmStudent.address2 && <>{state.crmStudent.address2}<br /></>}
+                {state.crmStudent.city}{state.crmStudent.province && <> {state.crmStudent.province.code}&nbsp;&nbsp;</>}{state.crmStudent.postalCode}<br />
+                {state.crmStudent.country.name}
               </p>
               <p>If this is not correct, please <a href="/students/accounts/address/edit.php">update your billing address</a> before using this form.</p>
             </div>
@@ -69,7 +69,7 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
                   <NewCardForm
                     crmId={crmId}
                     form={state.form}
-                    student={state.student}
+                    crmStudent={state.crmStudent}
                     currencyCode={state.currencyCode}
                     currencyName={state.currencyName}
                     allSameCurrency={state.allSameCurrency}
