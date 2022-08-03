@@ -34,14 +34,12 @@ export const reducer = (state: State, action: Action): State => {
         };
       }
       let recentEnrollment = false;
-      if (action.payload.crmStudent) {
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-        const latestEnrollmentDate = action.payload.crmStudent.enrollments.reduce((prev, cur) => {
-          return (cur.enrollmentDate !== null && cur.enrollmentDate > prev) ? cur.enrollmentDate : prev;
-        }, new Date(Date.UTC(1900, 0, 0)));
-        recentEnrollment = latestEnrollmentDate >= oneYearAgo;
-      }
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      const latestEnrollmentDate = action.payload.student.enrollments.reduce((prev, cur) => {
+        return (cur.enrollmentDate !== null && cur.enrollmentDate > prev) ? cur.enrollmentDate : prev;
+      }, new Date(Date.UTC(1900, 0, 0)));
+      recentEnrollment = latestEnrollmentDate >= oneYearAgo;
       return {
         ...initialState,
         student: action.payload.student,
