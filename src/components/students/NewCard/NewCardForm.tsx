@@ -25,13 +25,14 @@ export const NewCardForm = (props: Props): ReactElement => {
   const id = useRef('x' + Math.random().toString(32).slice(2));
   const { crmId, form, crmStudent, currencyCode, currencyName, allSameCurrency, insert$ } = props;
 
-  const handleTokenize = (singleUseToken: string): void => {
+  const handleTokenize = (company: string, singleUseToken: string): void => {
     const enrollmentIds = form.data.updateAll
       ? crmStudent.enrollments.map(e => e.enrollmentId)
       : [ parseInt(form.data.enrollmentId, 10) ];
     insert$.next({
       studentId: crmId,
       enrollmentIds,
+      company,
       singleUseToken,
       processingState: form.processingState,
     });
