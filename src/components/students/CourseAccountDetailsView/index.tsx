@@ -1,10 +1,12 @@
 import Link from 'next/link';
-import type { ChangeEvent, ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
 import { useReducer } from 'react';
 
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
+import { usePaymentMethodCharge } from './usePaymentMethodCharge';
 import { Section } from '@/components/Section';
+import { Spinner } from '@/components/Spinner';
 import { capitalizeFirstLetter } from 'src/capitalizeFirstLetter';
 import { formatDate } from 'src/formatDate';
 import { statusName } from 'src/statusName';
@@ -19,6 +21,8 @@ export const CourseAccountDetailsView = ({ crmId, crmEnrollmentId }: Props): Rea
 
   useInitialData(dispatch, crmId, crmEnrollmentId);
 
+  const paymentMethodCharge$ = usePaymentMethodCharge(dispatch);
+
   if (!state.crmEnrollment) {
     return null;
   }
@@ -27,10 +31,20 @@ export const CourseAccountDetailsView = ({ crmId, crmEnrollmentId }: Props): Rea
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
+    if (state.form.data.paymentMethodId === null) {
+      return;
+    }
+    paymentMethodCharge$.next({
+      studentId: crmId,
+      enrollmentId: crmEnrollmentId,
+      paymentMethodId: state.form.data.paymentMethodId,
+      amount: state.form.data.amount,
+      processingState: state.form.processingState,
+    });
   };
 
   const handlePaymentMethodChange: ChangeEventHandler<HTMLInputElement> = e => {
-    //
+    dispatch({ type: 'PAYMENT_METHOD_ID_CHANGED', payload: parseInt(e.target.value, 10) });
   };
 
   const handleAmountChange: ChangeEventHandler<HTMLInputElement> = e => {
@@ -76,7 +90,7 @@ export const CourseAccountDetailsView = ({ crmId, crmEnrollmentId }: Props): Rea
           {state.crmEnrollment.transactions.length === 0
             ? <p>No transactions on file.</p>
             : (
-              <table className="table table-sm table-bordered w-auto bg-white">
+              <table className="table table-bordered w-auto bg-white">
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -109,7 +123,9 @@ export const CourseAccountDetailsView = ({ crmId, crmEnrollmentId }: Props): Rea
               <>
                 <p>If you have missed a payment and would like to pay it now, you can do so below. You can also pay your balance off earlier by making advanced payments. To process a payment, simply indicate which card you would like to use, enter the amount, and click the &ldquo;Pay Now&rdquo; button.</p>
                 <div className="alert alert-info">
-                  <strong>Please note:</strong> making a payment here does not alter your regular payment schedule. If you would like to make changes to future payments, please contact the School.
+                  <strong>Please note:</strong> making a payment here will not alter your regular payment schedule.{' '}
+                  {state.crmEnrollment.meta.nextInstallment && <>Your next scheduled payment will be on {formatDate(state.crmEnrollment.meta.nextInstallment)}. </>}
+                  If you would like to make changes to your scheduled payments, please contact the School.
                 </div>
                 <form onSubmit={handleSubmit}>
                   <table className="table table-bordered w-auto bg-white">
@@ -119,23 +135,26 @@ export const CourseAccountDetailsView = ({ crmId, crmEnrollmentId }: Props): Rea
                         <th className="text-center">Card Number</th>
                         <th className="text-center">Exp</th>
                         <th className="text-center">Primary</th>
+                        <th>Notes</th>
                       </tr>
                     </thead>
                     <tbody>
                       {state.crmEnrollment.paymentMethods.map(p => {
                         const expired = p.expiryYear === null || p.expiryMonth === null || p.expiryYear < thisYear || (p.expiryYear === thisYear && p.expiryMonth <= thisMonth);
+                        const disabled = expired || p.disabled;
                         return (
                           <tr key={p.paymentMethodId}>
-                            <td className={`text-center${expired ? ' text-muted' : ''}`}>
+                            <td className={`text-center${disabled ? ' text-muted' : ''}`}>
                               <div className="ps-2">
                                 <div className="form-check m-0">
-                                  <input onChange={handlePaymentMethodChange} checked={p.paymentMethodId === state.form.data.paymentMethodId} className="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" disabled={expired} />
+                                  <input onChange={handlePaymentMethodChange} checked={p.paymentMethodId === state.form.data.paymentMethodId} className="form-check-input" type="radio" value={p.paymentMethodId.toString()} disabled={disabled} />
                                 </div>
                               </div>
                             </td>
-                            <td className={`text-center${expired ? ' text-muted' : ''}`}>{p.pan}</td>
-                            <td className={`text-center${expired ? ' text-muted' : ''}`}>{p.expiryMonth?.toString().padStart(2, '0')} / {p.expiryYear}</td>
-                            <td className={`text-center${expired ? ' text-muted' : ''}`}>{p.primary ? 'Yes' : 'No'}</td>
+                            <td className={`text-center${disabled ? ' text-muted' : ''}`}>{p.pan}</td>
+                            <td className={`text-center${disabled ? ' text-muted' : ''}`}>{p.expiryMonth?.toString().padStart(2, '0')} / {p.expiryYear}</td>
+                            <td className={`text-center${disabled ? ' text-muted' : ''}`}>{p.primary ? 'yes' : 'no'}</td>
+                            <td className={`text-center${disabled ? ' text-muted' : ''}`}>{expired ? 'expired' : p.disabled ? 'disabled' : ''}</td>
                           </tr>
                         );
                       })}
@@ -146,7 +165,22 @@ export const CourseAccountDetailsView = ({ crmId, crmEnrollmentId }: Props): Rea
                     <input onChange={handleAmountChange} value={state.form.data.amount} type="number" min={0} max={2000} step={0.01} id="inputEmail3" className="form-control text-end me-2" style={{ maxWidth: 100 }} />
                     <span>{currencyCode}</span>
                   </div>
-                  <button className="btn btn-primary">Pay Now</button>
+                  <div className="d-flex align-items-center">
+                    <button className="btn btn-primary flex-shrink-0" style={{ width: 100 }}>
+                      {state.form.processingState === 'processing' ? <Spinner size="sm" /> : 'Pay Now'}
+                    </button>
+                    {state.form.processingState === 'error' && <span className="text-danger ms-2">{state.form.errorMessage ? state.form.errorMessage : 'Error'}</span>}
+                  </div>
+                  {state.form.processingState === 'success' && (
+                    <div className="alert alert-success mt-4">
+                      Transaction successful
+                    </div>
+                  )}
+                  {state.form.processingState === 'declined' && (
+                    <div className="alert alert-danger mt-4">
+                      Transaction declined
+                    </div>
+                  )}
                 </form>
               </>
             )

@@ -12,6 +12,7 @@ export type PaymentMethodInsertEvent = {
   studentId: number;
   enrollmentIds: number[];
   singleUseToken: string;
+  company: string;
   processingState: State['form']['processingState'];
 };
 
@@ -27,8 +28,8 @@ export const usePaymentMethodInsert = (dispatch: Dispatch<Action>): Subject<Paym
     insert$.current.pipe(
       filter(({ processingState }) => processingState !== 'processing'),
       tap(() => dispatch({ type: 'ADD_PAYMENT_METHOD_STARTED' })),
-      exhaustMap(({ studentId, enrollmentIds, singleUseToken }) => {
-        return crmPaymentMethodService.addCRMPaymentMethod(studentId, enrollmentIds, singleUseToken).pipe(
+      exhaustMap(({ studentId, enrollmentIds, company, singleUseToken }) => {
+        return crmPaymentMethodService.addCRMPaymentMethod(studentId, enrollmentIds, company, singleUseToken).pipe(
           tap({
             next: paymentMethod => dispatch({ type: 'ADD_PAYMENT_METHOD_SUCEEDED', payload: paymentMethod }),
             error: err => {

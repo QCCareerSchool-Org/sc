@@ -17,7 +17,7 @@ type Props = {
   countryCode: string;
   buttonText: string;
   submitting: boolean;
-  onTokenize: (singleUseToken: string) => void;
+  onTokenize: (company: string, singleUseToken: string) => void;
   onChange?: () => void;
 };
 
@@ -175,7 +175,7 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
       };
     }
     tokenize(state.instance, options).then(singleUseToken => {
-      onTokenize(singleUseToken);
+      onTokenize(company, singleUseToken);
     }).catch(err => {
       if (err !== null && typeof err === 'object') {
         setState(s => ({ ...s, errors: err as Record<string, unknown> }));
