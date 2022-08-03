@@ -89,7 +89,7 @@ export const BillingAddressEdit = ({ crmId }: Props): ReactElement | null => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor={id.current + '_countryCode'} className="form-label">Country</label>
-                <select onChange={handleCountryCodeChange} value={state.form.data.countryCode} id={id.current + '_countryCode'} className={`form-control ${state.form.validationMessages.countryCode ? 'is-invalid' : ''}`} autoComplete="country" required>
+                <select onChange={handleCountryCodeChange} value={state.form.data.countryCode} id={id.current + '_countryCode'} className={`form-select ${state.form.validationMessages.countryCode ? 'is-invalid' : ''}`} autoComplete="country" required>
                   {state.crmCountries.map(c => (
                     <option key={c.code} value={c.code}>{c.name}</option>
                   ))}
@@ -114,7 +114,7 @@ export const BillingAddressEdit = ({ crmId }: Props): ReactElement | null => {
               {state.crmProvinces[state.form.data.countryCode].length > 0 && (
                 <div className="mb-4">
                   <label htmlFor={id.current + '_provinceCode'} className="form-label">Province / State</label>
-                  <select onChange={handleProvinceCodeChange} value={state.form.data.provinceCode} id={id.current + '_provinceCode'} className={`form-control ${state.form.validationMessages.provinceCode ? 'is-invalid' : ''}`} autoComplete="address-level1" required>
+                  <select onChange={handleProvinceCodeChange} value={state.form.data.provinceCode} id={id.current + '_provinceCode'} className={`form-select ${state.form.validationMessages.provinceCode ? 'is-invalid' : ''}`} autoComplete="address-level1" required>
                     {state.crmProvinces[state.form.data.countryCode].map(p => (
                       <option key={`${state.form.data.countryCode}-${p.code}`} value={p.code}>{p.name}</option>
                     ))}

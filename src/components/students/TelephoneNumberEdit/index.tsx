@@ -57,7 +57,7 @@ export const TelephoneNumberEdit = ({ crmId }: Props): ReactElement | null => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor={id.current + '_telephoneCountryCode'} className="form-label">Country Dialing Code</label>
-                <select onChange={handleTelephoneCountryCodeChange} value={state.form.data.telephoneCountryCodeId} id={id.current + '_telephoneCountryCode'} className="form-control" autoComplete="tel-country-code">
+                <select onChange={handleTelephoneCountryCodeChange} value={state.form.data.telephoneCountryCodeId} id={id.current + '_telephoneCountryCode'} className="form-select" autoComplete="tel-country-code">
                   {state.crmTelephoneCountryCodes.map(t => (
                     <option key={t.telephoneCountryCodeId} value={t.telephoneCountryCodeId}>+{t.code} {t.region}</option>
                   ))}

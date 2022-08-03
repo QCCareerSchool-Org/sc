@@ -45,7 +45,7 @@ export const NewCardForm = (props: Props): ReactElement => {
       {crmStudent.enrollments.length && (
         <div className="mb-4">
           <label htmlFor={id.current + '_newCardEnrollmentId'}>Course to Update</label>
-          <select onChange={props.onEnrollmentIdChange} value={form.data.enrollmentId} id={id.current + '_newCardEnrollmentId'} className="form-control" disabled={form.data.updateAll} aria-describedby={id.current + '_newCardEnrollmentIdHelp'}>
+          <select onChange={props.onEnrollmentIdChange} value={form.data.enrollmentId} id={id.current + '_newCardEnrollmentId'} className="form-select" disabled={form.data.updateAll} aria-describedby={id.current + '_newCardEnrollmentIdHelp'}>
             {crmStudent.enrollments.map(e => (<option key={e.enrollmentId} value={e.enrollmentId}>{e.course.name} ({e.course.prefix}{e.enrollmentId})</option>))}
           </select>
           <div id={id.current + '_newCardEnrollmentIdHelp'} className="form-text">Charged in {currencyName}</div>
