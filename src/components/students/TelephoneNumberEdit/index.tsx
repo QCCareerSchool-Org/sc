@@ -77,7 +77,6 @@ export const TelephoneNumberEdit = ({ crmId }: Props): ReactElement | null => {
             {state.form.processingState === 'success' && <div className="alert alert-success mt-4">Telephone number updated</div>}
           </div>
         </div>
-
       </div>
     </Section>
   );

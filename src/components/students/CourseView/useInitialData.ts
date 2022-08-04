@@ -8,7 +8,7 @@ import type { Action } from './state';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useInitialData = (studentId: number, courseId: number, dispatch: Dispatch<Action>): void => {
+export const useInitialData = (dispatch: Dispatch<Action>, studentId: number, courseId: number): void => {
   const router = useRouter();
   const { enrollmentService } = useStudentServices();
 
