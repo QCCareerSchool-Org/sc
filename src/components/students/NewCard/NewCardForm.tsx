@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useRef } from 'react';
+import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
 import { PaysafeForm } from '../../PaysafeForm';
@@ -21,9 +21,9 @@ type Props = {
 };
 
 export const NewCardForm = (props: Props): ReactElement => {
-  // const id = useId(); // react 18
-  const id = useRef('x' + Math.random().toString(32).slice(2));
   const { crmId, form, crmStudent, currencyCode, currencyName, allSameCurrency, insert$ } = props;
+
+  const id = useId();
 
   const handleTokenize = (company: string, singleUseToken: string): void => {
     const enrollmentIds = form.data.updateAll
@@ -44,11 +44,11 @@ export const NewCardForm = (props: Props): ReactElement => {
     <form>
       {crmStudent.enrollments.length && (
         <div className="mb-4">
-          <label htmlFor={id.current + '_newCardEnrollmentId'}>Course to Update</label>
-          <select onChange={props.onEnrollmentIdChange} value={form.data.enrollmentId} id={id.current + '_newCardEnrollmentId'} className="form-select" disabled={form.data.updateAll} aria-describedby={id.current + '_newCardEnrollmentIdHelp'}>
+          <label htmlFor={id + '_newCardEnrollmentId'}>Course to Update</label>
+          <select onChange={props.onEnrollmentIdChange} value={form.data.enrollmentId} id={id + '_newCardEnrollmentId'} className="form-select" disabled={form.data.updateAll} aria-describedby={id + '_newCardEnrollmentIdHelp'}>
             {crmStudent.enrollments.map(e => (<option key={e.enrollmentId} value={e.enrollmentId}>{e.course.name} ({e.course.prefix}{e.enrollmentId})</option>))}
           </select>
-          <div id={id.current + '_newCardEnrollmentIdHelp'} className="form-text">Charged in {currencyName}</div>
+          <div id={id + '_newCardEnrollmentIdHelp'} className="form-text">Charged in {currencyName}</div>
         </div>
       )}
       {enrollmentCount > 1 && (
@@ -57,8 +57,8 @@ export const NewCardForm = (props: Props): ReactElement => {
             ? (
               <div className="mb-4">
                 <div className="form-check">
-                  <input onChange={props.onUpdateAllChange} checked={form.data.updateAll} className="form-check-input" type="checkbox" id={id.current + '_newCardUpdateAll'} />
-                  <label className="form-check-label" htmlFor={id.current + '_newCardUpdateAll'}>Update {enrollmentCount === 2 ? 'Both' : `All ${enrollmentCount}`} of My Courses</label>
+                  <input onChange={props.onUpdateAllChange} checked={form.data.updateAll} className="form-check-input" type="checkbox" id={id + '_newCardUpdateAll'} />
+                  <label className="form-check-label" htmlFor={id + '_newCardUpdateAll'}>Update {enrollmentCount === 2 ? 'Both' : `All ${enrollmentCount}`} of My Courses</label>
                 </div>
               </div>
             )

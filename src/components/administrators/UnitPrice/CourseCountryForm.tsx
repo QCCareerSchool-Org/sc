@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
-import { useMemo, useRef } from 'react';
+import { useId, useMemo } from 'react';
 
 import type { Country } from '@/domain/country';
 import type { CourseWithSchool } from '@/services/administrators/courseService';
@@ -38,7 +38,7 @@ const getCourseOptionGroups = (courses: CourseWithSchool[]): SchoolOptionGroup[]
 };
 
 export const CourseCountryForm = (props: Props): ReactElement => {
-  const id = useRef(Math.random().toString(32).slice(2)).current;
+  const id = useId();
 
   const courseOptionGroups = useMemo(() => getCourseOptionGroups(props.courses), [ props.courses ]);
 

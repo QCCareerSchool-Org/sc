@@ -34,9 +34,8 @@ export const useBillingAddressChange = (dispatch: Dispatch<Action>): Subject<Bil
       exhaustMap(({ crmId, address1, address2, city, provinceCode, postalCode, countryCode }) => {
         return crmStudentService.updateBillingAddress(crmId, address1, address2, city, provinceCode, postalCode, countryCode).pipe(
           tap({
-            next: crmStudent => { dispatch({ type: 'UPDATE_BILLING_ADDRESS_SUCEEDED', payload: crmStudent }); console.log(1); },
+            next: crmStudent => dispatch({ type: 'UPDATE_BILLING_ADDRESS_SUCEEDED', payload: crmStudent }),
             error: err => {
-              console.log(2);
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {

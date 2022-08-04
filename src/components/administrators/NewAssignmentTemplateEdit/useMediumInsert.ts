@@ -48,7 +48,6 @@ export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<NewAssignme
                 }
               }
               dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_FAILED', payload: message });
-              console.log(err);
             },
           }),
           catchError(() => EMPTY),

@@ -1,7 +1,7 @@
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
-import { memo, useReducer, useRef } from 'react';
+import { memo, useId, useReducer } from 'react';
 
 import { Invalid } from './Invalid';
 import { PasswordTips } from './PasswordTips';
@@ -12,16 +12,16 @@ import { usePasswordChange } from './usePasswordChange';
 import { Section } from '@/components/Section';
 
 type Props = {
-  id: number;
+  passwordResetId: number;
   code: string;
 };
 
-export const UsePasswordResetRequest = memo(({ id, code }: Props): ReactElement | null => {
-  const formId = useRef(Math.random().toString(32).slice(2));
+export const UsePasswordResetRequest = memo(({ passwordResetId, code }: Props): ReactElement | null => {
+  const id = useId();
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(id, code, dispatch);
+  useInitialData(passwordResetId, code, dispatch);
   const passwordChange$ = usePasswordChange(dispatch);
 
   if (state.error) {
@@ -54,7 +54,7 @@ export const UsePasswordResetRequest = memo(({ id, code }: Props): ReactElement 
     e.preventDefault();
     passwordChange$.next({
       processingState: state.form.processingState,
-      id,
+      passwordResetId,
       code,
       password: state.form.data.password,
     });
@@ -89,16 +89,16 @@ export const UsePasswordResetRequest = memo(({ id, code }: Props): ReactElement 
                 <h1>Set a New Password</h1>
                 <form onSubmit={handleSubmit}>
                   <div className="d-none">
-                    <input onChange={handleUsernameChange} value={state.passwordResetRequest.username} type="text" autoComplete="username" id={formId.current + '_username'} />
+                    <input onChange={handleUsernameChange} value={state.passwordResetRequest.username} type="text" autoComplete="username" id={id + '_username'} />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor={formId.current + '_password'} className="form-label">New Password</label>
-                    <input onChange={handlePasswordChange} value={state.form.data.password} type="password" autoComplete="new-password" id={formId.current + '_password'} className={`form-control ${state.form.validationMessages.password ? 'is-invalid' : ''}`} required />
+                    <label htmlFor={id + '_password'} className="form-label">New Password</label>
+                    <input onChange={handlePasswordChange} value={state.form.data.password} type="password" autoComplete="new-password" id={id + '_password'} className={`form-control ${state.form.validationMessages.password ? 'is-invalid' : ''}`} required />
                     {state.form.validationMessages.password && <div className="invalid-feedback">{state.form.validationMessages.password}</div>}
                   </div>
                   <div className="mb-3">
-                    <label htmlFor={formId.current + '_passwordRepeat'} className="form-label">Repeat New Password</label>
-                    <input onChange={handlePasswordRepeatChange} value={state.form.data.passwordRepeat} autoComplete="new-password" type="password" id={formId.current + '_passwordRepeat'} className={`form-control ${state.form.validationMessages.passwordRepeat ? 'is-invalid' : ''}`} required />
+                    <label htmlFor={id + '_passwordRepeat'} className="form-label">Repeat New Password</label>
+                    <input onChange={handlePasswordRepeatChange} value={state.form.data.passwordRepeat} autoComplete="new-password" type="password" id={id + '_passwordRepeat'} className={`form-control ${state.form.validationMessages.passwordRepeat ? 'is-invalid' : ''}`} required />
                     {state.form.validationMessages.passwordRepeat && <div className="invalid-feedback">{state.form.validationMessages.passwordRepeat}</div>}
                   </div>
                   {state.form.validationMessages.form && (

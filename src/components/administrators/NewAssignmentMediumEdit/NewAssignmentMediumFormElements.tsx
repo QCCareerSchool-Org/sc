@@ -1,6 +1,5 @@
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useRef } from 'react';
-// import { useId } from 'react';
+import { useId } from 'react';
 
 import type { State } from './state';
 import { ProgressBar } from '@/components/ProgressBar';
@@ -40,8 +39,7 @@ const allowedMimeTypes = [
 export const NewAssignmentMediumFormElements = (props: Props): ReactElement => {
   const { formType, formData, formValidationMessages, inserting, progress } = props;
 
-  // const id = useId(); // react 18
-  const id = useRef('x' + Math.random().toString(32).slice(2)).current;
+  const id = useId();
 
   const handleDataSourceChange = (dataSource: 'file upload' | 'url'): void => {
     props.onDataSourceChange?.(dataSource);

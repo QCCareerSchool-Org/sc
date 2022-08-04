@@ -15,7 +15,6 @@ export const useInitialData = (id: number, code: string, dispatch: Dispatch<Acti
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    console.log('here');
     dispatch({ type: 'LOAD_DATA_STARTED' });
     passwordResetRequestService.get(id, code).pipe(
       takeUntil(destroy$),
