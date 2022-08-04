@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewUnitTemplatePricePayload } from '@/services/administrators/newUnitTemplatePriceService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -18,8 +17,8 @@ export type NewUnitPricesSaveEvent = {
 };
 
 export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPricesSaveEvent> => {
-  const router = useRouter();
   const { newUnitTemplatePriceService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const pricesSave$ = useRef(new Subject<NewUnitPricesSaveEvent>());
 
@@ -38,7 +37,7 @@ export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPrices
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -53,7 +52,7 @@ export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPrices
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUnitTemplatePriceService ]);
+  }, [ dispatch, newUnitTemplatePriceService, navigateToLogin ]);
 
   return pricesSave$.current;
 };

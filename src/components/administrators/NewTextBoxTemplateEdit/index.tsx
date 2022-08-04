@@ -45,7 +45,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, textBoxId }: Props): R
 
   useWarnIfUnsavedChanges(changesPreset(state.newTextBoxTemplate, state.form.data));
 
-  useInitialData(administratorId, textBoxId, dispatch);
+  useInitialData(dispatch, administratorId, textBoxId);
 
   const textBoxSave$ = useTextBoxSave(dispatch);
   const textBoxDelete$ = useTextBoxDelete(dispatch);

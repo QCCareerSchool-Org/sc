@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewTextBoxTemplateSavePayload } from '@/services/administrators/newTextBoxTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,8 +16,8 @@ export type NewTextBoxTemplateSaveEvent = {
 };
 
 export const useTextBoxSave = (dispatch: Dispatch<Action>): Subject<NewTextBoxTemplateSaveEvent> => {
-  const router = useRouter();
   const { newTextBoxTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const textBoxSave$ = useRef(new Subject<NewTextBoxTemplateSaveEvent>());
 
@@ -38,7 +37,7 @@ export const useTextBoxSave = (dispatch: Dispatch<Action>): Subject<NewTextBoxTe
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,7 +53,7 @@ export const useTextBoxSave = (dispatch: Dispatch<Action>): Subject<NewTextBoxTe
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newTextBoxTemplateService ]);
+  }, [ dispatch, newTextBoxTemplateService, navigateToLogin ]);
 
   return textBoxSave$.current;
 };

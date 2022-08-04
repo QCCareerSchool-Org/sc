@@ -24,7 +24,7 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, courseId, dispatch);
+  useInitialData(dispatch, administratorId, courseId);
 
   const unitInsert$ = useUnitInsert(dispatch);
   const materialUnitInsert$ = useMaterialUnitInsert(dispatch);

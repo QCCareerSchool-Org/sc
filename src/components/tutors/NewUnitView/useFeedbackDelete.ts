@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,7 +16,7 @@ export type FeedbackDeletePayload = {
 };
 
 export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackDeletePayload> => {
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
   const { newUnitService } = useTutorServices();
 
   const feedbackDelete$ = useRef(new Subject<FeedbackDeletePayload>());
@@ -38,7 +37,7 @@ export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackD
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,7 +53,7 @@ export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackD
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUnitService ]);
+  }, [ dispatch, newUnitService, navigateToLogin ]);
 
   return feedbackDelete$.current;
 };

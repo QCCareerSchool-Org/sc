@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,7 +16,7 @@ type TelephoneNumberChangeEvent = {
 
 export const useTelephoneNumberChange = (dispatch: Dispatch<Action>): Subject<TelephoneNumberChangeEvent> => {
   const { crmStudentService } = useStudentServices();
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
 
   const change$ = useRef(new Subject<TelephoneNumberChangeEvent>());
 
@@ -35,7 +34,7 @@ export const useTelephoneNumberChange = (dispatch: Dispatch<Action>): Subject<Te
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -51,7 +50,7 @@ export const useTelephoneNumberChange = (dispatch: Dispatch<Action>): Subject<Te
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, crmStudentService, router ]);
+  }, [ dispatch, crmStudentService, navigateToLogin ]);
 
   return change$.current;
 };

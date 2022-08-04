@@ -1,16 +1,15 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useInitialData = (administratorId: number, dispatch: Dispatch<Action>): void => {
-  const router = useRouter();
+export const useInitialData = (dispatch: Dispatch<Action>, administratorId: number): void => {
   const { courseService, countryService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -29,7 +28,7 @@ export const useInitialData = (administratorId: number, dispatch: Dispatch<Actio
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin(router);
+            return void navigateToLogin();
           }
           errorCode = err.code;
         }
@@ -38,5 +37,5 @@ export const useInitialData = (administratorId: number, dispatch: Dispatch<Actio
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, dispatch, router, courseService, countryService ]);
+  }, [ dispatch, administratorId, courseService, countryService, navigateToLogin ]);
 };

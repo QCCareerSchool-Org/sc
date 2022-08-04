@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewUnitTemplateAddPayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -16,8 +15,8 @@ export type NewUnitTemplateInsertEvent = {
 };
 
 export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<NewUnitTemplateInsertEvent> => {
-  const router = useRouter();
   const { newUnitTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const unitInsert$ = useRef(new Subject<NewUnitTemplateInsertEvent>());
 
@@ -34,7 +33,7 @@ export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<NewUnitTempla
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -49,7 +48,7 @@ export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<NewUnitTempla
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUnitTemplateService ]);
+  }, [ dispatch, newUnitTemplateService, navigateToLogin ]);
 
   return unitInsert$.current;
 };

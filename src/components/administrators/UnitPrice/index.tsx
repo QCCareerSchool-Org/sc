@@ -15,7 +15,7 @@ export const UnitPrice = ({ administratorId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const router = useRouter();
 
-  useInitialData(administratorId, dispatch);
+  useInitialData(dispatch, administratorId);
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();

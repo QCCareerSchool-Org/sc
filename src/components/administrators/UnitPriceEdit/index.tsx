@@ -1,4 +1,3 @@
-import { HtmlProps } from 'next/dist/shared/lib/html-context';
 import NextError from 'next/error';
 import type { ChangeEvent, FormEventHandler, MouseEventHandler, ReactElement } from 'react';
 import { memo, useReducer } from 'react';
@@ -19,7 +18,7 @@ type Props = {
 export const UnitPriceEdit = memo(({ administratorId, courseId, countryId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, courseId, countryId, dispatch);
+  useInitialData(dispatch, administratorId, courseId, countryId);
 
   const save$ = usePricesSave(dispatch);
   const delete$ = usePricesDelete(dispatch);

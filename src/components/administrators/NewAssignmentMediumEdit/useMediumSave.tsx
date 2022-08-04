@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewAssignmentMediumSavePayload } from '@/services/administrators/newAssignmentMediumService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,8 +16,8 @@ export type AssignmentMediumSaveEvent = {
 };
 
 export const useMediumSave = (dispatch: Dispatch<Action>): Subject<AssignmentMediumSaveEvent> => {
-  const router = useRouter();
   const { newAssignmentMediumService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const mediumSave$ = useRef(new Subject<AssignmentMediumSaveEvent>());
 
@@ -38,7 +37,7 @@ export const useMediumSave = (dispatch: Dispatch<Action>): Subject<AssignmentMed
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,7 +53,7 @@ export const useMediumSave = (dispatch: Dispatch<Action>): Subject<AssignmentMed
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newAssignmentMediumService ]);
+  }, [ dispatch, newAssignmentMediumService, navigateToLogin ]);
 
   return mediumSave$.current;
 };

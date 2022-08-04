@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewMaterialInsertPayload } from '@/services/administrators/newMaterialService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -18,8 +17,8 @@ export type NewMaterialInsertEvent = {
 };
 
 export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMaterialInsertEvent> => {
-  const router = useRouter();
   const { newMaterialService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const materialInsert$ = useRef(new Subject<NewMaterialInsertEvent>());
 
@@ -43,7 +42,7 @@ export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMateri
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -59,7 +58,7 @@ export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMateri
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newMaterialService ]);
+  }, [ dispatch, newMaterialService, navigateToLogin ]);
 
   return materialInsert$.current;
 };

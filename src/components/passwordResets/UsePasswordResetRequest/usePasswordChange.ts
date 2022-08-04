@@ -1,11 +1,11 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
+
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useServices } from '@/hooks/useServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 export type PasswordChangeEvent = {
   processingState: State['form']['processingState'];
@@ -15,8 +15,8 @@ export type PasswordChangeEvent = {
 };
 
 export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordChangeEvent> => {
-  const router = useRouter();
   const { passwordResetRequestService } = useServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const passwordChange$ = useRef(new Subject<PasswordChangeEvent>());
 
@@ -33,7 +33,7 @@ export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordC
             let message = 'Request failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -48,7 +48,7 @@ export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordC
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, passwordResetRequestService ]);
+  }, [ dispatch, passwordResetRequestService, navigateToLogin ]);
 
   return passwordChange$.current;
 };

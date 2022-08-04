@@ -23,7 +23,7 @@ type Props = {
 };
 
 export const FeedbackDisplayForm = memo((props: Props): ReactElement => {
-  const { tutorId, studentId, courseId, unitId, responseFilename, responseFilesize, responseMimeTypeId, processingState, errorMessage, delete$ } = props;
+  const { tutorId, studentId, courseId, unitId, responseFilename, responseFilesize, processingState, errorMessage, delete$ } = props;
   const audioSrc = useMemo(() => `${endpoint}/tutors/${tutorId}/students/${studentId}/newUnits/${unitId}/response`, [ tutorId, studentId, unitId ]);
 
   const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {

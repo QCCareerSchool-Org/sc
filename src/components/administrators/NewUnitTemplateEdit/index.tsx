@@ -53,7 +53,7 @@ export const NewUnitTemplateEdit = ({ administratorId, unitId }: Props): ReactEl
 
   useWarnIfUnsavedChanges(changesPreset(state.newUnitTemplate, state.form.data));
 
-  useInitialData(administratorId, unitId, dispatch);
+  useInitialData(dispatch, administratorId, unitId);
 
   const unitSave$ = useUnitSave(dispatch);
   const unitDelete$ = useUnitDelete(dispatch);

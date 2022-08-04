@@ -21,7 +21,7 @@ export const UsePasswordResetRequest = memo(({ passwordResetId, code }: Props): 
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(passwordResetId, code, dispatch);
+  useInitialData(dispatch, passwordResetId, code);
   const passwordChange$ = usePasswordChange(dispatch);
 
   if (state.error) {

@@ -3,9 +3,9 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export type AssignmentMediumDeleteEvent = {
@@ -15,8 +15,9 @@ export type AssignmentMediumDeleteEvent = {
 };
 
 export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<AssignmentMediumDeleteEvent> => {
-  const router = useRouter();
   const { newAssignmentMediumService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
+  const router = useRouter();
 
   const mediumDelete$ = useRef(new Subject<AssignmentMediumDeleteEvent>());
 
@@ -37,7 +38,7 @@ export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<AssignmentM
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -53,7 +54,7 @@ export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<AssignmentM
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newAssignmentMediumService ]);
+  }, [ dispatch, newAssignmentMediumService, navigateToLogin, router ]);
 
   return mediumDelete$.current;
 };

@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, MouseEvent, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { NewMaterialAddForm } from './NewMaterialAddForm';
@@ -22,7 +22,7 @@ export const NewMaterialUnitEdit = ({ administratorId, materialUnitId }: Props):
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, materialUnitId, dispatch);
+  useInitialData(dispatch, administratorId, materialUnitId);
   const materialUnitSave$ = useMaterialUnitSave(dispatch);
   const materialInsert$ = useMaterialInsert(dispatch);
 

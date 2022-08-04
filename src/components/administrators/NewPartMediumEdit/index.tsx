@@ -25,7 +25,7 @@ export const NewPartMediumEdit = ({ administratorId, mediumId }: Props): ReactEl
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const { newPartMediumService } = useAdminServices();
 
-  useInitialData(administratorId, mediumId, dispatch);
+  useInitialData(dispatch, administratorId, mediumId);
 
   const mediumSave$ = useMediumSave(dispatch);
   const mediumDelete$ = useMediumDelete(dispatch);

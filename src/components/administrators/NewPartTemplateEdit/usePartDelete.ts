@@ -3,9 +3,9 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export type PartDeletePayload = {
@@ -15,8 +15,9 @@ export type PartDeletePayload = {
 };
 
 export const usePartDelete = (dispatch: Dispatch<Action>): Subject<PartDeletePayload> => {
-  const router = useRouter();
   const { newPartTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
+  const router = useRouter();
 
   const partDelete$ = useRef(new Subject<PartDeletePayload>());
 
@@ -37,7 +38,7 @@ export const usePartDelete = (dispatch: Dispatch<Action>): Subject<PartDeletePay
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -53,7 +54,7 @@ export const usePartDelete = (dispatch: Dispatch<Action>): Subject<PartDeletePay
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newPartTemplateService ]);
+  }, [ dispatch, newPartTemplateService, navigateToLogin, router ]);
 
   return partDelete$.current;
 };

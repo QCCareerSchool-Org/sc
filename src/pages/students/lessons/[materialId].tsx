@@ -48,6 +48,7 @@ const LessonPage: NextPage<Props> = ({ materialId }) => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   const materialIdParam = ctx.params?.materialId;
   const materialId = typeof materialIdParam === 'string' ? materialIdParam : null;

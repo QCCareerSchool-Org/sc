@@ -16,7 +16,7 @@ export const CourseDevelopmentOverview = ({ administratorId }: Props): ReactElem
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, dispatch);
+  useInitialData(dispatch, administratorId);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;

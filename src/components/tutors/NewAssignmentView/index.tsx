@@ -24,7 +24,7 @@ type Props = {
 export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(tutorId, studentId, courseId, unitId, assignmentId, dispatch);
+  useInitialData(dispatch, tutorId, studentId, courseId, unitId, assignmentId);
 
   const inputSave$ = useInputSave(dispatch);
 

@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewTextBoxTemplateAddPayload } from '@/services/administrators/newTextBoxTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -16,8 +15,8 @@ export type NewTextBoxTemplateInsertEvent = {
 };
 
 export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<NewTextBoxTemplateInsertEvent> => {
-  const router = useRouter();
   const { newTextBoxTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const textBoxInsert$ = useRef(new Subject<NewTextBoxTemplateInsertEvent>());
 
@@ -37,7 +36,7 @@ export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<NewTextBox
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -53,7 +52,7 @@ export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<NewTextBox
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newTextBoxTemplateService ]);
+  }, [ dispatch, newTextBoxTemplateService, navigateToLogin ]);
 
   return textBoxInsert$.current;
 };

@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewPartTemplateSavePayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,8 +16,8 @@ export type PartSavePayload = {
 };
 
 export const usePartSave = (dispatch: Dispatch<Action>): Subject<PartSavePayload> => {
-  const router = useRouter();
   const { newPartTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const partSave$ = useRef(new Subject<PartSavePayload>());
 
@@ -38,7 +37,7 @@ export const usePartSave = (dispatch: Dispatch<Action>): Subject<PartSavePayload
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,7 +53,7 @@ export const usePartSave = (dispatch: Dispatch<Action>): Subject<PartSavePayload
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newPartTemplateService ]);
+  }, [ dispatch, newPartTemplateService, navigateToLogin ]);
 
   return partSave$.current;
 };

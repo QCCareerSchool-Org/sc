@@ -28,7 +28,7 @@ export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): Re
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(tutorId, studentId, courseId, unitId, dispatch);
+  useInitialData(dispatch, tutorId, studentId, courseId, unitId);
 
   const feedbackUpload$ = useFeedbackUpload(dispatch);
   const feedbackDelete$ = useFeedbackDelete(dispatch);

@@ -17,7 +17,7 @@ export const SchoolView = ({ administratorId, schoolId }: Props): ReactElement |
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, schoolId, dispatch);
+  useInitialData(dispatch, administratorId, schoolId);
 
   const handleCourseRowClick = useCallback((e: MouseEvent<HTMLTableRowElement>, courseId: number): void => {
     void router.push(`/administrators/courses/${courseId}`);

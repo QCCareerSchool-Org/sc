@@ -1,12 +1,11 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 export type PaymentMethodInsertEvent = {
   studentId: number;
@@ -18,7 +17,7 @@ export type PaymentMethodInsertEvent = {
 
 export const usePaymentMethodInsert = (dispatch: Dispatch<Action>): Subject<PaymentMethodInsertEvent> => {
   const { crmPaymentMethodService } = useStudentServices();
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
 
   const insert$ = useRef(new Subject<PaymentMethodInsertEvent>());
 
@@ -36,7 +35,7 @@ export const usePaymentMethodInsert = (dispatch: Dispatch<Action>): Subject<Paym
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -52,7 +51,7 @@ export const usePaymentMethodInsert = (dispatch: Dispatch<Action>): Subject<Paym
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, crmPaymentMethodService ]);
+  }, [ dispatch, crmPaymentMethodService, navigateToLogin ]);
 
   return insert$.current;
 };

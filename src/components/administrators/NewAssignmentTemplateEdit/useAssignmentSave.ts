@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewAssignmentTemplateSavePayload } from '@/services/administrators/newAssignmentTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,8 +16,8 @@ export type NewAssignmentTemplateSaveEvent = {
 };
 
 export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<NewAssignmentTemplateSaveEvent> => {
-  const router = useRouter();
   const { newAssignmentTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const assignmentSave$ = useRef(new Subject<NewAssignmentTemplateSaveEvent>());
 
@@ -38,7 +37,7 @@ export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<NewAssign
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,7 +53,7 @@ export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<NewAssign
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newAssignmentTemplateService ]);
+  }, [ dispatch, newAssignmentTemplateService, navigateToLogin ]);
 
   return assignmentSave$.current;
 };

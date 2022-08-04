@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewAssignmentTemplateAddPayload } from '@/services/administrators/newAssignmentTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -16,8 +15,8 @@ export type NewAssignementTemplateInsertEvent = {
 };
 
 export const useAssignmentInsert = (dispatch: Dispatch<Action>): Subject<NewAssignementTemplateInsertEvent> => {
-  const router = useRouter();
   const { newAssignmentTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const assignmentInsert$ = useRef(new Subject<NewAssignementTemplateInsertEvent>());
 
@@ -34,7 +33,7 @@ export const useAssignmentInsert = (dispatch: Dispatch<Action>): Subject<NewAssi
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -49,7 +48,7 @@ export const useAssignmentInsert = (dispatch: Dispatch<Action>): Subject<NewAssi
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newAssignmentTemplateService ]);
+  }, [ dispatch, newAssignmentTemplateService, navigateToLogin ]);
 
   return assignmentInsert$.current;
 };

@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewPartTemplateAddPayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -16,8 +15,8 @@ export type NewPartTemplateInsertEvent = {
 };
 
 export const usePartInsert = (dispatch: Dispatch<Action>): Subject<NewPartTemplateInsertEvent> => {
-  const router = useRouter();
   const { newPartTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const partInsert$ = useRef(new Subject<NewPartTemplateInsertEvent>());
 
@@ -35,7 +34,7 @@ export const usePartInsert = (dispatch: Dispatch<Action>): Subject<NewPartTempla
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -51,7 +50,7 @@ export const usePartInsert = (dispatch: Dispatch<Action>): Subject<NewPartTempla
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newPartTemplateService ]);
+  }, [ dispatch, newPartTemplateService, navigateToLogin ]);
 
   return partInsert$.current;
 };
