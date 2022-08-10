@@ -163,15 +163,21 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
           shippingAddress: {
             recipientName: `${props.firstName} ${props.lastName}`,
             street: props.address1,
-            street2: props.address2 ?? undefined,
             city: props.city,
             country: props.countryCode,
             zip: props.postalCode ?? '0',
-            state: props.provinceCode ?? undefined,
             shipMethod: 'S',
           },
         },
       };
+      if (options.vault?.shippingAddress) { // always true, needed for typescript
+        if (props.address2) {
+          options.vault.shippingAddress.street2 = props.address2;
+        }
+        if (props.provinceCode) {
+          options.vault.shippingAddress.state = props.provinceCode;
+        }
+      }
     }
     tokenize(state.instance, options).then(singleUseToken => {
       onTokenize(company, singleUseToken);

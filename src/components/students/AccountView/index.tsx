@@ -91,7 +91,7 @@ export const AccountView = ({ studentId, crmId }: Props): ReactElement | null =>
                       <td>
                         {state.crmStudent.address1}<br />
                         {state.crmStudent.address2 && <>{state.crmStudent.address2}<br /></>}
-                        {state.crmStudent.city}{state.crmStudent.province && <> {state.crmStudent.province.code}&nbsp;&nbsp;</>}{state.crmStudent.postalCode}<br />
+                        {state.crmStudent.city}{state.crmStudent.province && <>&nbsp;{state.crmStudent.province.code}</>}{state.crmStudent.postalCode && <>&nbsp;&nbsp;{state.crmStudent.postalCode}</>}<br />
                         {state.crmStudent.country.name}
                       </td>
                       <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/billing-address"><a>Change</a></Link></td>
