@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
-import { useReducer, useRef } from 'react';
+import { useId, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
@@ -12,8 +12,8 @@ type Props = {
 };
 
 export const TelephoneNumberEdit = ({ crmId }: Props): ReactElement | null => {
-  // const id = useId(); // react 18
-  const id = useRef('x' + Math.random().toString(32).slice(2));
+  const id = useId();
+
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, crmId);
@@ -56,16 +56,16 @@ export const TelephoneNumberEdit = ({ crmId }: Props): ReactElement | null => {
           <div className="col-12 col-md-8 col-lg-6">
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor={id.current + '_telephoneCountryCode'} className="form-label">Country Dialing Code</label>
-                <select onChange={handleTelephoneCountryCodeChange} value={state.form.data.telephoneCountryCodeId} id={id.current + '_telephoneCountryCode'} className="form-select" autoComplete="tel-country-code">
+                <label htmlFor={id + '_telephoneCountryCode'} className="form-label">Country Dialing Code</label>
+                <select onChange={handleTelephoneCountryCodeChange} value={state.form.data.telephoneCountryCodeId} id={id + '_telephoneCountryCode'} className="form-select" autoComplete="tel-country-code">
                   {state.crmTelephoneCountryCodes.map(t => (
                     <option key={t.telephoneCountryCodeId} value={t.telephoneCountryCodeId}>+{t.code} {t.region}</option>
                   ))}
                 </select>
               </div>
               <div className="mb-4">
-                <label htmlFor={id.current + '_telephoneNumber'} className="form-label">New Telephone Number</label>
-                <input onChange={handleTelephoneNumberChange} value={state.form.data.telephoneNumber} type="tel" id={id.current + '_telephoneNumber'} className="form-control" autoComplete="tel-national" />
+                <label htmlFor={id + '_telephoneNumber'} className="form-label">New Telephone Number</label>
+                <input onChange={handleTelephoneNumberChange} value={state.form.data.telephoneNumber} type="tel" id={id + '_telephoneNumber'} className="form-control" autoComplete="tel-national" />
               </div>
               <div className="d-flex align-items-center">
                 <button className="btn btn-primary" style={{ width: 80 }} disabled={disabled}>
@@ -77,7 +77,6 @@ export const TelephoneNumberEdit = ({ crmId }: Props): ReactElement | null => {
             {state.form.processingState === 'success' && <div className="alert alert-success mt-4">Telephone number updated</div>}
           </div>
         </div>
-
       </div>
     </Section>
   );

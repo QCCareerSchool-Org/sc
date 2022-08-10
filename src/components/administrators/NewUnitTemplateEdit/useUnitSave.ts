@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewUnitTemplateSavePayload } from '@/services/administrators/newUnitTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,8 +16,8 @@ export type NewUnitTemplateSaveEvent = {
 };
 
 export const useUnitSave = (dispatch: Dispatch<Action>): Subject<NewUnitTemplateSaveEvent> => {
-  const router = useRouter();
   const { newUnitTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const unitSave$ = useRef(new Subject<NewUnitTemplateSaveEvent>());
 
@@ -37,7 +36,7 @@ export const useUnitSave = (dispatch: Dispatch<Action>): Subject<NewUnitTemplate
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -52,7 +51,7 @@ export const useUnitSave = (dispatch: Dispatch<Action>): Subject<NewUnitTemplate
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUnitTemplateService ]);
+  }, [ dispatch, newUnitTemplateService, navigateToLogin ]);
 
   return unitSave$.current;
 };

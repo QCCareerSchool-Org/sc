@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
-import { useReducer, useRef } from 'react';
+import { useId, useReducer } from 'react';
 
 import type { State } from './state';
 import { initialState, reducer } from './state';
@@ -14,8 +14,7 @@ type Props = {
 };
 
 export const BillingAddressEdit = ({ crmId }: Props): ReactElement | null => {
-  // const id = useId(); // react 18
-  const id = useRef('x' + Math.random().toString(32).slice(2));
+  const id = useId();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, crmId);
@@ -88,8 +87,8 @@ export const BillingAddressEdit = ({ crmId }: Props): ReactElement | null => {
           <div className="col-12 col-md-8 col-lg-6">
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor={id.current + '_countryCode'} className="form-label">Country</label>
-                <select onChange={handleCountryCodeChange} value={state.form.data.countryCode} id={id.current + '_countryCode'} className={`form-select ${state.form.validationMessages.countryCode ? 'is-invalid' : ''}`} autoComplete="country" required>
+                <label htmlFor={id + '_countryCode'} className="form-label">Country</label>
+                <select onChange={handleCountryCodeChange} value={state.form.data.countryCode} id={id + '_countryCode'} className={`form-select ${state.form.validationMessages.countryCode ? 'is-invalid' : ''}`} autoComplete="country" required>
                   {state.crmCountries.map(c => (
                     <option key={c.code} value={c.code}>{c.name}</option>
                   ))}
@@ -97,24 +96,24 @@ export const BillingAddressEdit = ({ crmId }: Props): ReactElement | null => {
                 {state.form.validationMessages.countryCode && <div className="invalid-feedback">{state.form.validationMessages.countryCode}</div>}
               </div>
               <div className="mb-4">
-                <label htmlFor={id.current + '_address1'} className="form-label">Address Line 1</label>
-                <input onChange={handleAddress1Change} value={state.form.data.address1} type="text" id={id.current + '_address1'} className={`form-control ${state.form.validationMessages.address1 ? 'is-invalid' : ''}`} autoComplete="address-line1" required />
+                <label htmlFor={id + '_address1'} className="form-label">Address Line 1</label>
+                <input onChange={handleAddress1Change} value={state.form.data.address1} type="text" id={id + '_address1'} className={`form-control ${state.form.validationMessages.address1 ? 'is-invalid' : ''}`} autoComplete="address-line1" required />
                 {state.form.validationMessages.address1 && <div className="invalid-feedback">{state.form.validationMessages.address1}</div>}
               </div>
               <div className="mb-4">
-                <label htmlFor={id.current + '_address2'} className="form-label">Address Line 2</label>
-                <input onChange={handleAddress2Change} value={state.form.data.address2} type="text" id={id.current + '_address2'} className={`form-control ${state.form.validationMessages.address2 ? 'is-invalid' : ''}`} autoComplete="address-line2" required />
+                <label htmlFor={id + '_address2'} className="form-label">Address Line 2</label>
+                <input onChange={handleAddress2Change} value={state.form.data.address2} type="text" id={id + '_address2'} className={`form-control ${state.form.validationMessages.address2 ? 'is-invalid' : ''}`} autoComplete="address-line2" required />
                 {state.form.validationMessages.address2 && <div className="invalid-feedback">{state.form.validationMessages.address2}</div>}
               </div>
               <div className="mb-4">
-                <label htmlFor={id.current + '_city'} className="form-label">City</label>
-                <input onChange={handleCityChange} value={state.form.data.city} type="text" id={id.current + '_city'} className={`form-control ${state.form.validationMessages.city ? 'is-invalid' : ''}`} autoComplete="address-level2" required />
+                <label htmlFor={id + '_city'} className="form-label">City</label>
+                <input onChange={handleCityChange} value={state.form.data.city} type="text" id={id + '_city'} className={`form-control ${state.form.validationMessages.city ? 'is-invalid' : ''}`} autoComplete="address-level2" required />
                 {state.form.validationMessages.city && <div className="invalid-feedback">{state.form.validationMessages.city}</div>}
               </div>
               {state.crmProvinces[state.form.data.countryCode].length > 0 && (
                 <div className="mb-4">
-                  <label htmlFor={id.current + '_provinceCode'} className="form-label">Province / State</label>
-                  <select onChange={handleProvinceCodeChange} value={state.form.data.provinceCode} id={id.current + '_provinceCode'} className={`form-select ${state.form.validationMessages.provinceCode ? 'is-invalid' : ''}`} autoComplete="address-level1" required>
+                  <label htmlFor={id + '_provinceCode'} className="form-label">Province / State</label>
+                  <select onChange={handleProvinceCodeChange} value={state.form.data.provinceCode} id={id + '_provinceCode'} className={`form-select ${state.form.validationMessages.provinceCode ? 'is-invalid' : ''}`} autoComplete="address-level1" required>
                     {state.crmProvinces[state.form.data.countryCode].map(p => (
                       <option key={`${state.form.data.countryCode}-${p.code}`} value={p.code}>{p.name}</option>
                     ))}
@@ -124,8 +123,8 @@ export const BillingAddressEdit = ({ crmId }: Props): ReactElement | null => {
               )}
               {state.needsPostalCode && (
                 <div className="mb-4">
-                  <label htmlFor={id.current + '_postalCode'} className="form-label">Postal Code</label>
-                  <input onChange={handlePostalCodeChange} value={state.form.data.postalCode} type="text" id={id.current + '_postalCode'} className={`form-control ${state.form.validationMessages.postalCode ? 'is-invalid' : ''}`} autoComplete="postal-code" required />
+                  <label htmlFor={id + '_postalCode'} className="form-label">Postal Code</label>
+                  <input onChange={handlePostalCodeChange} value={state.form.data.postalCode} type="text" id={id + '_postalCode'} className={`form-control ${state.form.validationMessages.postalCode ? 'is-invalid' : ''}`} autoComplete="postal-code" required />
                   {state.form.validationMessages.postalCode && <div className="invalid-feedback">{state.form.validationMessages.postalCode}</div>}
                 </div>
               )}

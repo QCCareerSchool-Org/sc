@@ -30,7 +30,7 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
   // logged in, and those resources don't have a refresh built-in mechanism
   useStayLoggedIn();
 
-  useInitialData(studentId, courseId, dispatch);
+  useInitialData(dispatch, studentId, courseId);
 
   const initializeNextUnit$ = useInitializeNextUnit(dispatch);
 

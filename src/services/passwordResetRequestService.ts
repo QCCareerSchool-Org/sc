@@ -18,8 +18,8 @@ type RawCreatePasswordResetResult = {
 
 export interface IPasswordResetRequestService {
   create: (username: string) => Observable<CreatePasswordResetResult>;
-  get: (id: number, code: string) => Observable<PasswordResetRequest>;
-  use: (id: number, code: string, password: string) => Observable<void>;
+  get: (passwordResetId: number, code: string) => Observable<PasswordResetRequest>;
+  use: (passwordResetId: number, code: string, password: string) => Observable<void>;
 }
 
 export class PasswordResetRequestService implements IPasswordResetRequestService {
@@ -36,16 +36,16 @@ export class PasswordResetRequestService implements IPasswordResetRequestService
     );
   }
 
-  public get(id: number, code: string): Observable<PasswordResetRequest> {
-    const url = `${this.getUrl()}/${id}`;
+  public get(passwordResetId: number, code: string): Observable<PasswordResetRequest> {
+    const url = `${this.getUrl()}/${passwordResetId}`;
     const params = { code };
     return this.http.get<RawPasswordResetRequest>(url, { params }).pipe(
       map(this.mapPasswordResetRequest),
     );
   }
 
-  public use(id: number, code: string, password: string): Observable<void> {
-    const url = `${this.getUrl()}/${id}`;
+  public use(passwordResetId: number, code: string, password: string): Observable<void> {
+    const url = `${this.getUrl()}/${passwordResetId}`;
     return this.http.post(url, { code, password });
   }
 

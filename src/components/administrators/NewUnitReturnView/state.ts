@@ -1,4 +1,3 @@
-import type { NewUnitReturn } from '@/domain/newUnitReturn';
 import type { NewUnitReturnWithUnit, NewUnitReturnWithUnitWithTutorAndEnrollment } from '@/services/administrators/newUnitReturnService';
 
 export type State = {

@@ -3,9 +3,9 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export type NewAssignmentTemplateDeleteEvent = {
@@ -15,8 +15,9 @@ export type NewAssignmentTemplateDeleteEvent = {
 };
 
 export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<NewAssignmentTemplateDeleteEvent> => {
-  const router = useRouter();
   const { newAssignmentTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
+  const router = useRouter();
 
   const assignmentDelete$ = useRef(new Subject<NewAssignmentTemplateDeleteEvent>());
 
@@ -37,7 +38,7 @@ export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<NewAssi
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -53,7 +54,7 @@ export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<NewAssi
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newAssignmentTemplateService ]);
+  }, [ dispatch, newAssignmentTemplateService, navigateToLogin, router ]);
 
   return assignmentDelete$.current;
 };

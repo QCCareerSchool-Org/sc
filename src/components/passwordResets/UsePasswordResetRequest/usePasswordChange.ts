@@ -1,22 +1,22 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
+
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useServices } from '@/hooks/useServices';
 import { HttpServiceError } from '@/services/httpService';
-import { navigateToLogin } from 'src/navigateToLogin';
 
 export type PasswordChangeEvent = {
   processingState: State['form']['processingState'];
-  id: number;
+  passwordResetId: number;
   code: string;
   password: string;
 };
 
 export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordChangeEvent> => {
-  const router = useRouter();
   const { passwordResetRequestService } = useServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const passwordChange$ = useRef(new Subject<PasswordChangeEvent>());
 
@@ -26,14 +26,14 @@ export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordC
     passwordChange$.current.pipe(
       filter(({ processingState }) => processingState === 'idle' || processingState === 'error'),
       tap(() => dispatch({ type: 'RESET_STARTED' })),
-      switchMap(({ id, code, password }) => passwordResetRequestService.use(id, code, password).pipe(
+      switchMap(({ passwordResetId, code, password }) => passwordResetRequestService.use(passwordResetId, code, password).pipe(
         tap({
           next: () => dispatch({ type: 'RESET_SUCCEEDED' }),
           error: err => {
             let message = 'Request failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -48,7 +48,7 @@ export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordC
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, passwordResetRequestService ]);
+  }, [ dispatch, passwordResetRequestService, navigateToLogin ]);
 
   return passwordChange$.current;
 };

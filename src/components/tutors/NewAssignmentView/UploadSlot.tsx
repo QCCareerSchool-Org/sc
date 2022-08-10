@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { useRef } from 'react';
+import { useId } from 'react';
 
 import { endpoint } from '../../../basePath';
 import type { WithInputForm } from './state';
@@ -12,8 +12,7 @@ type Props = {
 };
 
 export const UploadSlot = ({ tutorId, newUploadSlot }: Props): ReactElement => {
-  // const id = useId(); // React 18
-  const id = useRef('x' + Math.random().toString(32).slice(2)).current;
+  const id = useId();
 
   const src = `${endpoint}/tutors/${tutorId}/newUploadSlots/${newUploadSlot.uploadSlotId}/file`;
 

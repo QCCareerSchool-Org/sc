@@ -13,7 +13,7 @@ type Props = {
 export const NewMaterialEdit = ({ administratorId, materialId }: Props): ReactElement => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, materialId, dispatch);
+  useInitialData(dispatch, administratorId, materialId);
 
   return (
     <Section>

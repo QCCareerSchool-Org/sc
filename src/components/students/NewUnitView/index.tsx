@@ -1,10 +1,8 @@
 import NextError from 'next/error';
-import { useRouter } from 'next/router';
 import type { ReactElement } from 'react';
 import { useEffect, useReducer, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import { AssignmentSection } from './AssignmentSection';
 import { NewUnitInfoTable } from './NewUnitInfoTable';
 import { NewUnitStatus } from './NewUnitStatus';
@@ -13,6 +11,7 @@ import type { State } from './state';
 import { initialState, reducer } from './state';
 import { SubmitSection } from './SubmitSection';
 import { Section } from '@/components/Section';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -23,7 +22,7 @@ type Props = {
 };
 
 export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElement | null => {
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
   const { newUnitService } = useStudentServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -41,7 +40,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin(router);
+            return void navigateToLogin();
           }
           errorCode = err.code;
         }
@@ -59,7 +58,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
             let message = 'Submit failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -83,7 +82,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
             let message = 'Skip failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -98,7 +97,7 @@ export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElemen
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentId, courseId, unitId, router, newUnitService ]);
+  }, [ studentId, courseId, unitId, newUnitService, navigateToLogin ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;

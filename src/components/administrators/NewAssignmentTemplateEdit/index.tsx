@@ -53,7 +53,7 @@ export const NewAssignmentTemplateEdit = ({ administratorId, assignmentId }: Pro
 
   useWarnIfUnsavedChanges(changesPreset(state.newAssignmentTemplate, state.form.data));
 
-  useInitialData(administratorId, assignmentId, dispatch);
+  useInitialData(dispatch, administratorId, assignmentId);
 
   const assignmentSave$ = useAssignmentSave(dispatch);
   const assignmentDelete$ = useAssignmentDelete(dispatch);

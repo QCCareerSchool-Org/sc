@@ -3,9 +3,9 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export type NewTextBoxTemplateDeleteEvent = {
@@ -15,8 +15,9 @@ export type NewTextBoxTemplateDeleteEvent = {
 };
 
 export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<NewTextBoxTemplateDeleteEvent> => {
-  const router = useRouter();
   const { newTextBoxTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
+  const router = useRouter();
 
   const textBoxDelete$ = useRef(new Subject<NewTextBoxTemplateDeleteEvent>());
 
@@ -37,7 +38,7 @@ export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<NewTextBox
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -53,7 +54,7 @@ export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<NewTextBox
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newTextBoxTemplateService ]);
+  }, [ dispatch, newTextBoxTemplateService, navigateToLogin, router ]);
 
   return textBoxDelete$.current;
 };

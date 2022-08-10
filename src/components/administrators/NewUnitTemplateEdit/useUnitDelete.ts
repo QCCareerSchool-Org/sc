@@ -3,9 +3,9 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export type NewUnitTemplateDeleteEvent = {
@@ -15,8 +15,9 @@ export type NewUnitTemplateDeleteEvent = {
 };
 
 export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<NewUnitTemplateDeleteEvent> => {
-  const router = useRouter();
   const { newUnitTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
+  const router = useRouter();
 
   const unitDelete$ = useRef(new Subject<NewUnitTemplateDeleteEvent>());
 
@@ -36,7 +37,7 @@ export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<NewUnitTempla
             let message = 'Delete failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -51,7 +52,7 @@ export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<NewUnitTempla
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUnitTemplateService ]);
+  }, [ dispatch, newUnitTemplateService, navigateToLogin, router ]);
 
   return unitDelete$.current;
 };

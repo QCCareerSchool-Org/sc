@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, iif, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useServices } from '@/hooks/useServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -15,7 +14,7 @@ type EmailAddressChangeEvent = {
 
 export const useCountryCodeChange = (dispatch: Dispatch<Action>): Subject<EmailAddressChangeEvent> => {
   const { crmProvinceService } = useServices();
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
 
   const change$ = useRef(new Subject<EmailAddressChangeEvent>());
 
@@ -35,7 +34,7 @@ export const useCountryCodeChange = (dispatch: Dispatch<Action>): Subject<EmailA
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -51,7 +50,7 @@ export const useCountryCodeChange = (dispatch: Dispatch<Action>): Subject<EmailA
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, crmProvinceService, router ]);
+  }, [ dispatch, crmProvinceService, navigateToLogin ]);
 
   return change$.current;
 };

@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -18,7 +17,7 @@ export type ReturnPayload = {
 };
 
 export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> => {
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
   const { newUnitService } = useTutorServices();
 
   const return$ = useRef(new Subject<ReturnPayload>());
@@ -39,7 +38,7 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
               let message = 'Return failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -55,7 +54,7 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUnitService ]);
+  }, [ dispatch, newUnitService, navigateToLogin ]);
 
   return return$.current;
 };

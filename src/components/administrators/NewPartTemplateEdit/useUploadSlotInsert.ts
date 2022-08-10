@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewUploadSlotTemplateAddPayload } from '@/services/administrators/newUploadSlotTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -16,8 +15,8 @@ export type NewUploadSlotTemplateInsertEvent = {
 };
 
 export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<NewUploadSlotTemplateInsertEvent> => {
-  const router = useRouter();
   const { newUploadSlotTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const uploadSlotInsert$ = useRef(new Subject<NewUploadSlotTemplateInsertEvent>());
 
@@ -37,7 +36,7 @@ export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<NewUplo
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -53,7 +52,7 @@ export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<NewUplo
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUploadSlotTemplateService ]);
+  }, [ dispatch, newUploadSlotTemplateService, navigateToLogin ]);
 
   return uploadSlotInsert$.current;
 };

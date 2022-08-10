@@ -19,7 +19,7 @@ type Props = {
 export const NewUnitReturnView = ({ administratorId, unitReturnId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, unitReturnId, dispatch);
+  useInitialData(dispatch, administratorId, unitReturnId);
   const unitReturnClose$ = useUnitReturnClose(dispatch);
 
   const unsavedChanges = state.newUnitReturn && state.form.adminComment !== state.newUnitReturn.newUnit.adminComment && !(state.form.adminComment === '' && state.newUnitReturn.newUnit.adminComment === null);
@@ -38,7 +38,7 @@ export const NewUnitReturnView = ({ administratorId, unitReturnId }: Props): Rea
     dispatch({ type: 'ADMIN_COMMENT_CHANGED', payload: e.target.value });
   };
 
-  const handleCloseButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
+  const handleCloseButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     unitReturnClose$.next({
       processingState: state.form.processingState,
       administratorId,

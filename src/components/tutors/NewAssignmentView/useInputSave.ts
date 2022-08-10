@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, concatMap, EMPTY, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -20,7 +19,7 @@ export type MarkSavePayload = {
 };
 
 export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayload> => {
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
   const { newAssignmentService } = useTutorServices();
 
   const save$ = useRef(new Subject<MarkSavePayload>());
@@ -46,7 +45,7 @@ export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayloa
                 let message = 'Save failed';
                 if (err instanceof HttpServiceError) {
                   if (err.login) {
-                    return void navigateToLogin(router);
+                    return void navigateToLogin();
                   }
                   if (err.message) {
                     message = err.message;
@@ -65,7 +64,7 @@ export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayloa
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -81,7 +80,7 @@ export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayloa
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newAssignmentService ]);
+  }, [ dispatch, newAssignmentService, navigateToLogin ]);
 
   return save$.current;
 };

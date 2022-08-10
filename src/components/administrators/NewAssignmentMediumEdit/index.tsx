@@ -25,7 +25,7 @@ export const NewAssignmentMediumEdit = ({ administratorId, mediumId }: Props): R
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const { newAssignmentMediumService } = useAdminServices();
 
-  useInitialData(administratorId, mediumId, dispatch);
+  useInitialData(dispatch, administratorId, mediumId);
 
   const mediumSave$ = useMediumSave(dispatch);
   const mediumDelete$ = useMediumDelete(dispatch);

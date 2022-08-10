@@ -1,6 +1,5 @@
 import type { ChangeEventHandler, ReactElement } from 'react';
-import { useRef } from 'react';
-// import { useId } from 'react';
+import { useId } from 'react';
 
 import type { State } from './state';
 
@@ -17,8 +16,9 @@ type Props = {
 
 export const NewAssignmentTemplateFormElements = (props: Props): ReactElement => {
   const { formData, formValidationMessages } = props;
-  // const id = useId(); // react 18
-  const id = useRef('x' + Math.random().toString(32).slice(2)).current;
+
+  const id = useId();
+
   return (
     <>
       <div className="formGroup">

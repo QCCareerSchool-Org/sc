@@ -54,7 +54,7 @@ export const NewUploadSlotTemplateEdit = ({ administratorId, uploadSlotId }: Pro
 
   useWarnIfUnsavedChanges(changesPreset(state.newUploadSlotTemplate, state.form.data));
 
-  useInitialData(administratorId, uploadSlotId, dispatch);
+  useInitialData(dispatch, administratorId, uploadSlotId);
 
   const uploadSlotSave$ = useUploadSlotSave(dispatch);
   const uploadSlotDelete$ = useUploadSlotDelete(dispatch);

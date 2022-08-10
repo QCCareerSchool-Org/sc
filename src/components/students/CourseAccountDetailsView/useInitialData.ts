@@ -1,16 +1,15 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
 export const useInitialData = (dispatch: Dispatch<Action>, crmId: number, crmEnrollmentId: number): void => {
   const { crmEnrollmentService } = useStudentServices();
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -23,7 +22,7 @@ export const useInitialData = (dispatch: Dispatch<Action>, crmId: number, crmEnr
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin(router);
+            return void navigateToLogin();
           }
           errorCode = err.code;
         }
@@ -32,5 +31,5 @@ export const useInitialData = (dispatch: Dispatch<Action>, crmId: number, crmEnr
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, crmId, crmEnrollmentId, crmEnrollmentService, router ]);
+  }, [ dispatch, crmId, crmEnrollmentId, crmEnrollmentService, navigateToLogin ]);
 };

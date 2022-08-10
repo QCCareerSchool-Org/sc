@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, forkJoin, of, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,7 +16,7 @@ type EmailAddressChangeEvent = {
 
 export const useEmailAddressChange = (dispatch: Dispatch<Action>): Subject<EmailAddressChangeEvent> => {
   const { studentService, crmStudentService } = useStudentServices();
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
 
   const change$ = useRef(new Subject<EmailAddressChangeEvent>());
 
@@ -38,7 +37,7 @@ export const useEmailAddressChange = (dispatch: Dispatch<Action>): Subject<Email
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,7 +53,7 @@ export const useEmailAddressChange = (dispatch: Dispatch<Action>): Subject<Email
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, studentService, crmStudentService, router ]);
+  }, [ dispatch, studentService, crmStudentService, navigateToLogin ]);
 
   return change$.current;
 };

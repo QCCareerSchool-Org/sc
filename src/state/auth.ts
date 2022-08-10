@@ -7,12 +7,15 @@ export type AuthState = {
 };
 
 export type AuthAction =
+  | { type: 'INITIALIZE'; payload: AuthState }
   | { type: 'STUDENT_LOG_IN'; payload: { accountId: number; xsrfToken: string; crmId?: number } }
   | { type: 'TUTOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
   | { type: 'ADMINISTRATOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } };
 
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
+    case 'INITIALIZE':
+      return action.payload;
     case 'STUDENT_LOG_IN': {
       const newState: AuthState = { ...state, studentId: action.payload.accountId, xsrfToken: action.payload.xsrfToken, crmId: action.payload.crmId };
       storeState(newState);
@@ -75,6 +78,6 @@ export const authInitializer = (): AuthState => {
   return authState;
 };
 
-const isRecord = (u: unknown): u is Record<string | number, unknown> => {
+const isRecord = (u: unknown): u is Record<string | number | symbol, unknown> => {
   return typeof u === 'object' && u !== null;
 };

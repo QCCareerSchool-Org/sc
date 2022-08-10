@@ -52,7 +52,7 @@ export const NewPartTemplateEdit = ({ administratorId, partId }: Props): ReactEl
 
   useWarnIfUnsavedChanges(changesPreset(state.newPartTemplate, state.form.data));
 
-  useInitialData(administratorId, partId, dispatch);
+  useInitialData(dispatch, administratorId, partId);
 
   const partSave$ = usePartSave(dispatch);
   const partDelete$ = usePartDelete(dispatch);

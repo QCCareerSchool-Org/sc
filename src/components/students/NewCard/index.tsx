@@ -14,7 +14,7 @@ type Props = {
 export const NewCard = ({ crmId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(crmId, dispatch);
+  useInitialData(dispatch, crmId);
 
   const insert$ = usePaymentMethodInsert(dispatch);
 

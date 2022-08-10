@@ -3,8 +3,8 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -16,6 +16,7 @@ type InitializeNextUnitEvent = {
 
 export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<InitializeNextUnitEvent> => {
   const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
   const { newUnitService } = useStudentServices();
 
   const initializeNextUnit$ = useRef(new Subject<InitializeNextUnitEvent>());
@@ -36,7 +37,7 @@ export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<Initi
             let message = 'Initialize failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -51,7 +52,7 @@ export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<Initi
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUnitService ]);
+  }, [ dispatch, newUnitService, router, navigateToLogin ]);
 
   return initializeNextUnit$.current;
 };

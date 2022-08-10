@@ -1,9 +1,8 @@
-import { useRouter } from 'next/router';
 import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../navigateToLogin';
+import { useNavigateToLogin } from './useNavigateToLogin';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useServices } from '@/hooks/useServices';
 import { HttpServiceError } from '@/services/httpService';
@@ -11,7 +10,7 @@ import { HttpServiceError } from '@/services/httpService';
 export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | HTMLVideoElement | HTMLImageElement>): Subject<void> => {
   const { loginService } = useServices();
   const authDispatch = useAuthDispatch();
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
   const refresh$ = useRef(new Subject<void>());
 
   useEffect(() => {
@@ -39,7 +38,7 @@ export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | H
           },
           error: err => {
             if (err instanceof HttpServiceError && err.login) {
-              return void navigateToLogin(router);
+              return void navigateToLogin();
             }
           },
         }),
@@ -49,7 +48,7 @@ export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | H
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ authDispatch, loginService, router, mediaRef ]);
+  }, [ authDispatch, loginService, navigateToLogin, mediaRef ]);
 
   return refresh$.current;
 };

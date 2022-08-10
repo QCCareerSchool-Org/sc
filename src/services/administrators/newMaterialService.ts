@@ -40,7 +40,6 @@ export class NewMaterialService implements INewMaterialService {
   }
 
   public addMaterialFile(administratorId: number, data: NewMaterialInsertPayload, content: File | null, image: File | null): Observable<ProgressResponse<NewMaterial>> {
-    console.log(data);
     const url = this.getUrl(administratorId);
     const headers = { 'Content-Type': 'multipart/form-data' };
     const body = new FormData();

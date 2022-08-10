@@ -19,7 +19,7 @@ type Props = {
 export const NewAssignmentTemplatePreview = ({ administratorId, assignmentId }: Props): ReactElement | null => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(administratorId, assignmentId, dispatch);
+  useInitialData(dispatch, administratorId, assignmentId);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;

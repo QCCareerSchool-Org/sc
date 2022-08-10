@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
-import { useReducer, useRef } from 'react';
+import { useId, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
 import { useEmailAddressChange } from './useEmailAddressChange';
@@ -13,8 +13,7 @@ type Props = {
 };
 
 export const EmailAddressEdit = ({ studentId, crmId }: Props): ReactElement | null => {
-  // const id = useId(); // react 18
-  const id = useRef('x' + Math.random().toString(32).slice(2));
+  const id = useId();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, studentId, crmId);
@@ -53,8 +52,8 @@ export const EmailAddressEdit = ({ studentId, crmId }: Props): ReactElement | nu
           <div className="col-12 col-md-8 col-lg-6">
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor={id.current + '_emailAddress'} className="form-label">New Telephone Number</label>
-                <input onChange={handleEmailAddressChange} value={state.form.data.emailAddress} type="email" id={id.current + '_emailAddress'} className="form-control" autoComplete="email" />
+                <label htmlFor={id + '_emailAddress'} className="form-label">New Telephone Number</label>
+                <input onChange={handleEmailAddressChange} value={state.form.data.emailAddress} type="email" id={id + '_emailAddress'} className="form-control" autoComplete="email" />
               </div>
               <div className="d-flex align-items-center">
                 <button className="btn btn-primary" style={{ width: 80 }} disabled={disabled}>

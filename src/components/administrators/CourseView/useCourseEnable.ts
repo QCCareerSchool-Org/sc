@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export type CourseEnablePayload = {
@@ -16,8 +15,8 @@ export type CourseEnablePayload = {
 };
 
 export const useCourseEnable = (dispatch: Dispatch<Action>): Subject<CourseEnablePayload> => {
-  const router = useRouter();
   const { courseService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const courseEnable$ = useRef(new Subject<CourseEnablePayload>());
 
@@ -34,7 +33,7 @@ export const useCourseEnable = (dispatch: Dispatch<Action>): Subject<CourseEnabl
             let message = 'Updating course failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin(router);
+                return void navigateToLogin();
               }
               if (err.message) {
                 message = err.message;
@@ -49,7 +48,7 @@ export const useCourseEnable = (dispatch: Dispatch<Action>): Subject<CourseEnabl
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, courseService ]);
+  }, [ dispatch, courseService, navigateToLogin ]);
 
   return courseEnable$.current;
 };

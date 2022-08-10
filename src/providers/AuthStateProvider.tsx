@@ -1,5 +1,5 @@
 import type { Dispatch, ReactElement, ReactNode } from 'react';
-import { createContext, useReducer } from 'react';
+import { createContext, useEffect, useReducer } from 'react';
 import type { AuthAction, AuthState } from '../state/auth';
 import { authInitializer, authInitialState, authReducer } from '../state/auth';
 
@@ -11,7 +11,14 @@ type Props = {
 };
 
 export const AuthStateProvider = ({ children }: Props): ReactElement => {
-  const [ state, dispatch ] = useReducer(authReducer, authInitialState, authInitializer);
+  // can't use authInitializer here, because it's output on the server is different from the client
+  const [ state, dispatch ] = useReducer(authReducer, authInitialState);
+
+  useEffect(() => {
+    // use authInitializer here instead
+    dispatch({ type: 'INITIALIZE', payload: authInitializer() });
+  }, []);
+
   return (
     <AuthStateContext.Provider value={state}>
       <AuthDispatchContext.Provider value={dispatch}>

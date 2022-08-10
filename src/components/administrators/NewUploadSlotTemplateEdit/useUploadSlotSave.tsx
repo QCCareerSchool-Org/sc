@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewUploadSlotTemplateSavePayload } from '@/services/administrators/newUploadSlotTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,8 +16,8 @@ export type NewUploadSlotTemplateSaveEvent = {
 };
 
 export const useUploadSlotSave = (dispatch: Dispatch<Action>): Subject<NewUploadSlotTemplateSaveEvent> => {
-  const router = useRouter();
   const { newUploadSlotTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const uploadSlotSave$ = useRef(new Subject<NewUploadSlotTemplateSaveEvent>());
 
@@ -38,7 +37,7 @@ export const useUploadSlotSave = (dispatch: Dispatch<Action>): Subject<NewUpload
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,7 +53,7 @@ export const useUploadSlotSave = (dispatch: Dispatch<Action>): Subject<NewUpload
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newUploadSlotTemplateService ]);
+  }, [ dispatch, newUploadSlotTemplateService, navigateToLogin ]);
 
   return uploadSlotSave$.current;
 };

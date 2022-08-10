@@ -44,10 +44,18 @@ instance.interceptors.response.use(undefined, async error => {
     return Promise.reject(new AxiosOtherError(error));
   }
 
-  return Promise.reject(error);
+  if (error instanceof Error) {
+    return Promise.reject(error);
+  }
+
+  if (typeof error === 'string') {
+    return Promise.reject(Error(error));
+  }
+
+  return Promise.reject(Error('unknown'));
 });
 
-export abstract class AbstractAxiosError<T = unknown, D = unknown> extends Error implements AxiosError<T, D> {
+export abstract class AbstractAxiosError extends Error implements AxiosError {
 
   public constructor(private readonly originalError: AxiosError) {
     super(originalError.message);
@@ -57,11 +65,11 @@ export abstract class AbstractAxiosError<T = unknown, D = unknown> extends Error
   public get message(): string { return this.originalError.message; }
   public get stack(): string | undefined { return this.originalError.stack; }
 
-  public get config(): AxiosRequestConfig<D> { return this.originalError.config; }
+  public get config(): AxiosRequestConfig { return this.originalError.config; }
   public get code(): string | undefined { return this.originalError.code; }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   public get request(): any { return this.originalError.request; }
-  public get response(): AxiosResponse<T, D> | undefined { return this.originalError.response; }
+  public get response(): AxiosResponse | undefined { return this.originalError.response; }
   public get isAxiosError(): boolean { return this.originalError.isAxiosError; }
 
   public toJSON(): object {

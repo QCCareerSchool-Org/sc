@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -21,7 +20,7 @@ type BillingAddressChangeEvent = {
 
 export const useBillingAddressChange = (dispatch: Dispatch<Action>): Subject<BillingAddressChangeEvent> => {
   const { studentService, crmStudentService } = useStudentServices();
-  const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
 
   const change$ = useRef(new Subject<BillingAddressChangeEvent>());
 
@@ -34,13 +33,12 @@ export const useBillingAddressChange = (dispatch: Dispatch<Action>): Subject<Bil
       exhaustMap(({ crmId, address1, address2, city, provinceCode, postalCode, countryCode }) => {
         return crmStudentService.updateBillingAddress(crmId, address1, address2, city, provinceCode, postalCode, countryCode).pipe(
           tap({
-            next: crmStudent => { dispatch({ type: 'UPDATE_BILLING_ADDRESS_SUCEEDED', payload: crmStudent }); console.log(1); },
+            next: crmStudent => dispatch({ type: 'UPDATE_BILLING_ADDRESS_SUCEEDED', payload: crmStudent }),
             error: err => {
-              console.log(2);
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,7 +54,7 @@ export const useBillingAddressChange = (dispatch: Dispatch<Action>): Subject<Bil
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, studentService, crmStudentService, router ]);
+  }, [ dispatch, studentService, crmStudentService, navigateToLogin ]);
 
   return change$.current;
 };

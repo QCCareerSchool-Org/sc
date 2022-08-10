@@ -1,16 +1,15 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useInitialData = (administratorId: number, textBoxId: string, dispatch: Dispatch<Action>): void => {
-  const router = useRouter();
+export const useInitialData = (dispatch: Dispatch<Action>, administratorId: number, textBoxId: string): void => {
   const { newTextBoxTemplateService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -25,7 +24,7 @@ export const useInitialData = (administratorId: number, textBoxId: string, dispa
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin(router);
+            return void navigateToLogin();
           }
           errorCode = err.code;
         }
@@ -34,5 +33,5 @@ export const useInitialData = (administratorId: number, textBoxId: string, dispa
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, textBoxId, dispatch, router, newTextBoxTemplateService ]);
+  }, [ dispatch, administratorId, textBoxId, newTextBoxTemplateService, navigateToLogin ]);
 };

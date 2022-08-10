@@ -1,11 +1,10 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewPartMediumSavePayload } from '@/services/administrators/newPartMediumService';
 import { HttpServiceError } from '@/services/httpService';
 
@@ -17,8 +16,8 @@ export type NewPartMediumSaveEvent = {
 };
 
 export const useMediumSave = (dispatch: Dispatch<Action>): Subject<NewPartMediumSaveEvent> => {
-  const router = useRouter();
   const { newPartMediumService } = useAdminServices();
+  const navigateToLogin = useNavigateToLogin();
 
   const mediumSave$ = useRef(new Subject<NewPartMediumSaveEvent>());
 
@@ -38,7 +37,7 @@ export const useMediumSave = (dispatch: Dispatch<Action>): Subject<NewPartMedium
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin(router);
+                  return void navigateToLogin();
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,7 +53,7 @@ export const useMediumSave = (dispatch: Dispatch<Action>): Subject<NewPartMedium
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, router, newPartMediumService ]);
+  }, [ dispatch, newPartMediumService, navigateToLogin ]);
 
   return mediumSave$.current;
 };

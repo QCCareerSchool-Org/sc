@@ -1,15 +1,14 @@
-import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
-import { navigateToLogin } from '../../../navigateToLogin';
 import type { Action } from './state';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useInitialData = (studentId: number, courseId: number, dispatch: Dispatch<Action>): void => {
-  const router = useRouter();
+export const useInitialData = (dispatch: Dispatch<Action>, studentId: number, courseId: number): void => {
+  const navigateToLogin = useNavigateToLogin();
   const { enrollmentService } = useStudentServices();
 
   useEffect(() => {
@@ -25,7 +24,7 @@ export const useInitialData = (studentId: number, courseId: number, dispatch: Di
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin(router);
+            return void navigateToLogin();
           }
           errorCode = err.code;
         }
@@ -34,5 +33,5 @@ export const useInitialData = (studentId: number, courseId: number, dispatch: Di
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentId, courseId, dispatch, router, enrollmentService ]);
+  }, [ dispatch, studentId, courseId, enrollmentService, navigateToLogin ]);
 };

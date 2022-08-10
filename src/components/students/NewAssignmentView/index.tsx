@@ -5,13 +5,13 @@ import { useCallback, useEffect, useReducer } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
 import { endpoint } from '../../../basePath';
-import { navigateToLogin } from '../../../navigateToLogin';
 import { scrollToId } from '../../../scrollToId';
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { HttpServiceError } from '@/services/httpService';
@@ -28,6 +28,7 @@ type Props = {
 
 export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
   const router = useRouter();
+  const navigateToLogin = useNavigateToLogin();
   const { newAssignmentService } = useStudentServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -44,7 +45,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin(router);
+            return void navigateToLogin();
           }
           errorCode = err.code;
         }
@@ -53,7 +54,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
+  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const uploadFile: UploadSlotFunction = useCallback((partId, uploadSlotId, file) => {
     if (!file) {
@@ -73,7 +74,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           let message = 'File upload failed';
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin(router);
+              return void navigateToLogin();
             }
             if (err.message) {
               message = err.message;
@@ -86,7 +87,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
+  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const deleteFile: UploadSlotFunction = useCallback((partId, uploadSlotId) => {
     dispatch({ type: 'FILE_DELETE_STARTED', payload: { partId, uploadSlotId } });
@@ -95,7 +96,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         error: err => {
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin(router);
+              return void navigateToLogin();
             }
           }
           dispatch({ type: 'FILE_DELETE_FAILED', payload: { partId, uploadSlotId } });
@@ -104,7 +105,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
+  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const downloadFile: UploadSlotFunction = useCallback((partId, uploadSlotId) => {
     return newAssignmentService.downloadFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
@@ -113,7 +114,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
           let message = 'File download failed';
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin(router);
+              return void navigateToLogin();
             }
             if (err.message) {
               message = err.message;
@@ -124,7 +125,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
+  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const saveText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
     dispatch({ type: 'TEXT_SAVE_STARTED', payload: { partId, textBoxId } });
@@ -134,7 +135,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
         error: err => {
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin(router);
+              return void navigateToLogin();
             }
           }
           dispatch({ type: 'TEXT_SAVE_FAILED', payload: { partId, textBoxId } });
@@ -142,7 +143,7 @@ export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }:
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, router, newAssignmentService ]);
+  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const updateText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
     return new Observable(obs => {

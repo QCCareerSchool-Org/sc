@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import type { ReactElement, ReactNode } from 'react';
-import { useEffect } from 'react';
 
 import type { AuthState } from '../state/auth';
 import { useAuthState } from '@/hooks/useAuthState';
@@ -25,12 +24,6 @@ const validPath = (path: string, authState: AuthState): boolean => {
 export const RouteGuard = ({ children }: Props): ReactElement | null => {
   const router = useRouter();
   const authState = useAuthState();
-
-  useEffect(() => {
-    if (!validPath(router.asPath, authState)) {
-      void router.push('/login');
-    }
-  }, [ authState, router ]);
 
   if (validPath(router.asPath, authState)) {
     return <>{children}</>;

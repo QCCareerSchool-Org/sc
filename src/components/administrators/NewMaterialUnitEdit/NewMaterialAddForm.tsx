@@ -1,5 +1,5 @@
 import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
-import { memo, useRef } from 'react';
+import { memo, useId } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
@@ -34,9 +34,9 @@ const defaultMimeTypes = [
 ];
 
 export const NewMaterialAddForm = memo((props: Props): ReactElement => {
-  // const id = useId(); // react 18
-  const id = useRef('x' + Math.random().toString(32).slice(2)).current;
   const { administratorId, materialUnitId, formState, insert$ } = props;
+
+  const id = useId();
 
   let valid = true;
   // check if there are any validation messages
