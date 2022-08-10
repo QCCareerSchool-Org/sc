@@ -58,7 +58,7 @@ export const NewCard = ({ crmId }: Props): ReactElement | null => {
               <p>
                 {state.crmStudent.address1}<br />
                 {state.crmStudent.address2 && <>{state.crmStudent.address2}<br /></>}
-                {state.crmStudent.city}{state.crmStudent.province && <> {state.crmStudent.province.code}&nbsp;&nbsp;</>}{state.crmStudent.postalCode}<br />
+                {state.crmStudent.city}{state.crmStudent.province && <>&nbsp;{state.crmStudent.province.code}</>}{state.crmStudent.postalCode && <>&nbsp;&nbsp;{state.crmStudent.postalCode}</>}<br />
                 {state.crmStudent.country.name}
               </p>
               <p>If this is not correct, please <a href="/students/accounts/address/edit.php">update your billing address</a> before using this form.</p>
