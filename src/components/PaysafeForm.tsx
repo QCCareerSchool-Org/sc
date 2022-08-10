@@ -57,8 +57,10 @@ const accounts = process.env.NODE_ENV === 'production'
     GB: { GBP: 1001091500, AUD: 1001091500, NZD: 1001091500 },
   };
 
-export const PaysafeForm = memo((props: Props): ReactElement => {
-  const id = useId();
+export const PaysafeForm = memo((props: Props): ReactElement | null => {
+  const id = useRef('x' + Math.random().toString(32).slice(2)).current;
+
+  const [ client, setClient ] = useState(false);
 
   const panRef = useRef<HTMLDivElement>(null);
   const expRef = useRef<HTMLDivElement>(null);
@@ -88,6 +90,12 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
   });
 
   useEffect(() => {
+    console.log('useEffect', client, id);
+    if (!client) {
+      setClient(true);
+      return;
+    }
+
     setState(s => ({ ...s, instanceState: 'uninitialized', instance: undefined }));
 
     const options = {
@@ -129,16 +137,20 @@ export const PaysafeForm = memo((props: Props): ReactElement => {
       setState(s => ({ ...s, instance, instanceState: 'initialized' }));
     }).catch(err => {
       setState(s => ({ ...s, instanceState: 'error' }));
-      console.error(err);
+      console.error('here1', err);
     });
 
     return () => {
       localInstance?.resetCardDetails();
-      panContainer?.replaceChildren();
-      expContainer?.replaceChildren();
-      cvvContainer?.replaceChildren();
+      // panContainer?.replaceChildren();
+      // expContainer?.replaceChildren();
+      // cvvContainer?.replaceChildren();
     };
-  }, [ company, id, onChange ]);
+  }, [ client, company, id, onChange ]);
+
+  if (!client) {
+    return null;
+  }
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (!state.instance) {
