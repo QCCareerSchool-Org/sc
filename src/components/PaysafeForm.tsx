@@ -57,8 +57,17 @@ const accounts = process.env.NODE_ENV === 'production'
     GB: { GBP: 1001091500, AUD: 1001091500, NZD: 1001091500 },
   };
 
+/** Stip colons because Paysafe can't handle selectors with colons in them */
+const santizeId = (id: string): string => id.replace(/:/gu, '');
+
+/**
+ * A form for tokenizing credit cards with Paysagfe.js
+ *
+ * Always set the `key` prop equal to the currency code so that this component
+ * is recreated from scratch each time the currency code changes
+ */
 export const PaysafeForm = memo((props: Props): ReactElement | null => {
-  const id = useRef('x' + Math.random().toString(32).slice(2)).current;
+  const id = useId();
 
   const [ client, setClient ] = useState(false);
 
@@ -90,20 +99,18 @@ export const PaysafeForm = memo((props: Props): ReactElement | null => {
   });
 
   useEffect(() => {
-    console.log('useEffect', client, id);
     if (!client) {
       setClient(true);
       return;
     }
-
     setState(s => ({ ...s, instanceState: 'uninitialized', instance: undefined }));
 
     const options = {
       environment: process.env.NODE_ENV === 'production' ? 'LIVE' : 'TEST',
       fields: {
-        cardNumber: { selector: `#${id}_newCardPan` },
-        expiryDate: { selector: `#${id}_newCardExpiry` },
-        cvv: { selector: `#${id}_newCardCvv` },
+        cardNumber: { selector: `#${santizeId(id)}_newCardPan` },
+        expiryDate: { selector: `#${santizeId(id)}_newCardExpiry` },
+        cvv: { selector: `#${santizeId(id)}_newCardCvv` },
       },
       style: {
         input: {
@@ -118,10 +125,6 @@ export const PaysafeForm = memo((props: Props): ReactElement | null => {
 
     let localInstance: PaysafeInstance | undefined;
 
-    const panContainer = panRef.current;
-    const expContainer = expRef.current;
-    const cvvContainer = cvvRef.current;
-
     createInstance(apiKeys[company], options).then(instance => {
       localInstance = instance;
       instance.fields('cardNumber').valid(() => setState(s => ({ ...s, panValid: true, panFilled: true })));
@@ -135,16 +138,14 @@ export const PaysafeForm = memo((props: Props): ReactElement | null => {
         onChange?.();
       });
       setState(s => ({ ...s, instance, instanceState: 'initialized' }));
-    }).catch(err => {
+    }).catch(() => {
       setState(s => ({ ...s, instanceState: 'error' }));
-      console.error('here1', err);
     });
 
     return () => {
       localInstance?.resetCardDetails();
-      // panContainer?.replaceChildren();
-      // expContainer?.replaceChildren();
-      // cvvContainer?.replaceChildren();
+      // we don't need to call replaceChildren on the divs because this component will be destroyed and recreated
+      // every time the currency code changes by the parent setting the key prop to the currecny code
     };
   }, [ client, company, id, onChange ]);
 
@@ -206,20 +207,20 @@ export const PaysafeForm = memo((props: Props): ReactElement | null => {
   return (
     <>
       <div className="mb-4 dd">
-        <label htmlFor={id + '_newCardPan'}>Credit/Debit Card Number</label>
-        <div ref={panRef} className={'form-control' + (state.panFilled && !state.panValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id + '_newCardPan'} />
+        <label htmlFor={santizeId(id) + '_newCardPan'}>Credit/Debit Card Number</label>
+        <div ref={panRef} className={'form-control' + (state.panFilled && !state.panValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardPan'} />
       </div>
       <div className="row g-3">
         <div className="col-6">
           <div className="mb-4">
-            <label htmlFor={id + '_newCardExpiry'}>Exp. Date</label>
-            <div ref={expRef} className={'form-control' + (state.expFilled && !state.expValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id + '_newCardExpiry'} />
+            <label htmlFor={santizeId(id) + '_newCardExpiry'}>Exp. Date</label>
+            <div ref={expRef} className={'form-control' + (state.expFilled && !state.expValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardExpiry'} />
           </div>
         </div>
         <div className="col-6">
           <div className="mb-4">
-            <label htmlFor={id + '_newCardCvv'}>CSC</label>
-            <div ref={cvvRef} className={'form-control' + (state.cvvFilled && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={id + '_newCardCvv'} />
+            <label htmlFor={santizeId(id) + '_newCardCvv'}>CSC</label>
+            <div ref={cvvRef} className={'form-control' + (state.cvvFilled && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardCvv'} />
           </div>
         </div>
       </div>
