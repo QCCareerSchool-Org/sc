@@ -13,11 +13,20 @@ import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
 
 import '../style.scss';
+import type { AuthState } from 'src/state/auth';
 
 if (!TrackJS.isInstalled()) {
   TrackJS.install({
     token: '0377457a8a0c41c2a11da5e34f786bba',
     application: 'react-student-center',
+    network: { enabled: false },
+    onError: payload => {
+      payload.metadata.push({
+        key: 'authState',
+        value: getSanitizedAuthState(),
+      });
+      return true;
+    },
   });
 }
 
@@ -45,3 +54,24 @@ const SCApp = ({ Component, pageProps }: AppProps): ReactElement => {
 };
 
 export default SCApp;
+
+/** Returns a string representing the stored auth state for error logging purposes */
+const getSanitizedAuthState = (): string => {
+  if (window.navigator.cookieEnabled && 'localStorage' in window) {
+    const storedAuthState = window.localStorage.getItem('authState');
+    if (storedAuthState) {
+      try {
+        const authState = JSON.parse(storedAuthState) as Record<string, unknown>;
+        return JSON.stringify({
+          administratorId: authState.administratorId,
+          tutorId: authState.tutorId,
+          studentId: authState.studentId,
+          crmId: authState.crmId,
+        });
+      } catch (err) {
+        return 'unable to parse stored auth state';
+      }
+    }
+  }
+  return 'no stored auth state found';
+};

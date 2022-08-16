@@ -2,22 +2,31 @@ import type { MouseEventHandler, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
+import type { UnitSkipEvent } from './useUnitSkip';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
-  skip$: Subject<State['processingState']>;
+  studentId: number;
+  courseId: number;
+  unitId: string;
   processingState: State['processingState'];
+  skip$: Subject<UnitSkipEvent>;
   errorMessage?: string;
 };
 
-export const SkipSection = ({ skip$, processingState, errorMessage }: Props): ReactElement => {
+export const SkipSection = ({ studentId, courseId, unitId, processingState, skip$, errorMessage }: Props): ReactElement => {
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
     const message = 'Are you sure you want to skip this unit? Your tutor will not review your work and you will no receive a grade for this unit.\n\nThis is irreverible.';
     if (confirm(message)) {
-      skip$.next(processingState);
+      skip$.next({
+        studentId,
+        courseId,
+        unitId,
+        processingState,
+      });
     }
   };
 

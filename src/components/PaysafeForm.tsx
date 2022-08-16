@@ -57,7 +57,7 @@ const accounts = process.env.NODE_ENV === 'production'
     GB: { GBP: 1001091500, AUD: 1001091500, NZD: 1001091500 },
   };
 
-/** Stip colons because Paysafe can't handle selectors with colons in them */
+/** Strip colons because Paysafe can't handle selectors with colons in them */
 const santizeId = (id: string): string => id.replace(/:/gu, '');
 
 /**
@@ -67,15 +67,11 @@ const santizeId = (id: string): string => id.replace(/:/gu, '');
  * is recreated from scratch each time the currency code changes
  */
 export const PaysafeForm = memo((props: Props): ReactElement | null => {
+  const { currencyCode, onTokenize, onChange } = props;
+
   const id = useId();
 
   const [ client, setClient ] = useState(false);
-
-  const panRef = useRef<HTMLDivElement>(null);
-  const expRef = useRef<HTMLDivElement>(null);
-  const cvvRef = useRef<HTMLDivElement>(null);
-
-  const { currencyCode, onTokenize, onChange } = props;
 
   let company: 'CA' | 'US' | 'GB';
   if (currencyCode === 'USD') {
@@ -208,19 +204,19 @@ export const PaysafeForm = memo((props: Props): ReactElement | null => {
     <>
       <div className="mb-4 dd">
         <label htmlFor={santizeId(id) + '_newCardPan'}>Credit/Debit Card Number</label>
-        <div ref={panRef} className={'form-control' + (state.panFilled && !state.panValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardPan'} />
+        <div className={'form-control' + (state.panFilled && !state.panValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardPan'} />
       </div>
       <div className="row g-3">
         <div className="col-6">
           <div className="mb-4">
             <label htmlFor={santizeId(id) + '_newCardExpiry'}>Exp. Date</label>
-            <div ref={expRef} className={'form-control' + (state.expFilled && !state.expValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardExpiry'} />
+            <div className={'form-control' + (state.expFilled && !state.expValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardExpiry'} />
           </div>
         </div>
         <div className="col-6">
           <div className="mb-4">
             <label htmlFor={santizeId(id) + '_newCardCvv'}>CSC</label>
-            <div ref={cvvRef} className={'form-control' + (state.cvvFilled && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardCvv'} />
+            <div className={'form-control' + (state.cvvFilled && !state.cvvValid ? ' is-invalid' : '')} style={{ height: '36px', paddingTop: 0, paddingBottom: 0, paddingRight: 0 }} id={santizeId(id) + '_newCardCvv'} />
           </div>
         </div>
       </div>
