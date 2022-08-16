@@ -2,22 +2,31 @@ import type { MouseEventHandler, ReactElement } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
+import type { UnitSubmitEvent } from './useUnitSubmit';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
-  submit$: Subject<State['processingState']>;
+  studentId: number;
+  courseId: number;
+  unitId: string;
+  processingState: State['processingState'];
+  submit$: Subject<UnitSubmitEvent>;
   unitComplete: boolean;
   optionalAssignmentsIncomplete: boolean;
-  processingState: State['processingState'];
   errorMessage?: string;
 };
 
-export const SubmitSection = ({ submit$, unitComplete, optionalAssignmentsIncomplete, processingState, errorMessage }: Props): ReactElement | null => {
+export const SubmitSection = ({ studentId, courseId, unitId, processingState, submit$, unitComplete, optionalAssignmentsIncomplete, errorMessage }: Props): ReactElement | null => {
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
     if (!optionalAssignmentsIncomplete || confirm('Are you sure you want to submit your unit without completing your optional assignments?')) {
-      submit$.next(processingState);
+      submit$.next({
+        studentId,
+        courseId,
+        unitId,
+        processingState,
+      });
     }
   };
 
