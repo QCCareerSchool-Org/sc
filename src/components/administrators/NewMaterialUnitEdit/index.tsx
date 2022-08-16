@@ -125,7 +125,7 @@ export const NewMaterialUnitEdit = ({ administratorId, materialUnitId }: Props):
       </Section>
       <Section>
         <div className="container">
-          <h2 className="h3">Assignment Templates</h2>
+          <h2 className="h3">Materials</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
               <NewMaterialList newMaterials={state.newMaterialUnit.newMaterials} onClick={handleMaterialClick} />
