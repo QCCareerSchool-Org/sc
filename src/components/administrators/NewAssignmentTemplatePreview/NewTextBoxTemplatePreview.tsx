@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 
@@ -6,7 +6,7 @@ type Props = {
   newTextBoxTemplate: NewTextBoxTemplate;
 };
 
-export const NewTextBoxTemplatePreview = ({ newTextBoxTemplate }: Props): ReactElement => {
+export const NewTextBoxTemplatePreview: FC<Props> = ({ newTextBoxTemplate }) => {
   return (
     <>
       <div className="formGroup">

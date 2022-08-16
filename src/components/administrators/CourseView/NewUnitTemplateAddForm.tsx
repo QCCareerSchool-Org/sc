@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -20,7 +20,7 @@ type Props = {
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUnitTemplateAddForm = memo((props: Props): ReactElement => {
+export const NewUnitTemplateAddForm: FC<Props> = memo(props => {
   const { administratorId, courseId, formState, insert$ } = props;
 
   let valid = true;

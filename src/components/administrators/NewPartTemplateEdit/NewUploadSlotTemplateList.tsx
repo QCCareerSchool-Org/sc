@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
@@ -8,7 +8,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string) => void;
 };
 
-export const NewUploadSlotTemplateList = memo((props: Props): ReactElement => {
+export const NewUploadSlotTemplateList: FC<Props> = memo(props => {
   const { uploadSlots } = props;
   return (
     <>

@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import { humanReadableFileSize } from '../../../humanReadableFilesize';
@@ -9,7 +9,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, mediaId: string) => void;
 };
 
-export const NewPartMediumList = memo((props: Props): ReactElement => {
+export const NewPartMediumList: FC<Props> = memo(props => {
   const { media } = props;
   return (
     <>

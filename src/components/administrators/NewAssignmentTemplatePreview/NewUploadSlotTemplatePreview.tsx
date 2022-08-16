@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 
@@ -6,7 +6,7 @@ type Props = {
   newUploadSlotTemplate: NewUploadSlotTemplate;
 };
 
-export const NewUploadSlotTemplatePreview = ({ newUploadSlotTemplate }: Props): ReactElement => {
+export const NewUploadSlotTemplatePreview: FC<Props> = ({ newUploadSlotTemplate }) => {
   return (
     <>
       <div className="formGroup">

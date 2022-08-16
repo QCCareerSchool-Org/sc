@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { Fragment, useReducer } from 'react';
 
 import { CASocialInsuranceNumberForm } from './caSocialInsuranceNumberForm';
@@ -17,7 +17,7 @@ type Props = {
   crmId?: number;
 };
 
-export const AccountView = ({ studentId, crmId }: Props): ReactElement | null => {
+export const AccountView: FC<Props> = ({ studentId, crmId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const router = useRouter();
 

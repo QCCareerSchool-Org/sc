@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useId } from 'react';
 
 import type { State } from './state';
@@ -11,7 +11,7 @@ type Props = {
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewMaterialFormElements = (props: Props): ReactElement => {
+export const NewMaterialFormElements: FC<Props> = props => {
   const id = useId();
 
   return (

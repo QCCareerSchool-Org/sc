@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
 import { instance } from '../axiosInstance';
@@ -38,7 +38,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const ServicesProvider = ({ children }: Props): ReactElement => {
+export const ServicesProvider: FC<Props> = ({ children }) => {
   const [ state ] = useState({
     httpService: axiosHttpService,
     loginService: new LoginService(axiosHttpService),

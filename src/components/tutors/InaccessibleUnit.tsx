@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo } from 'react';
 
 import { Section } from '@/components/Section';
@@ -7,7 +7,7 @@ type Props = {
   reason: 'wrong tutor' | 'not submitted';
 };
 
-export const InaccessibleUnit = memo(({ reason }: Props): ReactElement => (
+export const InaccessibleUnit: FC<Props> = memo(({ reason }) => (
   <Section>
     <div className="container">
       <h1>Inaccessible Unit</h1>

@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import { formatDate } from '../../../formatDate';
@@ -9,7 +9,7 @@ type Props = {
   onNewUnitClick: (e: MouseEvent<HTMLTableRowElement>, unitId: string) => void;
 };
 
-export const UnitsTable = memo((props: Props): ReactElement => {
+export const UnitsTable: FC<Props> = memo(props => {
   const { newUnits } = props;
   return (
     <>

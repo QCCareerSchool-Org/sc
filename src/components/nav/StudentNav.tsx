@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 
 import { useAuthState } from '@/hooks/useAuthState';
@@ -7,7 +7,7 @@ import { useNavState } from '@/hooks/useNavState';
 export type StudentNavProps = Record<string, never>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const StudentNav = (props: StudentNavProps): ReactElement | null => {
+export const StudentNav: FC<StudentNavProps> = props => {
   const authState = useAuthState();
   const navState = useNavState();
   const [ loaded, setLoaded ] = useState(false);

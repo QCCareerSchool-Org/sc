@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -16,7 +16,7 @@ type Props = {
   crmEnrollmentId: number;
 };
 
-export const CourseAccountDetailsView = ({ crmId, crmEnrollmentId }: Props): ReactElement | null => {
+export const CourseAccountDetailsView: FC<Props> = ({ crmId, crmEnrollmentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, crmId, crmEnrollmentId);

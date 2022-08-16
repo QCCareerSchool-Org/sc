@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo } from 'react';
 
 import { formatDate } from '../../../formatDate';
@@ -8,7 +8,7 @@ type Props = {
   newUnit: NewUnit;
 };
 
-export const NewUnitInfoTable = memo(({ newUnit }: Props): ReactElement => {
+export const NewUnitInfoTable: FC<Props> = memo(({ newUnit }) => {
   const grade = 'A+';
 
   return (

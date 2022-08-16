@@ -1,4 +1,4 @@
-import type { MouseEventHandler, ReactElement } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
@@ -15,7 +15,7 @@ type Props = {
   errorMessage?: string;
 };
 
-export const SkipSection = ({ studentId, courseId, unitId, processingState, skip$, errorMessage }: Props): ReactElement => {
+export const SkipSection: FC<Props> = ({ studentId, courseId, unitId, processingState, skip$, errorMessage }) => {
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();

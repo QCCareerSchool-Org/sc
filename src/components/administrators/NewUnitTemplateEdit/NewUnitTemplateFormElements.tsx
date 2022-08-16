@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useId } from 'react';
 
 import type { State } from './state';
@@ -14,7 +14,7 @@ type Props = {
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewUnitTemplateFormElements = (props: Props): ReactElement => {
+export const NewUnitTemplateFormElements: FC<Props> = props => {
   const id = useId();
 
   return (

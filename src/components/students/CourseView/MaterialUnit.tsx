@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
 import { Material } from './Material';
@@ -16,7 +16,7 @@ type Props = {
 
 const iconSize = 24;
 
-export const MaterialUnit = ({ courseId, unit }: Props): ReactElement => {
+export const MaterialUnit: FC<Props> = ({ courseId, unit }) => {
   const unitToggleState = useUnitToggleState();
   const unitToggleDispatch = useUnitToggleDispatch();
 
@@ -38,7 +38,7 @@ export const MaterialUnit = ({ courseId, unit }: Props): ReactElement => {
   );
 };
 
-const Separator = (): ReactElement => (
+const Separator: FC = () => (
   <>
     <hr className="unitSeparator" />
     <style jsx>{`

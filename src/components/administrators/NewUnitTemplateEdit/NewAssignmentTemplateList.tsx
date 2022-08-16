@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
@@ -8,7 +8,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
 };
 
-export const NewAssignmentTemplateList = memo((props: Props): ReactElement => {
+export const NewAssignmentTemplateList: FC<Props> = memo(props => {
   const { assignments } = props;
   return (
     <>

@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 import { NewMaterialUnitRow } from './NewMaterialUnitRow';
 import type { NewMaterialUnit } from '@/domain/newMaterialUnit';
@@ -7,8 +7,8 @@ type Props = {
   newMaterialUnits: NewMaterialUnit[];
 };
 
-export const NewMaterialUnitsTable = ({ newMaterialUnits }: Props): ReactElement => (
-  <table className="table table-bordered table-hover w-auto">
+export const NewMaterialUnitsTable: FC<Props> = ({ newMaterialUnits }) => (
+  <table className="table table-bordered table-hover w-auto bg-white">
     <thead>
       <tr>
         <th className="text-center">Unit</th>

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import type { ReactElement, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import type { AuthState } from '../state/auth';
 import { useAuthState } from '@/hooks/useAuthState';
@@ -21,7 +21,7 @@ const validPath = (path: string, authState: AuthState): boolean => {
   return true;
 };
 
-export const RouteGuard = ({ children }: Props): ReactElement | null => {
+export const RouteGuard: FC<Props> = ({ children }) => {
   const router = useRouter();
   const authState = useAuthState();
 

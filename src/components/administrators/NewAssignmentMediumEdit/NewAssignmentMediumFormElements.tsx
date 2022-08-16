@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useId } from 'react';
 
 import type { State } from './state';
@@ -36,7 +36,7 @@ const allowedMimeTypes = [
   'application/vnd.ms-excel',
 ];
 
-export const NewAssignmentMediumFormElements = (props: Props): ReactElement => {
+export const NewAssignmentMediumFormElements: FC<Props> = props => {
   const { formType, formData, formValidationMessages, inserting, progress } = props;
 
   const id = useId();

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 
 import { basePath } from '../../../basePath';
 import { Section } from '@/components/Section';
@@ -9,7 +9,7 @@ type Props = {
   unit: NewUnitWithCourseAndChildren;
 };
 
-export const AssignmentSection = ({ unit }: Props): ReactElement | null => {
+export const AssignmentSection: FC<Props> = ({ unit }) => {
   const router = useRouter();
 
   const handleAssignmentClick = (e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {

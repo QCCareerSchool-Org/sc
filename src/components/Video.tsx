@@ -1,4 +1,4 @@
-import type { ReactElement, ReactEventHandler } from 'react';
+import type { FC, ReactEventHandler } from 'react';
 import { memo, useRef } from 'react';
 
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
@@ -13,7 +13,7 @@ type Props = {
   onEnded?: ReactEventHandler<HTMLAudioElement>;
 };
 
-export const Video = memo((props: Props): ReactElement => {
+export const Video: FC<Props> = memo(props => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const retry$ = useRefreshAndRetryMedia(videoRef);
 

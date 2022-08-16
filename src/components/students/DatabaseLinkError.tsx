@@ -1,7 +1,7 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { Section } from '../Section';
 
-export const DatabaseLinkError = (): ReactElement => (
+export const DatabaseLinkError: FC = () => (
   <Section>
     <div className="container">
       <h1>Database Link Error</h1>

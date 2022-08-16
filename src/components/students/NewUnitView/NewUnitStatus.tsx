@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -11,7 +11,7 @@ type Props = {
   newUnit: NewUnit;
 };
 
-export const NewUnitStatus = memo(({ studentId, courseId, newUnit }: Props): ReactElement | null => {
+export const NewUnitStatus: FC<Props> = memo(({ studentId, courseId, newUnit }) => {
   if (newUnit.closed) {
     const responseSrc = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${newUnit.unitId}/response`;
     return (

@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 import type { NewMaterial } from '@/domain/newMaterial';
 import { endpoint } from 'src/basePath';
@@ -7,7 +7,7 @@ type Props = {
   material: NewMaterial;
 };
 
-export const Material = ({ material }: Props): ReactElement => {
+export const Material: FC<Props> = ({ material }) => {
   const href = `${endpoint}/students/50/static/lessons/${material.materialId}${material.entryPoint}`;
   return (
     <div className="row">

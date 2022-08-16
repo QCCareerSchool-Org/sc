@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { memo, useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -33,7 +33,7 @@ const defaultMimeTypes = [
   'application/x-zip-compressed',
 ];
 
-export const NewMaterialAddForm = memo((props: Props): ReactElement => {
+export const NewMaterialAddForm: FC<Props> = memo(props => {
   const { administratorId, materialUnitId, formState, insert$ } = props;
 
   const id = useId();

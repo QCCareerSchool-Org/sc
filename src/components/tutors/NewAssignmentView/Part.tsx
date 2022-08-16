@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo, useCallback } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -15,7 +15,7 @@ type Props = {
   saveInput: (type: InputType, partId: string, id: string, mark: number | null, notes: string | null) => void;
 };
 
-export const Part = memo(({ tutorId, newPart, saveInput }: Props): ReactElement => {
+export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput }) => {
   const saveTextBox = useCallback((partId: string, id: string, mark: number | null, notes: string | null): void => {
     saveInput('text box', partId, id, mark, notes);
   }, [ saveInput ]);

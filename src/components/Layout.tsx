@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { SiteNav } from './nav';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';
@@ -7,7 +7,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const Layout = ({ children }: Props): ReactElement => (
+export const Layout: FC<Props> = ({ children }) => (
   <div className="d-flex flex-column vh-100">
     <SiteHeader />
     <SiteNav />

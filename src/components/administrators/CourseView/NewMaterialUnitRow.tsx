@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import type { MouseEventHandler, ReactElement } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 
 import type { NewMaterialUnit } from '@/domain/newMaterialUnit';
 
@@ -7,7 +7,7 @@ type Props = {
   materialUnit: NewMaterialUnit;
 };
 
-export const NewMaterialUnitRow = ({ materialUnit }: Props): ReactElement => {
+export const NewMaterialUnitRow: FC<Props> = ({ materialUnit }) => {
   const router = useRouter();
 
   const handleClick: MouseEventHandler<HTMLTableRowElement> = e => {

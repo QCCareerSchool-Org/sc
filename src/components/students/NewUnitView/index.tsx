@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { useReducer } from 'react';
 
 import { AssignmentSection } from './AssignmentSection';
@@ -19,7 +19,7 @@ type Props = {
   unitId: string;
 };
 
-export const NewUnitView = ({ studentId, courseId, unitId }: Props): ReactElement | null => {
+export const NewUnitView: FC<Props> = ({ studentId, courseId, unitId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, studentId, courseId, unitId);

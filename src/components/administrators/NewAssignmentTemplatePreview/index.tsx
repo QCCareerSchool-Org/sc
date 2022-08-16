@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { useReducer } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -16,7 +16,7 @@ type Props = {
   assignmentId: string;
 };
 
-export const NewAssignmentTemplatePreview = ({ administratorId, assignmentId }: Props): ReactElement | null => {
+export const NewAssignmentTemplatePreview: FC<Props> = ({ administratorId, assignmentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, administratorId, assignmentId);
@@ -86,7 +86,7 @@ type DescriptionProps = {
   descriptionType: NewDescriptionType;
 };
 
-const Description = ({ description, descriptionType }: DescriptionProps): ReactElement | null => {
+const Description: FC<DescriptionProps> = ({ description, descriptionType }) => {
   if (descriptionType === 'text') {
     return (
       <>

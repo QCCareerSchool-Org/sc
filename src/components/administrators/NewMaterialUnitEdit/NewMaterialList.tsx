@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import type { NewMaterial, NewMaterialType } from '@/domain/newMaterial';
@@ -8,7 +8,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, materialId: string) => void;
 };
 
-export const NewMaterialList = memo((props: Props): ReactElement => {
+export const NewMaterialList: FC<Props> = memo(props => {
   if (props.newMaterials.length === 0) {
     return <p>no materials</p>;
   }

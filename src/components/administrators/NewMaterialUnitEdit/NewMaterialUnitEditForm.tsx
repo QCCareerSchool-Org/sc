@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { memo, useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -16,7 +16,7 @@ type Props = {
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewMaterialUnitEditForm = memo((props: Props): ReactElement => {
+export const NewMaterialUnitEditForm: FC<Props> = memo(props => {
   const { administratorId, materialUnitId, formState, save$ } = props;
 
   const id = useId();

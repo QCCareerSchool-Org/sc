@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, MouseEvent, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { formatDate } from '../../../formatDate';
@@ -24,7 +24,7 @@ type Props = {
   unitId: string;
 };
 
-export const NewUnitView = ({ tutorId, studentId, courseId, unitId }: Props): ReactElement | null => {
+export const NewUnitView: FC<Props> = ({ tutorId, studentId, courseId, unitId }) => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 

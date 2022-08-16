@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
+import type { FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useMemo, useReducer } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -21,7 +21,7 @@ type Props = {
   courseId: number;
 };
 
-export const CourseView = ({ studentId, courseId }: Props): ReactElement | null => {
+export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -130,7 +130,19 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
   );
 };
 
-const NextUnitMessage = ({ nextUnit }: { nextUnit: NextUnitResult }): ReactElement | null => {
+type NextUnitResult = {
+  success: true;
+  unitLetter: string;
+} | {
+  success: false;
+  error: 'loading' | 'arrears' | 'on hold' | 'incomplete' | 'disabled' | 'complete';
+};
+
+type NextUnitMessageProps = {
+  nextUnit: NextUnitResult;
+};
+
+const NextUnitMessage: FC<NextUnitMessageProps> = ({ nextUnit }) => {
   if (nextUnit.success) {
     return null;
   }
@@ -148,14 +160,6 @@ const NextUnitMessage = ({ nextUnit }: { nextUnit: NextUnitResult }): ReactEleme
     case 'complete':
       return <p>Assignments complete!</p>;
   }
-};
-
-type NextUnitResult = {
-  success: true;
-  unitLetter: string;
-} | {
-  success: false;
-  error: 'loading' | 'arrears' | 'on hold' | 'incomplete' | 'disabled' | 'complete';
 };
 
 const getNextUnit = (enrollment?: EnrollmentWithStudentCourseAndUnits): NextUnitResult => {

@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { formatDateTime } from '../../../formatDate';
@@ -18,7 +18,7 @@ type Props = {
   textBoxId: string;
 };
 
-const changesPreset = (textBoxTemplate: NewTextBoxTemplate | undefined, formData: State['form']['data']): boolean => {
+const changesPresent = (textBoxTemplate: NewTextBoxTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!textBoxTemplate) {
     return false;
   }
@@ -40,10 +40,10 @@ const changesPreset = (textBoxTemplate: NewTextBoxTemplate | undefined, formData
   return false;
 };
 
-export const NewTextBoxTemplateEdit = ({ administratorId, textBoxId }: Props): ReactElement | null => {
+export const NewTextBoxTemplateEdit: FC<Props> = ({ administratorId, textBoxId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.newTextBoxTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPresent(state.newTextBoxTemplate, state.form.data));
 
   useInitialData(dispatch, administratorId, textBoxId);
 

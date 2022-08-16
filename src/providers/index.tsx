@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { AdminServicesProvider } from './AdminServicesProvider';
 
 import { AuthStateProvider } from './AuthStateProvider';
@@ -13,7 +13,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const StateProvider = ({ children }: Props): ReactElement => (
+export const StateProvider: FC<Props> = ({ children }) => (
   <AuthStateProvider>
     <NavStateProvider>
       <UnitToggleStateProvider>

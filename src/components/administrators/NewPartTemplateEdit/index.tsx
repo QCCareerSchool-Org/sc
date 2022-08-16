@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEvent } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { formatDateTime } from '../../../formatDate';
@@ -29,7 +29,7 @@ type Props = {
   partId: string;
 };
 
-const changesPreset = (partTemplate: NewPartTemplate | undefined, formData: State['form']['data']): boolean => {
+const changesPresent = (partTemplate: NewPartTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!partTemplate) {
     return false;
   }
@@ -45,12 +45,12 @@ const changesPreset = (partTemplate: NewPartTemplate | undefined, formData: Stat
   return false;
 };
 
-export const NewPartTemplateEdit = ({ administratorId, partId }: Props): ReactElement | null => {
+export const NewPartTemplateEdit: FC<Props> = ({ administratorId, partId }) => {
   const router = useRouter();
   const { uuidService } = useServices();
   const [ state, dispatch ] = useReducer(createReducer(uuidService), initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.newPartTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPresent(state.newPartTemplate, state.form.data));
 
   useInitialData(dispatch, administratorId, partId);
 

@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { formatDateTime } from '../../../formatDate';
@@ -18,7 +18,7 @@ type Props = {
   uploadSlotId: string;
 };
 
-const changesPreset = (uploadSlotTemplate: NewUploadSlotTemplate | undefined, formData: State['form']['data']): boolean => {
+const changesPresent = (uploadSlotTemplate: NewUploadSlotTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!uploadSlotTemplate) {
     return false;
   }
@@ -49,10 +49,10 @@ const changesPreset = (uploadSlotTemplate: NewUploadSlotTemplate | undefined, fo
   return false;
 };
 
-export const NewUploadSlotTemplateEdit = ({ administratorId, uploadSlotId }: Props): ReactElement | null => {
+export const NewUploadSlotTemplateEdit: FC<Props> = ({ administratorId, uploadSlotId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.newUploadSlotTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPresent(state.newUploadSlotTemplate, state.form.data));
 
   useInitialData(dispatch, administratorId, uploadSlotId);
 

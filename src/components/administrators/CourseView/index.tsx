@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, MouseEvent, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { NewMaterialUnitAddForm } from './NewMaterialUnitAddForm';
@@ -20,7 +20,7 @@ type Props = {
   courseId: number;
 };
 
-export const CourseView = ({ administratorId, courseId }: Props): ReactElement | null => {
+export const CourseView: FC<Props> = ({ administratorId, courseId }) => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -107,7 +107,7 @@ export const CourseView = ({ administratorId, courseId }: Props): ReactElement |
               This course is disabled. No additional students will be enrolled in this course.
             </div>
           )}
-          <table className="table table-bordered w-auto">
+          <table className="table table-bordered w-auto bg-white">
             <tbody>
               <tr><th scope="row">School</th><td>{state.course.school.name}</td></tr>
               <tr><th scope="row">Code</th><td>{state.course.code}</td></tr>

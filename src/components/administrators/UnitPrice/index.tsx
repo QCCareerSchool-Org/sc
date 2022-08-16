@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
 import { CourseCountryForm } from './CourseCountryForm';
 import { initialState, reducer } from './state';
@@ -11,7 +11,7 @@ type Props = {
   administratorId: number;
 };
 
-export const UnitPrice = ({ administratorId }: Props): ReactElement | null => {
+export const UnitPrice: FC<Props> = ({ administratorId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const router = useRouter();
 

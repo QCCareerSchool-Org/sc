@@ -1,6 +1,6 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
-export const HeaderBar = (): ReactElement => (
+export const HeaderBar: FC = () => (
   <>
     <div id="headerBar">
       <div className="container">

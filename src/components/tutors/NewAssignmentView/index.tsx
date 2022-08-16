@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -21,7 +21,7 @@ type Props = {
   assignmentId: string;
 };
 
-export const NewAssignmentView = ({ tutorId, studentId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
+export const NewAssignmentView: FC<Props> = ({ tutorId, studentId, courseId, unitId, assignmentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, tutorId, studentId, courseId, unitId, assignmentId);

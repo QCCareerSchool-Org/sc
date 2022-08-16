@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
 import { useServices } from '@/hooks/useServices';
@@ -60,7 +60,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const AdminServicesProvider = ({ children }: Props): ReactElement => {
+export const AdminServicesProvider: FC<Props> = ({ children }) => {
   const { httpService } = useServices();
   const [ state ] = useState({
     courseService: new CourseService(httpService),

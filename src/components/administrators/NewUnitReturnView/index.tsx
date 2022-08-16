@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import Link from 'next/link';
-import type { ChangeEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { Fragment, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -16,7 +16,7 @@ type Props = {
   unitReturnId: string;
 };
 
-export const NewUnitReturnView = ({ administratorId, unitReturnId }: Props): ReactElement | null => {
+export const NewUnitReturnView: FC<Props> = ({ administratorId, unitReturnId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, administratorId, unitReturnId);

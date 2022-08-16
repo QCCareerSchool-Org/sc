@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEvent } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { NewMaterialAddForm } from './NewMaterialAddForm';
@@ -18,7 +18,7 @@ type Props = {
   materialUnitId: string;
 };
 
-export const NewMaterialUnitEdit = ({ administratorId, materialUnitId }: Props): ReactElement | null => {
+export const NewMaterialUnitEdit: FC<Props> = ({ administratorId, materialUnitId }) => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 

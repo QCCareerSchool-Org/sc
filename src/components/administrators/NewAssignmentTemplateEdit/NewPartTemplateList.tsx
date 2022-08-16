@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
@@ -8,7 +8,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, partId: string) => void;
 };
 
-export const NewPartTemplateList = memo((props: Props): ReactElement => {
+export const NewPartTemplateList: FC<Props> = memo(props => {
   const { parts } = props;
   return (
     <>

@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -23,7 +23,7 @@ type Props = {
   onPartNumberChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateEditForm = memo((props: Props): ReactElement => {
+export const NewPartTemplateEditForm: FC<Props> = memo(props => {
   const { administratorId, partId, partTemplate, formState, save$, delete$ } = props;
 
   let valid = true;

@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 import { Audio } from '@/components/Audio';
 import { Img } from '@/components/Img';
@@ -12,7 +12,7 @@ type Props = {
   className?: string;
 };
 
-export const Medium = ({ medium, src, className }: Props): ReactElement => {
+export const Medium: FC<Props> = ({ medium, src, className }) => {
   switch (medium.type) {
     case 'image':
       return <Img src={src} className={className} alt={medium.caption} />;

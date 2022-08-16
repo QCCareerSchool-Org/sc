@@ -1,4 +1,4 @@
-import type { MouseEventHandler, ReactElement } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
@@ -17,7 +17,8 @@ type Props = {
   errorMessage?: string;
 };
 
-export const SubmitSection = ({ studentId, courseId, unitId, processingState, submit$, unitComplete, optionalAssignmentsIncomplete, errorMessage }: Props): ReactElement | null => {
+export const SubmitSection: FC<Props> = props => {
+  const { studentId, courseId, unitId, processingState, submit$, unitComplete, optionalAssignmentsIncomplete, errorMessage } = props;
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
     if (!optionalAssignmentsIncomplete || confirm('Are you sure you want to submit your unit without completing your optional assignments?')) {

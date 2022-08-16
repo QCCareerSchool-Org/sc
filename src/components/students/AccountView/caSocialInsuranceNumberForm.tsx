@@ -1,7 +1,7 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo } from 'react';
 
-export const CASocialInsuranceNumberForm = memo((): ReactElement => (
+export const CASocialInsuranceNumberForm: FC = memo(() => (
   <form method="post" action="/students/accounts/sin.php">
     <div className="mb-4">
       <label htmlFor="sin">Social Insurance Number (SIN)</label>

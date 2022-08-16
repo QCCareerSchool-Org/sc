@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 import type { School } from '@/domain/school';
 
@@ -7,7 +7,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, schoolId: number) => void;
 };
 
-export const SchoolList = memo((props: Props): ReactElement => (
+export const SchoolList: FC<Props> = memo(props => (
   <>
     <table className="schoolTable table table-bordered table-hover w-auto bg-white">
       <thead>

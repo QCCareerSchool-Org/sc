@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -24,7 +24,7 @@ type Props = {
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentTemplateEditForm = memo((props: Props): ReactElement => {
+export const NewAssignmentTemplateEditForm: FC<Props> = memo(props => {
   const { administratorId, assignmentId, assignmentTemplate, formState, save$, delete$ } = props;
   let valid = true;
   // check if there are any validation messages

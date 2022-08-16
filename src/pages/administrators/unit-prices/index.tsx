@@ -1,11 +1,11 @@
+import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
-import type { ReactElement } from 'react';
 
 import { UnitPrice } from '@/components/administrators/UnitPrice';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-const UnitPricePage = (): ReactElement => {
+const UnitPricePage: NextPage = () => {
   const authState = useAuthState();
 
   if (typeof authState.administratorId === 'undefined') {

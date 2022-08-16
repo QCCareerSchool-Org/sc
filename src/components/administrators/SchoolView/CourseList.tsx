@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import type { Course } from '@/domain/course';
@@ -8,7 +8,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, courseId: number) => void;
 };
 
-export const CourseList = memo((props: Props): ReactElement => {
+export const CourseList: FC<Props> = memo(props => {
   const { courses } = props;
   return (
     <>

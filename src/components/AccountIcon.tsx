@@ -1,7 +1,7 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 
-export const AccountIcon = (): ReactElement => (
+export const AccountIcon: FC = () => (
   <>
     <a href="/students/accounts/view.php"><div id="accountImage" className="me-md-3" /></a>
     <small className="d-none d-md-inline me-2">LOGOUT</small>

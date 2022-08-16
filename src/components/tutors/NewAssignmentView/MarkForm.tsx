@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 
@@ -15,7 +15,7 @@ type Props = {
   save: (partId: string, id: string, mark: number | null, notes: string | null) => void;
 };
 
-export const MarkForm = memo(({ id, partId, points, mark, notes, form, save }: Props): ReactElement => {
+export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form, save }) => {
   const [ markFormValue, setMarkFormValue ] = useState(mark); // for the html input
   const [ notesFormValue, setNotesFormValue ] = useState(notes); // for the html input
 

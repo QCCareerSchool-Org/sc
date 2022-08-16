@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ChangeEvent, FormEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEvent, FC, FormEventHandler, MouseEventHandler } from 'react';
 import { memo, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -15,7 +15,7 @@ type Props = {
   countryId: number | null;
 };
 
-export const UnitPriceEdit = memo(({ administratorId, courseId, countryId }: Props): ReactElement | null => {
+export const UnitPriceEdit: FC<Props> = memo(({ administratorId, courseId, countryId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, administratorId, courseId, countryId);

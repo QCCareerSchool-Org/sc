@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { FaDownload } from 'react-icons/fa';
 
 import { humanReadableFileSize } from '../humanReadableFilesize';
@@ -10,7 +10,7 @@ type Props = {
   medium: NewAssignmentMedium | NewPartMedium;
 };
 
-export const DownloadMedium = ({ medium }: Props): ReactElement => (
+export const DownloadMedium: FC<Props> = ({ medium }) => (
   <div className="downloadMedium">
     <div className="fileIcon">
       <FileIcon mimeType={medium.mimeTypeId} size={36} />

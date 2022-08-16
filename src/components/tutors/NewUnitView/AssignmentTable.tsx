@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import { useServices } from '@/hooks/useServices';
@@ -9,7 +9,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
 };
 
-export const AssignmentTable = memo((props: Props): ReactElement => {
+export const AssignmentTable: FC<Props> = memo(props => {
   const { gradeService } = useServices();
 
   return (

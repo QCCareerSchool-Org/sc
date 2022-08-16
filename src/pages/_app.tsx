@@ -13,7 +13,6 @@ import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
 
 import '../style.scss';
-import type { AuthState } from 'src/state/auth';
 
 if (!TrackJS.isInstalled()) {
   TrackJS.install({

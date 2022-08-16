@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { Fragment } from 'react';
 
 import type { WithInputForm } from './state';
@@ -11,7 +11,7 @@ type Props = {
 const lineHeight = 24;
 const padding = 14;
 
-export const TextBox = ({ newTextBox }: Props): ReactElement => {
+export const TextBox: FC<Props> = ({ newTextBox }) => {
   const minHeight = (lineHeight * (newTextBox.lines ?? 4)) + padding;
   return (
     <div className="row" id={newTextBox.textBoxId}>

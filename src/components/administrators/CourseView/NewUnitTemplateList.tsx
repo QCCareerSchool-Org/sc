@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
@@ -8,7 +8,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, unitId: string) => void;
 };
 
-export const NewUnitTemplateList = memo((props: Props): ReactElement => (
+export const NewUnitTemplateList: FC<Props> = memo(props => (
   <>
     {props.units.length === 0
       ? <p>no units</p>

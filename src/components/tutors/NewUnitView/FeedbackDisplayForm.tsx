@@ -1,4 +1,4 @@
-import type { MouseEventHandler, ReactElement } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 import { memo, useMemo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -22,7 +22,7 @@ type Props = {
   delete$: Subject<FeedbackDeletePayload>;
 };
 
-export const FeedbackDisplayForm = memo((props: Props): ReactElement => {
+export const FeedbackDisplayForm: FC<Props> = memo(props => {
   const { tutorId, studentId, courseId, unitId, responseFilename, responseFilesize, processingState, errorMessage, delete$ } = props;
   const audioSrc = useMemo(() => `${endpoint}/tutors/${tutorId}/students/${studentId}/newUnits/${unitId}/response`, [ tutorId, studentId, unitId ]);
 

@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ChangeEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -21,7 +21,7 @@ type Props = {
   mediumId: string;
 };
 
-export const NewAssignmentMediumEdit = ({ administratorId, mediumId }: Props): ReactElement | null => {
+export const NewAssignmentMediumEdit: FC<Props> = ({ administratorId, mediumId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const { newAssignmentMediumService } = useAdminServices();
 

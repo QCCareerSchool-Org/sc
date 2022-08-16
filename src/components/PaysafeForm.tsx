@@ -1,5 +1,5 @@
-import type { MouseEventHandler, ReactElement } from 'react';
-import { memo, useEffect, useId, useRef, useState } from 'react';
+import type { FC, MouseEventHandler } from 'react';
+import { memo, useEffect, useId, useState } from 'react';
 
 import type { PaysafeInstance, TokenizeOptions } from '../paysafe';
 import { createInstance, tokenize } from '../paysafe';
@@ -66,7 +66,7 @@ const santizeId = (id: string): string => id.replace(/:/gu, '');
  * Always set the `key` prop equal to the currency code so that this component
  * is recreated from scratch each time the currency code changes
  */
-export const PaysafeForm = memo((props: Props): ReactElement | null => {
+export const PaysafeForm: FC<Props> = memo(props => {
   const { currencyCode, onTokenize, onChange } = props;
 
   const id = useId();

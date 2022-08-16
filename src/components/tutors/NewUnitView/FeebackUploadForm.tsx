@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -17,7 +17,7 @@ type Props = {
   upload$: Subject<FeedbackUploadPayload>;
 };
 
-export const FeebackUploadForm = memo((props: Props): ReactElement => {
+export const FeebackUploadForm: FC<Props> = memo(props => {
   const { tutorId, studentId, courseId, unitId, state, upload$ } = props;
 
   const disabled = typeof state.feedbackForm.errorMessage !== 'undefined' || state.feedbackForm.file === null || state.processingState === 'uploading' || state.processingState === 'deleting' || state.processingState === 'closing' || state.processingState === 'returning';

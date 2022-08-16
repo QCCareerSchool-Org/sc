@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -10,7 +10,7 @@ type Props = {
   materialId: string;
 };
 
-export const NewMaterialEdit = ({ administratorId, materialId }: Props): ReactElement => {
+export const NewMaterialEdit: FC<Props> = ({ administratorId, materialId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, administratorId, materialId);

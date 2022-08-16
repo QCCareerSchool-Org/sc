@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
-export const ErrorFallback = (): ReactElement => (
+export const ErrorFallback: FC = () => (
   <section>
     <div className="container">
       <h1>An Error Has Occurred</h1>

@@ -1,10 +1,10 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 type Props = {
   administratorId: number;
   unitId: string;
 };
 
-export const NewUnitView = ({ administratorId, unitId }: Props): ReactElement => (
+export const NewUnitView: FC<Props> = ({ administratorId, unitId }) => (
   <div />
 );
