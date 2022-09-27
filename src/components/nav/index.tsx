@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 import type { AdministratorNavProps } from './AdministratorNav';
 import type { StudentNavProps } from './StudentNav';
@@ -10,7 +10,7 @@ const AdministratorNav = dynamic<AdministratorNavProps>(async () => import('./Ad
 const StudentNav = dynamic<StudentNavProps>(async () => import('./StudentNav').then(mod => mod.StudentNav));
 const TutorNav = dynamic<TutorNavProps>(async () => import('./TutorNav').then(mod => mod.TutorNav));
 
-export const SiteNav = (): ReactElement => {
+export const SiteNav: FC = () => {
   const authState = useAuthState();
   return (
     <>

@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useId } from 'react';
 
 import type { State } from './state';
@@ -13,7 +13,7 @@ type Props = {
   onPartNumberChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewPartTemplateFormElements = (props: Props): ReactElement => {
+export const NewPartTemplateFormElements: FC<Props> = props => {
   const { formData, formValidationMessages } = props;
   const id = useId();
 

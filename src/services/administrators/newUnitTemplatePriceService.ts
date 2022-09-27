@@ -6,7 +6,7 @@ import type { NewUnitTemplatePrice, RawNewUnitTemplatePrice } from '@/domain/new
 import { endpoint } from 'src/basePath';
 
 export type NewUnitTemplatePricePayload = Array<{
-  unitTemplateId: string;
+  submissionTemplateId: string;
   price: number;
   currencyId: number;
 }>;

@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { memo, useEffect, useRef } from 'react';
 import { exhaustMap, filter, Subject, takeUntil } from 'rxjs';
 
@@ -14,7 +14,7 @@ type Props = {
   downloadFile: UploadSlotFunction;
 };
 
-export const NewUploadSlotForm = memo(({ uploadSlot, uploadFile, deleteFile, downloadFile }: Props): ReactElement => {
+export const NewUploadSlotForm: FC<Props> = memo(({ uploadSlot, uploadFile, deleteFile, downloadFile }) => {
   const upload$ = useRef(new Subject<{ state: UploadSlotState; file: File }>());
   const download$ = useRef(new Subject<UploadSlotState>());
   const delete$ = useRef(new Subject<UploadSlotState>());
@@ -82,7 +82,7 @@ type EmptySlotProps = {
   upload$: Subject<{ state: UploadSlotState; file: File }>;
 };
 
-const EmptySlot = ({ uploadSlot, upload$ }: EmptySlotProps): ReactElement => {
+const EmptySlot: FC<EmptySlotProps> = ({ uploadSlot, upload$ }) => {
   const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = e => {
     const files = e.target.files;
     if (files?.length !== 1) {
@@ -112,7 +112,7 @@ type FullSlotProps = {
   download$: Subject<UploadSlotState>;
 };
 
-const FullSlot = ({ uploadSlot, delete$, download$ }: FullSlotProps): ReactElement => {
+const FullSlot: FC<FullSlotProps> = ({ uploadSlot, delete$, download$ }) => {
   const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
     delete$.next(uploadSlot);

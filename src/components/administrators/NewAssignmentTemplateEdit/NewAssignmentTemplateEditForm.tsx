@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -7,12 +7,12 @@ import type { State } from './state';
 import type { NewAssignmentTemplateDeleteEvent } from './useAssignmentDelete';
 import type { NewAssignmentTemplateSaveEvent } from './useAssignmentSave';
 import { Spinner } from '@/components/Spinner';
-import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate } from '@/services/administrators/newAssignmentTemplateService';
 
 type Props = {
   administratorId: number;
   assignmentId: string;
-  assignmentTemplate: NewAssignmentTemplateWithUnitAndParts;
+  assignmentTemplate: NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate;
   formState: State['form'];
   save$: Subject<NewAssignmentTemplateSaveEvent>;
   delete$: Subject<NewAssignmentTemplateDeleteEvent>;
@@ -24,7 +24,7 @@ type Props = {
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentTemplateEditForm = memo((props: Props): ReactElement => {
+export const NewAssignmentTemplateEditForm: FC<Props> = memo(props => {
   const { administratorId, assignmentId, assignmentTemplate, formState, save$, delete$ } = props;
   let valid = true;
   // check if there are any validation messages

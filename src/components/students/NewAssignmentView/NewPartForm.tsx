@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -24,7 +24,8 @@ type Props = {
   downloadFile: UploadSlotFunction;
 };
 
-export const NewPartForm = memo(({ studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile }: Props): ReactElement => {
+export const NewPartForm: FC<Props> = memo(props => {
+  const { studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile } = props;
   return (
     <Section id={part.partId}>
       <div className="container">
@@ -77,7 +78,7 @@ type DescriptionProps = {
   descriptionType: NewDescriptionType;
 };
 
-const Description = ({ description, descriptionType }: DescriptionProps): ReactElement | null => {
+const Description: FC<DescriptionProps> = ({ description, descriptionType }) => {
   if (descriptionType === 'text') {
     return (
       <>

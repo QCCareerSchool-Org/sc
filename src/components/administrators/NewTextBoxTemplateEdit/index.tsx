@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { formatDateTime } from '../../../formatDate';
@@ -18,7 +18,7 @@ type Props = {
   textBoxId: string;
 };
 
-const changesPreset = (textBoxTemplate: NewTextBoxTemplate | undefined, formData: State['form']['data']): boolean => {
+const changesPresent = (textBoxTemplate: NewTextBoxTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!textBoxTemplate) {
     return false;
   }
@@ -40,10 +40,10 @@ const changesPreset = (textBoxTemplate: NewTextBoxTemplate | undefined, formData
   return false;
 };
 
-export const NewTextBoxTemplateEdit = ({ administratorId, textBoxId }: Props): ReactElement | null => {
+export const NewTextBoxTemplateEdit: FC<Props> = ({ administratorId, textBoxId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.newTextBoxTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPresent(state.newTextBoxTemplate, state.form.data));
 
   useInitialData(dispatch, administratorId, textBoxId);
 
@@ -100,7 +100,7 @@ export const NewTextBoxTemplateEdit = ({ administratorId, textBoxId }: Props): R
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
               <div>
-                <table className="table table-bordered w-auto ms-lg-auto">
+                <table className="table table-bordered w-auto ms-lg-auto bg-white">
                   <tbody>
                     <tr><th scope="row">Part Template</th><td>{state.newTextBoxTemplate.newPartTemplate.title ?? state.newTextBoxTemplate.newPartTemplate.partNumber}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newTextBoxTemplate.created)}</td></tr>

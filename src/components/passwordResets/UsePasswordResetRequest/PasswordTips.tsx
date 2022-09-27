@@ -1,6 +1,6 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
-export const PasswordTips = (): ReactElement => (
+export const PasswordTips: FC = () => (
   <>
     <p><strong>Never give out your password to anyone.</strong> Don't give your password out to anyone. QC Career School will never ask you for your password.</p>
     <p><strong>Don&apos;t just use one password.</strong> Use a different password for each website. If your password for one website is compromised, your accounts on other websites will remain safe.</p>

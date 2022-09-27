@@ -5,11 +5,11 @@ import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
-import type { NewUnit, RawNewUnit } from '@/domain/newUnit';
+import type { NewSubmission, RawNewSubmission } from '@/domain/newSubmission';
 import type { RawTutorStudent, TutorStudent } from '@/domain/tutor/student';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 
-export type NewUnitWithEnrollmentAndAssignments = NewUnit & {
+export type NewSubmissionWithEnrollmentAndAssignments = NewSubmission & {
   enrollment: Enrollment & {
     course: Course;
     student: TutorStudent;
@@ -17,7 +17,7 @@ export type NewUnitWithEnrollmentAndAssignments = NewUnit & {
   newAssignments: NewAssignment[];
 };
 
-type RawNewUnitWithEnrollmentAndAssignments = RawNewUnit & {
+type RawNewSubmissionWithEnrollmentAndAssignments = RawNewSubmission & {
   enrollment: RawEnrollment & {
     course: Course;
     student: RawTutorStudent;
@@ -26,30 +26,30 @@ type RawNewUnitWithEnrollmentAndAssignments = RawNewUnit & {
 };
 
 export interface INewUnitService {
-  getUnit: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnitWithEnrollmentAndAssignments>;
-  uploadFeedback: (tutorId: number, studentId: number, unitId: string, file: File) => Observable<ProgressResponse<NewUnit>>;
-  deleteFeedback: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnit>;
-  closeUnit: (tutorId: number, studentId: number, unitId: string) => Observable<NewUnit>;
-  returnUnit: (tutorId: number, studentId: number, unitId: string, comment: string) => Observable<NewUnit>;
+  getUnit: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmissionWithEnrollmentAndAssignments>;
+  uploadFeedback: (tutorId: number, studentId: number, submissionId: string, file: File) => Observable<ProgressResponse<NewSubmission>>;
+  deleteFeedback: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmission>;
+  closeUnit: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmission>;
+  returnUnit: (tutorId: number, studentId: number, submissionId: string, comment: string) => Observable<NewSubmission>;
 }
 
 export class NewUnitService implements INewUnitService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getUnit(tutorId: number, studentId: number, unitId: string): Observable<NewUnitWithEnrollmentAndAssignments> {
-    const url = `${this.getUrl(tutorId, studentId)}/${unitId}`;
-    return this.httpService.get<RawNewUnitWithEnrollmentAndAssignments>(url).pipe(
+  public getUnit(tutorId: number, studentId: number, submissionId: string): Observable<NewSubmissionWithEnrollmentAndAssignments> {
+    const url = `${this.getUrl(tutorId, studentId)}/${submissionId}`;
+    return this.httpService.get<RawNewSubmissionWithEnrollmentAndAssignments>(url).pipe(
       map(this.mapNewUnitWithStudentAndAssignments),
     );
   }
 
-  public uploadFeedback(tutorId: number, studentId: number, unitId: string, file: File): Observable<ProgressResponse<NewUnit>> {
-    const url = `${this.getUrl(tutorId, studentId)}/${unitId}/response`;
+  public uploadFeedback(tutorId: number, studentId: number, submissionId: string, file: File): Observable<ProgressResponse<NewSubmission>> {
+    const url = `${this.getUrl(tutorId, studentId)}/${submissionId}/response`;
     const formData = new FormData();
     formData.append('file', file);
     const headers = { 'Content-Type': 'multipart/form-data' };
-    return this.httpService.putFile<RawNewUnit>(url, formData, { headers }).pipe(
+    return this.httpService.putFile<RawNewSubmission>(url, formData, { headers }).pipe(
       map(progressResponse => {
         if (progressResponse.type === 'progress') {
           return progressResponse;
@@ -59,32 +59,32 @@ export class NewUnitService implements INewUnitService {
     );
   }
 
-  public deleteFeedback(tutorId: number, studentId: number, unitId: string): Observable<NewUnit> {
-    const url = `${this.getUrl(tutorId, studentId)}/${unitId}/response`;
-    return this.httpService.delete<RawNewUnit>(url).pipe(
+  public deleteFeedback(tutorId: number, studentId: number, submissionId: string): Observable<NewSubmission> {
+    const url = `${this.getUrl(tutorId, studentId)}/${submissionId}/response`;
+    return this.httpService.delete<RawNewSubmission>(url).pipe(
       map(this.mapNewUnit),
     );
   }
 
-  public closeUnit(tutorId: number, studentId: number, unitId: string): Observable<NewUnit> {
-    const url = `${this.getUrl(tutorId, studentId)}/${unitId}/closes`;
-    return this.httpService.post<RawNewUnit>(url).pipe(
+  public closeUnit(tutorId: number, studentId: number, submissionId: string): Observable<NewSubmission> {
+    const url = `${this.getUrl(tutorId, studentId)}/${submissionId}/closes`;
+    return this.httpService.post<RawNewSubmission>(url).pipe(
       map(this.mapNewUnit),
     );
   }
 
-  public returnUnit(tutorId: number, studentId: number, unitId: string, comment: string): Observable<NewUnit> {
-    const url = `${this.getUrl(tutorId, studentId)}/${unitId}/returns`;
-    return this.httpService.post<RawNewUnit>(url, { comment }).pipe(
+  public returnUnit(tutorId: number, studentId: number, submissionId: string, comment: string): Observable<NewSubmission> {
+    const url = `${this.getUrl(tutorId, studentId)}/${submissionId}/returns`;
+    return this.httpService.post<RawNewSubmission>(url, { comment }).pipe(
       map(this.mapNewUnit),
     );
   }
 
   private getUrl(tutorId: number, studentId: number): string {
-    return `${endpoint}/tutors/${tutorId}/students/${studentId}/newUnits`;
+    return `${endpoint}/tutors/${tutorId}/students/${studentId}/newSubmissions`;
   }
 
-  private readonly mapNewUnit = (newUnit: RawNewUnit): NewUnit => {
+  private readonly mapNewUnit = (newUnit: RawNewSubmission): NewSubmission => {
     return {
       ...newUnit,
       submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
@@ -95,7 +95,7 @@ export class NewUnitService implements INewUnitService {
     };
   };
 
-  private readonly mapNewUnitWithStudentAndAssignments = (newUnit: RawNewUnitWithEnrollmentAndAssignments): NewUnitWithEnrollmentAndAssignments => {
+  private readonly mapNewUnitWithStudentAndAssignments = (newUnit: RawNewSubmissionWithEnrollmentAndAssignments): NewSubmissionWithEnrollmentAndAssignments => {
     return {
       ...newUnit,
       submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),

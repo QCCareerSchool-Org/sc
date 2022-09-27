@@ -1,4 +1,4 @@
-import type { Dispatch, ReactElement, ReactNode } from 'react';
+import type { Dispatch, FC, ReactNode } from 'react';
 import { createContext, useEffect, useReducer } from 'react';
 import type { UnitToggleAction, UnitToggleState } from '../state/unitToggles';
 import { unitToggleInitializer, unitToggleInitialState, unitToggleReducer } from '../state/unitToggles';
@@ -10,7 +10,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const UnitToggleStateProvider = ({ children }: Props): ReactElement => {
+export const UnitToggleStateProvider: FC<Props> = ({ children }) => {
   // can't use unitToggleInitializer here, because it's output on the server is different from the client
   const [ state, dispatch ] = useReducer(unitToggleReducer, unitToggleInitialState);
 

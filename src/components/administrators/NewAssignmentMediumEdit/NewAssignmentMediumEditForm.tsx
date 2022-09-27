@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -18,7 +18,7 @@ type Props = {
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const NewAssignmentMediumEditForm = memo((props: Props): ReactElement => {
+export const NewAssignmentMediumEditForm: FC<Props> = memo(props => {
   const { administratorId, mediumId, formState, save$, delete$ } = props;
 
   let valid = true;

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 import Logo from '../images/logo.svg';
 import { AccountIcon } from './AccountIcon';
@@ -10,7 +10,7 @@ const calculateLogoWidth = (height: number): number => {
   return Math.round(Logo.width / Logo.height * height);
 };
 
-export const SiteHeader = (): ReactElement => {
+export const SiteHeader: FC = () => {
   const screenWidth = useScreenWidth();
   const lgOrGreater = screenWidth >= 992;
 

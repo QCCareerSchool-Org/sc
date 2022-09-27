@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo } from 'react';
 
 import { Section } from '@/components/Section';
@@ -8,7 +8,7 @@ type Props = {
   type: 'already used' | 'expired';
 };
 
-export const Invalid = memo(({ type }: Props): ReactElement => (
+export const Invalid: FC<Props> = memo(({ type }) => (
   <Section>
     <div className="container">
       {type === 'already used' && (

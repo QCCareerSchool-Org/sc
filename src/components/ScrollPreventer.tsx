@@ -1,6 +1,6 @@
 import Script from 'next/script';
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
-export const ScrollPreventer = (): ReactElement => {
+export const ScrollPreventer: FC = () => {
   return <Script id="scrollScript">{`window.history.scrollRestoration = "manual"`}</Script>;
 };

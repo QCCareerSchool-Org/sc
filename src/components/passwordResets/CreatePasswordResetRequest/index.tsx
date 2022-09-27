@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { memo, useReducer } from 'react';
 
 import { Section } from '../../Section';
@@ -6,7 +6,7 @@ import { Spinner } from '../../Spinner';
 import { initialState, reducer } from './state';
 import { usePasswordResetRequest } from './usePasswordResetRequest';
 
-export const CreatePasswordResetRequest = memo((): ReactElement => {
+export const CreatePasswordResetRequest: FC = memo(() => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   const passwordResetRequest$ = usePasswordResetRequest(dispatch);

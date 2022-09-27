@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
@@ -8,7 +8,7 @@ type Props = {
   onClick: (e: MouseEvent<HTMLTableRowElement>, textBoxId: string) => void;
 };
 
-export const NewTextBoxTemplateList = memo((props: Props): ReactElement => {
+export const NewTextBoxTemplateList: FC<Props> = memo(props => {
   const { textBoxes } = props;
   return (
     <>

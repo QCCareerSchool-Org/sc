@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
+import type { FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useEffect, useReducer } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
@@ -26,7 +26,7 @@ type Props = {
   assignmentId: string;
 };
 
-export const NewAssignmentView = ({ studentId, courseId, unitId, assignmentId }: Props): ReactElement | null => {
+export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assignmentId }) => {
   const router = useRouter();
   const navigateToLogin = useNavigateToLogin();
   const { newAssignmentService } = useStudentServices();

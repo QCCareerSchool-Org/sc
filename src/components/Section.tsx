@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const Section = ({ id, className, children }: Props): ReactElement => {
+export const Section: FC<Props> = ({ id, className, children }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [ scrollOffset, setScrollOffset ] = useState(false);
 

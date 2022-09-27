@@ -1,4 +1,4 @@
-import type { ReactElement, ReactEventHandler } from 'react';
+import type { FC, ReactEventHandler } from 'react';
 import { memo, useRef } from 'react';
 
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
@@ -9,7 +9,7 @@ type Props = {
   className?: string;
 };
 
-export const Img = memo(({ src, alt, className }: Props): ReactElement => {
+export const Img: FC<Props> = memo(({ src, alt, className }) => {
   const imageRef = useRef<HTMLImageElement>(null);
   const retry$ = useRefreshAndRetryMedia(imageRef);
 

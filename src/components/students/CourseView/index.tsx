@@ -1,16 +1,17 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEvent, FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useMemo, useReducer } from 'react';
 
 import { endpoint } from '../../../basePath';
 import { CourseHeaderImage } from './CourseHeaderImage';
-import { MaterialUnit } from './MaterialUnit';
 import { initialState, reducer } from './state';
-import { UnitsTable } from './UnitsTable';
+import { SubmissionsTable } from './SubmissionsTable';
+import { UnitAccordion } from './UnitAccordion';
 import { useInitialData } from './useInitialData';
 import { useInitializeNextUnit } from './useInitializeNextUnit';
+import { useMaterialCompletion } from './useMaterialCompletion';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
@@ -21,7 +22,7 @@ type Props = {
   courseId: number;
 };
 
-export const CourseView = ({ studentId, courseId }: Props): ReactElement | null => {
+export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -30,11 +31,12 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
   useStayLoggedIn();
 
   useInitialData(dispatch, studentId, courseId);
+  const materialCompletion$ = useMaterialCompletion(dispatch);
 
   const initializeNextUnit$ = useInitializeNextUnit(dispatch);
 
-  const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, unitId: string): void => {
-    void router.push(router.asPath + '/units/' + unitId);
+  const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, submissionId: string): void => {
+    void router.push(router.asPath + '/submissions/' + submissionId);
   }, [ router ]);
 
   const nextUnit = useMemo(() => getNextUnit(state.enrollment), [ state.enrollment ]);
@@ -72,8 +74,8 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
     );
   }
 
-  if (state.enrollment.course.unitType !== 1) {
-    // courses with the old units system should use the old page
+  if (state.enrollment.course.submissionType !== 1) {
+    // courses with the old system should use the old page
     window.location.href = `/students/course-materials/new.bs.php?course_id=${courseId}`;
     return null;
   }
@@ -85,6 +87,9 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
       courseId,
     });
   };
+
+  const enrollmentId = state.enrollment.enrollmentId;
+  const materialCompletions = state.enrollment.materialCompletions;
 
   return (
     <>
@@ -98,7 +103,7 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
               {state.enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{state.enrollment.tutor.firstName} {state.enrollment.tutor.lastName}</strong></p>}
             </div>
             <div className="col-12 col-lg-6">
-              <UnitsTable newUnits={state.enrollment.newUnits} onNewUnitClick={handleNewUnitClick} />
+              <SubmissionsTable newSubmissions={state.enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
               {nextUnit.success
                 ? (
                   <div className="d-flex align-items-center">
@@ -120,8 +125,16 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
       <Section>
         <div className="container">
           <h2>Lessons</h2>
-          {state.enrollment.course.newMaterialUnits.map(u => (
-            <MaterialUnit key={u.materialUnitId} courseId={courseId} unit={u} />
+          {state.enrollment.course.units.map(u => (
+            <UnitAccordion
+              key={u.unitId}
+              studentId={studentId}
+              enrollmentId={enrollmentId}
+              courseId={courseId}
+              unit={u}
+              materialCompletions={materialCompletions}
+              materialCompletion$={materialCompletion$}
+            />
           ))}
           <Link href={`${endpoint}/students/${studentId}/static/lessons/95/6630b210-de75-11ec-bbd6-b5db70b35693/content`}><a target="_blank" rel="noopener noreferrer">sdkjfhsdkjfhdsf</a></Link>
         </div>
@@ -130,7 +143,19 @@ export const CourseView = ({ studentId, courseId }: Props): ReactElement | null 
   );
 };
 
-const NextUnitMessage = ({ nextUnit }: { nextUnit: NextUnitResult }): ReactElement | null => {
+type NextUnitResult = {
+  success: true;
+  unitLetter: string;
+} | {
+  success: false;
+  error: 'loading' | 'arrears' | 'on hold' | 'incomplete' | 'disabled' | 'complete';
+};
+
+type NextUnitMessageProps = {
+  nextUnit: NextUnitResult;
+};
+
+const NextUnitMessage: FC<NextUnitMessageProps> = ({ nextUnit }) => {
   if (nextUnit.success) {
     return null;
   }
@@ -150,14 +175,6 @@ const NextUnitMessage = ({ nextUnit }: { nextUnit: NextUnitResult }): ReactEleme
   }
 };
 
-type NextUnitResult = {
-  success: true;
-  unitLetter: string;
-} | {
-  success: false;
-  error: 'loading' | 'arrears' | 'on hold' | 'incomplete' | 'disabled' | 'complete';
-};
-
 const getNextUnit = (enrollment?: EnrollmentWithStudentCourseAndUnits): NextUnitResult => {
   if (!enrollment) {
     return { success: false, error: 'loading' };
@@ -172,22 +189,22 @@ const getNextUnit = (enrollment?: EnrollmentWithStudentCourseAndUnits): NextUnit
   }
 
   // make sure there are no open (unskipped or unmarked) units
-  if (!enrollment.newUnits.every(u => u.skipped || u.closed)) {
+  if (!enrollment.newSubmissions.every(u => u.skipped || u.closed)) {
     return { success: false, error: 'incomplete' };
   }
 
-  if (!enrollment.course.newUnitsEnabled) {
+  if (!enrollment.course.submissionsEnabled) {
     return { success: false, error: 'disabled' };
   }
 
-  const sortedUnitTemplates = enrollment.course.newUnitTemplates.sort((a, b) => {
+  const sortedSubmissionTemplates = enrollment.course.newSubmissionTemplates.sort((a, b) => {
     if (a.order === b.order) {
       return a.unitLetter.localeCompare(b.unitLetter);
     }
     return a.order - b.order;
   });
-  for (const t of sortedUnitTemplates) {
-    if (!enrollment.newUnits.some(u => u.unitLetter === t.unitLetter)) {
+  for (const t of sortedSubmissionTemplates) {
+    if (!enrollment.newSubmissions.some(u => u.unitLetter === t.unitLetter)) {
       return { success: true, unitLetter: t.unitLetter };
     }
   }

@@ -1,11 +1,11 @@
-import type { CSSProperties, ReactElement } from 'react';
+import type { CSSProperties, FC } from 'react';
 
 type Props = {
   size?: 'sm' | 'lg';
   height?: number;
 };
 
-export const Spinner = ({ size, height }: Props): ReactElement => {
+export const Spinner: FC<Props> = ({ size, height }) => {
   let className = 'spinner-border';
   if (size === 'sm') {
     className += ' spinner-border-sm';

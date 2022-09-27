@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ChangeEvent, FormEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEvent, FC, FormEventHandler, MouseEventHandler } from 'react';
 import { memo, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -15,7 +15,7 @@ type Props = {
   countryId: number | null;
 };
 
-export const UnitPriceEdit = memo(({ administratorId, courseId, countryId }: Props): ReactElement | null => {
+export const UnitPriceEdit: FC<Props> = memo(({ administratorId, courseId, countryId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, administratorId, courseId, countryId);
@@ -62,7 +62,7 @@ export const UnitPriceEdit = memo(({ administratorId, courseId, countryId }: Pro
       courseId,
       countryId,
       payload: state.form.data.map(d => ({
-        unitTemplateId: d.unitTemplateId,
+        submissionTemplateId: d.submissionTemplateId,
         price: parseFloat(d.price),
         currencyId: parseInt(d.currencyId, 10),
       })),
@@ -101,13 +101,13 @@ export const UnitPriceEdit = memo(({ administratorId, courseId, countryId }: Pro
                 </thead>
                 <tbody>
                   {state.form.data.map(d => (
-                    <tr key={d.unitTemplateId}>
+                    <tr key={d.submissionTemplateId}>
                       <td className="text-center align-middle">{d.unitLetter}</td>
                       <td>
-                        <input onChange={e => handlePriceChange(e, d.unitTemplateId)} onBlur={e => handlePriceBlur(e, d.unitTemplateId)} value={d.price} type="number" min={0} max={100} step={0.01} placeholder="(none)" className="form-control form-control-sm text-end" required />
+                        <input onChange={e => handlePriceChange(e, d.submissionTemplateId)} onBlur={e => handlePriceBlur(e, d.submissionTemplateId)} value={d.price} type="number" min={0} max={100} step={0.01} placeholder="(none)" className="form-control form-control-sm text-end" required />
                       </td>
                       <td>
-                        <select onChange={e => handleCurrencyChange(e, d.unitTemplateId)} value={d.currencyId} className="form-select form-select-sm">
+                        <select onChange={e => handleCurrencyChange(e, d.submissionTemplateId)} value={d.currencyId} className="form-select form-select-sm">
                           {currencies.map(c => (
                             <option key={c.currencyId} value={c.currencyId}>{c.code}</option>
                           ))}

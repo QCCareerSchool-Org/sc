@@ -17,7 +17,7 @@ type InitializeNextUnitEvent = {
 export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<InitializeNextUnitEvent> => {
   const router = useRouter();
   const navigateToLogin = useNavigateToLogin();
-  const { newUnitService } = useStudentServices();
+  const { newSubmissionService } = useStudentServices();
 
   const initializeNextUnit$ = useRef(new Subject<InitializeNextUnitEvent>());
 
@@ -27,11 +27,11 @@ export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<Initi
     initializeNextUnit$.current.pipe(
       filter(({ processingState }) => processingState !== 'initializing'),
       tap(() => dispatch({ type: 'INITIALIZE_UNIT_STARTED' })),
-      switchMap(({ studentId, courseId }) => newUnitService.initializeNextUnit(studentId, courseId).pipe(
+      switchMap(({ studentId, courseId }) => newSubmissionService.initializeNextUnit(studentId, courseId).pipe(
         tap({
-          next: newUnit => {
-            dispatch({ type: 'INITIALIZE_UNIT_SUCCEEDED', payload: newUnit });
-            void router.push(router.asPath + '/units/' + newUnit.unitId);
+          next: newSubmission => {
+            dispatch({ type: 'INITIALIZE_UNIT_SUCCEEDED', payload: newSubmission });
+            void router.push(router.asPath + '/units/' + newSubmission.submissionId);
           },
           error: err => {
             let message = 'Initialize failed';
@@ -52,7 +52,7 @@ export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<Initi
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, newUnitService, router, navigateToLogin ]);
+  }, [ dispatch, newSubmissionService, router, navigateToLogin ]);
 
   return initializeNextUnit$.current;
 };

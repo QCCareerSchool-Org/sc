@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { useId } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -11,7 +11,7 @@ type Props = {
   newUploadSlot: WithInputForm<NewUploadSlot>;
 };
 
-export const UploadSlot = ({ tutorId, newUploadSlot }: Props): ReactElement => {
+export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot }) => {
   const id = useId();
 
   const src = `${endpoint}/tutors/${tutorId}/newUploadSlots/${newUploadSlot.uploadSlotId}/file`;

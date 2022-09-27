@@ -1,6 +1,6 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { MouseEvent, ReactElement } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { useReducer } from 'react';
 
 import { SchoolList } from './SchoolList';
@@ -12,7 +12,7 @@ type Props = {
   administratorId: number;
 };
 
-export const CourseDevelopmentOverview = ({ administratorId }: Props): ReactElement | null => {
+export const CourseDevelopmentOverview: FC<Props> = ({ administratorId }) => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 

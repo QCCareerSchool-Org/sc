@@ -1,4 +1,4 @@
-import type { ReactElement, ReactEventHandler } from 'react';
+import type { FC, ReactEventHandler } from 'react';
 import { useRef } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -8,7 +8,7 @@ type Props = {
   courseId: number;
 };
 
-export const CourseHeaderImage = ({ courseId }: Props): ReactElement => {
+export const CourseHeaderImage: FC<Props> = ({ courseId }) => {
   const src = `${endpoint}/courseHeaderImages/${courseId}`;
 
   const imageRef = useRef<HTMLImageElement>(null);

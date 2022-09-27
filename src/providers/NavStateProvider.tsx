@@ -1,4 +1,4 @@
-import type { Dispatch, ReactElement, ReactNode } from 'react';
+import type { Dispatch, FC, ReactNode } from 'react';
 import { createContext, useReducer } from 'react';
 import type { NavAction, NavState } from '../state/nav';
 import { navInitialState, navReducer } from '../state/nav';
@@ -10,7 +10,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const NavStateProvider = ({ children }: Props): ReactElement => {
+export const NavStateProvider: FC<Props> = ({ children }) => {
   const [ state, dispatch ] = useReducer(navReducer, navInitialState);
   return (
     <NavStateContext.Provider value={state}>

@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -12,7 +12,7 @@ type Props = {
   newAssignmentMedium: NewAssignmentMedium;
 };
 
-export const NewAssignmentMediumView = memo(({ className, administratorId, newAssignmentMedium }: Props): ReactElement | null => {
+export const NewAssignmentMediumView: FC<Props> = memo(({ className, administratorId, newAssignmentMedium }) => {
   const src = `${endpoint}/administrators/${administratorId}/newAssignmentMedia/${newAssignmentMedium.assignmentMediumId}/file`;
 
   if (newAssignmentMedium.type === 'image') {

@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, MouseEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { memo, useEffect, useRef } from 'react';
 import { debounceTime, exhaustMap, Subject, takeUntil } from 'rxjs';
 
@@ -17,7 +17,7 @@ const saveDelay = 1000;
 
 const maxLength = 65_535;
 
-export const NewTextBoxForm = memo(({ textBox, update, save }: Props): ReactElement => {
+export const NewTextBoxForm: FC<Props> = memo(({ textBox, update, save }) => {
   const textChange$ = useRef(new Subject<string>());
 
   useEffect(() => {

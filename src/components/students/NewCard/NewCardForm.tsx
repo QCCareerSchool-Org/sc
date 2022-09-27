@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -20,7 +20,7 @@ type Props = {
   onCardDataChange: () => void;
 };
 
-export const NewCardForm = (props: Props): ReactElement => {
+export const NewCardForm: FC<Props> = props => {
   const { crmId, form, crmStudent, currencyCode, currencyName, allSameCurrency, insert$ } = props;
 
   const id = useId();

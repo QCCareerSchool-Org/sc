@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { NewCardForm } from './NewCardForm';
@@ -11,7 +11,7 @@ type Props = {
   crmId: number;
 };
 
-export const NewCard = ({ crmId }: Props): ReactElement | null => {
+export const NewCard: FC<Props> = ({ crmId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, crmId);

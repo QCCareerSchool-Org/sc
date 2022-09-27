@@ -1,6 +1,6 @@
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { memo, useId, useReducer } from 'react';
 
 import { Invalid } from './Invalid';
@@ -16,7 +16,7 @@ type Props = {
   code: string;
 };
 
-export const UsePasswordResetRequest = memo(({ passwordResetId, code }: Props): ReactElement | null => {
+export const UsePasswordResetRequest: FC<Props> = memo(({ passwordResetId, code }) => {
   const id = useId();
 
   const [ state, dispatch ] = useReducer(reducer, initialState);

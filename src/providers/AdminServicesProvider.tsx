@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
 import { useServices } from '@/hooks/useServices';
@@ -8,32 +8,32 @@ import type { ICourseService } from '@/services/administrators/courseService';
 import { CourseService } from '@/services/administrators/courseService';
 import type { ICurrencyService } from '@/services/administrators/currencyService';
 import { CurrencyService } from '@/services/administrators/currencyService';
+import type { IMaterialService } from '@/services/administrators/materialService';
+import { MaterialService } from '@/services/administrators/materialService';
 import type { INewAssignmentMediumService } from '@/services/administrators/newAssignmentMediumService';
 import { NewAssignmentMediumService } from '@/services/administrators/newAssignmentMediumService';
 import type { INewAssignmentTemplateService } from '@/services/administrators/newAssignmentTemplateService';
 import { NewAssignmentTemplateService } from '@/services/administrators/newAssignmentTemplateService';
-import type { INewMaterialService } from '@/services/administrators/newMaterialService';
-import { NewMaterialService } from '@/services/administrators/newMaterialService';
-import type { INewMaterialUnitService } from '@/services/administrators/newMaterialUnitService';
-import { NewMaterialUnitService } from '@/services/administrators/newMaterialUnitService';
 import type { INewPartMediumService } from '@/services/administrators/newPartMediumService';
 import { NewPartMediumService } from '@/services/administrators/newPartMediumService';
 import type { INewPartTemplateService } from '@/services/administrators/newPartTemplateService';
 import { NewPartTemplateService } from '@/services/administrators/newPartTemplateService';
+import type { INewSubmissionReturnService } from '@/services/administrators/newSubmissionReturnService';
+import { NewSubmissionReturnService } from '@/services/administrators/newSubmissionReturnService';
+import type { INewSubmissionService } from '@/services/administrators/newSubmissionService';
+import { NewSubmissionService } from '@/services/administrators/newSubmissionService';
+import type { INewSubmissionTemplateService } from '@/services/administrators/newSubmissionTemplateService';
+import { NewSubmissionTemplateService } from '@/services/administrators/newSubmissionTemplateService';
 import type { INewTextBoxTemplateService } from '@/services/administrators/newTextBoxTemplateService';
 import { NewTextBoxTemplateService } from '@/services/administrators/newTextBoxTemplateService';
-import type { INewUnitReturnService } from '@/services/administrators/newUnitReturnService';
-import { NewUnitReturnService } from '@/services/administrators/newUnitReturnService';
-import type { INewUnitService } from '@/services/administrators/newUnitService';
-import { NewUnitService } from '@/services/administrators/newUnitService';
 import type { INewUnitTemplatePriceService } from '@/services/administrators/newUnitTemplatePriceService';
 import { NewUnitTemplatePriceService } from '@/services/administrators/newUnitTemplatePriceService';
-import type { INewUnitTemplateService } from '@/services/administrators/newUnitTemplateService';
-import { NewUnitTemplateService } from '@/services/administrators/newUnitTemplateService';
 import type { INewUploadSlotTemplateService } from '@/services/administrators/newUploadSlotTemplateService';
 import { NewUploadSlotTemplateService } from '@/services/administrators/newUploadSlotTemplateService';
 import type { ISchoolService } from '@/services/administrators/schoolService';
 import { SchoolService } from '@/services/administrators/schoolService';
+import { UnitService } from '@/services/administrators/unitService';
+import type { IUnitService } from '@/services/administrators/unitService';
 
 export type AdminServices = Readonly<{
   readonly courseService: Readonly<ICourseService>;
@@ -44,14 +44,14 @@ export type AdminServices = Readonly<{
   readonly newPartMediumService: Readonly<INewPartMediumService>;
   readonly newPartTemplateService: Readonly<INewPartTemplateService>;
   readonly newTextBoxTemplateService: Readonly<INewTextBoxTemplateService>;
-  readonly newUnitService: Readonly<INewUnitService>;
-  readonly newUnitTemplateService: Readonly<INewUnitTemplateService>;
+  readonly newSubmissionService: Readonly<INewSubmissionService>;
+  readonly newSubmissionTemplateService: Readonly<INewSubmissionTemplateService>;
   readonly newUploadSlotTemplateService: Readonly<INewUploadSlotTemplateService>;
   readonly newUnitTemplatePriceService: Readonly<INewUnitTemplatePriceService>;
-  readonly newUnitReturnService: Readonly<INewUnitReturnService>;
+  readonly newSubmissionReturnService: Readonly<INewSubmissionReturnService>;
   readonly schoolService: Readonly<ISchoolService>;
-  readonly newMaterialService: Readonly<INewMaterialService>;
-  readonly newMaterialUnitService: Readonly<INewMaterialUnitService>;
+  readonly materialService: Readonly<IMaterialService>;
+  readonly unitService: Readonly<IUnitService>;
 }>;
 
 export const AdminServicesContext = createContext<AdminServices | undefined>(undefined);
@@ -60,7 +60,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const AdminServicesProvider = ({ children }: Props): ReactElement => {
+export const AdminServicesProvider: FC<Props> = ({ children }) => {
   const { httpService } = useServices();
   const [ state ] = useState({
     courseService: new CourseService(httpService),
@@ -71,14 +71,14 @@ export const AdminServicesProvider = ({ children }: Props): ReactElement => {
     newPartMediumService: new NewPartMediumService(httpService),
     newPartTemplateService: new NewPartTemplateService(httpService),
     newTextBoxTemplateService: new NewTextBoxTemplateService(httpService),
-    newUnitService: new NewUnitService(httpService),
-    newUnitTemplateService: new NewUnitTemplateService(httpService),
+    newSubmissionService: new NewSubmissionService(httpService),
+    newSubmissionTemplateService: new NewSubmissionTemplateService(httpService),
     newUploadSlotTemplateService: new NewUploadSlotTemplateService(httpService),
     newUnitTemplatePriceService: new NewUnitTemplatePriceService(httpService),
-    newUnitReturnService: new NewUnitReturnService(httpService),
+    newSubmissionReturnService: new NewSubmissionReturnService(httpService),
     schoolService: new SchoolService(httpService),
-    newMaterialService: new NewMaterialService(httpService),
-    newMaterialUnitService: new NewMaterialUnitService(httpService),
+    materialService: new MaterialService(httpService),
+    unitService: new UnitService(httpService),
   } as const);
 
   return (

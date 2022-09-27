@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 
 import { endpoint } from '../../../basePath';
 import { NewPartMediumView } from './NewPartMediumView';
@@ -23,7 +23,7 @@ type Props = {
   newPartTemplate: NewPartTemplateWithInputs;
 };
 
-export const NewPartTemplatePreview = ({ administratorId, newPartTemplate }: Props): ReactElement => {
+export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemplate }) => {
   return (
     <Section>
       <div className="container">
@@ -70,7 +70,7 @@ type DescriptionProps = {
   descriptionType: NewDescriptionType;
 };
 
-const Description = ({ description, descriptionType }: DescriptionProps): ReactElement | null => {
+const Description: FC<DescriptionProps> = ({ description, descriptionType }) => {
   if (descriptionType === 'text') {
     return (
       <>

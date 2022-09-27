@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { memo } from 'react';
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 
 const siteTitle = 'Online Student Center';
 
-export const Meta = memo(({ title, description }: Props): ReactElement => (
+export const Meta: FC<Props> = memo(({ title, description }) => (
   <Head>
     {title
       ? <title>{title} - {siteTitle}</title>

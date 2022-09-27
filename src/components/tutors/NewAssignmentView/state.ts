@@ -3,8 +3,8 @@ import type { NewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart } from '@/domain/newPart';
 import type { NewPartMedium } from '@/domain/newPartMedium';
+import type { NewSubmission } from '@/domain/newSubmission';
 import type { NewTextBox } from '@/domain/newTextBox';
-import type { NewUnit } from '@/domain/newUnit';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignmentWithUnitAndChildren } from '@/services/tutors/newAssignmentService';
 
@@ -31,7 +31,7 @@ export type PartWithForms = NewPart & {
 
 export type State = {
   newAssignment?: NewAssignment & {
-    newUnit: Omit<NewUnit, 'complete' | 'points' | 'mark'> & {
+    newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark'> & {
       enrollment: Enrollment;
     };
     newParts: PartWithForms[];

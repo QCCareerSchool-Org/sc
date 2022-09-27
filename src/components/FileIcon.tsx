@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { FC } from 'react';
 import { FaFile, FaFileExcel, FaFilePdf, FaFileWord } from 'react-icons/fa';
 
 type Props = {
@@ -6,7 +6,7 @@ type Props = {
   size: number;
 };
 
-export const FileIcon = ({ mimeType, size }: Props): ReactElement => {
+export const FileIcon: FC<Props> = ({ mimeType, size }) => {
   if (mimeType === 'application/pdf') {
     return <FaFilePdf size={size} />;
   }

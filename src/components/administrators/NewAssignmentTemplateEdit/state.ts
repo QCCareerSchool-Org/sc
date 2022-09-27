@@ -2,11 +2,11 @@ import { sanitize } from '../../../sanitize';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
-import type { NewAssignmentTemplateWithUnitAndParts } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate } from '@/services/administrators/newAssignmentTemplateService';
 import type { IUUIDService } from '@/services/uuidService';
 
 export type State = {
-  newAssignmentTemplate?: NewAssignmentTemplateWithUnitAndParts;
+  newAssignmentTemplate?: NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate;
   form: {
     data: {
       assignmentNumber: string;
@@ -76,7 +76,7 @@ export type State = {
 };
 
 export type Action =
-  | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithUnitAndParts }
+  | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate }
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED'; payload?: number }
   | { type: 'ASSIGNMENT_NUMBER_CHANGED'; payload: string }
   | { type: 'TITLE_CHANGED'; payload: string }

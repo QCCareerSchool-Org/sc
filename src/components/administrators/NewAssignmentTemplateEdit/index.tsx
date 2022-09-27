@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, MouseEvent, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, MouseEvent } from 'react';
 import { useCallback, useReducer } from 'react';
 
 import { formatDateTime } from '../../../formatDate';
@@ -27,7 +27,7 @@ type Props = {
   assignmentId: string;
 };
 
-const changesPreset = (assignmentTemplate: NewAssignmentTemplate | undefined, formData: State['form']['data']): boolean => {
+const changesPresent = (assignmentTemplate: NewAssignmentTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!assignmentTemplate) {
     return false;
   }
@@ -46,12 +46,12 @@ const changesPreset = (assignmentTemplate: NewAssignmentTemplate | undefined, fo
   return false;
 };
 
-export const NewAssignmentTemplateEdit = ({ administratorId, assignmentId }: Props): ReactElement | null => {
+export const NewAssignmentTemplateEdit: FC<Props> = ({ administratorId, assignmentId }) => {
   const router = useRouter();
   const { uuidService } = useServices();
   const [ state, dispatch ] = useReducer(createReducer(uuidService), initialState);
 
-  useWarnIfUnsavedChanges(changesPreset(state.newAssignmentTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPresent(state.newAssignmentTemplate, state.form.data));
 
   useInitialData(dispatch, administratorId, assignmentId);
 
@@ -166,9 +166,9 @@ export const NewAssignmentTemplateEdit = ({ administratorId, assignmentId }: Pro
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
               <div>
-                <table className="table table-bordered w-auto ms-lg-auto">
+                <table className="table table-bordered w-auto ms-lg-auto bg-white">
                   <tbody>
-                    <tr><th scope="row">Unit Template</th><td>{state.newAssignmentTemplate.newUnitTemplate.title ?? state.newAssignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
+                    <tr><th scope="row">Unit Template</th><td>{state.newAssignmentTemplate.newSubmissionTemplate.title ?? state.newAssignmentTemplate.newSubmissionTemplate.unitLetter}</td></tr>
                     <tr><th scope="row">Part Templates</th><td>{state.newAssignmentTemplate.newPartTemplates.length}</td></tr>
                     <tr><th scope="row">Media</th><td>{state.newAssignmentTemplate.newAssignmentMedia.length}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newAssignmentTemplate.created)}</td></tr>

@@ -27,19 +27,19 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
           currencies,
           course,
           country,
-          formData: course.newUnitTemplates.flatMap(u => {
-            const unitTemplatePrice = u.prices.find(p => p.countryId === countryId);
+          formData: course.newSubmissionTemplates.flatMap(s => {
+            const unitTemplatePrice = s.prices.find(p => p.countryId === countryId);
             if (unitTemplatePrice) {
               return {
-                unitTemplateId: u.unitTemplateId,
-                unitLetter: u.unitLetter,
+                submissionTemplateId: s.submissionTemplateId,
+                unitLetter: s.unitLetter,
                 price: unitTemplatePrice.price.toFixed(2),
                 currencyId: unitTemplatePrice.currencyId.toString(),
               };
             }
             return {
-              unitTemplateId: u.unitTemplateId,
-              unitLetter: u.unitLetter,
+              submissionTemplateId: s.submissionTemplateId,
+              unitLetter: s.unitLetter,
               price: '',
               currencyId: currencies[0].currencyId.toString(),
             };

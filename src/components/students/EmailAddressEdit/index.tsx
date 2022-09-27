@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FormEventHandler, ReactElement } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { useId, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -12,7 +12,7 @@ type Props = {
   crmId?: number;
 };
 
-export const EmailAddressEdit = ({ studentId, crmId }: Props): ReactElement | null => {
+export const EmailAddressEdit: FC<Props> = ({ studentId, crmId }) => {
   const id = useId();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
