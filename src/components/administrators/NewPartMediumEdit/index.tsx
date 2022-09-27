@@ -72,7 +72,7 @@ export const NewPartMediumEdit: FC<Props> = ({ administratorId, mediumId }) => {
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
               <div>
-                <table className="table table-bordered w-auto ms-lg-auto">
+                <table className="table table-bordered w-auto ms-lg-auto bg-white">
                   <tbody>
                     <tr><th scope="row">Part Template</th><td>{state.newPartMedium.newPartTemplate.title}</td></tr>
                     <tr><th scope="row">Linked Parts</th><td>{state.newPartMedium.newParts.length}</td></tr>

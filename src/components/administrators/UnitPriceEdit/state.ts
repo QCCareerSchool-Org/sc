@@ -1,9 +1,9 @@
 import type { Country } from '@/domain/country';
 import type { Currency } from '@/domain/currency';
-import type { CourseWithSchoolAndUnitTemplatesAndPrices } from '@/services/administrators/courseService';
+import type { CourseWithSchoolAndSubmissionTemplatesAndPrices } from '@/services/administrators/courseService';
 
 type FormData = Array<{
-  unitTemplateId: string;
+  submissionTemplateId: string;
   unitLetter: string;
   price: string;
   currencyId: string;
@@ -11,7 +11,7 @@ type FormData = Array<{
 
 export type State = {
   currencies?: Currency[];
-  course?: CourseWithSchoolAndUnitTemplatesAndPrices;
+  course?: CourseWithSchoolAndSubmissionTemplatesAndPrices;
   country?: Country | null;
   form: {
     data: FormData;
@@ -26,7 +26,7 @@ export type State = {
 
 export type Action =
   | { type: 'LOAD_DATA_STARTED' }
-  | { type: 'LOAD_DATA_SUCCEEDED'; payload: { currencies: Currency[]; course: CourseWithSchoolAndUnitTemplatesAndPrices; country: Country | null; formData: FormData } }
+  | { type: 'LOAD_DATA_SUCCEEDED'; payload: { currencies: Currency[]; course: CourseWithSchoolAndSubmissionTemplatesAndPrices; country: Country | null; formData: FormData } }
   | { type: 'LOAD_DATA_FAILED'; payload?: number }
   | { type: 'PRICE_CHANGED'; payload: { unitTemplateId: string; price: string } }
   | { type: 'PRICE_BLURRED'; payload: string }
@@ -71,7 +71,7 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, processingState: 'load error', errorCode: action.payload };
     case 'PRICE_CHANGED': {
       const formData = [ ...state.form.data ];
-      const changedItem = formData.find(f => f.unitTemplateId === action.payload.unitTemplateId);
+      const changedItem = formData.find(f => f.submissionTemplateId === action.payload.unitTemplateId);
       if (changedItem) {
         changedItem.price = action.payload.price;
       }
@@ -82,7 +82,7 @@ export const reducer = (state: State, action: Action): State => {
     }
     case 'PRICE_BLURRED': {
       const formData = [ ...state.form.data ];
-      const changedItem = formData.find(f => f.unitTemplateId === action.payload);
+      const changedItem = formData.find(f => f.submissionTemplateId === action.payload);
       if (changedItem) {
         if (changedItem.price !== '') {
           changedItem.price = parseFloat(changedItem.price).toFixed(2);
@@ -98,7 +98,7 @@ export const reducer = (state: State, action: Action): State => {
         throw Error('currencies is undefined');
       }
       const formData = [ ...state.form.data ];
-      const changedItem = formData.find(f => f.unitTemplateId === action.payload.unitTemplateId);
+      const changedItem = formData.find(f => f.submissionTemplateId === action.payload.unitTemplateId);
       if (changedItem) {
         if (state.currencies.some(c => c.currencyId === parseInt(action.payload.currencyId, 10))) {
           changedItem.currencyId = action.payload.currencyId;

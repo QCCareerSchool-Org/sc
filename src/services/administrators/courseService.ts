@@ -4,30 +4,30 @@ import { map } from 'rxjs';
 import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Currency } from '@/domain/currency';
-import type { NewMaterialUnit, RawNewMaterialUnit } from '@/domain/newMaterialUnit';
-import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
+import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { NewUnitTemplatePrice, RawNewUnitTemplatePrice } from '@/domain/newUnitTemplatePrice';
 import type { School } from '@/domain/school';
+import type { RawUnit, Unit } from '@/domain/unit';
 import type { IHttpService } from '@/services/httpService';
 
-type RawCourseWithSchoolAndUnitTemplatesAndPrices = Course & {
+type RawCourseWithSchoolAndSubmissionTemplatesAndPrices = Course & {
   school: School;
-  newUnitTemplates: Array<RawNewUnitTemplate & {
+  newSubmissionTemplates: Array<RawNewSubmissionTemplate & {
     prices: Array<RawNewUnitTemplatePrice & {
       currency: Currency;
     }>;
   }>;
-  newMaterialUnits: RawNewMaterialUnit[];
+  units: RawUnit[];
 };
 
-export type CourseWithSchoolAndUnitTemplatesAndPrices = Course & {
+export type CourseWithSchoolAndSubmissionTemplatesAndPrices = Course & {
   school: School;
-  newUnitTemplates: Array<NewUnitTemplate & {
+  newSubmissionTemplates: Array<NewSubmissionTemplate & {
     prices: Array<NewUnitTemplatePrice & {
       currency: Currency;
     }>;
   }>;
-  newMaterialUnits: NewMaterialUnit[];
+  units: Unit[];
 };
 
 export type CourseWithSchool = Course & {
@@ -35,7 +35,7 @@ export type CourseWithSchool = Course & {
 };
 
 export interface ICourseService {
-  getCourse: (administratorId: number, courseId: number) => Observable<CourseWithSchoolAndUnitTemplatesAndPrices>;
+  getCourse: (administratorId: number, courseId: number) => Observable<CourseWithSchoolAndSubmissionTemplatesAndPrices>;
   enableCourse: (administratorId: number, courseId: number, enable: boolean) => Observable<Course>;
   getAllCourses: (administratorId: number) => Observable<CourseWithSchool[]>;
 }
@@ -44,9 +44,9 @@ export class CourseService implements ICourseService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getCourse(administratorId: number, courseId: number): Observable<CourseWithSchoolAndUnitTemplatesAndPrices> {
+  public getCourse(administratorId: number, courseId: number): Observable<CourseWithSchoolAndSubmissionTemplatesAndPrices> {
     const url = `${this.getBaseUrl(administratorId)}/courses/${courseId}`;
-    return this.httpService.get<RawCourseWithSchoolAndUnitTemplatesAndPrices>(url).pipe(
+    return this.httpService.get<RawCourseWithSchoolAndSubmissionTemplatesAndPrices>(url).pipe(
       map(this.mapCourseWithSchoolAndUnitTemplates),
     );
   }
@@ -65,10 +65,10 @@ export class CourseService implements ICourseService {
     return `${endpoint}/administrators/${administratorId}`;
   }
 
-  private readonly mapCourseWithSchoolAndUnitTemplates = (course: RawCourseWithSchoolAndUnitTemplatesAndPrices): CourseWithSchoolAndUnitTemplatesAndPrices => {
+  private readonly mapCourseWithSchoolAndUnitTemplates = (course: RawCourseWithSchoolAndSubmissionTemplatesAndPrices): CourseWithSchoolAndSubmissionTemplatesAndPrices => {
     return {
       ...course,
-      newUnitTemplates: course.newUnitTemplates.map(u => ({
+      newSubmissionTemplates: course.newSubmissionTemplates.map(u => ({
         ...u,
         created: new Date(u.created),
         modified: u.modified === null ? null : new Date(u.modified),
@@ -78,7 +78,7 @@ export class CourseService implements ICourseService {
           modified: p.modified === null ? null : new Date(p.modified),
         })),
       })),
-      newMaterialUnits: course.newMaterialUnits.map(u => ({
+      units: course.units.map(u => ({
         ...u,
         created: new Date(u.created),
         modified: u.modified === null ? null : new Date(u.modified),

@@ -20,9 +20,9 @@ export const UnitPrice: FC<Props> = ({ administratorId }) => {
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     const course = state.courses?.find(c => c.courseId === state.courseId);
-    if (course?.unitType === 0) {
+    if (course?.submissionType === 0) {
       location.href = `/administatrators/unit-prices/index.php?course_id=${state.courseId}&country_code=${state.countryId ?? ''}`;
-    } else if (course?.unitType === 1) {
+    } else if (course?.submissionType === 1) {
       if (state.countryId === null) {
         void router.push(`${router.asPath}/edit?courseId=${state.courseId}`);
       } else {

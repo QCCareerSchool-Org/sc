@@ -8,7 +8,7 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export const useInitialData = (dispatch: Dispatch<Action>, administratorId: number, courseId: number): void => {
-  const { courseService, newMaterialService } = useAdminServices();
+  const { courseService } = useAdminServices();
   const navigateToLogin = useNavigateToLogin();
 
   useEffect(() => {
@@ -31,5 +31,5 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
         dispatch({ type: 'LOAD_DATA_FAILED', payload: errorCode });
       },
     });
-  }, [ dispatch, administratorId, courseId, courseService, newMaterialService, navigateToLogin ]);
+  }, [ dispatch, administratorId, courseId, courseService, navigateToLogin ]);
 };

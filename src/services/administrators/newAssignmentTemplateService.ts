@@ -6,13 +6,13 @@ import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAs
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
+import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
-import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
 import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import type { IHttpService } from '@/services/httpService';
 
 export type NewAssignmentTemplateAddPayload = {
-  unitId: string;
+  submissionId: string;
   assignmentNumber: number;
   title: string | null;
   description: string | null;
@@ -30,20 +30,20 @@ export type NewAssignmentTemplateSavePayload = {
   optional: boolean;
 };
 
-type RawNewAssignmentTemplateWithUnitAndParts = RawNewAssignmentTemplate & {
-  newUnitTemplate: RawNewUnitTemplate;
+type RawNewAssignmentTemplateWithSubmissionTemplateAndPartTemplate = RawNewAssignmentTemplate & {
+  newSubmissionTemplate: RawNewSubmissionTemplate;
   newPartTemplates: RawNewPartTemplate[];
   newAssignmentMedia: RawNewAssignmentMedium[];
 };
 
-export type NewAssignmentTemplateWithUnitAndParts = NewAssignmentTemplate & {
-  newUnitTemplate: NewUnitTemplate;
+export type NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate = NewAssignmentTemplate & {
+  newSubmissionTemplate: NewSubmissionTemplate;
   newPartTemplates: NewPartTemplate[];
   newAssignmentMedia: NewAssignmentMedium[];
 };
 
-type RawNewAssignmentTemplateWithUnitAndPartsAndInputs = RawNewAssignmentTemplate & {
-  newUnitTemplate: RawNewUnitTemplate;
+type RawNewAssignmentTemplateWithSubmissionTemplateAndChildren = RawNewAssignmentTemplate & {
+  newSubmissionTemplate: RawNewSubmissionTemplate;
   newPartTemplates: Array<RawNewPartTemplate & {
     newTextBoxTemplates: RawNewTextBoxTemplate[];
     newUploadSlotTemplates: RawNewUploadSlotTemplate[];
@@ -52,8 +52,8 @@ type RawNewAssignmentTemplateWithUnitAndPartsAndInputs = RawNewAssignmentTemplat
   newAssignmentMedia: RawNewAssignmentMedium[];
 };
 
-export type NewAssignmentTemplateWithUnitAndPartsAndInputs = NewAssignmentTemplate & {
-  newUnitTemplate: NewUnitTemplate;
+export type NewAssignmentTemplateWithSubmissionTemplateAndChildren = NewAssignmentTemplate & {
+  newSubmissionTemplate: NewSubmissionTemplate;
   newPartTemplates: Array<NewPartTemplate & {
     newTextBoxTemplates: NewTextBoxTemplate[];
     newUploadSlotTemplates: NewUploadSlotTemplate[];
@@ -64,8 +64,8 @@ export type NewAssignmentTemplateWithUnitAndPartsAndInputs = NewAssignmentTempla
 
 export interface INewAssignmentTemplateService {
   addAssignment: (administratorId: number, payload: NewAssignmentTemplateAddPayload) => Observable<NewAssignmentTemplate>;
-  getAssignment: (administratorId: number, assignmentId: string) => Observable<NewAssignmentTemplateWithUnitAndParts>;
-  getAssignmentWithInputs: (administratorId: number, assignmentId: string) => Observable<NewAssignmentTemplateWithUnitAndPartsAndInputs>;
+  getAssignment: (administratorId: number, assignmentId: string) => Observable<NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate>;
+  getAssignmentWithInputs: (administratorId: number, assignmentId: string) => Observable<NewAssignmentTemplateWithSubmissionTemplateAndChildren>;
   saveAssignment: (administratorId: number, assignmentId: string, payload: NewAssignmentTemplateSavePayload) => Observable<NewAssignmentTemplate>;
   deleteAssignment: (administratorId: number, assignmentId: string) => Observable<void>;
 }
@@ -81,17 +81,17 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
     );
   }
 
-  public getAssignment(administratorId: number, assignmentId: string): Observable<NewAssignmentTemplateWithUnitAndParts> {
+  public getAssignment(administratorId: number, assignmentId: string): Observable<NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate> {
     const url = `${this.getBaseUrl(administratorId)}/${assignmentId}`;
-    return this.httpService.get<RawNewAssignmentTemplateWithUnitAndParts>(url).pipe(
-      map(this.mapNewAssignmentTemplateWithUnitAndParts),
+    return this.httpService.get<RawNewAssignmentTemplateWithSubmissionTemplateAndPartTemplate>(url).pipe(
+      map(this.mapNewAssignmentTemplateWithSubmissionTemplateAndPartTemplate),
     );
   }
 
-  public getAssignmentWithInputs(administratorId: number, assignmentId: string): Observable<NewAssignmentTemplateWithUnitAndPartsAndInputs> {
+  public getAssignmentWithInputs(administratorId: number, assignmentId: string): Observable<NewAssignmentTemplateWithSubmissionTemplateAndChildren> {
     const url = `${this.getBaseUrl(administratorId)}/${assignmentId}`;
-    return this.httpService.get<RawNewAssignmentTemplateWithUnitAndPartsAndInputs>(url, { params: { inputs: true } }).pipe(
-      map(this.mapNewAssignmentTemplateWithUnitAndPartsAndInputs),
+    return this.httpService.get<RawNewAssignmentTemplateWithSubmissionTemplateAndChildren>(url, { params: { inputs: true } }).pipe(
+      map(this.mapNewAssignmentTemplateWithSubmissionTemplateAndChildren),
     );
   }
 
@@ -119,15 +119,15 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
     };
   };
 
-  private readonly mapNewAssignmentTemplateWithUnitAndParts = (assignment: RawNewAssignmentTemplateWithUnitAndParts): NewAssignmentTemplateWithUnitAndParts => {
+  private readonly mapNewAssignmentTemplateWithSubmissionTemplateAndPartTemplate = (assignment: RawNewAssignmentTemplateWithSubmissionTemplateAndPartTemplate): NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate => {
     return {
       ...assignment,
       created: new Date(assignment.created),
       modified: assignment.modified === null ? null : new Date(assignment.modified),
-      newUnitTemplate: {
-        ...assignment.newUnitTemplate,
-        created: new Date(assignment.newUnitTemplate.created),
-        modified: assignment.newUnitTemplate.modified === null ? null : new Date(assignment.newUnitTemplate.modified),
+      newSubmissionTemplate: {
+        ...assignment.newSubmissionTemplate,
+        created: new Date(assignment.newSubmissionTemplate.created),
+        modified: assignment.newSubmissionTemplate.modified === null ? null : new Date(assignment.newSubmissionTemplate.modified),
       },
       newPartTemplates: assignment.newPartTemplates.map(p => ({
         ...p,
@@ -142,15 +142,15 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
     };
   };
 
-  private readonly mapNewAssignmentTemplateWithUnitAndPartsAndInputs = (assignment: RawNewAssignmentTemplateWithUnitAndPartsAndInputs): NewAssignmentTemplateWithUnitAndPartsAndInputs => {
+  private readonly mapNewAssignmentTemplateWithSubmissionTemplateAndChildren = (assignment: RawNewAssignmentTemplateWithSubmissionTemplateAndChildren): NewAssignmentTemplateWithSubmissionTemplateAndChildren => {
     return {
       ...assignment,
       created: new Date(assignment.created),
       modified: assignment.modified === null ? null : new Date(assignment.modified),
-      newUnitTemplate: {
-        ...assignment.newUnitTemplate,
-        created: new Date(assignment.newUnitTemplate.created),
-        modified: assignment.newUnitTemplate.modified === null ? null : new Date(assignment.newUnitTemplate.modified),
+      newSubmissionTemplate: {
+        ...assignment.newSubmissionTemplate,
+        created: new Date(assignment.newSubmissionTemplate.created),
+        modified: assignment.newSubmissionTemplate.modified === null ? null : new Date(assignment.newSubmissionTemplate.modified),
       },
       newPartTemplates: assignment.newPartTemplates.map(p => ({
         ...p,

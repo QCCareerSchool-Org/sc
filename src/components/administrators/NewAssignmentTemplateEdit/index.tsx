@@ -166,9 +166,9 @@ export const NewAssignmentTemplateEdit: FC<Props> = ({ administratorId, assignme
             </div>
             <div className="col-12 col-lg-5 col-xl-6 order-0 order-lg-1 d-flex flex-column flex-fill justify-content-between">
               <div>
-                <table className="table table-bordered w-auto ms-lg-auto">
+                <table className="table table-bordered w-auto ms-lg-auto bg-white">
                   <tbody>
-                    <tr><th scope="row">Unit Template</th><td>{state.newAssignmentTemplate.newUnitTemplate.title ?? state.newAssignmentTemplate.newUnitTemplate.unitLetter}</td></tr>
+                    <tr><th scope="row">Unit Template</th><td>{state.newAssignmentTemplate.newSubmissionTemplate.title ?? state.newAssignmentTemplate.newSubmissionTemplate.unitLetter}</td></tr>
                     <tr><th scope="row">Part Templates</th><td>{state.newAssignmentTemplate.newPartTemplates.length}</td></tr>
                     <tr><th scope="row">Media</th><td>{state.newAssignmentTemplate.newAssignmentMedia.length}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newAssignmentTemplate.created)}</td></tr>

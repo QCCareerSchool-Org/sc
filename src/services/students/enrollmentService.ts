@@ -4,36 +4,39 @@ import { map } from 'rxjs';
 import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
-import type { NewMaterial, RawNewMaterial } from '@/domain/newMaterial';
-import type { NewMaterialUnit, RawNewMaterialUnit } from '@/domain/newMaterialUnit';
-import type { NewUnit, RawNewUnit } from '@/domain/newUnit';
-import type { NewUnitTemplate, RawNewUnitTemplate } from '@/domain/newUnitTemplate';
+import type { Material, RawMaterial } from '@/domain/material';
+import type { MaterialCompletion } from '@/domain/materialCompletion';
+import type { NewSubmission, RawNewSubmission } from '@/domain/newSubmission';
+import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { RawStudentStudent, StudentStudent } from '@/domain/student/student';
 import type { StudentTutor } from '@/domain/student/tutor';
+import type { RawUnit, Unit } from '@/domain/unit';
 import type { IHttpService } from '@/services/httpService';
 
 export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
   student: StudentStudent;
   course: Course & {
-    newUnitTemplates: NewUnitTemplate[];
-    newMaterialUnits: Array<NewMaterialUnit & {
-      newMaterials: NewMaterial[];
+    newSubmissionTemplates: NewSubmissionTemplate[];
+    units: Array<Unit & {
+      materials: Material[];
     }>;
   };
   tutor: StudentTutor | null;
-  newUnits: NewUnit[];
+  newSubmissions: NewSubmission[];
+  materialCompletions: MaterialCompletion[];
 };
 
 type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
   student: RawStudentStudent;
   course: Course & {
-    newUnitTemplates: RawNewUnitTemplate[];
-    newMaterialUnits: Array<RawNewMaterialUnit & {
-      newMaterials: RawNewMaterial[];
+    newSubmissionTemplates: RawNewSubmissionTemplate[];
+    units: Array<RawUnit & {
+      materials: RawMaterial[];
     }>;
   };
   tutor: StudentTutor;
-  newUnits: RawNewUnit[];
+  newSubmissions: RawNewSubmission[];
+  materialCompletions: MaterialCompletion[];
 };
 
 export interface IEnrollmentService {
@@ -68,29 +71,29 @@ export class EnrollmentService implements IEnrollmentService {
       },
       course: {
         ...enrollment.course,
-        newUnitTemplates: enrollment.course.newUnitTemplates.map(u => ({
+        newSubmissionTemplates: enrollment.course.newSubmissionTemplates.map(u => ({
           ...u,
           created: new Date(u.created),
           modified: u.modified === null ? null : new Date(u.modified),
         })),
-        newMaterialUnits: enrollment.course.newMaterialUnits.map(u => ({
+        units: enrollment.course.units.map(u => ({
           ...u,
           created: new Date(u.created),
           modified: u.modified === null ? null : new Date(u.modified),
-          newMaterials: u.newMaterials.map(m => ({
+          materials: u.materials.map(m => ({
             ...m,
             created: new Date(m.created),
             modified: m.modified === null ? null : new Date(m.modified),
           })),
         })),
       },
-      newUnits: enrollment.newUnits.map(u => ({
-        ...u,
-        submitted: u.submitted === null ? null : new Date(u.submitted),
-        transferred: u.transferred === null ? null : new Date(u.transferred),
-        closed: u.closed === null ? null : new Date(u.closed),
-        created: new Date(u.created),
-        modified: u.modified === null ? null : new Date(u.modified),
+      newSubmissions: enrollment.newSubmissions.map(s => ({
+        ...s,
+        submitted: s.submitted === null ? null : new Date(s.submitted),
+        transferred: s.transferred === null ? null : new Date(s.transferred),
+        closed: s.closed === null ? null : new Date(s.closed),
+        created: new Date(s.created),
+        modified: s.modified === null ? null : new Date(s.modified),
       })),
     };
   };

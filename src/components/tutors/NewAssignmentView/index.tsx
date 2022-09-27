@@ -17,14 +17,14 @@ type Props = {
   tutorId: number;
   studentId: number;
   courseId: number;
-  unitId: string;
+  submissionId: string;
   assignmentId: string;
 };
 
-export const NewAssignmentView: FC<Props> = ({ tutorId, studentId, courseId, unitId, assignmentId }) => {
+export const NewAssignmentView: FC<Props> = ({ tutorId, studentId, courseId, submissionId, assignmentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(dispatch, tutorId, studentId, courseId, unitId, assignmentId);
+  useInitialData(dispatch, tutorId, studentId, courseId, submissionId, assignmentId);
 
   const inputSave$ = useInputSave(dispatch);
 
@@ -40,11 +40,11 @@ export const NewAssignmentView: FC<Props> = ({ tutorId, studentId, courseId, uni
     return null;
   }
 
-  if (state.newAssignment.newUnit.tutorId !== tutorId && state.newAssignment.newUnit.enrollment.tutorId !== tutorId) {
+  if (state.newAssignment.newSubmission.tutorId !== tutorId && state.newAssignment.newSubmission.enrollment.tutorId !== tutorId) {
     return <InaccessibleUnit reason="wrong tutor" />;
   }
 
-  if (!state.newAssignment.newUnit.submitted) {
+  if (!state.newAssignment.newSubmission.submitted) {
     return <InaccessibleUnit reason="not submitted" />;
   }
 

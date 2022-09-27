@@ -1,12 +1,12 @@
 import type { Course } from '@/domain/course';
-import type { NewMaterialUnit } from '@/domain/newMaterialUnit';
-import type { NewUnitTemplate } from '@/domain/newUnitTemplate';
+import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { School } from '@/domain/school';
+import type { Unit } from '@/domain/unit';
 
 type CourseWithSchoolAndUnitTemplates = Course & {
   school: School;
-  newUnitTemplates: NewUnitTemplate[];
-  newMaterialUnits: NewMaterialUnit[];
+  newSubmissionTemplates: NewSubmissionTemplate[];
+  units: Unit[];
 };
 
 export type State = {
@@ -15,7 +15,7 @@ export type State = {
     processingState: 'idle' | 'saving' | 'save error';
     errorMessage?: string;
   };
-  newUnitTemplateForm: {
+  newSubmissionTemplateForm: {
     data: {
       unitLetter: string;
       title: string;
@@ -35,7 +35,7 @@ export type State = {
     processingState: 'idle' | 'inserting' | 'insert error';
     errorMessage?: string;
   };
-  newMaterialUnitForm: {
+  unitForm: {
     data: {
       unitLetter: string;
       title: string;
@@ -61,28 +61,28 @@ export type Action =
   | { type: 'ENABLE_COURSE_SUCCEEDED'; payload: Course }
   | { type: 'ENABLE_COURSE_FAILED'; payload?: string }
 
-  | { type: 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED'; payload: string }
-  | { type: 'UNIT_TEMPLATE_TITLE_CHANGED'; payload: string }
-  | { type: 'UNIT_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
-  | { type: 'UNIT_TEMPLATE_MARKING_CRITERIA_CHANGED'; payload: string }
-  | { type: 'UNIT_TEMPLATE_ORDER_CHANGED'; payload: string }
-  | { type: 'UNIT_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
-  | { type: 'ADD_UNIT_TEMPLATE_STARTED' }
-  | { type: 'ADD_UNIT_TEMPLATE_SUCCEEDED'; payload: NewUnitTemplate }
-  | { type: 'ADD_UNIT_TEMPLATE_FAILED'; payload?: string }
+  | { type: 'SUBMISSION_TEMPLATE_UNIT_LETTER_CHANGED'; payload: string }
+  | { type: 'SUBMISSION_TEMPLATE_TITLE_CHANGED'; payload: string }
+  | { type: 'SUBMISSION_TEMPLATE_DESCRIPTION_CHANGED'; payload: string }
+  | { type: 'SUBMISSION_TEMPLATE_MARKING_CRITERIA_CHANGED'; payload: string }
+  | { type: 'SUBMISSION_TEMPLATE_ORDER_CHANGED'; payload: string }
+  | { type: 'SUBMISSION_TEMPLATE_OPTIONAL_CHANGED'; payload: boolean }
+  | { type: 'ADD_SUBMISSION_TEMPLATE_STARTED' }
+  | { type: 'ADD_SUBMISSION_TEMPLATE_SUCCEEDED'; payload: NewSubmissionTemplate }
+  | { type: 'ADD_SUBMISSION_TEMPLATE_FAILED'; payload?: string }
 
-  | { type: 'MATERIAL_UNIT_UNIT_LETTER_CHANGED'; payload: string }
-  | { type: 'MATERIAL_UNIT_TITLE_CHANGED'; payload: string }
-  | { type: 'MATERIAL_UNIT_ORDER_CHANGED'; payload: string }
-  | { type: 'ADD_MATERIAL_UNIT_STARTED' }
-  | { type: 'ADD_MATERIAL_UNIT_SUCCEEDED'; payload: NewMaterialUnit }
-  | { type: 'ADD_MATERIAL_UNIT_FAILED'; payload?: string };
+  | { type: 'UNIT_UNIT_LETTER_CHANGED'; payload: string }
+  | { type: 'UNIT_TITLE_CHANGED'; payload: string }
+  | { type: 'UNIT_ORDER_CHANGED'; payload: string }
+  | { type: 'ADD_UNIT_STARTED' }
+  | { type: 'ADD_UNIT_SUCCEEDED'; payload: Unit }
+  | { type: 'ADD_UNIT_FAILED'; payload?: string };
 
 export const initialState: State = {
   enableForm: {
     processingState: 'idle',
   },
-  newUnitTemplateForm: {
+  newSubmissionTemplateForm: {
     data: {
       unitLetter: 'A',
       title: '',
@@ -94,7 +94,7 @@ export const initialState: State = {
     validationMessages: {},
     processingState: 'idle',
   },
-  newMaterialUnitForm: {
+  unitForm: {
     data: {
       unitLetter: 'A',
       title: '',
@@ -110,15 +110,15 @@ export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'LOAD_DATA_SUCCEEDED': {
       let unitLetter = 'A';
-      if (action.payload.newUnitTemplates.length) {
-        const nextLetter = String.fromCharCode(Math.max(...action.payload.newUnitTemplates.map(u => u.unitLetter.charCodeAt(0))) + 1);
+      if (action.payload.newSubmissionTemplates.length) {
+        const nextLetter = String.fromCharCode(Math.max(...action.payload.newSubmissionTemplates.map(u => u.unitLetter.charCodeAt(0))) + 1);
         if (nextLetter < 'Z') {
           unitLetter = nextLetter;
         }
       }
       let materialUnitLetter = 'A';
-      if (action.payload.newMaterialUnits.length) {
-        const nextLetter = String.fromCharCode(Math.max(...action.payload.newMaterialUnits.map(u => u.unitLetter.charCodeAt(0))) + 1);
+      if (action.payload.units.length) {
+        const nextLetter = String.fromCharCode(Math.max(...action.payload.units.map(u => u.unitLetter.charCodeAt(0))) + 1);
         if (nextLetter < 'Z') {
           materialUnitLetter = nextLetter;
         }
@@ -126,20 +126,20 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         course: action.payload,
-        newUnitTemplateForm: {
+        newSubmissionTemplateForm: {
           data: {
             unitLetter,
             title: '',
             description: '',
             markingCriteria: '',
-            order: action.payload.newUnitTemplates.length === 0 ? '0' : Math.max(...action.payload.newUnitTemplates.map(u => u.order)).toString(),
+            order: action.payload.newSubmissionTemplates.length === 0 ? '0' : Math.max(...action.payload.newSubmissionTemplates.map(u => u.order)).toString(),
             optional: false,
           },
           validationMessages: {},
           processingState: 'idle',
           errorMessage: undefined,
         },
-        newMaterialUnitForm: {
+        unitForm: {
           data: {
             unitLetter: materialUnitLetter,
             title: '',
@@ -169,7 +169,7 @@ export const reducer = (state: State, action: Action): State => {
       };
     case 'ENABLE_COURSE_FAILED':
       return { ...state, enableForm: { processingState: 'save error', errorMessage: action.payload } };
-    case 'UNIT_TEMPLATE_UNIT_LETTER_CHANGED': {
+    case 'SUBMISSION_TEMPLATE_UNIT_LETTER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
         validationMessage = 'Required';
@@ -177,19 +177,19 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Maximum of one character allowed';
       } else if (!/[a-z0-9]/iu.test(action.payload)) {
         validationMessage = 'Only letters A to Z and numbers 0 to 9 are allowed';
-      } else if (state.course?.newUnitTemplates.some(u => u.unitLetter === action.payload.toUpperCase())) {
+      } else if (state.course?.newSubmissionTemplates.some(u => u.unitLetter === action.payload.toUpperCase())) {
         validationMessage = 'Another unit already has this unit letter';
       }
       return {
         ...state,
-        newUnitTemplateForm: {
-          ...state.newUnitTemplateForm,
-          data: { ...state.newUnitTemplateForm.data, unitLetter: action.payload.toUpperCase() },
-          validationMessages: { ...state.newUnitTemplateForm.validationMessages, unitLetter: validationMessage },
+        newSubmissionTemplateForm: {
+          ...state.newSubmissionTemplateForm,
+          data: { ...state.newSubmissionTemplateForm.data, unitLetter: action.payload.toUpperCase() },
+          validationMessages: { ...state.newSubmissionTemplateForm.validationMessages, unitLetter: validationMessage },
         },
       };
     }
-    case 'UNIT_TEMPLATE_TITLE_CHANGED': {
+    case 'SUBMISSION_TEMPLATE_TITLE_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
@@ -200,14 +200,14 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newUnitTemplateForm: {
-          ...state.newUnitTemplateForm,
-          data: { ...state.newUnitTemplateForm.data, title: action.payload },
-          validationMessages: { ...state.newUnitTemplateForm.validationMessages, title: validationMessage },
+        newSubmissionTemplateForm: {
+          ...state.newSubmissionTemplateForm,
+          data: { ...state.newSubmissionTemplateForm.data, title: action.payload },
+          validationMessages: { ...state.newSubmissionTemplateForm.validationMessages, title: validationMessage },
         },
       };
     }
-    case 'UNIT_TEMPLATE_DESCRIPTION_CHANGED': {
+    case 'SUBMISSION_TEMPLATE_DESCRIPTION_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
@@ -218,14 +218,14 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newUnitTemplateForm: {
-          ...state.newUnitTemplateForm,
-          data: { ...state.newUnitTemplateForm.data, description: action.payload },
-          validationMessages: { ...state.newUnitTemplateForm.validationMessages, description: validationMessage },
+        newSubmissionTemplateForm: {
+          ...state.newSubmissionTemplateForm,
+          data: { ...state.newSubmissionTemplateForm.data, description: action.payload },
+          validationMessages: { ...state.newSubmissionTemplateForm.validationMessages, description: validationMessage },
         },
       };
     }
-    case 'UNIT_TEMPLATE_MARKING_CRITERIA_CHANGED': {
+    case 'SUBMISSION_TEMPLATE_MARKING_CRITERIA_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
@@ -236,14 +236,14 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newUnitTemplateForm: {
-          ...state.newUnitTemplateForm,
-          data: { ...state.newUnitTemplateForm.data, markingCriteria: action.payload },
-          validationMessages: { ...state.newUnitTemplateForm.validationMessages, markingCriteria: validationMessage },
+        newSubmissionTemplateForm: {
+          ...state.newSubmissionTemplateForm,
+          data: { ...state.newSubmissionTemplateForm.data, markingCriteria: action.payload },
+          validationMessages: { ...state.newSubmissionTemplateForm.validationMessages, markingCriteria: validationMessage },
         },
       };
     }
-    case 'UNIT_TEMPLATE_ORDER_CHANGED': {
+    case 'SUBMISSION_TEMPLATE_ORDER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
         validationMessage = 'Required';
@@ -259,36 +259,36 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newUnitTemplateForm: {
-          ...state.newUnitTemplateForm,
-          data: { ...state.newUnitTemplateForm.data, order: action.payload },
-          validationMessages: { ...state.newUnitTemplateForm.validationMessages, order: validationMessage },
+        newSubmissionTemplateForm: {
+          ...state.newSubmissionTemplateForm,
+          data: { ...state.newSubmissionTemplateForm.data, order: action.payload },
+          validationMessages: { ...state.newSubmissionTemplateForm.validationMessages, order: validationMessage },
         },
       };
     }
-    case 'UNIT_TEMPLATE_OPTIONAL_CHANGED':
+    case 'SUBMISSION_TEMPLATE_OPTIONAL_CHANGED':
       return {
         ...state,
-        newUnitTemplateForm: { ...state.newUnitTemplateForm, data: { ...state.newUnitTemplateForm.data, optional: action.payload } },
+        newSubmissionTemplateForm: { ...state.newSubmissionTemplateForm, data: { ...state.newSubmissionTemplateForm.data, optional: action.payload } },
       };
 
-    case 'ADD_UNIT_TEMPLATE_STARTED':
+    case 'ADD_SUBMISSION_TEMPLATE_STARTED':
       return {
         ...state,
-        newUnitTemplateForm: { ...state.newUnitTemplateForm, processingState: 'inserting', errorMessage: undefined },
+        newSubmissionTemplateForm: { ...state.newSubmissionTemplateForm, processingState: 'inserting', errorMessage: undefined },
       };
-    case 'ADD_UNIT_TEMPLATE_SUCCEEDED': {
+    case 'ADD_SUBMISSION_TEMPLATE_SUCCEEDED': {
       if (!state.course) {
         throw Error('course is undefined');
       }
-      const newUnitTemplates = [ ...state.course.newUnitTemplates, action.payload ].sort((a, b) => {
+      const newSubmissionTemplates = [ ...state.course.newSubmissionTemplates, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
           return a.unitLetter.localeCompare(b.unitLetter);
         }
         return a.order - b.order;
       });
       let unitLetter = 'A';
-      const nextLetter = String.fromCharCode(Math.max(...newUnitTemplates.map(u => u.unitLetter.charCodeAt(0))) + 1);
+      const nextLetter = String.fromCharCode(Math.max(...newSubmissionTemplates.map(u => u.unitLetter.charCodeAt(0))) + 1);
       if (nextLetter < 'Z') {
         unitLetter = nextLetter;
       }
@@ -296,16 +296,16 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         course: {
           ...state.course,
-          newUnitTemplates,
+          newSubmissionTemplates,
         },
-        newUnitTemplateForm: {
-          ...state.newUnitTemplateForm,
+        newSubmissionTemplateForm: {
+          ...state.newSubmissionTemplateForm,
           data: {
             unitLetter,
             title: '',
             description: '',
             markingCriteria: '',
-            order: Math.max(...newUnitTemplates.map(u => u.order)).toString(),
+            order: Math.max(...newSubmissionTemplates.map(u => u.order)).toString(),
             optional: false,
           },
           validationMessages: {},
@@ -314,12 +314,12 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'ADD_UNIT_TEMPLATE_FAILED':
+    case 'ADD_SUBMISSION_TEMPLATE_FAILED':
       return {
         ...state,
-        newUnitTemplateForm: { ...state.newUnitTemplateForm, processingState: 'insert error', errorMessage: action.payload },
+        newSubmissionTemplateForm: { ...state.newSubmissionTemplateForm, processingState: 'insert error', errorMessage: action.payload },
       };
-    case 'MATERIAL_UNIT_UNIT_LETTER_CHANGED': {
+    case 'UNIT_UNIT_LETTER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
         validationMessage = 'Required';
@@ -330,14 +330,14 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newMaterialUnitForm: {
-          ...state.newMaterialUnitForm,
-          data: { ...state.newMaterialUnitForm.data, unitLetter: action.payload.toUpperCase() },
-          validationMessages: { ...state.newMaterialUnitForm.validationMessages, unitLetter: validationMessage },
+        unitForm: {
+          ...state.unitForm,
+          data: { ...state.unitForm.data, unitLetter: action.payload.toUpperCase() },
+          validationMessages: { ...state.unitForm.validationMessages, unitLetter: validationMessage },
         },
       };
     }
-    case 'MATERIAL_UNIT_TITLE_CHANGED': {
+    case 'UNIT_TITLE_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
@@ -348,14 +348,14 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newMaterialUnitForm: {
-          ...state.newMaterialUnitForm,
-          data: { ...state.newMaterialUnitForm.data, title: action.payload },
-          validationMessages: { ...state.newMaterialUnitForm.validationMessages, title: validationMessage },
+        unitForm: {
+          ...state.unitForm,
+          data: { ...state.unitForm.data, title: action.payload },
+          validationMessages: { ...state.unitForm.validationMessages, title: validationMessage },
         },
       };
     }
-    case 'MATERIAL_UNIT_ORDER_CHANGED': {
+    case 'UNIT_ORDER_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload.length === 0) {
         validationMessage = 'Required';
@@ -371,30 +371,30 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        newMaterialUnitForm: {
-          ...state.newMaterialUnitForm,
-          data: { ...state.newMaterialUnitForm.data, order: action.payload },
-          validationMessages: { ...state.newMaterialUnitForm.validationMessages, order: validationMessage },
+        unitForm: {
+          ...state.unitForm,
+          data: { ...state.unitForm.data, order: action.payload },
+          validationMessages: { ...state.unitForm.validationMessages, order: validationMessage },
         },
       };
     }
-    case 'ADD_MATERIAL_UNIT_STARTED':
+    case 'ADD_UNIT_STARTED':
       return {
         ...state,
-        newMaterialUnitForm: { ...state.newMaterialUnitForm, processingState: 'inserting', errorMessage: undefined },
+        unitForm: { ...state.unitForm, processingState: 'inserting', errorMessage: undefined },
       };
-    case 'ADD_MATERIAL_UNIT_SUCCEEDED': {
+    case 'ADD_UNIT_SUCCEEDED': {
       if (!state.course) {
         throw Error('course is undefined');
       }
-      const newMaterialUnits = [ ...state.course.newMaterialUnits, action.payload ].sort((a, b) => {
+      const units = [ ...state.course.units, action.payload ].sort((a, b) => {
         if (a.order === b.order) {
           return a.unitLetter.localeCompare(b.unitLetter);
         }
         return a.order - b.order;
       });
       let unitLetter = 'A';
-      const nextLetter = String.fromCharCode(Math.max(...newMaterialUnits.map(u => u.unitLetter.charCodeAt(0))) + 1);
+      const nextLetter = String.fromCharCode(Math.max(...units.map(u => u.unitLetter.charCodeAt(0))) + 1);
       if (nextLetter < 'Z') {
         unitLetter = nextLetter;
       }
@@ -402,10 +402,10 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         course: {
           ...state.course,
-          newMaterialUnits,
+          units,
         },
-        newMaterialUnitForm: {
-          ...state.newMaterialUnitForm,
+        unitForm: {
+          ...state.unitForm,
           data: {
             unitLetter,
             title: '',
@@ -417,10 +417,10 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'ADD_MATERIAL_UNIT_FAILED':
+    case 'ADD_UNIT_FAILED':
       return {
         ...state,
-        newMaterialUnitForm: { ...state.newMaterialUnitForm, processingState: 'insert error', errorMessage: action.payload },
+        unitForm: { ...state.unitForm, processingState: 'insert error', errorMessage: action.payload },
       };
   }
 };

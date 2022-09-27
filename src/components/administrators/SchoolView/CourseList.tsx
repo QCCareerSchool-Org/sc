@@ -27,7 +27,7 @@ export const CourseList: FC<Props> = memo(props => {
               <td className="text-center">{c.code}</td>
               <td>{c.name}</td>
               <td className="text-center">{c.version}</td>
-              <td className="text-center">{c.unitType === 0 ? 'old' : c.unitType === 1 ? 'new' : 'unknown'}</td>
+              <td className="text-center">{c.submissionType === 0 ? 'old' : c.submissionType === 1 ? 'new' : 'unknown'}</td>
             </tr>
           ))}
         </tbody>

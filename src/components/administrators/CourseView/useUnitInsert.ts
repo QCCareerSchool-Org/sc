@@ -5,30 +5,30 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
-import type { NewUnitTemplateAddPayload } from '@/services/administrators/newUnitTemplateService';
+import type { UnitInsertPayload } from '@/services/administrators/unitService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewUnitTemplateInsertEvent = {
+export type UnitInsertEvent = {
+  processingState: State['unitForm']['processingState'];
   administratorId: number;
-  payload: NewUnitTemplateAddPayload;
-  processingState: State['newUnitTemplateForm']['processingState'];
+  payload: UnitInsertPayload;
 };
 
-export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<NewUnitTemplateInsertEvent> => {
-  const { newUnitTemplateService } = useAdminServices();
+export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<UnitInsertEvent> => {
+  const { unitService } = useAdminServices();
   const navigateToLogin = useNavigateToLogin();
 
-  const unitInsert$ = useRef(new Subject<NewUnitTemplateInsertEvent>());
+  const insert$ = useRef(new Subject<UnitInsertEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    unitInsert$.current.pipe(
+    insert$.current.pipe(
       filter(({ processingState }) => processingState !== 'inserting'),
-      tap(() => dispatch({ type: 'ADD_UNIT_TEMPLATE_STARTED' })),
-      exhaustMap(({ administratorId, payload }) => newUnitTemplateService.addUnit(administratorId, payload).pipe(
+      tap(() => dispatch({ type: 'ADD_UNIT_STARTED' })),
+      exhaustMap(({ administratorId, payload }) => unitService.addUnit(administratorId, payload).pipe(
         tap({
-          next: insertedUnit => dispatch({ type: 'ADD_UNIT_TEMPLATE_SUCCEEDED', payload: insertedUnit }),
+          next: insertedMaterial => dispatch({ type: 'ADD_UNIT_SUCCEEDED', payload: insertedMaterial }),
           error: err => {
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
@@ -39,7 +39,7 @@ export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<NewUnitTempla
                 message = err.message;
               }
             }
-            dispatch({ type: 'ADD_UNIT_TEMPLATE_FAILED', payload: message });
+            dispatch({ type: 'ADD_UNIT_FAILED', payload: message });
           },
         }),
         catchError(() => EMPTY),
@@ -48,7 +48,7 @@ export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<NewUnitTempla
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, newUnitTemplateService, navigateToLogin ]);
+  }, [ dispatch, unitService, navigateToLogin ]);
 
-  return unitInsert$.current;
+  return insert$.current;
 };

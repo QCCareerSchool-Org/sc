@@ -7,13 +7,13 @@ import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart, RawNewPart } from '@/domain/newPart';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
+import type { NewSubmission, RawNewSubmission } from '@/domain/newSubmission';
 import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
-import type { NewUnit, RawNewUnit } from '@/domain/newUnit';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
 import type { IHttpService } from '@/services/httpService';
 
 export type NewAssignmentWithUnitAndChildren = NewAssignment & {
-  newUnit: Omit<NewUnit, 'complete' | 'points' | 'mark'> & {
+  newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark'> & {
     enrollment: Enrollment;
   };
   newParts: Array<NewPart & {
@@ -25,7 +25,7 @@ export type NewAssignmentWithUnitAndChildren = NewAssignment & {
 };
 
 type RawNewAssignmentWithUnitAndChildren = RawNewAssignment & {
-  newUnit: Omit<RawNewUnit, 'complete' | 'points' | 'mark'> & {
+  newSubmission: Omit<RawNewSubmission, 'complete' | 'points' | 'mark'> & {
     enrollment: RawEnrollment;
   };
   newParts: Array<RawNewPart & {
@@ -84,16 +84,16 @@ export class NewAssignmentService implements INewAssignmentService {
       ...newAssignment,
       created: new Date(newAssignment.created),
       modified: newAssignment.modified === null ? null : new Date(newAssignment.modified),
-      newUnit: {
-        ...newAssignment.newUnit,
-        submitted: newAssignment.newUnit.submitted === null ? null : new Date(newAssignment.newUnit.submitted),
-        transferred: newAssignment.newUnit.transferred === null ? null : new Date(newAssignment.newUnit.transferred),
-        closed: newAssignment.newUnit.closed === null ? null : new Date(newAssignment.newUnit.closed),
-        created: new Date(newAssignment.newUnit.created),
-        modified: newAssignment.newUnit.modified === null ? null : new Date(newAssignment.newUnit.modified),
+      newSubmission: {
+        ...newAssignment.newSubmission,
+        submitted: newAssignment.newSubmission.submitted === null ? null : new Date(newAssignment.newSubmission.submitted),
+        transferred: newAssignment.newSubmission.transferred === null ? null : new Date(newAssignment.newSubmission.transferred),
+        closed: newAssignment.newSubmission.closed === null ? null : new Date(newAssignment.newSubmission.closed),
+        created: new Date(newAssignment.newSubmission.created),
+        modified: newAssignment.newSubmission.modified === null ? null : new Date(newAssignment.newSubmission.modified),
         enrollment: {
-          ...newAssignment.newUnit.enrollment,
-          enrollmentDate: newAssignment.newUnit.enrollment.enrollmentDate === null ? null : new Date(newAssignment.newUnit.enrollment.enrollmentDate),
+          ...newAssignment.newSubmission.enrollment,
+          enrollmentDate: newAssignment.newSubmission.enrollment.enrollmentDate === null ? null : new Date(newAssignment.newSubmission.enrollment.enrollmentDate),
         },
       },
       newAssignmentMedia: newAssignment.newAssignmentMedia.map(m => ({

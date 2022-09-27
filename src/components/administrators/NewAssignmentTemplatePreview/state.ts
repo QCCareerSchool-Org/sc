@@ -1,14 +1,14 @@
 import { sanitize } from '../../../sanitize';
-import type { NewAssignmentTemplateWithUnitAndPartsAndInputs } from '@/services/administrators/newAssignmentTemplateService';
+import type { NewAssignmentTemplateWithSubmissionTemplateAndChildren } from '@/services/administrators/newAssignmentTemplateService';
 
 export type State = {
-  assignmentTemplate?: NewAssignmentTemplateWithUnitAndPartsAndInputs;
+  assignmentTemplate?: NewAssignmentTemplateWithSubmissionTemplateAndChildren;
   error: boolean;
   errorCode?: number;
 };
 
 export type Action =
-  | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithUnitAndPartsAndInputs }
+  | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithSubmissionTemplateAndChildren }
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_FAILED'; payload?: number };
 
 export const initialState: State = {
