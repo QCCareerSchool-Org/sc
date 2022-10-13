@@ -50,7 +50,7 @@ export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, un
 
   return (
     <>
-      <div onClick={handleClick} className="d-flex justify-content-between" style={{ cursor: 'pointer' }}>
+      <div onClick={handleClick} className={`d-flex justify-content-between ${firstUnit ? '' : 'mt-4'}`} style={{ cursor: 'pointer' }}>
         <h3 className="h5 mb-0">Unit {unit.unitLetter}</h3>
         {open ? <AiOutlineMinusCircle size={iconSize} /> : <AiOutlinePlusCircle size={iconSize} />}
       </div>
@@ -61,12 +61,12 @@ export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, un
             const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
             return (
               <Fragment key={m.materialId}>
-                {i > 0 && <hr />}
+                {i > 0 && <hr className="my-0" />}
                 <MaterialItem key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} />
               </Fragment>
             );
           })}
-          {unit.videos.length > 0 && (
+          {/* {unit.videos.length > 0 && (
             <>
               {unit.materials.length > 0 && <hr />}
               <h4 className="h5">Videos in Unit {unit.unitLetter}</h4>
@@ -79,7 +79,7 @@ export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, un
                 ))}
               </div>
             </>
-          )}
+          )} */}
         </>
       )}
     </>
@@ -96,6 +96,7 @@ const Separator: FC = () => (
         border-left:0;
         border-bottom: 2px solid #c70c27;
         border-right:0;
+        margin-bottom: 0;
       }
     `}</style>
   </>
