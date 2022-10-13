@@ -5,8 +5,8 @@ export type UnitToggleState = {
 };
 
 export type UnitToggleAction =
-| { type: 'INITIALIZE'; payload: UnitToggleState }
-| { type: 'TOGGLE'; payload: { courseId: number; unitLetter: string } };
+  | { type: 'INITIALIZE'; payload: UnitToggleState }
+  | { type: 'TOGGLE'; payload: { courseId: number; unitLetter: string } };
 
 export const unitToggleInitialState = {};
 
@@ -32,21 +32,20 @@ export const unitToggleReducer = (state: UnitToggleState, action: UnitToggleActi
     case 'INITIALIZE':
       return action.payload;
     case 'TOGGLE': {
-      if (typeof state[action.payload.courseId] === 'undefined') {
-        return {
+      const newState: UnitToggleState = typeof state[action.payload.courseId] === 'object'
+        ? {
+          ...state,
+          [action.payload.courseId]: {
+            ...state[action.payload.courseId],
+            [action.payload.unitLetter]: !state[action.payload.courseId][action.payload.unitLetter],
+          },
+        }
+        : {
           ...state,
           [action.payload.courseId]: {
             [action.payload.unitLetter]: true,
           },
         };
-      }
-      const newState: UnitToggleState = {
-        ...state,
-        [action.payload.courseId]: {
-          ...state[action.payload.courseId],
-          [action.payload.unitLetter]: !state[action.payload.courseId][action.payload.unitLetter],
-        },
-      };
       storeState(newState);
       return newState;
     }
@@ -54,7 +53,6 @@ export const unitToggleReducer = (state: UnitToggleState, action: UnitToggleActi
 };
 
 const storeState = (state: UnitToggleState): void => {
-  console.log(JSON.parse(JSON.stringify(state)));
   if (typeof window !== 'undefined' && 'localStorage' in window && window.navigator.cookieEnabled) {
     window.localStorage.setItem('unitToggles', JSON.stringify(state));
   }
