@@ -14,7 +14,7 @@ export const SubmissionsTable: FC<Props> = memo(props => {
   return (
     <>
       {newSubmissions.length === 0
-        ? <p>No submissions.</p>
+        ? <p>No submissions found.</p>
         : (
           <table className="table table-bordered table-hover bg-white">
             <thead>

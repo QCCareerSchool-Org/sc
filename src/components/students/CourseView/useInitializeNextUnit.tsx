@@ -31,7 +31,7 @@ export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<Initi
         tap({
           next: newSubmission => {
             dispatch({ type: 'INITIALIZE_UNIT_SUCCEEDED', payload: newSubmission });
-            void router.push(router.asPath + '/units/' + newSubmission.submissionId);
+            void router.push(router.asPath + '/submissions/' + newSubmission.submissionId);
           },
           error: err => {
             let message = 'Initialize failed';

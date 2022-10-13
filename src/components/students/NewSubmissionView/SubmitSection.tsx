@@ -36,18 +36,18 @@ export const SubmitSection: FC<Props> = props => {
   return (
     <Section className="submitSection">
       <div className="container">
-        <h2>Submit Unit</h2>
+        <h2>Submit Assignments</h2>
         {unitComplete && (
           <>
-            <p>Your unit is complete. Please click the Submit button below to send it to your tutor for marking. Once you have submitted your unit, you will not be able to make any further changes to it.</p>
-            {optionalAssignmentsIncomplete && <p><strong>Note:</strong> Some optional assignments are not yet complete. You can submit your unit now, but your tutor will not mark the incomplete assignments.</p>}
+            <p>Your assignments are complete. Please click the &ldquo;Submit Assignments&rdquo; button below to send it to your tutor for marking. Once you have submitted your assignments, you will not be able to make any further changes to them.</p>
+            {optionalAssignmentsIncomplete && <p><strong>Note:</strong> Some optional assignments are not yet complete. You can submit your assignments now, but your tutor will not mark the incomplete assignments.</p>}
           </>
         )}
         {!unitComplete && (
-          <p>Your unit is <u>not yet complete</u>. Please complete all assignments before submitting your unit.</p>
+          <p>Your assignments are <u>not yet complete</u>. Please complete all assignments before submitting.</p>
         )}
         <div className="d-flex align-items-center">
-          <button onClick={handleButtonClick} className="btn btn-primary" disabled={buttonDisabled}>Submit Unit</button>
+          <button onClick={handleButtonClick} className="btn btn-primary" disabled={buttonDisabled}>Submit Assignments</button>
           {processingState === 'submitting' && <div className="ms-2"><Spinner /></div>}
           {processingState === 'submit error' && <span className="text-danger ms-2">{errorMessage ? errorMessage : 'Error'}</span>}
         </div>

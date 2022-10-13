@@ -44,7 +44,7 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
           <div className="row">
             <div className="col-12 col-md-10 col-lg-8">
               {state.newSubmission.optional && <span className="text-danger">OPTIONAL</span>}
-              <h1>Unit {state.newSubmission.unitLetter}{state.newSubmission.title && <>: {state.newSubmission.title}</>}</h1>
+              <h1>Submission {state.newSubmission.unitLetter}{state.newSubmission.title && <>: {state.newSubmission.title}</>}</h1>
               <NewSubmissionInfoTable newSubmission={state.newSubmission} />
               <NewSubmissionStatus studentId={studentId} courseId={courseId} newSubmission={state.newSubmission} />
             </div>

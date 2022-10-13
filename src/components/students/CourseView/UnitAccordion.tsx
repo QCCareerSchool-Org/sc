@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
 import type { Subject } from 'rxjs';
@@ -23,19 +23,30 @@ type Props = {
   };
   materialCompletions: MaterialCompletion[];
   materialCompletion$: Subject<MaterialCompleteEvent>;
+  firstUnit: boolean;
 };
 
 const iconSize = 24;
 
-export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, unit, materialCompletions, materialCompletion$ }) => {
+export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, unit, materialCompletions, materialCompletion$, firstUnit }) => {
   const unitToggleState = useUnitToggleState();
   const unitToggleDispatch = useUnitToggleDispatch();
+  const firstRender = useRef(true);
 
   const handleClick = (): void => {
     unitToggleDispatch({ type: 'TOGGLE', payload: { courseId, unitLetter: unit.unitLetter } });
   };
 
-  const open = !!unitToggleState?.[courseId]?.[unit.unitLetter];
+  // on the first render, toggle the unit if we don't have any toggle data
+  useEffect(() => {
+    if (firstRender.current && typeof unitToggleState[courseId] === 'undefined' && firstUnit) {
+      console.log('calling dispatch automatically', unitToggleState);
+      unitToggleDispatch({ type: 'TOGGLE', payload: { courseId, unitLetter: unit.unitLetter } });
+    }
+    firstRender.current = false;
+  }, [ courseId, firstUnit, unit.unitLetter, unitToggleDispatch, unitToggleState ]);
+
+  const open = !!unitToggleState[courseId]?.[unit.unitLetter];
 
   return (
     <>
