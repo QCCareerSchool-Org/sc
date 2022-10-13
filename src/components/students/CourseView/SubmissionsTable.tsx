@@ -16,32 +16,29 @@ export const SubmissionsTable: FC<Props> = memo(props => {
       {newSubmissions.length === 0
         ? <p>No submissions.</p>
         : (
-          <>
-            <h2 className="h4 text-shadow">Assignments</h2>
-            <table className="table table-bordered table-hover bg-white">
-              <thead>
-                <tr>
-                  <th className="text-center">Unit</th>
-                  <th>Status</th>
-                  <th className="text-center">Grade</th>
+          <table className="table table-bordered table-hover bg-white">
+            <thead>
+              <tr>
+                <th className="text-center">Unit</th>
+                <th>Status</th>
+                <th className="text-center">Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {newSubmissions.map(s => (
+                <tr key={s.submissionId} onClick={e => props.onNewUnitClick(e, s.submissionId)}>
+                  <td className="text-center">{s.unitLetter}</td>
+                  {s.closed
+                    ? <td>Marked {formatDate(s.closed)}</td>
+                    : s.submitted
+                      ? <td>{s.skipped ? 'Skipped' : 'Submitted'} {formatDate(s.submitted)}</td>
+                      : <td>In Progress</td>
+                  }
+                  <td className="text-center">---</td>
                 </tr>
-              </thead>
-              <tbody>
-                {newSubmissions.map(s => (
-                  <tr key={s.submissionId} onClick={e => props.onNewUnitClick(e, s.submissionId)}>
-                    <td className="text-center">{s.unitLetter}</td>
-                    {s.closed
-                      ? <td>Marked {formatDate(s.closed)}</td>
-                      : s.submitted
-                        ? <td>{s.skipped ? 'Skipped' : 'Submitted'} {formatDate(s.submitted)}</td>
-                        : <td>In Progress</td>
-                    }
-                    <td className="text-center">---</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
+              ))}
+            </tbody>
+          </table>
         )
       }
     </>

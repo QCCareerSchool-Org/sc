@@ -66,19 +66,19 @@ export const UnitEditForm: FC<Props> = memo(props => {
       <div className="formGroup">
         <label htmlFor={id + '_newMaterialTitle'} className="form-label">Title</label>
         <input onChange={props.onTitleChange} value={formState.data.title} type="text" id={id + '_newMaterialTitle'} maxLength={191} className={`form-control ${formState.validationMessages.title ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newMaterialTitleHelp'} />
-        <div id={id + '_newMaterialTitleHelp'} className="form-text">The title of this material</div>
+        <div id={id + '_newMaterialTitleHelp'} className="form-text">The title of this unit</div>
         {formState.validationMessages.title && <div className="invalid-feedback">{formState.validationMessages.title}</div>}
       </div>
       <div className="formGroup">
         <label htmlFor={id + '_newMaterialUnitLetter'} className="form-label">Unit Letter <span className="text-danger">*</span></label>
         <input onChange={props.onUnitLetterChange} value={formState.data.unitLetter} type="text" id={id + '_newMaterialUnitLetter'} maxLength={1} className={`form-control ${formState.validationMessages.unitLetter ? 'is-invalid' : ''}`} aria-describedby={id + '_newMaterialUnitLetterHelp'} required />
-        <div id={id + '_newMaterialUnitLetterHelp'} className="form-text">The unit for this material</div>
+        <div id={id + '_newMaterialUnitLetterHelp'} className="form-text">The unit letter for this unit</div>
         {formState.validationMessages.unitLetter && <div className="invalid-feedback">{formState.validationMessages.unitLetter}</div>}
       </div>
       <div className="formGroup">
         <label htmlFor={id + '_newMaterialOrder'} className="form-label">Order <span className="text-danger">*</span></label>
         <input onChange={props.onOrderChange} value={formState.data.order} type="number" id={id + '_newMaterialOrder'} min={0} max={127} className={`form-control ${formState.validationMessages.order ? 'is-invalid' : ''}`} required aria-describedby={id + '_newMaterialOrderHelp'} />
-        <div id={id + '_newMaterialOrderHelp'} className="form-text">The order in which the material should appear within its unit</div>
+        <div id={id + '_newMaterialOrderHelp'} className="form-text">The order in which unit should appear within its course</div>
         {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
       </div>
       <div className="d-flex align-items-center">

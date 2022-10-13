@@ -5,10 +5,13 @@ import type { Subject } from 'rxjs';
 import { MaterialItem } from './MaterialItem';
 import type { MaterialWithCompletionForm } from './state';
 import type { MaterialCompleteEvent } from './useMaterialCompletion';
+import { Video as VideoComponent } from '@/components/Video';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { Unit } from '@/domain/unit';
+import type { Video } from '@/domain/video';
 import { useUnitToggleDispatch } from '@/hooks/useUnitToggleDispatch';
 import { useUnitToggleState } from '@/hooks/useUnitToggleState';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;
@@ -16,6 +19,7 @@ type Props = {
   courseId: number;
   unit: Unit & {
     materials: MaterialWithCompletionForm[];
+    videos: Video[];
   };
   materialCompletions: MaterialCompletion[];
   materialCompletion$: Subject<MaterialCompleteEvent>;
@@ -40,10 +44,33 @@ export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, un
         {open ? <AiOutlineMinusCircle size={iconSize} /> : <AiOutlinePlusCircle size={iconSize} />}
       </div>
       <Separator />
-      {open && unit.materials.map(m => {
-        const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
-        return <MaterialItem key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} />;
-      })}
+      {open && (
+        <>
+          {unit.materials.map((m, i) => {
+            const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
+            return (
+              <>
+                {i > 0 && <hr />}
+                <MaterialItem key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} />
+              </>
+            );
+          })}
+          {unit.videos.length > 0 && (
+            <>
+              {unit.materials.length > 0 && <hr />}
+              <h4 className="h5">Videos in Unit {unit.unitLetter}</h4>
+              <div className="row my-4">
+                {unit.videos.map(v => (
+                  <div key={v.videoId} className="col-12 col-md-6 col-lg-4">
+                    <VideoComponent controls src={v.src} poster={v.posterSrc} captionSrc={v.captionSrc ?? undefined} style={{ maxWidth: '100%' }} />
+                    <h6>{v.title}</h6>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      )}
     </>
   );
 };

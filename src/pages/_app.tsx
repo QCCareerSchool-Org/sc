@@ -1,13 +1,14 @@
+import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { useEffect } from 'react';
 
 import { StateProvider } from '../providers';
 import { TrackJS } from '../trackjs-isomorphic';
 import { AppErrorBoundary } from '@/components/AppErrorBoundary';
 import { ErrorFallback } from '@/components/ErrorFallback';
-import { Layout } from '@/components/Layout';
+import { DefaultLayout } from '@/components/layouts/DefaultLayout';
 import { PageErrorBoundary } from '@/components/PageErrorBoundary';
 import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
@@ -29,24 +30,36 @@ if (!TrackJS.isInstalled()) {
   });
 }
 
-const SCApp = ({ Component, pageProps }: AppProps): ReactElement => {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
   const router = useRouter();
 
   useEffect(() => {
     import('bootstrap'); // load the boostrap javascript library on the client only
   }, [ router ]);
 
+  // Use the layout defined at the page level, if available
+  const getLayout = Component.getLayout ?? (page => <DefaultLayout>{page}</DefaultLayout>);
+
   return (
     <AppErrorBoundary>
       <ScrollPreventer />
       <StateProvider>
-        <Layout>
+        {getLayout(
           <RouteGuard>
             <PageErrorBoundary fallback={<ErrorFallback />}>
               <Component {...pageProps} />
             </PageErrorBoundary>
-          </RouteGuard>
-        </Layout>
+          </RouteGuard>,
+        )}
       </StateProvider>
     </AppErrorBoundary>
   );

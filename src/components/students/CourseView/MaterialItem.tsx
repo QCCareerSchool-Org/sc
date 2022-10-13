@@ -53,24 +53,26 @@ export const MaterialItem: FC<Props> = ({ studentId, enrollmentId, material, com
   const href = `${endpoint}/students/${studentId}/static/lessons/${material.materialId}${material.entryPoint}`;
   const imageSrc = `${endpoint}/students/${studentId}/materials/${material.materialId}/image`;
   return (
-    <div>
+    <>
       <MaterialBorder complete={complete}>
-        <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
-          <div className="thumbnailWrapper">
-            <a href={href} target="_blank" rel="noopener noreferrer" className="thumbnail">
-              <Img src={imageSrc} className="img-fluid rounded-4 shadow" alt="image" />
-            </a>
+        <div className="row py-3">
+          <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
+            <div className="thumbnailWrapper">
+              <a href={href} target="_blank" rel="noopener noreferrer" className="thumbnail">
+                <Img src={imageSrc} className="img-fluid rounded-4 shadow" alt="image" />
+              </a>
+            </div>
           </div>
-        </div>
-        <div className={`col-12 col-lg-5 col-xxl-6 mb-3 mb-lg-0 position-relative ${expanded ? '' : 'overflow-hidden'}`}>
-          <div ref={descriptionBox} className={`${expanded ? '' : 'description'}`}>
-            <h4 className="title h6 mb-2">{material.title}</h4>
-            <p className="small mb-0">{material.description}</p>
+          <div className={`col-12 col-lg-5 col-xxl-6 mb-3 mb-lg-0 position-relative ${expanded ? '' : 'overflow-hidden'}`}>
+            <div ref={descriptionBox} className={`${expanded ? '' : 'description'}`}>
+              <h4 className="title h6 mb-2">{material.title}</h4>
+              <p className="small mb-0">{material.description}</p>
+            </div>
+            {(expansion || expanded) && <button onClick={handleExpansionClick} className={`moreLink ${expanded ? 'expanded' : 'collapsed'} link-secondary text-decoration-none d-none d-lg-block btn btn-link btn-sm p-0 w-100 cursor-pointed small text-end`}>{expanded ? <><FaRegMinusSquare /> show less</> : <><FaRegPlusSquare /> show more</>}</button>}
           </div>
-          {(expansion || expanded) && <button onClick={handleExpansionClick} className={`moreLink ${expanded ? 'expanded' : 'collapsed'} link-secondary text-decoration-none d-none d-lg-block btn btn-link btn-sm p-0 w-100 cursor-pointed small text-end`}>{expanded ? <><FaRegMinusSquare /> show less</> : <><FaRegPlusSquare /> show more</>}</button>}
-        </div>
-        <div className="col-8 col-sm-6 col-md-5 col-lg-3">
-          {material.type === 'lesson' && <LessonStats material={material} complete={complete} onCompleteChange={handleCompleteChange} />}
+          <div className="col-8 col-sm-6 col-md-5 col-lg-3">
+            {material.type === 'lesson' && <LessonStats material={material} complete={complete} onCompleteChange={handleCompleteChange} />}
+          </div>
         </div>
       </MaterialBorder>
       <style jsx>{`
@@ -119,7 +121,7 @@ export const MaterialItem: FC<Props> = ({ studentId, enrollmentId, material, com
         }
       }
       `}</style>
-    </div>
+    </>
   );
 };
 
@@ -129,7 +131,7 @@ type MaterialBorderProps = {
 };
 
 const MaterialBorder: FC<MaterialBorderProps> = ({ complete, children }) => (
-  <div className="row my-4 py-4 border-bottom" style={complete ? { backgroundColor: 'rgb(232, 255, 239)' } : {}}>
+  <div className="container" style={complete ? { backgroundColor: 'rgb(232, 255, 239)' } : {}}>
     {children}
   </div>
 );
