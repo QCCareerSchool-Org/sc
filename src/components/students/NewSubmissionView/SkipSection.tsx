@@ -19,7 +19,7 @@ export const SkipSection: FC<Props> = ({ studentId, courseId, submissionId, proc
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
-    const message = 'Are you sure you want to skip this unit? Your tutor will not review your work and you will no receive a grade for this unit.\n\nThis is irreverible.';
+    const message = 'Are you sure you want to skip these assignments? Your tutor will not review your work and you will not receive a grade.\n\nThis is irreverible.';
     if (confirm(message)) {
       skip$.next({
         studentId,
@@ -35,11 +35,11 @@ export const SkipSection: FC<Props> = ({ studentId, courseId, submissionId, proc
   return (
     <Section className="skipSection">
       <div className="container">
-        <h2>Skip Unit</h2>
-        <p>This unit is optional. You can skip it and move on to the next unit.</p>
-        <p>By skipping this unit, your tutor will not review it and you will not receive a mark.</p>
+        <h2>Skip Assignments</h2>
+        <p>These assignments are optional. You can skip them.</p>
+        <p>By skipping these assignments, your tutor will not review them and you will not receive a mark.</p>
         <div className="d-flex align-items-center">
-          <button onClick={handleButtonClick} className="btn btn-secondary" disabled={buttonDisabled}>Skip Unit</button>
+          <button onClick={handleButtonClick} className="btn btn-secondary" disabled={buttonDisabled}>Skip Assignments</button>
           {processingState === 'skipping' && <div className="ms-2"><Spinner /></div>}
           {processingState === 'skip error' && <span className="text-danger ms-2">{errorMessage ? errorMessage : 'Error'}</span>}
         </div>

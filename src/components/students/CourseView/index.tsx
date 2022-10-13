@@ -124,7 +124,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
       <Section>
         <div className="container">
           <h2>Lessons</h2>
-          {state.enrollment.course.units.map(u => (
+          {state.enrollment.course.units.map((u, i) => (
             <UnitAccordion
               key={u.unitId}
               studentId={studentId}
@@ -133,6 +133,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               unit={u}
               materialCompletions={materialCompletions}
               materialCompletion$={materialCompletion$}
+              firstUnit={i === 0}
             />
           ))}
         </div>
@@ -167,7 +168,7 @@ const NextUnitMessage: FC<NextUnitMessageProps> = ({ nextUnit }) => {
     case 'incomplete':
       return null;
     case 'disabled':
-      return <p>This course is undergoing maintenance. Please check back in a few minutes.</p>;
+      return <div className="alert alert-warning">This course is undergoing maintenance. Please check back in a few minutes.</div>;
     case 'complete':
       return <p>Assignments complete!</p>;
   }
