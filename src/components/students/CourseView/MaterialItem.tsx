@@ -55,7 +55,7 @@ export const MaterialItem: FC<Props> = ({ studentId, enrollmentId, material, com
   return (
     <>
       <MaterialBorder complete={complete}>
-        <div className="row py-3">
+        <div className="row py-4">
           <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
             <div className="thumbnailWrapper">
               <a href={href} target="_blank" rel="noopener noreferrer" className="thumbnail">
