@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { Fragment } from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
 import type { Subject } from 'rxjs';
@@ -11,7 +12,6 @@ import type { Unit } from '@/domain/unit';
 import type { Video } from '@/domain/video';
 import { useUnitToggleDispatch } from '@/hooks/useUnitToggleDispatch';
 import { useUnitToggleState } from '@/hooks/useUnitToggleState';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;
@@ -49,10 +49,10 @@ export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, un
           {unit.materials.map((m, i) => {
             const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
             return (
-              <>
+              <Fragment key={m.materialId}>
                 {i > 0 && <hr />}
                 <MaterialItem key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} />
-              </>
+              </Fragment>
             );
           })}
           {unit.videos.length > 0 && (
