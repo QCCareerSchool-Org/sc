@@ -27,11 +27,12 @@ export const RouteGuard: FC<Props> = ({ children }) => {
   const authState = useAuthState();
   const navigateToLogin = useNavigateToLogin();
   const router = useRouter();
-  const [ client, setClient ] = useState(false);
+  const [ isClient, setIsClient ] = useState(false);
 
-  useEffect(() => setClient(true), []);
+  useEffect(() => setIsClient(true), []);
 
-  const valid = client
+  // we don't have any auth state in SSR, so only calculate validity if isClient is true
+  const valid = isClient
     ? validPath(router.asPath, authState)
     : undefined;
 

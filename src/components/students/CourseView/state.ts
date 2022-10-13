@@ -7,6 +7,7 @@ import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { StudentStudent } from '@/domain/student/student';
 import type { StudentTutor } from '@/domain/student/tutor';
 import type { Unit } from '@/domain/unit';
+import type { Video } from '@/domain/video';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
 
 export type MaterialWithCompletionForm = Material & {
@@ -20,6 +21,7 @@ type EnrollmentState = Enrollment & {
     newSubmissionTemplates: NewSubmissionTemplate[];
     units: Array<Unit & {
       materials: MaterialWithCompletionForm[];
+      videos: Video[];
     }>;
   };
   tutor: StudentTutor | null;

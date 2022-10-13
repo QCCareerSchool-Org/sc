@@ -20,6 +20,8 @@ import type { IStudentService } from '@/services/students/studentService';
 import { StudentService } from '@/services/students/studentService';
 import type { IT2202ReceiptService } from '@/services/students/t2202ReceiptService';
 import { T2202ReceiptService } from '@/services/students/t2202ReceiptService';
+import type { IVideoService } from '@/services/students/videoService';
+import { VideoService } from '@/services/students/videoService';
 
 export type StudentServices = {
   studentService: IStudentService;
@@ -27,6 +29,7 @@ export type StudentServices = {
   newAssignmentService: INewAssignmentService;
   newSubmissionService: INewSubmissionService;
   materialService: IMaterialService;
+  videoService: IVideoService;
   t2202ReceiptService: IT2202ReceiptService;
   crmStudentService: ICRMStudentService;
   crmEnrollmentService: ICRMEnrollmentService;
@@ -47,6 +50,7 @@ export const StudentServicesProvider: FC<Props> = ({ children }) => {
     newAssignmentService: new NewAssignmentService(httpService),
     newSubmissionService: new NewSubmissionService(httpService),
     materialService: new MaterialService(httpService),
+    videoService: new VideoService(httpService),
     t2202ReceiptService: new T2202ReceiptService(httpService),
     crmStudentService: new CRMStudentService(httpService),
     crmEnrollmentService: new CRMEnrollmentService(httpService),

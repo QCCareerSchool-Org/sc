@@ -1,10 +1,8 @@
 import NextError from 'next/error';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { ChangeEvent, FC, MouseEvent, MouseEventHandler } from 'react';
+import type { FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useMemo, useReducer } from 'react';
 
-import { endpoint } from '../../../basePath';
 import { CourseHeaderImage } from './CourseHeaderImage';
 import { initialState, reducer } from './state';
 import { SubmissionsTable } from './SubmissionsTable';
@@ -50,7 +48,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
       <>
         <Section>
           <CourseHeaderImage courseId={courseId} />
-          <div className="container text-white" aria-hidden="true">
+          <div className="container text-white" style={{ minHeight: 240 }} aria-hidden="true">
             <div className="row">
               <div className="col-12 col-lg-6">
                 <h1 className="mb-0 placeholder-glow"><span className="placeholder col-8" /></h1>
@@ -95,7 +93,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
     <>
       <Section>
         <CourseHeaderImage courseId={courseId} />
-        <div className="container text-white">
+        <div className="container text-white" style={{ minHeight: 240 }}>
           <div className="row">
             <div className="col-12 col-lg-6">
               <h1 className="mb-0 text-shadow">{state.enrollment.course.name}</h1>
@@ -103,6 +101,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               {state.enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{state.enrollment.tutor.firstName} {state.enrollment.tutor.lastName}</strong></p>}
             </div>
             <div className="col-12 col-lg-6">
+              <h2 className="h4 text-shadow">Assignments</h2>
               <SubmissionsTable newSubmissions={state.enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
               {nextUnit.success
                 ? (
@@ -136,7 +135,6 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               materialCompletion$={materialCompletion$}
             />
           ))}
-          <Link href={`${endpoint}/students/${studentId}/static/lessons/95/6630b210-de75-11ec-bbd6-b5db70b35693/content`}><a target="_blank" rel="noopener noreferrer">sdkjfhsdkjfhdsf</a></Link>
         </div>
       </Section>
     </>
