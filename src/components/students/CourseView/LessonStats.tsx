@@ -20,9 +20,9 @@ export const LessonStats: React.FC<Props> = props => {
     <div>
       <div className="minutes"><div className="icon minutesIcon"><FaClock size={16} /></div> <span>{props.material.minutes} {lg ? 'min.' : 'minutes'} to complete</span></div>
       <ul className="statsList">
-        {props.material.chapters && <li><span className="icon"><FaBookmark /></span><strong>{props.material.chapters}</strong> Chapters</li>}
-        {props.material.videos && <li><span className="icon"><FaPlayCircle /></span><strong>{props.material.videos}</strong> Intructional Videos</li>}
-        {props.material.knowledgeChecks && <li><span className="icon"><FaLightbulb /></span><strong>{props.material.knowledgeChecks}</strong> Knowledge Checks</li>}
+        {props.material.chapters !== null && props.material.chapters > 0 && <li><span className="icon"><FaBookmark /></span><strong>{props.material.chapters}</strong> Chapters</li>}
+        {props.material.videos !== null && props.material.videos > 0 && <li><span className="icon"><FaPlayCircle /></span><strong>{props.material.videos}</strong> Intructional Videos</li>}
+        {props.material.knowledgeChecks !== null && props.material.knowledgeChecks > 0 && <li><span className="icon"><FaLightbulb /></span><strong>{props.material.knowledgeChecks}</strong> Knowledge Checks</li>}
       </ul>
       <a className="lessonButtonLink" href=""><div className="lessonButton"><span className="icon"><FaBookOpen /></span>View Lesson</div></a>
       <div className="form-check">
