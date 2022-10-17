@@ -3,7 +3,9 @@ import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService, ProgressResponse } from '../httpService';
+import type { Course } from '@/domain/course';
 import type { Material, RawMaterial } from '@/domain/material';
+import type { RawUnit, Unit } from '@/domain/unit';
 
 export type MaterialInsertPayload = {
   unitId: string;
@@ -26,8 +28,20 @@ export type MaterialEditPayload = {
   order: number;
 };
 
+type RawMaterialWithUnitWithCourse = RawMaterial & {
+  unit: RawUnit & {
+    course: Course;
+  };
+};
+
+export type MaterialWithUnitWithCourse = Material & {
+  unit: Unit & {
+    course: Course;
+  };
+};
+
 export interface IMaterialService {
-  getMaterial: (administratorId: number, materialId: string) => Observable<Material>;
+  getMaterial: (administratorId: number, materialId: string) => Observable<MaterialWithUnitWithCourse>;
   addMaterialFile: (administratorId: number, data: MaterialInsertPayload, content: File | null, image: File | null) => Observable<ProgressResponse<Material>>;
   saveMaterial: (administratorId: number, materialId: string, data: MaterialEditPayload) => Observable<Material>;
   replaceMaterialFile: (administratorId: number, materialId: string, file: File) => Observable<Material>;
@@ -38,10 +52,10 @@ export class MaterialService implements IMaterialService {
 
   public constructor(private readonly http: IHttpService) { /* empty */ }
 
-  public getMaterial(administratorId: number, materialId: string): Observable<Material> {
+  public getMaterial(administratorId: number, materialId: string): Observable<MaterialWithUnitWithCourse> {
     const url = `${this.getUrl(administratorId)}/${materialId}`;
-    return this.http.get<RawMaterial>(url).pipe(
-      map(this.mapMaterial),
+    return this.http.get<RawMaterialWithUnitWithCourse>(url).pipe(
+      map(this.mapMaterialWithUnitWithCourse),
     );
   }
 
@@ -114,5 +128,16 @@ export class MaterialService implements IMaterialService {
     ...raw,
     created: new Date(raw.created),
     modified: raw.modified === null ? null : new Date(raw.modified),
+  });
+
+  private readonly mapMaterialWithUnitWithCourse = (raw: RawMaterialWithUnitWithCourse): MaterialWithUnitWithCourse => ({
+    ...raw,
+    created: new Date(raw.created),
+    modified: raw.modified === null ? null : new Date(raw.modified),
+    unit: {
+      ...raw.unit,
+      created: new Date(raw.unit.created),
+      modified: raw.unit.modified === null ? null : new Date(raw.unit.modified),
+    },
   });
 }
