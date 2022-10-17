@@ -52,8 +52,8 @@ VideoPage.getLayout = page => <BlankLayout>{page}</BlankLayout>;
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
-  ctx.res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-  ctx.res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  // ctx.res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  // ctx.res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   // ctx.res.setHeader('Content-Security-Policy', `default-src 'self' data: blob: gap: https://ssl.gstatic.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; frame-ancestors https://studentcenter.qccareerschool.com`);
   const videoIdParam = ctx.params?.videoId;
   const videoId = typeof videoIdParam === 'string' ? videoIdParam : null;
