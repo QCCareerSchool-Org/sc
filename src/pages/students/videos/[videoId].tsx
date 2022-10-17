@@ -52,7 +52,7 @@ VideoPage.getLayout = page => <BlankLayout>{page}</BlankLayout>;
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
-  ctx.res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  ctx.res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
   const videoIdParam = ctx.params?.videoId;
   const videoId = typeof videoIdParam === 'string' ? videoIdParam : null;
   return { props: { videoId } };
