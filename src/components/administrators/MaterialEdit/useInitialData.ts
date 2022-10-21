@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
@@ -17,8 +17,8 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
     materialService.getMaterial(administratorId, materialId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: newMaterial => {
-        dispatch({ type: 'LOAD_MATERIAL_SUCCEEDED', payload: newMaterial });
+      next: material => {
+        dispatch({ type: 'LOAD_MATERIAL_SUCCEEDED', payload: material });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -31,5 +31,7 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
         dispatch({ type: 'LOAD_MATERIAL_FAILED', payload: errorCode });
       },
     });
+
+    return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, administratorId, materialId, materialService, navigateToLogin ]);
 };

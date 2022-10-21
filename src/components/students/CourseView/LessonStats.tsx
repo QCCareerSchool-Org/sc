@@ -9,6 +9,7 @@ type Props = {
   material: MaterialWithCompletionForm;
   complete: boolean;
   onCompleteChange: ChangeEventHandler<HTMLInputElement>;
+  href: string;
 };
 
 export const LessonStats: React.FC<Props> = props => {
@@ -24,7 +25,7 @@ export const LessonStats: React.FC<Props> = props => {
         {props.material.videos !== null && props.material.videos > 0 && <li><span className="icon"><FaPlayCircle /></span><strong>{props.material.videos}</strong> Intructional Videos</li>}
         {props.material.knowledgeChecks !== null && props.material.knowledgeChecks > 0 && <li><span className="icon"><FaLightbulb /></span><strong>{props.material.knowledgeChecks}</strong> Knowledge Checks</li>}
       </ul>
-      <a className="lessonButtonLink" href=""><div className="lessonButton"><span className="icon"><FaBookOpen /></span>View Lesson</div></a>
+      <a className="lessonButtonLink" href={props.href} target="_blank" rel="noopener noreferrer"><div className="lessonButton"><span className="icon"><FaBookOpen /></span>View Lesson</div></a>
       <div className="form-check">
         <input onChange={props.onCompleteChange} checked={props.complete} className="form-check-input" type="checkbox" id={id} disabled={props.material.processingState === 'processing'} />
         <label className="form-check-label labelText" htmlFor={id}>

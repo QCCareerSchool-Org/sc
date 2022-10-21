@@ -1,5 +1,5 @@
 import type { Observable } from 'rxjs';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService, ProgressResponse } from '../httpService';
@@ -26,6 +26,12 @@ export type MaterialEditPayload = {
   title: string;
   description: string;
   order: number;
+  lessonMeta: {
+    minutes: number;
+    chapters: number;
+    videos: number;
+    knowledgeChecks: number;
+  } | null;
 };
 
 type RawMaterialWithUnitWithCourse = RawMaterial & {
@@ -99,6 +105,12 @@ export class MaterialService implements IMaterialService {
       title: data.title,
       description: data.description,
       order: data.order,
+      lessonMeta: data.lessonMeta ? {
+        minutes: data.lessonMeta.minutes,
+        chapters: data.lessonMeta.chapters,
+        videos: data.lessonMeta.videos,
+        knowledgeChecks: data.lessonMeta.knowledgeChecks,
+      } : null,
     };
     return this.http.put<RawMaterial>(url, body).pipe(
       map(this.mapMaterial),

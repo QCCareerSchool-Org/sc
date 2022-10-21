@@ -28,7 +28,6 @@ export const unitToggleInitializer = (state: UnitToggleState): UnitToggleState =
 };
 
 export const unitToggleReducer = (state: UnitToggleState, action: UnitToggleAction): UnitToggleState => {
-  console.log('reducer running', state, action);
   switch (action.type) {
     case 'INITIALIZE':
       return action.payload;
@@ -47,7 +46,6 @@ export const unitToggleReducer = (state: UnitToggleState, action: UnitToggleActi
             [action.payload.unitLetter]: true,
           },
         };
-      console.log('new state', newState);
       storeState(newState);
       return newState;
     }
