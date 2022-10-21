@@ -31,5 +31,7 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
         dispatch({ type: 'LOAD_DATA_FAILED', payload: errorCode });
       },
     });
+
+    return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, administratorId, unitId, unitService, navigateToLogin ]);
 };

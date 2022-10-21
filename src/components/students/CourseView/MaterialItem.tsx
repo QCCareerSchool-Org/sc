@@ -71,7 +71,7 @@ export const MaterialItem: FC<Props> = ({ studentId, enrollmentId, material, com
             {(expansion || expanded) && <button onClick={handleExpansionClick} className={`moreLink ${expanded ? 'expanded' : 'collapsed'} link-secondary text-decoration-none d-none d-lg-block btn btn-link btn-sm p-0 w-100 cursor-pointed small text-end`}>{expanded ? <><FaRegMinusSquare /> show less</> : <><FaRegPlusSquare /> show more</>}</button>}
           </div>
           <div className="col-8 col-sm-6 col-md-5 col-lg-3">
-            {material.type === 'lesson' && <LessonStats material={material} complete={complete} onCompleteChange={handleCompleteChange} />}
+            {material.type === 'lesson' && <LessonStats material={material} complete={complete} onCompleteChange={handleCompleteChange} href={href} />}
           </div>
         </div>
       </MaterialBorder>
