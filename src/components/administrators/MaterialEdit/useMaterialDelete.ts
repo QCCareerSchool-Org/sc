@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
@@ -5,34 +6,36 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
-import type { MaterialEditPayload } from '@/services/administrators/materialService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type MaterialSaveEvent = {
-  processingState: State['form']['processingState'];
+export type MaterialDeleteEvent = {
+  processingState: State['detailsForm']['processingState'];
   administratorId: number;
   materialId: string;
-  payload: MaterialEditPayload;
 };
 
-export const useMaterialSave = (dispatch: Dispatch<Action>): Subject<MaterialSaveEvent> => {
+export const useMaterialDelete = (dispatch: Dispatch<Action>): Subject<MaterialDeleteEvent> => {
   const { materialService } = useAdminServices();
   const navigateToLogin = useNavigateToLogin();
+  const router = useRouter();
 
-  const save$ = useRef(new Subject<MaterialSaveEvent>());
+  const delete$ = useRef(new Subject<MaterialDeleteEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    save$.current.pipe(
+    delete$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
-      tap(() => dispatch({ type: 'SAVE_MATERIAL_STARTED' })),
-      exhaustMap(({ administratorId, materialId, payload }) => {
-        return materialService.saveMaterial(administratorId, materialId, payload).pipe(
+      tap(() => dispatch({ type: 'DELETE_MATERIAL_STARTED' })),
+      exhaustMap(({ administratorId, materialId }) => {
+        return materialService.deleteMaterial(administratorId, materialId).pipe(
           tap({
-            next: material => dispatch({ type: 'SAVE_MATERIAL_SUCCEEDED', payload: material }),
+            next: () => {
+              dispatch({ type: 'DELETE_MATERIAL_SUCCEEDED' });
+              router.back();
+            },
             error: err => {
-              let message = 'Save failed';
+              let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
                   return void navigateToLogin();
@@ -41,7 +44,7 @@ export const useMaterialSave = (dispatch: Dispatch<Action>): Subject<MaterialSav
                   message = err.message;
                 }
               }
-              dispatch({ type: 'SAVE_MATERIAL_FAILED', payload: message });
+              dispatch({ type: 'DELETE_MATERIAL_FAILED', payload: message });
             },
           }),
           catchError(() => EMPTY),
@@ -51,7 +54,7 @@ export const useMaterialSave = (dispatch: Dispatch<Action>): Subject<MaterialSav
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, materialService, navigateToLogin ]);
+  }, [ dispatch, materialService, navigateToLogin, router ]);
 
-  return save$.current;
+  return delete$.current;
 };

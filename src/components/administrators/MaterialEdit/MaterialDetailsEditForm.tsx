@@ -3,15 +3,17 @@ import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
-import type { MaterialSaveEvent } from './useMaterialSave';
+import type { MaterialDeleteEvent } from './useMaterialDelete';
+import type { MaterialDetailsSaveEvent } from './useMaterialDetailsSave';
 import { Spinner } from '@/components/Spinner';
 import type { Material } from '@/domain/material';
 
 type Props = {
   administratorId: number;
   material: Material;
-  formState: State['form'];
-  save$: Subject<MaterialSaveEvent>;
+  formState: State['detailsForm'];
+  save$: Subject<MaterialDetailsSaveEvent>;
+  delete$: Subject<MaterialDeleteEvent>;
   onTitleChange: ChangeEventHandler<HTMLInputElement>;
   onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
@@ -21,14 +23,14 @@ type Props = {
   onKnowledgeChecksChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-export const MaterialEditForm: FC<Props> = props => {
+export const MaterialDetailsEditForm: FC<Props> = props => {
   const id = useId();
 
   let valid = true;
   // check if there are any validation messages
   for (const key in props.formState.validationMessages) {
     if (Object.prototype.hasOwnProperty.call(props.formState.validationMessages, key)) {
-      const validationMessage = key as keyof State['form']['validationMessages'];
+      const validationMessage = key as keyof State['detailsForm']['validationMessages'];
       if (props.formState.validationMessages[validationMessage]) {
         valid = false;
       }
@@ -58,8 +60,13 @@ export const MaterialEditForm: FC<Props> = props => {
     });
   };
 
-  const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    //
+  const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = e => {
+    e.preventDefault();
+    props.delete$.next({
+      processingState: props.formState.processingState,
+      administratorId: props.administratorId,
+      materialId: props.material.materialId,
+    });
   };
 
   return (
@@ -73,7 +80,7 @@ export const MaterialEditForm: FC<Props> = props => {
       <div className="formGroup">
         <label htmlFor={id + '_newMaterialTemplateDescription'} className="form-label">Description <span className="text-danger">*</span></label>
         <textarea onChange={props.onDescriptionChange} value={props.formState.data.description} id={id + '_newMaterialTemplateDescription'} rows={4} className={`form-control ${props.formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_newMaterialTemplateDescriptionHelp'} />
-        <div id={id + '_newMaterialTemplateDescriptionHelp'} className="form-text">The description for this material <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
+        <div id={id + '_newMaterialTemplateDescriptionHelp'} className="form-text">The description for this material</div>
         {props.formState.validationMessages.description && <div className="invalid-feedback">{props.formState.validationMessages.description}</div>}
       </div>
       <div className="formGroup">
