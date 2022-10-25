@@ -119,7 +119,7 @@ export const MaterialAddForm: FC<Props> = memo(props => {
           <div className="formGroup">
             <label htmlFor={id + '_materialDescription'} className="form-label">Description <span className="text-danger">*</span></label>
             <textarea onChange={props.onDescriptionChange} value={formState.data.description} id={id + '_materialDescription'} rows={4} className={`form-control ${formState.validationMessages.description ? 'is-invalid' : ''}`} placeholder="(none)" aria-describedby={id + '_materialDescriptionHelp'} />
-            <div id={id + '_materialDescriptionHelp'} className="form-text">The description for this material <span className="fw-bold">(Two <em>ENTER</em> keys in a row will start a new paragraph)</span></div>
+            <div id={id + '_materialDescriptionHelp'} className="form-text">The description for this material</div>
             {formState.validationMessages.description && <div className="invalid-feedback">{formState.validationMessages.description}</div>}
           </div>
           <div className="formGroup">

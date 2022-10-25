@@ -1,5 +1,5 @@
 import type { Observable } from 'rxjs';
-import { map, tap } from 'rxjs';
+import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { IHttpService, ProgressResponse } from '../httpService';
@@ -48,10 +48,12 @@ export type MaterialWithUnitWithCourse = Material & {
 
 export interface IMaterialService {
   getMaterial: (administratorId: number, materialId: string) => Observable<MaterialWithUnitWithCourse>;
-  addMaterialFile: (administratorId: number, data: MaterialInsertPayload, content: File | null, image: File | null) => Observable<ProgressResponse<Material>>;
+  addMaterial: (administratorId: number, data: MaterialInsertPayload, content: File | null, image: File | null) => Observable<ProgressResponse<Material>>;
   saveMaterial: (administratorId: number, materialId: string, data: MaterialEditPayload) => Observable<Material>;
-  replaceMaterialFile: (administratorId: number, materialId: string, file: File) => Observable<Material>;
   deleteMaterial: (administratorId: number, materialId: string) => Observable<void>;
+  replaceMaterialContent: (administratorId: number, materialId: string, content: File) => Observable<Material>;
+  replaceMaterialImage: (administratorId: number, materialId: string, image: File) => Observable<Material>;
+  deleteMaterialImage: (administratorId: number, materialId: string) => Observable<Material>;
 }
 
 export class MaterialService implements IMaterialService {
@@ -65,7 +67,7 @@ export class MaterialService implements IMaterialService {
     );
   }
 
-  public addMaterialFile(administratorId: number, data: MaterialInsertPayload, content: File | null, image: File | null): Observable<ProgressResponse<Material>> {
+  public addMaterial(administratorId: number, data: MaterialInsertPayload, content: File | null, image: File | null): Observable<ProgressResponse<Material>> {
     const url = this.getUrl(administratorId);
     const headers = { 'Content-Type': 'multipart/form-data' };
     const body = new FormData();
@@ -117,19 +119,36 @@ export class MaterialService implements IMaterialService {
     );
   }
 
-  public replaceMaterialFile(administratorId: number, materialId: string, file: File): Observable<Material> {
-    const url = `${this.getUrl(administratorId)}/${materialId}/file`;
+  public deleteMaterial(administratorId: number, materialId: string): Observable<void> {
+    const url = `${this.getUrl(administratorId)}/${materialId}`;
+    return this.http.delete<void>(url);
+  }
+
+  public replaceMaterialContent(administratorId: number, materialId: string, content: File): Observable<Material> {
+    const url = `${this.getUrl(administratorId)}/${materialId}/content`;
     const headers = { 'Content-Type': 'multipart/form-data' };
     const body = new FormData();
-    body.append('file', file);
-    return this.http.post<RawMaterial>(url, body, { headers }).pipe(
+    body.append('content', content);
+    return this.http.put<RawMaterial>(url, body, { headers }).pipe(
       map(this.mapMaterial),
     );
   }
 
-  public deleteMaterial(administratorId: number, materialId: string): Observable<void> {
-    const url = `${this.getUrl(administratorId)}/${materialId}`;
-    return this.http.delete<void>(url);
+  public replaceMaterialImage(administratorId: number, materialId: string, image: File): Observable<Material> {
+    const url = `${this.getUrl(administratorId)}/${materialId}/image`;
+    const headers = { 'Content-Type': 'multipart/form-data' };
+    const body = new FormData();
+    body.append('image', image);
+    return this.http.put<RawMaterial>(url, body, { headers }).pipe(
+      map(this.mapMaterial),
+    );
+  }
+
+  public deleteMaterialImage(administratorId: number, materialId: string): Observable<Material> {
+    const url = `${this.getUrl(administratorId)}/${materialId}/image`;
+    return this.http.delete<RawMaterial>(url).pipe(
+      map(this.mapMaterial),
+    );
   }
 
   private getUrl(administratorId: number): string {

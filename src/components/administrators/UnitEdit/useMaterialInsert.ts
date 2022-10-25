@@ -29,7 +29,7 @@ export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMateri
       filter(({ processingState }) => processingState !== 'inserting'),
       tap(() => dispatch({ type: 'ADD_MATERIAL_STARTED' })),
       exhaustMap(({ administratorId, payload, content, image }) => {
-        return materialService.addMaterialFile(administratorId, payload, content, image).pipe(
+        return materialService.addMaterial(administratorId, payload, content, image).pipe(
           tap({
             next: response => {
               if (response.type === 'progress') {

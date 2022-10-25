@@ -10,7 +10,7 @@ type LessonMeta = {
 
 export type State = {
   material?: MaterialWithUnitWithCourse;
-  form: {
+  detailsForm: {
     data: {
       title: string;
       description: string;
@@ -29,6 +29,32 @@ export type State = {
     processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
     errorMessage?: string;
   };
+  imageForm: {
+    data: {
+      image: File | null;
+    };
+    validationMessages: {
+      image?: string;
+    };
+    /** used for forcing react to refresh the dom */
+    key: number;
+    processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
+    errorMessage?: string;
+  };
+  contentForm: {
+    data: {
+      content: File | null;
+    };
+    validationMessages: {
+      content?: string;
+    };
+    /** used for forcing react to refresh the dom */
+    key: number;
+    processingState: 'idle' | 'saving' | 'save error';
+    errorMessage?: string;
+  };
+  /** used for cache busting */
+  imageVersion: string;
   error: boolean;
   errorCode?: number;
 };
@@ -43,15 +69,25 @@ export type Action =
   | { type: 'CHAPTERS_CHANGED'; payload: string }
   | { type: 'VIDEOS_CHANGED'; payload: string }
   | { type: 'KNOWLEDGE_CHECKS_CHANGED'; payload: string }
-  | { type: 'SAVE_MATERIAL_STARTED' }
-  | { type: 'SAVE_MATERIAL_SUCCEEDED'; payload: Material }
-  | { type: 'SAVE_MATERIAL_FAILED'; payload?: string }
+  | { type: 'SAVE_MATERIAL_DETAILS_STARTED' }
+  | { type: 'SAVE_MATERIAL_DETAILS_SUCCEEDED'; payload: Material }
+  | { type: 'SAVE_MATERIAL_DETAILS_FAILED'; payload?: string }
   | { type: 'DELETE_MATERIAL_STARTED' }
   | { type: 'DELETE_MATERIAL_SUCCEEDED' }
-  | { type: 'DELETE_MATERIAL_FAILED'; payload?: string };
+  | { type: 'DELETE_MATERIAL_FAILED'; payload?: string }
+  | { type: 'MATERIAL_IMAGE_CHANGED'; payload: File | null }
+  | { type: 'REPLACE_MATERIAL_IMAGE_STARTED' }
+  | { type: 'REPLACE_MATERIAL_IMAGE_SUCCEEDED'; payload: Material }
+  | { type: 'REPLACE_MATERIAL_IMAGE_FAILED'; payload?: string }
+  | { type: 'DELETE_MATERIAL_IMAGE_STARTED' }
+  | { type: 'DELETE_MATERIAL_IMAGE_SUCCEEDED'; payload: Material }
+  | { type: 'DELETE_MATERIAL_IMAGE_FAILED'; payload?: string }
+  | { type: 'REPLACE_MATERIAL_CONTENT_STARTED' }
+  | { type: 'REPLACE_MATERIAL_CONTENT_SUCCEEDED'; payload: Material }
+  | { type: 'REPLACE_MATERIAL_CONTENT_FAILED'; payload?: string };
 
 export const initialState: State = {
-  form: {
+  detailsForm: {
     data: {
       title: '',
       description: '',
@@ -62,6 +98,19 @@ export const initialState: State = {
     processingState: 'idle',
     errorMessage: undefined,
   },
+  imageForm: {
+    data: { image: null },
+    validationMessages: {},
+    key: 0,
+    processingState: 'idle',
+  },
+  contentForm: {
+    data: { content: null },
+    validationMessages: {},
+    key: 0,
+    processingState: 'idle',
+  },
+  imageVersion: Math.random().toString(32).slice(2),
   error: false,
 };
 
@@ -71,7 +120,7 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         material: action.payload,
-        form: {
+        detailsForm: {
           data: {
             title: action.payload.title,
             description: action.payload.description,
@@ -102,10 +151,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, title: action.payload },
-          validationMessages: { ...state.form.validationMessages, title: validationMessage },
+        detailsForm: {
+          ...state.detailsForm,
+          data: { ...state.detailsForm.data, title: action.payload },
+          validationMessages: { ...state.detailsForm.validationMessages, title: validationMessage },
         },
       };
     }
@@ -120,10 +169,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, description: action.payload },
-          validationMessages: { ...state.form.validationMessages, description: validationMessage },
+        detailsForm: {
+          ...state.detailsForm,
+          data: { ...state.detailsForm.data, description: action.payload },
+          validationMessages: { ...state.detailsForm.validationMessages, description: validationMessage },
         },
       };
     }
@@ -143,10 +192,10 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, order: action.payload },
-          validationMessages: { ...state.form.validationMessages, order: validationMessage },
+        detailsForm: {
+          ...state.detailsForm,
+          data: { ...state.detailsForm.data, order: action.payload },
+          validationMessages: { ...state.detailsForm.validationMessages, order: validationMessage },
         },
       };
     }
@@ -158,12 +207,12 @@ export const reducer = (state: State, action: Action): State => {
       return updateLessonMeta(state, 'videos', action.payload);
     case 'KNOWLEDGE_CHECKS_CHANGED':
       return updateLessonMeta(state, 'knowledgeChecks', action.payload);
-    case 'SAVE_MATERIAL_STARTED':
+    case 'SAVE_MATERIAL_DETAILS_STARTED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'saving', errorMessage: undefined },
+        detailsForm: { ...state.detailsForm, processingState: 'saving', errorMessage: undefined },
       };
-    case 'SAVE_MATERIAL_SUCCEEDED': {
+    case 'SAVE_MATERIAL_DETAILS_SUCCEEDED': {
       if (!state.material) {
         throw Error('material is undefined');
       }
@@ -173,8 +222,8 @@ export const reducer = (state: State, action: Action): State => {
           ...state.material,
           ...action.payload,
         },
-        form: {
-          ...state.form,
+        detailsForm: {
+          ...state.detailsForm,
           data: {
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
@@ -192,22 +241,22 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
-    case 'SAVE_MATERIAL_FAILED':
+    case 'SAVE_MATERIAL_DETAILS_FAILED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'save error', errorMessage: action.payload },
+        detailsForm: { ...state.detailsForm, processingState: 'save error', errorMessage: action.payload },
       };
     case 'DELETE_MATERIAL_STARTED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
+        detailsForm: { ...state.detailsForm, processingState: 'deleting', errorMessage: undefined },
       };
     case 'DELETE_MATERIAL_SUCCEEDED': {
       return {
         ...state,
         material: undefined,
-        form: {
-          ...state.form,
+        detailsForm: {
+          ...state.detailsForm,
           data: {
             title: '',
             description: '',
@@ -223,13 +272,119 @@ export const reducer = (state: State, action: Action): State => {
     case 'DELETE_MATERIAL_FAILED':
       return {
         ...state,
-        form: { ...state.form, processingState: 'save error', errorMessage: action.payload },
+        detailsForm: { ...state.detailsForm, processingState: 'save error', errorMessage: action.payload },
+      };
+    case 'MATERIAL_IMAGE_CHANGED': {
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        const maxSize = 524_288; // 512 KiB
+        if (action.payload.size > maxSize) {
+          validationMessage = 'File exceeds maximum size';
+        }
+      }
+      return {
+        ...state,
+        imageForm: {
+          ...state.imageForm,
+          data: { ...state.imageForm.data, image: action.payload },
+          validationMessages: { ...state.imageForm.validationMessages, image: validationMessage },
+        },
+      };
+    }
+    case 'REPLACE_MATERIAL_IMAGE_STARTED':
+      return {
+        ...state,
+        imageForm: { ...state.imageForm, processingState: 'saving', errorMessage: undefined },
+      };
+    case 'REPLACE_MATERIAL_IMAGE_SUCCEEDED': {
+      if (!state.material) {
+        throw Error('material is undefined');
+      }
+      return {
+        ...state,
+        material: {
+          ...state.material,
+          ...action.payload,
+        },
+        imageForm: {
+          ...state.imageForm,
+          data: { image: null },
+          validationMessages: {},
+          key: state.imageForm.key === Number.MAX_SAFE_INTEGER ? 0 : state.imageForm.key + 1,
+          processingState: 'idle',
+          errorMessage: undefined,
+        },
+        imageVersion: Math.random().toString(32).slice(2),
+      };
+    }
+    case 'REPLACE_MATERIAL_IMAGE_FAILED':
+      return {
+        ...state,
+        imageForm: { ...state.imageForm, processingState: 'save error', errorMessage: action.payload },
+      };
+    case 'DELETE_MATERIAL_IMAGE_STARTED':
+      return {
+        ...state,
+        imageForm: { ...state.imageForm, processingState: 'deleting', errorMessage: undefined },
+      };
+    case 'DELETE_MATERIAL_IMAGE_SUCCEEDED': {
+      if (!state.material) {
+        throw Error('material is undefined');
+      }
+      return {
+        ...state,
+        material: {
+          ...state.material,
+          ...action.payload,
+        },
+        imageForm: {
+          ...state.imageForm,
+          processingState: 'idle',
+          errorMessage: undefined,
+        },
+      };
+    }
+    case 'DELETE_MATERIAL_IMAGE_FAILED':
+      return {
+        ...state,
+        imageForm: { ...state.imageForm, processingState: 'delete error', errorMessage: action.payload },
+      };
+
+    case 'REPLACE_MATERIAL_CONTENT_STARTED':
+      return {
+        ...state,
+        contentForm: { ...state.contentForm, processingState: 'saving', errorMessage: undefined },
+      };
+    case 'REPLACE_MATERIAL_CONTENT_SUCCEEDED': {
+      if (!state.material) {
+        throw Error('material is undefined');
+      }
+      return {
+        ...state,
+        material: {
+          ...state.material,
+          ...action.payload,
+        },
+        contentForm: {
+          ...state.contentForm,
+          data: { content: null },
+          validationMessages: {},
+          key: state.contentForm.key === Number.MAX_SAFE_INTEGER ? 0 : state.contentForm.key + 1,
+          processingState: 'idle',
+          errorMessage: undefined,
+        },
+      };
+    }
+    case 'REPLACE_MATERIAL_CONTENT_FAILED':
+      return {
+        ...state,
+        contentForm: { ...state.contentForm, processingState: 'save error', errorMessage: action.payload },
       };
   }
 };
 
 const updateLessonMeta = (state: State, key: keyof LessonMeta, value: string): State => {
-  if (!state.form.data.lessonMeta) {
+  if (!state.detailsForm.data.lessonMeta) {
     throw Error('lessonMeta is not set');
   }
   let validationMessage: string | undefined;
@@ -245,17 +400,17 @@ const updateLessonMeta = (state: State, key: keyof LessonMeta, value: string): S
   }
   return {
     ...state,
-    form: {
-      ...state.form,
+    detailsForm: {
+      ...state.detailsForm,
       data: {
-        ...state.form.data,
+        ...state.detailsForm.data,
         lessonMeta: {
-          ...state.form.data.lessonMeta,
+          ...state.detailsForm.data.lessonMeta,
           [key]: value,
         },
       },
       validationMessages: {
-        ...state.form.validationMessages,
+        ...state.detailsForm.validationMessages,
         [key]: validationMessage,
       },
     },
