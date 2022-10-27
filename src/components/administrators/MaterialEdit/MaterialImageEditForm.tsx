@@ -69,7 +69,6 @@ export const MaterialImageEditForm: FC<Props> = props => {
       </div>
       <form onSubmit={handleFormSubmit}>
         <div className="formGroup">
-          {/* <label htmlFor={id + '_materialImage'} className="form-label">Image</label> */}
           <input key={props.formState.key} onChange={props.onImageChange} className={`form-control ${props.formState.validationMessages.image ? 'is-invalid' : ''}`} type="file" accept="image/jpeg,image/png" id={id + '_materialImage'} aria-describedby={id + '_materialImageHelp'} />
           <div id={id + '_materialImageHelp'} className="form-text">Select a file from your computer to upload</div>
           {props.formState.validationMessages.image && <div className="invalid-feedback">{props.formState.validationMessages.image}</div>}
@@ -78,7 +77,7 @@ export const MaterialImageEditForm: FC<Props> = props => {
           <button type="submit" className="btn btn-primary me-2" style={{ width: 100 }} disabled={!valid || props.formState.data.image === null || props.formState.processingState === 'saving' || props.formState.processingState === 'deleting'}>
             {props.formState.processingState === 'saving' ? <Spinner size="sm" /> : props.material.imageMimeTypeId ? 'Replace' : 'Add'}
           </button>
-          <button type="button" onClick={handleDeleteClick} className="btn btn-danger" style={{ width: 100 }} disabled={props.formState.processingState === 'saving' || props.formState.processingState === 'deleting'}>
+          <button type="button" onClick={handleDeleteClick} className="btn btn-danger" style={{ width: 100 }} disabled={props.material.imageMimeTypeId === null || props.formState.processingState === 'saving' || props.formState.processingState === 'deleting'}>
             {props.formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Remove'}
           </button>
           {props.formState.processingState === 'save error' && <span className="text-danger ms-2">{props.formState.errorMessage ? props.formState.errorMessage : 'Save Error'}</span>}

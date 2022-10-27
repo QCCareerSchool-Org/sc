@@ -30,7 +30,7 @@ export const useMaterialImageDelete = (dispatch: Dispatch<Action>): Subject<Mate
           tap({
             next: material => dispatch({ type: 'DELETE_MATERIAL_IMAGE_SUCCEEDED', payload: material }),
             error: err => {
-              let message = 'Save failed';
+              let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
                   return void navigateToLogin();

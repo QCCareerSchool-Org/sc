@@ -1,10 +1,12 @@
 import type { ChangeEventHandler, FC } from 'react';
 import { useReducer } from 'react';
 
+import { MaterialContentEditForm } from './MaterialContentEditForm';
 import { MaterialDetailsEditForm } from './MaterialDetailsEditForm';
 import { MaterialImageEditForm } from './MaterialImageEditForm';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
+import { useMaterialContentReplace } from './useMaterialContentReplace';
 import { useMaterialDelete } from './useMaterialDelete';
 import { useMaterialDetailsSave } from './useMaterialDetailsSave';
 import { useMaterialImageAddOrReplace } from './useMaterialImageAddOrReplace';
@@ -24,6 +26,7 @@ export const MaterialEdit: FC<Props> = ({ administratorId, materialId }) => {
   const delete$ = useMaterialDelete(dispatch);
   const imageAddOrReplace$ = useMaterialImageAddOrReplace(dispatch);
   const imageDelete$ = useMaterialImageDelete(dispatch);
+  const contentReplace$ = useMaterialContentReplace(dispatch);
 
   if (!state.material) {
     return null;
@@ -61,6 +64,10 @@ export const MaterialEdit: FC<Props> = ({ administratorId, materialId }) => {
     dispatch({ type: 'MATERIAL_IMAGE_CHANGED', payload: e.target.files?.[0] ?? null });
   };
 
+  const handleContentChange: ChangeEventHandler<HTMLInputElement> = e => {
+    dispatch({ type: 'MATERIAL_CONTENT_CHANGED', payload: e.target.files?.[0] ?? null });
+  };
+
   return (
     <Section>
       <div className="container">
@@ -92,10 +99,15 @@ export const MaterialEdit: FC<Props> = ({ administratorId, materialId }) => {
                 imageVersion={state.imageVersion}
               />
             </div>
-            {state.material.type === 'lesson' && (
+            {(state.material.type === 'lesson' || state.material.type === 'download') && (
               <div className="mt-4">
-                <h2>Lesson Content</h2>
-                <button className="btn btn-primary">Replace</button>
+                <MaterialContentEditForm
+                  administratorId={administratorId}
+                  material={state.material}
+                  formState={state.contentForm}
+                  replace$={contentReplace$}
+                  onContentChange={handleContentChange}
+                />
               </div>
             )}
           </div>
