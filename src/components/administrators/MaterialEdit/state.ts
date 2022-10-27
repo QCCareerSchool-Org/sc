@@ -26,7 +26,7 @@ export type State = {
       videos?: string;
       knowledgeChecks?: string;
     };
-    processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
+    processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error' | 'success';
     errorMessage?: string;
   };
   imageForm: {
@@ -38,7 +38,7 @@ export type State = {
     };
     /** used for forcing react to refresh the dom */
     key: number;
-    processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error';
+    processingState: 'idle' | 'saving' | 'deleting' | 'save error' | 'delete error' | 'success';
     errorMessage?: string;
   };
   contentForm: {
@@ -237,7 +237,7 @@ export const reducer = (state: State, action: Action): State => {
             } : null,
           },
           validationMessages: {},
-          processingState: 'idle',
+          processingState: 'success',
           errorMessage: undefined,
         },
       };
@@ -312,7 +312,7 @@ export const reducer = (state: State, action: Action): State => {
           data: { image: null },
           validationMessages: {},
           key: state.imageForm.key === Number.MAX_SAFE_INTEGER ? 0 : state.imageForm.key + 1,
-          processingState: 'idle',
+          processingState: 'success',
           errorMessage: undefined,
         },
         imageVersion: Math.random().toString(32).slice(2),
