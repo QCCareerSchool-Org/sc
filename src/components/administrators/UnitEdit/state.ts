@@ -396,7 +396,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         if (state.materialForm.data.type === 'lesson') {
-          const maxSize = 33_554_432; // 32 MiB
+          const maxSize = 67_108_864; // 64 MiB
           if (action.payload.size > maxSize) {
             validationMessage = 'File exceeds maximum size';
           }

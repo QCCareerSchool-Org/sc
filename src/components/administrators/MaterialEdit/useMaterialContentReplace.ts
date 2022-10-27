@@ -25,13 +25,13 @@ export const useMaterialContentReplace = (dispatch: Dispatch<Action>): Subject<M
 
     addOrReplace$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving'),
-      tap(() => dispatch({ type: 'REPLACE_MATERIAL_IMAGE_STARTED' })),
+      tap(() => dispatch({ type: 'REPLACE_MATERIAL_CONTENT_STARTED' })),
       exhaustMap(({ administratorId, materialId, content }) => {
         return materialService.replaceMaterialContent(administratorId, materialId, content).pipe(
           tap({
-            next: material => dispatch({ type: 'REPLACE_MATERIAL_IMAGE_SUCCEEDED', payload: material }),
+            next: material => dispatch({ type: 'REPLACE_MATERIAL_CONTENT_SUCCEEDED', payload: material }),
             error: err => {
-              let message = 'Save failed';
+              let message = 'Replace failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
                   return void navigateToLogin();
@@ -40,7 +40,7 @@ export const useMaterialContentReplace = (dispatch: Dispatch<Action>): Subject<M
                   message = err.message;
                 }
               }
-              dispatch({ type: 'REPLACE_MATERIAL_IMAGE_FAILED', payload: message });
+              dispatch({ type: 'REPLACE_MATERIAL_CONTENT_FAILED', payload: message });
             },
           }),
           catchError(() => EMPTY),

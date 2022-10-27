@@ -50,7 +50,7 @@ export type State = {
     };
     /** used for forcing react to refresh the dom */
     key: number;
-    processingState: 'idle' | 'saving' | 'save error';
+    processingState: 'idle' | 'saving' | 'save error' | 'success';
     errorMessage?: string;
   };
   /** used for cache busting */
@@ -82,6 +82,7 @@ export type Action =
   | { type: 'DELETE_MATERIAL_IMAGE_STARTED' }
   | { type: 'DELETE_MATERIAL_IMAGE_SUCCEEDED'; payload: Material }
   | { type: 'DELETE_MATERIAL_IMAGE_FAILED'; payload?: string }
+  | { type: 'MATERIAL_CONTENT_CHANGED'; payload: File | null }
   | { type: 'REPLACE_MATERIAL_CONTENT_STARTED' }
   | { type: 'REPLACE_MATERIAL_CONTENT_SUCCEEDED'; payload: Material }
   | { type: 'REPLACE_MATERIAL_CONTENT_FAILED'; payload?: string };
@@ -349,7 +350,33 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         imageForm: { ...state.imageForm, processingState: 'delete error', errorMessage: action.payload },
       };
-
+    case 'MATERIAL_CONTENT_CHANGED': {
+      if (!state.material) {
+        throw Error('material is undefined');
+      }
+      let validationMessage: string | undefined;
+      if (action.payload) {
+        if (state.material.type === 'lesson') {
+          const maxSize = 67_108_864; // 64 MiB
+          if (action.payload.size > maxSize) {
+            validationMessage = 'File exceeds maximum size';
+          }
+        } else {
+          const maxSize = 16_777_216; // 16 MiB
+          if (action.payload.size > maxSize) {
+            validationMessage = 'File exceeds maximum size';
+          }
+        }
+      }
+      return {
+        ...state,
+        contentForm: {
+          ...state.contentForm,
+          data: { ...state.imageForm.data, content: action.payload },
+          validationMessages: { ...state.imageForm.validationMessages, content: validationMessage },
+        },
+      };
+    }
     case 'REPLACE_MATERIAL_CONTENT_STARTED':
       return {
         ...state,
@@ -370,7 +397,7 @@ export const reducer = (state: State, action: Action): State => {
           data: { content: null },
           validationMessages: {},
           key: state.contentForm.key === Number.MAX_SAFE_INTEGER ? 0 : state.contentForm.key + 1,
-          processingState: 'idle',
+          processingState: 'success',
           errorMessage: undefined,
         },
       };
