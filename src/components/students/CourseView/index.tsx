@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useMemo, useReducer } from 'react';
 
+import { certificationDataDictionary } from './certificationData';
+import { CertificationLogoSection } from './CertificationLogoSection';
 import { CourseHeaderImage } from './CourseHeaderImage';
 import { initialState, reducer } from './state';
 import { SubmissionsTable } from './SubmissionsTable';
@@ -12,6 +14,7 @@ import { useInitializeNextUnit } from './useInitializeNextUnit';
 import { useMaterialCompletion } from './useMaterialCompletion';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
+import { Video as VideoComponent } from '@/components/Video';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
 
@@ -38,6 +41,10 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   }, [ router ]);
 
   const nextUnit = useMemo(() => getNextUnit(state.enrollment), [ state.enrollment ]);
+
+  const hasVideos = useMemo(() => state.enrollment?.course.units.some(u => u.videos.length > 0), [ state.enrollment?.course.units ]);
+
+  const certificationData = useMemo(() => (state.enrollment?.course.code ? certificationDataDictionary[state.enrollment.course.code] : undefined), [ state.enrollment?.course.code ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -123,21 +130,50 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
       </Section>
       <Section>
         <div className="container">
-          <h2>Lessons</h2>
-          {state.enrollment.course.units.map((u, i) => (
-            <UnitAccordion
-              key={u.unitId}
-              studentId={studentId}
-              enrollmentId={enrollmentId}
-              courseId={courseId}
-              unit={u}
-              materialCompletions={materialCompletions}
-              materialCompletion$={materialCompletion$}
-              firstUnit={i === 0}
-            />
-          ))}
+          {state.enrollment.course.units.length > 0 && (
+            <>
+              <h2>Lessons</h2>
+              {state.enrollment.course.units.map((u, i) => (
+                <UnitAccordion
+                  key={u.unitId}
+                  studentId={studentId}
+                  enrollmentId={enrollmentId}
+                  courseId={courseId}
+                  unit={u}
+                  materialCompletions={materialCompletions}
+                  materialCompletion$={materialCompletion$}
+                  firstUnit={i === 0}
+                />
+              ))}
+            </>
+          )}
+          {hasVideos && (
+            <>
+              <h2 className="mt-5">Videos</h2>
+              <p className="lead">You can re-watch your course videos below.</p>
+              {state.enrollment.course.units.map(u => {
+                if (u.videos.length === 0) {
+                  return null;
+                }
+                return (
+                  <>
+                    <h3 className="h5">Unit {u.unitLetter}</h3>
+                    <div className="row mb-2">
+                      {u.videos.map(v => (
+                        <div key={v.videoId} className="col-6 col-md-4 col-lg-3 mb-4">
+                          <VideoComponent controls src={v.src} poster={v.posterSrc} captionSrc={v.captionSrc ?? undefined} style={{ width: '100%' }} />
+                          {v.title}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                );
+              })}
+            </>
+          )}
         </div>
       </Section>
+      {certificationData && <CertificationLogoSection certificationData={certificationData} graduated={state.enrollment.graduated} />}
     </>
   );
 };
