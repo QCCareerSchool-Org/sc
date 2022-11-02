@@ -17,7 +17,7 @@ type Props = {
   materialCompletion$: Subject<MaterialCompleteEvent>;
 };
 
-export const MaterialItem: FC<Props> = ({ studentId, enrollmentId, material, complete, materialCompletion$ }) => {
+export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete, materialCompletion$ }) => {
   const descriptionBox = useRef<HTMLDivElement>(null);
   const [ expansion, setExpansion ] = useState(false);
   const [ expanded, setExpanded ] = useState(false);
@@ -54,7 +54,7 @@ export const MaterialItem: FC<Props> = ({ studentId, enrollmentId, material, com
   const imageSrc = `${endpoint}/students/${studentId}/materials/${material.materialId}/image`;
   return (
     <>
-      <MaterialBorder complete={complete}>
+      <LessonBorder complete={complete}>
         <div className="row py-4">
           <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
             <div className="thumbnailWrapper">
@@ -74,7 +74,7 @@ export const MaterialItem: FC<Props> = ({ studentId, enrollmentId, material, com
             {material.type === 'lesson' && <LessonStats material={material} complete={complete} onCompleteChange={handleCompleteChange} href={href} />}
           </div>
         </div>
-      </MaterialBorder>
+      </LessonBorder>
       <style jsx>{`
       .moreLink {
         border: none;
@@ -125,12 +125,12 @@ export const MaterialItem: FC<Props> = ({ studentId, enrollmentId, material, com
   );
 };
 
-type MaterialBorderProps = {
+type LessonBorderProps = {
   complete: boolean;
   children: ReactNode;
 };
 
-const MaterialBorder: FC<MaterialBorderProps> = ({ complete, children }) => (
+const LessonBorder: FC<LessonBorderProps> = ({ complete, children }) => (
   <div className="container" style={complete ? { backgroundColor: 'rgb(232, 255, 239)' } : {}}>
     {children}
   </div>

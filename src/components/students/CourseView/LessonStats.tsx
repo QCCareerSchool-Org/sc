@@ -2,6 +2,7 @@ import type { ChangeEventHandler } from 'react';
 import { useId } from 'react';
 import { FaBookmark, FaBookOpen, FaClock, FaLightbulb, FaPlayCircle } from 'react-icons/fa';
 
+import { MaterialButton } from './MaterialButton';
 import type { MaterialWithCompletionForm } from './state';
 import { useScreenWidth } from '@/hooks/useScreenWidth';
 
@@ -25,7 +26,7 @@ export const LessonStats: React.FC<Props> = props => {
         {props.material.videos !== null && props.material.videos > 0 && <li><span className="icon"><FaPlayCircle /></span><strong>{props.material.videos}</strong> Intructional Videos</li>}
         {props.material.knowledgeChecks !== null && props.material.knowledgeChecks > 0 && <li><span className="icon"><FaLightbulb /></span><strong>{props.material.knowledgeChecks}</strong> Knowledge Checks</li>}
       </ul>
-      <a className="lessonButtonLink" href={props.href} target="_blank" rel="noopener noreferrer"><div className="lessonButton"><span className="icon"><FaBookOpen /></span>View Lesson</div></a>
+      <a className="lessonButtonLink" href={props.href} target="_blank" rel="noopener noreferrer"><MaterialButton type="lesson">View Lesson</MaterialButton></a>
       <div className="form-check">
         <input onChange={props.onCompleteChange} checked={props.complete} className="form-check-input" type="checkbox" id={id} disabled={props.material.processingState === 'processing'} />
         <label className="form-check-label labelText" htmlFor={id}>
@@ -47,9 +48,6 @@ export const LessonStats: React.FC<Props> = props => {
         position: relative;
         top: -0.0625rem;
       }
-      .icon {
-        margin-right: 0.375rem;
-      }
       .statsList {
         list-style: none;
         margin: 0 0 0.75rem 1rem;
@@ -59,19 +57,13 @@ export const LessonStats: React.FC<Props> = props => {
       .lessonButtonLink {
         text-decoration: none;
       }
-      .lessonButton {
-        background-color: black;
-        color: white;
-        text-align: center;
-        padding: 0.375rem 0.5rem;
-        border-radius: 1rem;
-        font-size: 0.875rem;
-        margin-bottom: 0.75rem;
-      }
       .labelText {
         font-size: 0.75rem;
         line-height: 1rem;
         padding-top: 0.25rem;
+      }
+      .icon {
+        margin-right: 0.375rem;
       }
       `}</style>
     </div>

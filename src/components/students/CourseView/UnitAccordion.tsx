@@ -3,7 +3,8 @@ import { Fragment, useEffect, useRef } from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
 import type { Subject } from 'rxjs';
-import { MaterialItem } from './MaterialItem';
+import { AssignmentReminder } from './AssignmentReminder';
+import { Lesson } from './Lesson';
 import type { MaterialWithCompletionForm } from './state';
 import type { MaterialCompleteEvent } from './useMaterialCompletion';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
@@ -52,15 +53,20 @@ export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, un
         {open ? <AiOutlineMinusCircle size={iconSize} /> : <AiOutlinePlusCircle size={iconSize} />}
       </div>
       <Separator />
-      {open && unit.materials.map((m, i) => {
-        const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
-        return (
-          <Fragment key={m.materialId}>
-            {i > 0 && <hr />}
-            <MaterialItem key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} />
-          </Fragment>
-        );
-      })}
+      {open && (
+        <div className="mb-3">
+          {unit.materials.map((m, i) => {
+            const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
+            return (
+              <Fragment key={m.materialId}>
+                {i > 0 && <hr />}
+                {m.type === 'lesson' && <Lesson studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} />}
+                {m.type === 'assignment' && <AssignmentReminder title={m.title} description={m.description} />}
+              </Fragment>
+            );
+          })}
+        </div>
+      )}
     </>
   );
 };

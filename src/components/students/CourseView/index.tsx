@@ -1,11 +1,12 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { FC, MouseEvent, MouseEventHandler } from 'react';
-import { useCallback, useMemo, useReducer } from 'react';
+import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
+import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
 
 import { certificationDataDictionary } from './certificationData';
 import { CertificationLogoSection } from './CertificationLogoSection';
 import { CourseHeaderImage } from './CourseHeaderImage';
+import { CourseVideo } from './CourseVideo';
 import { initialState, reducer } from './state';
 import { SubmissionsTable } from './SubmissionsTable';
 import { UnitAccordion } from './UnitAccordion';
@@ -14,7 +15,6 @@ import { useInitializeNextUnit } from './useInitializeNextUnit';
 import { useMaterialCompletion } from './useMaterialCompletion';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
-import { Video as VideoComponent } from '@/components/Video';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
 
@@ -26,6 +26,7 @@ type Props = {
 export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const [ playingVideoId, setPlayingVideoId ] = useState<string>();
 
   // we're going to be linking to static resources that require the user to be
   // logged in, and those resources don't have a refresh mechanism
@@ -96,6 +97,10 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   const enrollmentId = state.enrollment.enrollmentId;
   const materialCompletions = state.enrollment.materialCompletions;
 
+  const handleVideoPlay = (e: SyntheticEvent<HTMLVideoElement, Event>, videoId: string): void => {
+    setPlayingVideoId(videoId);
+  };
+
   return (
     <>
       <Section>
@@ -149,6 +154,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
           )}
           {hasVideos && (
             <>
+              {/* eslint-disable-next-line react/jsx-handler-names */}
               <h2 className="mt-5">Videos</h2>
               <p className="lead">You can re-watch your course videos below.</p>
               {state.enrollment.course.units.map(u => {
@@ -156,17 +162,18 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   return null;
                 }
                 return (
-                  <>
+                  <Fragment key={u.unitId}>
                     <h3 className="h5">Unit {u.unitLetter}</h3>
                     <div className="row mb-2">
                       {u.videos.map(v => (
-                        <div key={v.videoId} className="col-6 col-md-4 col-lg-3 mb-4">
-                          <VideoComponent controls src={v.src} poster={v.posterSrc} captionSrc={v.captionSrc ?? undefined} style={{ width: '100%' }} />
+                        <div key={v.videoId} className="col-12 col-md-6 col-lg-4 col-xxl-3 mb-4">
+                          <CourseVideo videoId={v.videoId} src={v.src} posterSrc={v.posterSrc} captionSrc={v.captionSrc} playingVideoId={playingVideoId} onPlay={handleVideoPlay} />
+                          {/* <VideoComponent controls src={v.src} poster={v.posterSrc} captionSrc={v.captionSrc ?? undefined} style={{ width: '100%' }} /> */}
                           {v.title}
                         </div>
                       ))}
                     </div>
-                  </>
+                  </Fragment>
                 );
               })}
             </>
