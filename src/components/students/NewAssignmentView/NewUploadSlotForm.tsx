@@ -156,7 +156,7 @@ const accept = (allowedTypes: string[]): string => {
   const accepted = [];
   for (const allowedType of allowedTypes) {
     if (allowedType === 'image') {
-      accepted.push('image/jpeg', 'image/png', 'image/x-png', 'image/bmp', 'image/gif');
+      accepted.push('image/jpeg', 'image/png', 'image/x-png', 'image/bmp', 'image/gif', 'image/heic', 'image/heic-sequence');
     } else if (allowedType === 'pdf') {
       accepted.push('application/pdf');
     } else if (allowedType === 'word') {
