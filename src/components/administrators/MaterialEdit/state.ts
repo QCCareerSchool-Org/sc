@@ -415,7 +415,7 @@ const updateLessonMeta = (state: State, key: keyof LessonMeta, value: string): S
     throw Error('lessonMeta is not set');
   }
   let validationMessage: string | undefined;
-  const maxValue = 127;
+  const maxValue = 65_536;
   const minValue = 0;
   const parsedValue = parseInt(value, 10);
   if (isNaN(parsedValue)) {
