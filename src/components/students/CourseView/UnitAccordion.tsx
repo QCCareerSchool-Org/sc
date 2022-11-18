@@ -54,7 +54,7 @@ export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, un
       </div>
       <Separator />
       {open && (
-        <div className="mb-3">
+        <div className="my-4">
           {unit.materials.map((m, i) => {
             const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
             return (
