@@ -82,7 +82,7 @@ export const MaterialImageEditForm: FC<Props> = props => {
           </button>
           {props.formState.processingState === 'save error' && <span className="text-danger ms-2">{props.formState.errorMessage ? props.formState.errorMessage : 'Save Error'}</span>}
           {props.formState.processingState === 'delete error' && <span className="text-danger ms-2">{props.formState.errorMessage ? props.formState.errorMessage : 'Delete Error'}</span>}
-          {props.formState.processingState === 'success' && <span className="text-success ms-2">Save succeeeded</span>}
+          {props.formState.processingState === 'success' && <span className="text-success ms-2">Saved</span>}
         </div>
       </form>
       <style jsx>{`

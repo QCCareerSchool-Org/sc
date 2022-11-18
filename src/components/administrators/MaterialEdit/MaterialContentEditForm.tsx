@@ -69,7 +69,7 @@ export const MaterialContentEditForm: FC<Props> = props => {
             {props.formState.processingState === 'saving' ? <Spinner size="sm" /> : 'Replace'}
           </button>
           {props.formState.processingState === 'save error' && <span className="text-danger ms-2">{props.formState.errorMessage ? props.formState.errorMessage : 'Save Error'}</span>}
-          {props.formState.processingState === 'success' && <span className="text-success ms-2">Replace succeeded</span>}
+          {props.formState.processingState === 'success' && <span className="text-success ms-2">Saved</span>}
         </div>
       </form>
       <style jsx>{`
