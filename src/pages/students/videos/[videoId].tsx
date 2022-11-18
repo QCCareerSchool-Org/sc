@@ -52,8 +52,6 @@ VideoPage.getLayout = page => <BlankLayout>{page}</BlankLayout>;
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   const videoIdParam = ctx.params?.videoId;
   const videoId = typeof videoIdParam === 'string' ? videoIdParam : null;
-  // ctx.res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-  // ctx.res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   return { props: { videoId } };
 };
 
