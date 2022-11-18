@@ -113,7 +113,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               {state.enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{state.enrollment.tutor.firstName} {state.enrollment.tutor.lastName}</strong></p>}
             </div>
             <div className="col-12 col-lg-6">
-              <h2 className="h4 text-shadow">Assignments</h2>
+              <h2 id="assignments" className="h4 text-shadow">Assignments</h2>
               <SubmissionsTable newSubmissions={state.enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
               {nextUnit.success
                 ? (
