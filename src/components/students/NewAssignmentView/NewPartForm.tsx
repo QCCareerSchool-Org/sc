@@ -6,10 +6,10 @@ import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
 import type { TextBoxFunction, UploadSlotFunction } from '.';
+import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import type { PartState } from '@/components/students/NewAssignmentView/state';
-import type { NewDescriptionType } from '@/domain/newDescriptionType';
 
 type Props = {
   studentId: number;
@@ -72,22 +72,3 @@ export const NewPartForm: FC<Props> = memo(props => {
 });
 
 NewPartForm.displayName = 'NewPartForm';
-
-type DescriptionProps = {
-  description: string;
-  descriptionType: NewDescriptionType;
-};
-
-const Description: FC<DescriptionProps> = ({ description, descriptionType }) => {
-  if (descriptionType === 'text') {
-    return (
-      <>
-        {description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
-      </>
-    );
-  }
-  if (descriptionType === 'html') {
-    return <div className="htmlDescription" dangerouslySetInnerHTML={{ __html: description }} />;
-  }
-  return null;
-};

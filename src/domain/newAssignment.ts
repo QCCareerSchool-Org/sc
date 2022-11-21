@@ -1,3 +1,5 @@
+import type { NewDescriptionType } from './newDescriptionType';
+
 export type NewAssignment = {
   /** uuid */
   assignmentId: string;
@@ -6,6 +8,7 @@ export type NewAssignment = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  descriptionType: NewDescriptionType;
   markingCriteria: string | null;
   optional: boolean;
   complete: boolean;
@@ -24,6 +27,7 @@ export type RawNewAssignment = {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
+  descriptionType: NewDescriptionType;
   markingCriteria: string | null;
   optional: boolean;
   complete: boolean;

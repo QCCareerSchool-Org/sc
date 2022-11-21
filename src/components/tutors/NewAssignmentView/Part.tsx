@@ -8,6 +8,7 @@ import type { PartWithForms } from './state';
 import { TextBox } from './TextBox';
 import { UploadSlot } from './UploadSlot';
 import type { InputType } from './useInputSave';
+import { Description } from '@/components/Description';
 
 type Props = {
   tutorId: number;
@@ -27,12 +28,7 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput }) => {
   return (
     <>
       <h2 className="h3" id={newPart.partId}><span className="text-danger">{newPart.partNumber}.</span> {newPart.title}</h2>
-      {newPart.description && (
-        <>
-          {newPart.descriptionType === 'text' && newPart.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
-          {newPart.descriptionType === 'html' && <div dangerouslySetInnerHTML={{ __html: newPart.description }} />}
-        </>
-      )}
+      {newPart.description && <Description description={newPart.description} descriptionType={newPart.descriptionType} />}
       {newPart.newPartMedia.filter(m => m.type !== 'download').map(m => {
         const src = `${endpoint}/tutors/${tutorId}/newPartMedia/${m.partMediumId}/file`;
         return (
