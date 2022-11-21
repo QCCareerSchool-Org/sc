@@ -35,7 +35,7 @@ const NewAssignmentViewPage: NextPage<Props> = ({ studentId, courseId, submissio
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   const studentIdParam = ctx.params?.studentId;
   const courseIdParam = ctx.params?.courseId;
-  const submissionIdParam = ctx.params?.unitId;
+  const submissionIdParam = ctx.params?.submissionId;
   const assignmentIdParam = ctx.params?.assignmentId;
   const studentId = typeof studentIdParam === 'string' ? parseInt(studentIdParam, 10) : null;
   const courseId = typeof courseIdParam === 'string' ? parseInt(courseIdParam, 10) : null;

@@ -1,5 +1,5 @@
 import type { NewSubmission } from '@/domain/newSubmission';
-import type { NewSubmissionWithEnrollmentAndAssignments } from '@/services/tutors/newUnitService';
+import type { NewSubmissionWithEnrollmentAndAssignments } from '@/services/tutors/newSubmissionService';
 
 export type State = {
   newSubmission?: NewSubmissionWithEnrollmentAndAssignments;
