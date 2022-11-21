@@ -22,12 +22,12 @@ import type { INewSubmissionReturnService } from '@/services/administrators/newS
 import { NewSubmissionReturnService } from '@/services/administrators/newSubmissionReturnService';
 import type { INewSubmissionService } from '@/services/administrators/newSubmissionService';
 import { NewSubmissionService } from '@/services/administrators/newSubmissionService';
+import type { INewSubmissionTemplatePriceService } from '@/services/administrators/newSubmissionTemplatePriceService';
+import { NewSubmissionTemplatePriceService } from '@/services/administrators/newSubmissionTemplatePriceService';
 import type { INewSubmissionTemplateService } from '@/services/administrators/newSubmissionTemplateService';
 import { NewSubmissionTemplateService } from '@/services/administrators/newSubmissionTemplateService';
 import type { INewTextBoxTemplateService } from '@/services/administrators/newTextBoxTemplateService';
 import { NewTextBoxTemplateService } from '@/services/administrators/newTextBoxTemplateService';
-import type { INewUnitTemplatePriceService } from '@/services/administrators/newUnitTemplatePriceService';
-import { NewUnitTemplatePriceService } from '@/services/administrators/newUnitTemplatePriceService';
 import type { INewUploadSlotTemplateService } from '@/services/administrators/newUploadSlotTemplateService';
 import { NewUploadSlotTemplateService } from '@/services/administrators/newUploadSlotTemplateService';
 import type { ISchoolService } from '@/services/administrators/schoolService';
@@ -47,7 +47,7 @@ export type AdminServices = Readonly<{
   readonly newSubmissionService: Readonly<INewSubmissionService>;
   readonly newSubmissionTemplateService: Readonly<INewSubmissionTemplateService>;
   readonly newUploadSlotTemplateService: Readonly<INewUploadSlotTemplateService>;
-  readonly newUnitTemplatePriceService: Readonly<INewUnitTemplatePriceService>;
+  readonly newSubmissionTemplatePriceService: Readonly<INewSubmissionTemplatePriceService>;
   readonly newSubmissionReturnService: Readonly<INewSubmissionReturnService>;
   readonly schoolService: Readonly<ISchoolService>;
   readonly materialService: Readonly<IMaterialService>;
@@ -74,7 +74,7 @@ export const AdminServicesProvider: FC<Props> = ({ children }) => {
     newSubmissionService: new NewSubmissionService(httpService),
     newSubmissionTemplateService: new NewSubmissionTemplateService(httpService),
     newUploadSlotTemplateService: new NewUploadSlotTemplateService(httpService),
-    newUnitTemplatePriceService: new NewUnitTemplatePriceService(httpService),
+    newSubmissionTemplatePriceService: new NewSubmissionTemplatePriceService(httpService),
     newSubmissionReturnService: new NewSubmissionReturnService(httpService),
     schoolService: new SchoolService(httpService),
     materialService: new MaterialService(httpService),

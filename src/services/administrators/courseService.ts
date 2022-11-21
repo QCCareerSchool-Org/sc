@@ -5,7 +5,7 @@ import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Currency } from '@/domain/currency';
 import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
-import type { NewUnitTemplatePrice, RawNewUnitTemplatePrice } from '@/domain/newUnitTemplatePrice';
+import type { NewUnitTemplatePrice, RawNewUnitTemplatePrice } from '@/domain/newSubmissionTemplatePrice';
 import type { School } from '@/domain/school';
 import type { RawUnit, Unit } from '@/domain/unit';
 import type { IHttpService } from '@/services/httpService';

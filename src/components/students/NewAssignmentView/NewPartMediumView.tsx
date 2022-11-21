@@ -10,15 +10,15 @@ type Props = {
   className: string;
   studentId: number;
   courseId: number;
-  unitId: string;
+  submissionId: string;
   assignmentId: string;
   partId: string;
   newPartMedium: NewPartMedium;
 };
 
 export const NewPartMediumView: FC<Props> = memo(props => {
-  const { className, studentId, courseId, unitId, assignmentId, partId, newPartMedium } = props;
-  const src = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}/parts/${partId}/media/${newPartMedium.partMediumId}/file`;
+  const { className, studentId, courseId, submissionId, assignmentId, partId, newPartMedium } = props;
+  const src = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/parts/${partId}/media/${newPartMedium.partMediumId}/file`;
 
   if (newPartMedium.type === 'image') {
     // eslint-disable-next-line @next/next/no-img-element

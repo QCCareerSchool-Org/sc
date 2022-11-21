@@ -5,19 +5,19 @@ import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from '
 import type { Action, State } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
-import type { NewUnitTemplatePricePayload } from '@/services/administrators/newUnitTemplatePriceService';
+import type { NewSubmissionTemplatePricePayload } from '@/services/administrators/newSubmissionTemplatePriceService';
 import { HttpServiceError } from '@/services/httpService';
 
 export type NewUnitPricesSaveEvent = {
   administratorId: number;
   courseId: number;
   countryId: number | null;
-  payload: NewUnitTemplatePricePayload;
+  payload: NewSubmissionTemplatePricePayload;
   processingState: State['form']['processingState'];
 };
 
 export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPricesSaveEvent> => {
-  const { newUnitTemplatePriceService } = useAdminServices();
+  const { newSubmissionTemplatePriceService } = useAdminServices();
   const navigateToLogin = useNavigateToLogin();
 
   const pricesSave$ = useRef(new Subject<NewUnitPricesSaveEvent>());
@@ -28,7 +28,7 @@ export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPrices
     pricesSave$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'UNIT_PRICES_SAVE_STARTED' })),
-      exhaustMap(({ administratorId, courseId, countryId, payload }) => newUnitTemplatePriceService.replacePrices(administratorId, courseId, countryId, payload).pipe(
+      exhaustMap(({ administratorId, courseId, countryId, payload }) => newSubmissionTemplatePriceService.replacePrices(administratorId, courseId, countryId, payload).pipe(
         tap({
           next: () => {
             dispatch({ type: 'UNIT_PRICES_SAVE_SUCCEEDED' });
@@ -52,7 +52,7 @@ export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPrices
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, newUnitTemplatePriceService, navigateToLogin ]);
+  }, [ dispatch, newSubmissionTemplatePriceService, navigateToLogin ]);
 
   return pricesSave$.current;
 };

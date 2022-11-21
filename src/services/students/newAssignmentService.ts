@@ -29,26 +29,26 @@ type RawNewAssignmentWithChildren = RawNewAssignment & {
 };
 
 export interface INewAssignmentService {
-  getAssignment: (studentId: number, courseId: number, unitId: string, assignmentId: string) => Observable<NewAssignmentWithChildren>;
-  saveText: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, text: string) => Observable<NewTextBox>;
-  uploadFile: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File) => Observable<ProgressResponse<NewUploadSlot>>;
-  deleteFile: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
-  downloadFile: (studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
+  getAssignment: (studentId: number, courseId: number, submissionId: string, assignmentId: string) => Observable<NewAssignmentWithChildren>;
+  saveText: (studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, textBoxId: string, text: string) => Observable<NewTextBox>;
+  uploadFile: (studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File) => Observable<ProgressResponse<NewUploadSlot>>;
+  deleteFile: (studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
+  downloadFile: (studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
 }
 
 export class NewAssignmentService implements INewAssignmentService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getAssignment(studentId: number, courseId: number, unitId: string, assignmentId: string): Observable<NewAssignmentWithChildren> {
-    const url = this.getUrl(studentId, courseId, unitId, assignmentId);
+  public getAssignment(studentId: number, courseId: number, submissionId: string, assignmentId: string): Observable<NewAssignmentWithChildren> {
+    const url = this.getUrl(studentId, courseId, submissionId, assignmentId);
     return this.httpService.get<RawNewAssignmentWithChildren>(url).pipe(
       map(this.mapNewAssignmentWithChildren),
     );
   }
 
-  public saveText(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, textBoxId: string, text: string): Observable<NewTextBox> {
-    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/textBoxes/${textBoxId}`;
+  public saveText(studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, textBoxId: string, text: string): Observable<NewTextBox> {
+    const url = this.getUrl(studentId, courseId, submissionId, assignmentId) + `/parts/${partId}/textBoxes/${textBoxId}`;
     const body = { text };
     return this.httpService.put<RawNewTextBox>(url, body).pipe(
       map(t => ({
@@ -59,8 +59,8 @@ export class NewAssignmentService implements INewAssignmentService {
     );
   }
 
-  public uploadFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File): Observable<ProgressResponse<NewUploadSlot>> {
-    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
+  public uploadFile(studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File): Observable<ProgressResponse<NewUploadSlot>> {
+    const url = this.getUrl(studentId, courseId, submissionId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
     const formData = new FormData();
     formData.append('file', file);
     const headers = { 'Content-Type': 'multipart/form-data' };
@@ -74,18 +74,18 @@ export class NewAssignmentService implements INewAssignmentService {
     );
   }
 
-  public deleteFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
-    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
+  public deleteFile(studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
+    const url = this.getUrl(studentId, courseId, submissionId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
     return this.httpService.delete(url);
   }
 
-  public downloadFile(studentId: number, courseId: number, unitId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
-    const url = this.getUrl(studentId, courseId, unitId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
+  public downloadFile(studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
+    const url = this.getUrl(studentId, courseId, submissionId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
     return this.httpService.download(url);
   }
 
-  private getUrl(studentId: number, courseId: number, unitId: string, assignmentId: string): string {
-    return `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}`;
+  private getUrl(studentId: number, courseId: number, submissionId: string, assignmentId: string): string {
+    return `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}`;
   }
 
   private readonly mapNewAssignmentWithChildren = (newAssignment: RawNewAssignmentWithChildren): NewAssignmentWithChildren => {

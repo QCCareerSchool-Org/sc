@@ -12,7 +12,7 @@ import type { NewSubmissionTemplateWithCourseAndAssignments } from '@/services/a
 type Props = {
   administratorId: number;
   submissionId: string;
-  unitTemplate: NewSubmissionTemplateWithCourseAndAssignments;
+  submissionTemplate: NewSubmissionTemplateWithCourseAndAssignments;
   formState: State['form'];
   save$: Subject<NewSubmissionTemplateSaveEvent>;
   delete$: Subject<NewSubmissionTemplateDeleteEvent>;
@@ -25,7 +25,7 @@ type Props = {
 };
 
 export const NewSubmissionTemplateEditForm: FC<Props> = memo(props => {
-  const { administratorId, submissionId, unitTemplate, formState, save$, delete$ } = props;
+  const { administratorId, submissionId, submissionTemplate, formState, save$, delete$ } = props;
   let valid = true;
   // check if there are any validation messages
   for (const key in formState.validationMessages) {
@@ -58,7 +58,7 @@ export const NewSubmissionTemplateEditForm: FC<Props> = memo(props => {
   };
 
   const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this unit template and all its assignments?\n\nassignments: ${unitTemplate?.newAssignmentTemplates.length}`)) {
+    if (confirm(`Are you sure you want to delete this unit template and all its assignments?\n\nassignments: ${submissionTemplate?.newAssignmentTemplates.length}`)) {
       delete$.next({
         administratorId,
         submissionId,

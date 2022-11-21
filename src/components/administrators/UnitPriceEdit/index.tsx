@@ -86,12 +86,12 @@ export const UnitPriceEdit: FC<Props> = memo(({ administratorId, courseId, count
   return (
     <Section>
       <div className="container">
-        <h1>Unit Price Edit</h1>
+        <h1>Edit Submission Template Price</h1>
         <p>{state.course.name} v{state.course.version}<br />{state.country === null ? 'Default Prices' : `Prices for ${state.country.name}`}</p>
         <div className="row">
           <div className="col-12 col-lg-6">
             <form onSubmit={handleFormSubmit}>
-              <table className="table table-bordered w-auto">
+              <table className="table table-bordered w-auto bg-white">
                 <thead>
                   <tr>
                     <th className="text-center">Unit</th>
