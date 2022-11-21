@@ -9,6 +9,7 @@ import { scrollToId } from '../../../scrollToId';
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
+import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
@@ -176,7 +177,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
         <div className="container">
           {state.assignment.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
-          {state.assignment.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+          {state.assignment.description && <Description description={state.assignment.description} descriptionType={state.assignment.descriptionType} />}
           <div className="row">
             <div className="col-12 col-lg-10 col-xl-8">
               {state.assignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (

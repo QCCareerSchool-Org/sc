@@ -11,6 +11,7 @@ import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useInputSave } from './useInputSave';
 import type { InputType } from './useInputSave';
+import { Description } from '@/components/Description';
 import { Section } from '@/components/Section';
 
 type Props = {
@@ -58,7 +59,7 @@ export const NewAssignmentView: FC<Props> = ({ tutorId, studentId, courseId, sub
       <Section>
         <div className="container assignmentContainer">
           <h1>Assignment {state.newAssignment.assignmentNumber}{state.newAssignment.title && <>: {state.newAssignment.title}</>}</h1>
-          {state.newAssignment.description?.split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+          {state.newAssignment.description && <Description description={state.newAssignment.description} descriptionType={state.newAssignment.descriptionType} />}
           {state.newAssignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => {
             const src = `${endpoint}/tutors/${tutorId}/newAssignmentMedia/${m.assignmentMediumId}/file`;
             return (
