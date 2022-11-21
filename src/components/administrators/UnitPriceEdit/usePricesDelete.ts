@@ -15,7 +15,7 @@ export type NewUnitPricesDeleteEvent = {
 };
 
 export const usePricesDelete = (dispatch: Dispatch<Action>): Subject<NewUnitPricesDeleteEvent> => {
-  const { newUnitTemplatePriceService } = useAdminServices();
+  const { newSubmissionTemplatePriceService } = useAdminServices();
   const navigateToLogin = useNavigateToLogin();
 
   const pricesDelete$ = useRef(new Subject<NewUnitPricesDeleteEvent>());
@@ -26,7 +26,7 @@ export const usePricesDelete = (dispatch: Dispatch<Action>): Subject<NewUnitPric
     pricesDelete$.current.pipe(
       filter(({ processingState }) => processingState !== 'saving' && processingState !== 'deleting'),
       tap(() => dispatch({ type: 'UNIT_PRICES_DELETE_STARTED' })),
-      exhaustMap(({ administratorId, courseId, countryId }) => newUnitTemplatePriceService.deletePrices(administratorId, courseId, countryId).pipe(
+      exhaustMap(({ administratorId, courseId, countryId }) => newSubmissionTemplatePriceService.deletePrices(administratorId, courseId, countryId).pipe(
         tap({
           next: () => {
             dispatch({ type: 'UNIT_PRICES_DELETE_SUCCEEDED' });
@@ -50,7 +50,7 @@ export const usePricesDelete = (dispatch: Dispatch<Action>): Subject<NewUnitPric
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, newUnitTemplatePriceService, navigateToLogin ]);
+  }, [ dispatch, newSubmissionTemplatePriceService, navigateToLogin ]);
 
   return pricesDelete$.current;
 };
