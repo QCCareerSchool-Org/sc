@@ -40,7 +40,6 @@ export const AssignmentSection: FC<Props> = ({ unit }) => {
                 <th scope="row">{a.assignmentNumber}</th>
                 <td>{a.title}{a.optional && <span className="ms-1 text-danger">*</span>}</td>
                 <td>{a.complete ? 'Complete' : 'Incomplete'}</td>
-                <td>{a.assignmentId}</td>
               </tr>
             ))}
           </tbody>
