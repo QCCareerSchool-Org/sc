@@ -2,7 +2,7 @@ import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import { useServices } from '@/hooks/useServices';
-import type { NewSubmissionWithEnrollmentAndAssignments } from '@/services/tutors/newUnitService';
+import type { NewSubmissionWithEnrollmentAndAssignments } from '@/services/tutors/newSubmissionService';
 
 type Props = {
   newSubmission: NewSubmissionWithEnrollmentAndAssignments;

@@ -17,7 +17,7 @@ export type ClosePayload = {
 
 export const useClose = (dispatch: Dispatch<Action>): Subject<ClosePayload> => {
   const navigateToLogin = useNavigateToLogin();
-  const { newUnitService } = useTutorServices();
+  const { newSubmissionService } = useTutorServices();
 
   const close$ = useRef(new Subject<ClosePayload>());
 
@@ -28,7 +28,7 @@ export const useClose = (dispatch: Dispatch<Action>): Subject<ClosePayload> => {
       filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'delete error' || processingState === 'close error' || processingState === 'return error'),
       tap(() => dispatch({ type: 'CLOSE_UNIT_STARTED' })),
       exhaustMap(({ tutorId, studentId, submissionId }) => {
-        return newUnitService.closeUnit(tutorId, studentId, submissionId).pipe(
+        return newSubmissionService.closeUnit(tutorId, studentId, submissionId).pipe(
           tap({
             next: newUnit => {
               dispatch({ type: 'CLOSE_UNIT_SUCCEEDED', payload: newUnit });
@@ -53,7 +53,7 @@ export const useClose = (dispatch: Dispatch<Action>): Subject<ClosePayload> => {
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, newUnitService, navigateToLogin ]);
+  }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
   return close$.current;
 };

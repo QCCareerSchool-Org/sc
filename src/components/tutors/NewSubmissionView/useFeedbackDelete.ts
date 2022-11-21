@@ -17,7 +17,7 @@ export type FeedbackDeletePayload = {
 
 export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackDeletePayload> => {
   const navigateToLogin = useNavigateToLogin();
-  const { newUnitService } = useTutorServices();
+  const { newSubmissionService } = useTutorServices();
 
   const feedbackDelete$ = useRef(new Subject<FeedbackDeletePayload>());
 
@@ -28,7 +28,7 @@ export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackD
       filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'delete error' || processingState === 'close error' || processingState === 'return error'),
       tap(() => dispatch({ type: 'DELETE_FEEDBACK_STARTED' })),
       exhaustMap(({ tutorId, studentId, submissionId }) => {
-        return newUnitService.deleteFeedback(tutorId, studentId, submissionId).pipe(
+        return newSubmissionService.deleteFeedback(tutorId, studentId, submissionId).pipe(
           tap({
             next: newUnit => {
               dispatch({ type: 'DELETE_FEEDBACK_SUCCEEDED', payload: newUnit });
@@ -53,7 +53,7 @@ export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackD
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, newUnitService, navigateToLogin ]);
+  }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
   return feedbackDelete$.current;
 };

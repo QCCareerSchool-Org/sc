@@ -37,7 +37,7 @@ type RawNewAssignmentWithUnitAndChildren = RawNewAssignment & {
 };
 
 export interface INewAssignmentService {
-  getAssignment: (tutorId: number, studentId: number, unitId: string, assignmentId: string) => Observable<NewAssignmentWithUnitAndChildren>;
+  getAssignment: (tutorId: number, studentId: number, submissionId: string, assignmentId: string) => Observable<NewAssignmentWithUnitAndChildren>;
   saveTextBox: (tutorId: number, textBoxId: string, mark: number | null, notes: string | null) => Observable<NewTextBox>;
   saveUploadSlot: (tutorId: number, uploadSlotId: string, mark: number | null, notes: string | null) => Observable<NewUploadSlot>;
 }
@@ -46,8 +46,8 @@ export class NewAssignmentService implements INewAssignmentService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getAssignment(tutorId: number, studentId: number, unitId: string, assignmentId: string): Observable<NewAssignmentWithUnitAndChildren> {
-    const url = `${this.getUrl(tutorId, studentId, unitId)}/${assignmentId}`;
+  public getAssignment(tutorId: number, studentId: number, submissionId: string, assignmentId: string): Observable<NewAssignmentWithUnitAndChildren> {
+    const url = `${this.getUrl(tutorId, studentId, submissionId)}/${assignmentId}`;
     return this.httpService.get<RawNewAssignmentWithUnitAndChildren>(url).pipe(
       map(this.mapNewAssignmentWithUnitAndChildren),
     );
@@ -75,8 +75,8 @@ export class NewAssignmentService implements INewAssignmentService {
     );
   }
 
-  private getUrl(tutorId: number, studentId: number, unitId: string): string {
-    return `${endpoint}/tutors/${tutorId}/students/${studentId}/newUnits/${unitId}/assignments`;
+  private getUrl(tutorId: number, studentId: number, submissionId: string): string {
+    return `${endpoint}/tutors/${tutorId}/students/${studentId}/newSubmissions/${submissionId}/assignments`;
   }
 
   private readonly mapNewAssignmentWithUnitAndChildren = (newAssignment: RawNewAssignmentWithUnitAndChildren): NewAssignmentWithUnitAndChildren => {

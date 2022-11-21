@@ -18,7 +18,7 @@ export type FeedbackUploadPayload = {
 
 export const useFeedbackUpload = (dispatch: Dispatch<Action>): Subject<FeedbackUploadPayload> => {
   const navigateToLogin = useNavigateToLogin();
-  const { newUnitService } = useTutorServices();
+  const { newSubmissionService } = useTutorServices();
 
   const feedbackUpload$ = useRef(new Subject<FeedbackUploadPayload>());
 
@@ -29,7 +29,7 @@ export const useFeedbackUpload = (dispatch: Dispatch<Action>): Subject<FeedbackU
       filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'delete error' || processingState === 'close error' || processingState === 'return error'),
       tap(() => dispatch({ type: 'UPLOAD_FEEDBACK_STARTED' })),
       exhaustMap(({ tutorId, studentId, submissionId, file }) => {
-        return newUnitService.uploadFeedback(tutorId, studentId, submissionId, file).pipe(
+        return newSubmissionService.uploadFeedback(tutorId, studentId, submissionId, file).pipe(
           tap({
             next: progressResponse => {
               if (progressResponse.type === 'progress') {
@@ -58,7 +58,7 @@ export const useFeedbackUpload = (dispatch: Dispatch<Action>): Subject<FeedbackU
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, newUnitService, navigateToLogin ]);
+  }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
   return feedbackUpload$.current;
 };

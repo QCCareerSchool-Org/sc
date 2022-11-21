@@ -9,16 +9,16 @@ import { HttpServiceError } from '@/services/httpService';
 
 export const useInitialData = (dispatch: Dispatch<Action>, tutorId: number, studentId: number, courseId: number, submissionId: string): void => {
   const navigateToLogin = useNavigateToLogin();
-  const { newUnitService } = useTutorServices();
+  const { newSubmissionService } = useTutorServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newUnitService.getUnit(tutorId, studentId, submissionId).pipe(
+    newSubmissionService.getUnit(tutorId, studentId, submissionId).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: newUnit => {
-        dispatch({ type: 'LOAD_UNIT_SUCCEEDED', payload: newUnit });
+      next: newSubmission => {
+        dispatch({ type: 'LOAD_UNIT_SUCCEEDED', payload: newSubmission });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -33,5 +33,5 @@ export const useInitialData = (dispatch: Dispatch<Action>, tutorId: number, stud
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, tutorId, studentId, submissionId, newUnitService, navigateToLogin ]);
+  }, [ dispatch, tutorId, studentId, submissionId, newSubmissionService, navigateToLogin ]);
 };
