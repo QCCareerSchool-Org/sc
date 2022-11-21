@@ -5,7 +5,7 @@ import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Currency } from '@/domain/currency';
 import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
-import type { NewUnitTemplatePrice, RawNewUnitTemplatePrice } from '@/domain/newSubmissionTemplatePrice';
+import type { NewSubmissionTemplatePrice, RawNewSubmissionTemplatePrice } from '@/domain/newSubmissionTemplatePrice';
 import type { School } from '@/domain/school';
 import type { RawUnit, Unit } from '@/domain/unit';
 import type { IHttpService } from '@/services/httpService';
@@ -13,7 +13,7 @@ import type { IHttpService } from '@/services/httpService';
 type RawCourseWithSchoolAndSubmissionTemplatesAndPrices = Course & {
   school: School;
   newSubmissionTemplates: Array<RawNewSubmissionTemplate & {
-    prices: Array<RawNewUnitTemplatePrice & {
+    prices: Array<RawNewSubmissionTemplatePrice & {
       currency: Currency;
     }>;
   }>;
@@ -23,7 +23,7 @@ type RawCourseWithSchoolAndSubmissionTemplatesAndPrices = Course & {
 export type CourseWithSchoolAndSubmissionTemplatesAndPrices = Course & {
   school: School;
   newSubmissionTemplates: Array<NewSubmissionTemplate & {
-    prices: Array<NewUnitTemplatePrice & {
+    prices: Array<NewSubmissionTemplatePrice & {
       currency: Currency;
     }>;
   }>;
