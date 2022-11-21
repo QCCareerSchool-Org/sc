@@ -22,11 +22,11 @@ export type TextBoxFunction = (partId: string, textBoxId: string, text: string) 
 type Props = {
   studentId: number;
   courseId: number;
-  unitId: string;
+  submissionId: string;
   assignmentId: string;
 };
 
-export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assignmentId }) => {
+export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId, assignmentId }) => {
   const router = useRouter();
   const navigateToLogin = useNavigateToLogin();
   const { newAssignmentService } = useStudentServices();
@@ -37,7 +37,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assi
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newAssignmentService.getAssignment(studentId, courseId, unitId, assignmentId).pipe(
+    newAssignmentService.getAssignment(studentId, courseId, submissionId, assignmentId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: data => dispatch({ type: 'ASSIGNMENT_LOAD_SUCCEEDED', payload: data }),
@@ -54,14 +54,14 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assi
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
+  }, [ studentId, courseId, submissionId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const uploadFile: UploadSlotFunction = useCallback((partId, uploadSlotId, file) => {
     if (!file) {
       return throwError(() => Error('file is not defined'));
     }
     dispatch({ type: 'FILE_UPLOAD_STARTED', payload: { partId, uploadSlotId } });
-    return newAssignmentService.uploadFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId, file).pipe(
+    return newAssignmentService.uploadFile(studentId, courseId, submissionId, assignmentId, partId, uploadSlotId, file).pipe(
       tap({
         next: progressResponse => {
           if (progressResponse.type === 'progress') {
@@ -87,11 +87,11 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assi
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
+  }, [ studentId, courseId, submissionId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const deleteFile: UploadSlotFunction = useCallback((partId, uploadSlotId) => {
     dispatch({ type: 'FILE_DELETE_STARTED', payload: { partId, uploadSlotId } });
-    return newAssignmentService.deleteFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
+    return newAssignmentService.deleteFile(studentId, courseId, submissionId, assignmentId, partId, uploadSlotId).pipe(
       tap({
         error: err => {
           if (err instanceof HttpServiceError) {
@@ -105,10 +105,10 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assi
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
+  }, [ studentId, courseId, submissionId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const downloadFile: UploadSlotFunction = useCallback((partId, uploadSlotId) => {
-    return newAssignmentService.downloadFile(studentId, courseId, unitId, assignmentId, partId, uploadSlotId).pipe(
+    return newAssignmentService.downloadFile(studentId, courseId, submissionId, assignmentId, partId, uploadSlotId).pipe(
       tap({
         error: err => {
           let message = 'File download failed';
@@ -125,11 +125,11 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assi
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
+  }, [ studentId, courseId, submissionId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const saveText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
     dispatch({ type: 'TEXT_SAVE_STARTED', payload: { partId, textBoxId } });
-    return newAssignmentService.saveText(studentId, courseId, unitId, assignmentId, partId, textBoxId, text).pipe(
+    return newAssignmentService.saveText(studentId, courseId, submissionId, assignmentId, partId, textBoxId, text).pipe(
       tap({
         next: () => dispatch({ type: 'TEXT_SAVE_SUCCEEDED', payload: { partId, textBoxId, text } }),
         error: err => {
@@ -143,7 +143,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assi
       }),
       catchError(() => EMPTY),
     );
-  }, [ studentId, courseId, unitId, assignmentId, newAssignmentService, navigateToLogin ]);
+  }, [ studentId, courseId, submissionId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const updateText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
     return new Observable(obs => {
@@ -181,12 +181,12 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assi
             <div className="col-12 col-lg-10 col-xl-8">
               {state.assignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
                 <figure key={m.assignmentMediumId} className={`figure ${m.type}Figure d-block`}>
-                  <NewAssignmentMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} newAssignmentMedium={m} />
+                  <NewAssignmentMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} submissionId={submissionId} assignmentId={assignmentId} newAssignmentMedium={m} />
                   <figcaption className="figure-caption">{m.caption}</figcaption>
                 </figure>
               ))}
               {state.assignment.newAssignmentMedia.filter(m => m.type === 'download').map(m => {
-                const href = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
+                const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
                 return (
                   <div key={m.assignmentMediumId} className="downloadMedium">
                     <a href={href} download>
@@ -204,7 +204,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, unitId, assi
           key={p.partId}
           studentId={studentId}
           courseId={courseId}
-          unitId={unitId}
+          submissionId={submissionId}
           assignmentId={assignmentId}
           part={p}
           updateText={updateText}

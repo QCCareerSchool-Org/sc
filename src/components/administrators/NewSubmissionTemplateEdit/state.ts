@@ -4,7 +4,7 @@ import type { NewSubmissionTemplateWithCourseAndAssignments } from '@/services/a
 import { sanitize } from 'src/sanitize';
 
 export type State = {
-  newUnitTemplate?: NewSubmissionTemplateWithCourseAndAssignments;
+  newSubmissionTemplate?: NewSubmissionTemplateWithCourseAndAssignments;
   form: {
     data: {
       unitLetter: string;
@@ -115,7 +115,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'LOAD_UNIT_TEMPLATE_SUCCEEDED':
       return {
         ...state,
-        newUnitTemplate: action.payload,
+        newSubmissionTemplate: action.payload,
         form: {
           data: {
             unitLetter: action.payload.unitLetter,
@@ -255,13 +255,13 @@ export const reducer = (state: State, action: Action): State => {
         form: { ...state.form, processingState: 'saving', errorMessage: undefined },
       };
     case 'SAVE_UNIT_TEMPLATE_SUCCEEDED': {
-      if (!state.newUnitTemplate) {
-        throw Error('newUnitTemplate is undefined');
+      if (!state.newSubmissionTemplate) {
+        throw Error('newSubmissionTemplate is undefined');
       }
       return {
         ...state,
-        newUnitTemplate: {
-          ...state.newUnitTemplate,
+        newSubmissionTemplate: {
+          ...state.newSubmissionTemplate,
           ...action.payload,
         },
         form: {
@@ -291,12 +291,12 @@ export const reducer = (state: State, action: Action): State => {
         form: { ...state.form, processingState: 'deleting', errorMessage: undefined },
       };
     case 'DELETE_UNIT_TEMPLATE_SUCCEEDED': {
-      if (!state.newUnitTemplate) {
-        throw Error('newUnitTemplate is undefined');
+      if (!state.newSubmissionTemplate) {
+        throw Error('newSubmissionTemplate is undefined');
       }
       return {
         ...state,
-        newUnitTemplate: undefined,
+        newSubmissionTemplate: undefined,
         form: {
           ...state.form,
           data: {
@@ -330,7 +330,7 @@ export const reducer = (state: State, action: Action): State => {
           validationMessage = 'Cannot be less than zero';
         } else if (assignmentNumber > 127) {
           validationMessage = 'Cannot be greater than 127';
-        } else if (state.newUnitTemplate?.newAssignmentTemplates.some(a => a.assignmentNumber === assignmentNumber)) {
+        } else if (state.newSubmissionTemplate?.newAssignmentTemplates.some(a => a.assignmentNumber === assignmentNumber)) {
           validationMessage = 'Another assignment already has this assignment number';
         }
       }
@@ -430,14 +430,14 @@ export const reducer = (state: State, action: Action): State => {
         newAssignmentTemplateForm: { ...state.newAssignmentTemplateForm, processingState: 'inserting', errorMessage: undefined },
       };
     case 'ADD_ASSIGNMENT_TEMPLATE_SUCCEEDED': {
-      if (!state.newUnitTemplate) {
-        throw Error('newUnitTemplate is undefined');
+      if (!state.newSubmissionTemplate) {
+        throw Error('newSubmissionTemplate is undefined');
       }
-      const newAssignmentTemplates = [ ...state.newUnitTemplate.newAssignmentTemplates, action.payload ].sort((a, b) => a.assignmentNumber - b.assignmentNumber);
+      const newAssignmentTemplates = [ ...state.newSubmissionTemplate.newAssignmentTemplates, action.payload ].sort((a, b) => a.assignmentNumber - b.assignmentNumber);
       return {
         ...state,
-        newUnitTemplate: {
-          ...state.newUnitTemplate,
+        newSubmissionTemplate: {
+          ...state.newSubmissionTemplate,
           newAssignmentTemplates,
         },
         newAssignmentTemplateForm: {

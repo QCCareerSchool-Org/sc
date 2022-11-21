@@ -17,7 +17,7 @@ import { useSubmissionTemplateSave } from './useSubmissionTemplateSave';
 import { Section } from '@/components/Section';
 import type { Country } from '@/domain/country';
 import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
-import type { NewUnitTemplatePrice } from '@/domain/newUnitTemplatePrice';
+import type { NewSubmissionTemplatePrice } from '@/domain/newSubmissionTemplatePrice';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 
 type Props = {
@@ -25,23 +25,23 @@ type Props = {
   submissionId: string;
 };
 
-const changesPresent = (unitTemplate: NewSubmissionTemplate | undefined, formData: State['form']['data']): boolean => {
-  if (!unitTemplate) {
+const changesPresent = (submissionTemplate: NewSubmissionTemplate | undefined, formData: State['form']['data']): boolean => {
+  if (!submissionTemplate) {
     return false;
   }
-  if (unitTemplate.title !== (formData.title || null)) {
+  if (submissionTemplate.title !== (formData.title || null)) {
     return true;
   }
-  if (unitTemplate.description !== (formData.description || null)) {
+  if (submissionTemplate.description !== (formData.description || null)) {
     return true;
   }
-  if (unitTemplate.unitLetter !== formData.unitLetter) {
+  if (submissionTemplate.unitLetter !== formData.unitLetter) {
     return true;
   }
-  if (unitTemplate.optional !== formData.optional) {
+  if (submissionTemplate.optional !== formData.optional) {
     return true;
   }
-  if (unitTemplate.order !== parseInt(formData.order, 10)) {
+  if (submissionTemplate.order !== parseInt(formData.order, 10)) {
     return true;
   }
   return false;
@@ -51,7 +51,7 @@ export const NewSubmissionTemplateEdit: FC<Props> = ({ administratorId, submissi
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(changesPresent(state.newUnitTemplate, state.form.data));
+  useWarnIfUnsavedChanges(changesPresent(state.newSubmissionTemplate, state.form.data));
 
   useInitialData(dispatch, administratorId, submissionId);
 
@@ -115,11 +115,12 @@ export const NewSubmissionTemplateEdit: FC<Props> = ({ administratorId, submissi
     return <NextError statusCode={state.errorCode ?? 500} />;
   }
 
-  if (!state.newUnitTemplate) {
+  if (!state.newSubmissionTemplate) {
     return null;
   }
 
-  const courseId = state.newUnitTemplate.courseId;
+  const courseId = state.newSubmissionTemplate.courseId;
+  const priceHref = `/administrators/submission-template-prices/edit?courseId=${encodeURIComponent(courseId)}`;
 
   return (
     <>
@@ -131,7 +132,7 @@ export const NewSubmissionTemplateEdit: FC<Props> = ({ administratorId, submissi
               <NewSubmissionTemplateEditForm
                 administratorId={administratorId}
                 submissionId={submissionId}
-                unitTemplate={state.newUnitTemplate}
+                submissionTemplate={state.newSubmissionTemplate}
                 formState={state.form}
                 save$={unitSave$}
                 delete$={unitDelete$}
@@ -147,23 +148,20 @@ export const NewSubmissionTemplateEdit: FC<Props> = ({ administratorId, submissi
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto bg-white">
                   <tbody>
-                    <tr><th scope="row">Course</th><td>{state.newUnitTemplate.course.name}</td></tr>
-                    <tr><th scope="row">Assignment Templates</th><td>{state.newUnitTemplate.newAssignmentTemplates.length}</td></tr>
-                    <tr><th scope="row">Created</th><td>{formatDateTime(state.newUnitTemplate.created)}</td></tr>
-                    {state.newUnitTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newUnitTemplate.modified)}</td></tr>}
+                    <tr><th scope="row">Course</th><td>{state.newSubmissionTemplate.course.name}</td></tr>
+                    <tr><th scope="row">Assignment Templates</th><td>{state.newSubmissionTemplate.newAssignmentTemplates.length}</td></tr>
+                    <tr><th scope="row">Created</th><td>{formatDateTime(state.newSubmissionTemplate.created)}</td></tr>
+                    {state.newSubmissionTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newSubmissionTemplate.modified)}</td></tr>}
                     <tr>
                       <th scope="row">Prices</th>
                       <td>
-                        {state.newUnitTemplate.prices.length === 0
-                          ? <span className="text-danger">None</span>
-                          : state.newUnitTemplate.prices.sort(priceSort).map(p => {
-                            const href = `/administrators/unit-prices/edit?courseId=${encodeURIComponent(courseId)}`;
-                            if (p.country === null) {
-                              return <Link key={p.unitTemplatePriceId} href={href}><a className="me-1">Default</a></Link>;
-                            }
-                            return <Link key={p.unitTemplatePriceId} href={href + '&countryId=' + encodeURIComponent(p.country.countryId)}><a className="me-1">{p.country.code}</a></Link>;
-                          })
-                        }
+                        {state.newSubmissionTemplate.prices.sort(priceSort).map(p => {
+                          if (p.country === null) {
+                            return <div key={p.unitTemplatePriceId}>Default: {p.currency.symbol}{p.price.toFixed(2)} ({p.currency.code}) <Link href={priceHref}><a>Edit</a></Link></div>;
+                          }
+                          return <div key={p.unitTemplatePriceId}>{p.country.code}: {p.currency.symbol}{p.price.toFixed(2)} ({p.currency.code}) <Link href={priceHref + '&countryId=' + encodeURIComponent(p.country.countryId)}><a>Edit</a></Link></div>;
+                        })}
+                        {!state.newSubmissionTemplate.prices.some(p => p.country === null) && <div className="text-danger">No default price set <Link href={priceHref}><a>Set Now</a></Link></div>}
                       </td>
                     </tr>
                   </tbody>
@@ -178,7 +176,7 @@ export const NewSubmissionTemplateEdit: FC<Props> = ({ administratorId, submissi
           <h2 className="h3">Assignment Templates</h2>
           <div className="row">
             <div className="col-12 col-xl-6">
-              <NewAssignmentTemplateList assignments={state.newUnitTemplate.newAssignmentTemplates} onClick={handleAssignmentRowClick} />
+              <NewAssignmentTemplateList assignments={state.newSubmissionTemplate.newAssignmentTemplates} onClick={handleAssignmentRowClick} />
             </div>
             <div className="col-12 col-md-10 col-lg-8 col-xl-6 mb-3 mb-xl-0">
               <NewAssignmentTemplateAddForm
@@ -201,15 +199,15 @@ export const NewSubmissionTemplateEdit: FC<Props> = ({ administratorId, submissi
   );
 };
 
-type Price = NewUnitTemplatePrice & { country: Country | null };
+type Price = NewSubmissionTemplatePrice & { country: Country | null };
 
 const priceSort = (a: Price, b: Price): number => {
   if (a.country === null && b.country === null) {
     return 0;
   } else if (a.country === null) {
-    return -1;
-  } else if (b.country === null) {
     return 1;
+  } else if (b.country === null) {
+    return -1;
   }
   return a.country.code.localeCompare(b.country.code);
 };

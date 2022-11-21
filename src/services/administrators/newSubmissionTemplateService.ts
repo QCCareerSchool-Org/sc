@@ -7,7 +7,7 @@ import type { Course } from '@/domain/course';
 import type { Currency } from '@/domain/currency';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
-import type { NewUnitTemplatePrice, RawNewUnitTemplatePrice } from '@/domain/newUnitTemplatePrice';
+import type { NewSubmissionTemplatePrice, RawNewSubmissionTemplatePrice } from '@/domain/newSubmissionTemplatePrice';
 import type { IHttpService } from '@/services/httpService';
 
 export type NewSubmissionTemplateAddPayload = {
@@ -32,13 +32,13 @@ export type NewSubmissionTemplateSavePayload = {
 type RawNewSubmissionTemplateWithCourseAndAssignments = RawNewSubmissionTemplate & {
   course: Course;
   newAssignmentTemplates: RawNewAssignmentTemplate[];
-  prices: Array<RawNewUnitTemplatePrice & { country: Country | null; currency: Currency }>;
+  prices: Array<RawNewSubmissionTemplatePrice & { country: Country | null; currency: Currency }>;
 };
 
 export type NewSubmissionTemplateWithCourseAndAssignments = NewSubmissionTemplate & {
   course: Course;
   newAssignmentTemplates: NewAssignmentTemplate[];
-  prices: Array<NewUnitTemplatePrice & { country: Country | null; currency: Currency }>;
+  prices: Array<NewSubmissionTemplatePrice & { country: Country | null; currency: Currency }>;
 };
 
 export interface INewSubmissionTemplateService {

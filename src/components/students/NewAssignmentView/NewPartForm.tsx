@@ -14,7 +14,7 @@ import type { NewDescriptionType } from '@/domain/newDescriptionType';
 type Props = {
   studentId: number;
   courseId: number;
-  unitId: string;
+  submissionId: string;
   assignmentId: string;
   part: PartState;
   saveText: TextBoxFunction;
@@ -25,7 +25,7 @@ type Props = {
 };
 
 export const NewPartForm: FC<Props> = memo(props => {
-  const { studentId, courseId, unitId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile } = props;
+  const { studentId, courseId, submissionId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile } = props;
   return (
     <Section id={part.partId}>
       <div className="container">
@@ -35,12 +35,12 @@ export const NewPartForm: FC<Props> = memo(props => {
           <div className="col-12 col-lg-10 col-xl-8">
             {part.newPartMedia.filter(m => m.type !== 'download').map(m => (
               <figure key={m.partMediumId} className={`figure ${m.type}Figure`}>
-                <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} unitId={unitId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
+                <NewPartMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} submissionId={submissionId} assignmentId={assignmentId} partId={part.partId} newPartMedium={m} />
                 <figcaption className="figure-caption">{m.caption}</figcaption>
               </figure>
             ))}
             {part.newPartMedia.filter(m => m.type === 'download').map(m => {
-              const href = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${unitId}/assignments/${assignmentId}/media/${m.partMediumId}/file`;
+              const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/media/${m.partMediumId}/file`;
               return (
                 <div key={m.partMediumId} className="downloadMedium">
                   <a href={href} download>
