@@ -13,7 +13,7 @@ type Props = {
 
 export const NewSubmissionStatus: FC<Props> = memo(({ studentId, courseId, newSubmission }) => {
   if (newSubmission.closed) {
-    const responseSrc = `${endpoint}/students/${studentId}/courses/${courseId}/newUnits/${newSubmission.submissionId}/response`;
+    const responseSrc = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${newSubmission.submissionId}/response`;
     return (
       <div className="alert alert-success">
         <h5>Assignments Marked</h5>
