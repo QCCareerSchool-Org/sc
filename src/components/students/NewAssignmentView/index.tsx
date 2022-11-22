@@ -192,7 +192,9 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
                 const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
                 const handleDownloadClick: MouseEventHandler = e => {
                   e.preventDefault();
-                  newAssignmentService.downloadAssignmentMedia(studentId, courseId, submissionId, assignmentId, m.assignmentMediumId);
+                  newAssignmentService.downloadAssignmentMedia(studentId, courseId, submissionId, assignmentId, m.assignmentMediumId).pipe(
+                    catchError(() => EMPTY),
+                  ).subscribe();
                 };
                 return (
                   <div key={m.assignmentMediumId} className="downloadMedium">

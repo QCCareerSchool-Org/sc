@@ -2,6 +2,7 @@ import NextError from 'next/error';
 import type { FC, MouseEventHandler } from 'react';
 import { useReducer } from 'react';
 
+import { catchError, EMPTY } from 'rxjs';
 import { endpoint } from '../../../basePath';
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
@@ -50,7 +51,9 @@ export const NewAssignmentTemplatePreview: FC<Props> = ({ administratorId, assig
                 const href = `${endpoint}/administrators/${administratorId}/newAssignmentMedia/${m.assignmentMediumId}/file`;
                 const handleDownloadClick: MouseEventHandler = e => {
                   e.preventDefault();
-                  newAssignmentMediumService.downloadAssignmentMediumFile(administratorId, m.assignmentMediumId);
+                  newAssignmentMediumService.downloadAssignmentMediumFile(administratorId, m.assignmentMediumId).pipe(
+                    catchError(() => EMPTY),
+                  ).subscribe();
                 };
                 return (
                   <div key={m.assignmentMediumId} className="downloadMedium">

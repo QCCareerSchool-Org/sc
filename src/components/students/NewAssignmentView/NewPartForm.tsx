@@ -1,6 +1,7 @@
 import type { FC, MouseEventHandler } from 'react';
 import { memo } from 'react';
 
+import { catchError, EMPTY } from 'rxjs';
 import { endpoint } from '../../../basePath';
 import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxForm } from './NewTextBoxForm';
@@ -46,7 +47,9 @@ export const NewPartForm: FC<Props> = memo(props => {
               const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/parts/${part.partId}/media/${m.partMediumId}/file`;
               const handleDownloadClick: MouseEventHandler = e => {
                 e.preventDefault();
-                newAssignmentService.downloadPartMedia(studentId, courseId, submissionId, assignmentId, part.partId, m.partMediumId);
+                newAssignmentService.downloadPartMedia(studentId, courseId, submissionId, assignmentId, part.partId, m.partMediumId).pipe(
+                  catchError(() => EMPTY),
+                ).subscribe();
               };
               return (
                 <div key={m.partMediumId} className="downloadMedium">

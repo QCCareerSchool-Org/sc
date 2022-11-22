@@ -1,5 +1,6 @@
 import type { FC, MouseEventHandler } from 'react';
 
+import { catchError, EMPTY } from 'rxjs';
 import { endpoint } from '../../../basePath';
 import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxTemplatePreview } from './NewTextBoxTemplatePreview';
@@ -43,7 +44,9 @@ export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemp
               const href = `${endpoint}/administrators/${administratorId}/newPartMedia/${m.partMediumId}/file`;
               const handleDownloadClick: MouseEventHandler = e => {
                 e.preventDefault();
-                newPartMediumService.downloadPartMediumFile(administratorId, m.partMediumId);
+                newPartMediumService.downloadPartMediumFile(administratorId, m.partMediumId).pipe(
+                  catchError(() => EMPTY),
+                ).subscribe();
               };
               return (
                 <div key={m.partMediumId} className="downloadMedium">
