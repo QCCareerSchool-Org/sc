@@ -3,13 +3,14 @@ import { memo } from 'react';
 
 import { formatDate } from '../../../formatDate';
 import type { NewSubmission } from '@/domain/newSubmission';
+import { useServices } from '@/hooks/useServices';
 
 type Props = {
   newSubmission: NewSubmission;
 };
 
 export const NewSubmissionInfoTable: FC<Props> = memo(({ newSubmission }) => {
-  const grade = 'A+'; // TODO: set grade
+  const { gradeService } = useServices();
 
   return (
     <table className="table table-bordered bg-white w-auto">
@@ -22,7 +23,7 @@ export const NewSubmissionInfoTable: FC<Props> = memo(({ newSubmission }) => {
               <>
                 <tr><th scope="row">Submitted</th><td>{formatDate(newSubmission.submitted)}</td></tr>
                 <tr><th scope="row">Marked</th><td>{newSubmission.closed ? formatDate(newSubmission.closed) : '---'}</td></tr>
-                {newSubmission.closed && <tr><th scope="row">Grade</th><td>{grade}</td></tr>}
+                {newSubmission.closed && newSubmission.mark !== null && <tr><th scope="row">Grade</th><td>{gradeService.calculate(newSubmission.mark, newSubmission.points, newSubmission.created)}</td></tr>}
               </>
             )
           : <tr><th scope="row">Submitted</th><td>---</td></tr>

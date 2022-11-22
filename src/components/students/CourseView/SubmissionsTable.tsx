@@ -3,6 +3,7 @@ import { memo } from 'react';
 
 import { formatDate } from '../../../formatDate';
 import type { NewSubmission } from '@/domain/newSubmission';
+import { useServices } from '@/hooks/useServices';
 
 type Props = {
   newSubmissions: NewSubmission[];
@@ -11,6 +12,8 @@ type Props = {
 
 export const SubmissionsTable: FC<Props> = memo(props => {
   const { newSubmissions } = props;
+  const { gradeService } = useServices();
+
   return (
     <>
       {newSubmissions.length === 0
@@ -25,18 +28,24 @@ export const SubmissionsTable: FC<Props> = memo(props => {
               </tr>
             </thead>
             <tbody>
-              {newSubmissions.map(s => (
-                <tr key={s.submissionId} onClick={e => props.onNewUnitClick(e, s.submissionId)}>
-                  <td className="text-center">{s.unitLetter}</td>
-                  {s.closed
-                    ? <td>Marked {formatDate(s.closed)}</td>
-                    : s.submitted
-                      ? <td>{s.skipped ? 'Skipped' : 'Submitted'} {formatDate(s.submitted)}</td>
-                      : <td>In Progress</td>
-                  }
-                  <td className="text-center">---</td>
-                </tr>
-              ))}
+              {newSubmissions.map(s => {
+                const grade = s.mark === null ? null : gradeService.calculate(s.mark, s.points, s.created);
+                return (
+                  <tr key={s.submissionId} onClick={e => props.onNewUnitClick(e, s.submissionId)}>
+                    <td className="text-center">{s.unitLetter}</td>
+                    {s.closed
+                      ? <td>Marked {formatDate(s.closed)}</td>
+                      : s.submitted
+                        ? <td>{s.skipped ? 'Skipped' : 'Submitted'} {formatDate(s.submitted)}</td>
+                        : <td>In Progress</td>
+                    }
+                    {s.closed && grade !== null
+                      ? <td className="text-center">{grade.length === 1 ? <>{grade}&nbsp;&nbsp;</> : grade}</td>
+                      : <td className="text-center">---</td>
+                    }
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )
