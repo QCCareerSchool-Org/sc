@@ -29,6 +29,7 @@ export const DownloadMedium: FC<Props> = ({ medium }) => (
     .downloadMedium {
       border: 1px solid rgba(0,0,0,.25);
       padding: 1rem;
+      background: white;
       display: flex;
       flex-direction: row;
       align-items: center;

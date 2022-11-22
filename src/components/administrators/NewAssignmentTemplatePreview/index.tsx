@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { FC } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 import { useReducer } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -10,6 +10,7 @@ import { useInitialData } from './useInitialData';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
+import { useAdminServices } from '@/hooks/useAdminServices';
 
 type Props = {
   administratorId: number;
@@ -18,6 +19,7 @@ type Props = {
 
 export const NewAssignmentTemplatePreview: FC<Props> = ({ administratorId, assignmentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const { newAssignmentMediumService } = useAdminServices();
 
   useInitialData(dispatch, administratorId, assignmentId);
 
@@ -46,9 +48,13 @@ export const NewAssignmentTemplatePreview: FC<Props> = ({ administratorId, assig
               ))}
               {state.assignmentTemplate.newAssignmentMedia.filter(m => m.type === 'download').map(m => {
                 const href = `${endpoint}/administrators/${administratorId}/newAssignmentMedia/${m.assignmentMediumId}/file`;
+                const handleDownloadClick: MouseEventHandler = e => {
+                  e.preventDefault();
+                  newAssignmentMediumService.downloadAssignmentMediumFile(administratorId, m.assignmentMediumId);
+                };
                 return (
                   <div key={m.assignmentMediumId} className="downloadMedium">
-                    <a href={href} download={m.filename}>
+                    <a href={href} download={m.filename} onClick={handleDownloadClick}>
                       <DownloadMedium medium={m} />
                     </a>
                   </div>

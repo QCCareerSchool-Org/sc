@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 
 import { endpoint } from '../../../basePath';
 import { NewPartMediumView } from './NewPartMediumView';
@@ -11,6 +11,7 @@ import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
+import { useAdminServices } from '@/hooks/useAdminServices';
 
 type NewPartTemplateWithInputs = NewPartTemplate & {
   newTextBoxTemplates: NewTextBoxTemplate[];
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemplate }) => {
+  const { newPartMediumService } = useAdminServices();
   return (
     <Section>
       <div className="container">
@@ -39,9 +41,13 @@ export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemp
             ))}
             {newPartTemplate.newPartMedia.filter(m => m.type === 'download').map(m => {
               const href = `${endpoint}/administrators/${administratorId}/newPartMedia/${m.partMediumId}/file`;
+              const handleDownloadClick: MouseEventHandler = e => {
+                e.preventDefault();
+                newPartMediumService.downloadPartMediumFile(administratorId, m.partMediumId);
+              };
               return (
                 <div key={m.partMediumId} className="downloadMedium">
-                  <a href={href} download={m.filename}>
+                  <a href={href} download={m.filename} onClick={handleDownloadClick}>
                     <DownloadMedium medium={m} />
                   </a>
                 </div>
