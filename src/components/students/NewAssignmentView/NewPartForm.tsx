@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 import { memo } from 'react';
 
 import { endpoint } from '../../../basePath';
@@ -10,6 +10,7 @@ import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import type { PartState } from '@/components/students/NewAssignmentView/state';
+import { useStudentServices } from '@/hooks/useStudentServices';
 
 type Props = {
   studentId: number;
@@ -27,6 +28,7 @@ type Props = {
 
 export const NewPartForm: FC<Props> = memo(props => {
   const { studentId, courseId, submissionId, assignmentId, part, locked, saveText, updateText, uploadFile, deleteFile, downloadFile } = props;
+  const { newAssignmentService } = useStudentServices();
   return (
     <Section id={part.partId}>
       <div className="container">
@@ -42,9 +44,13 @@ export const NewPartForm: FC<Props> = memo(props => {
             ))}
             {part.newPartMedia.filter(m => m.type === 'download').map(m => {
               const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/parts/${part.partId}/media/${m.partMediumId}/file`;
+              const handleDownloadClick: MouseEventHandler = e => {
+                e.preventDefault();
+                newAssignmentService.downloadPartMedia(studentId, courseId, submissionId, assignmentId, part.partId, m.partMediumId);
+              };
               return (
                 <div key={m.partMediumId} className="downloadMedium">
-                  <a href={href} download={m.filename}>
+                  <a href={href} download={m.filename} onClick={handleDownloadClick}>
                     <DownloadMedium medium={m} />
                   </a>
                 </div>

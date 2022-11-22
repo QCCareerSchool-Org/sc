@@ -190,9 +190,13 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
               ))}
               {assignment.newAssignmentMedia.filter(m => m.type === 'download').map(m => {
                 const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
+                const handleDownloadClick: MouseEventHandler = e => {
+                  e.preventDefault();
+                  newAssignmentService.downloadAssignmentMedia(studentId, courseId, submissionId, assignmentId, m.assignmentMediumId);
+                };
                 return (
                   <div key={m.assignmentMediumId} className="downloadMedium">
-                    <a href={href} download={m.filename}>
+                    <a href={href} download={m.filename} onClick={handleDownloadClick}>
                       <DownloadMedium medium={m} />
                     </a>
                   </div>
