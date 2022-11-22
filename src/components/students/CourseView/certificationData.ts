@@ -16,6 +16,18 @@ export const certificationDataDictionary: Record<string, CertificationData> = {
     filename: '2019/standard/idgp',
     url: 'https://www.doggroomingcourse.com/',
   },
+  DD: {
+    code: 'IDCP',
+    name: 'International Dog Care Professional',
+    filename: '2019/standard/idcp',
+    url: 'https://www.doggroomingcourse.com/',
+  },
+  DT: {
+    code: 'IDTP',
+    name: 'International Dog Training Professional',
+    filename: '2019/standard/idtp',
+    url: 'https://www.doggroomingcourse.com/',
+  },
   // Makeup
   MZ: {
     code: 'MIMP',
