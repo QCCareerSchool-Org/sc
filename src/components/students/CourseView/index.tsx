@@ -39,8 +39,8 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   const initializeNextUnit$ = useInitializeNextUnit(dispatch);
 
   const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, submissionId: string): void => {
-    void router.push(router.asPath + '/submissions/' + submissionId);
-  }, [ router ]);
+    void router.push(`/sc/students/courses/${courseId}/submissions/${submissionId}`);
+  }, [ router, courseId ]);
 
   const nextUnit = useMemo(() => getNextUnit(state.enrollment), [ state.enrollment ]);
 
