@@ -41,7 +41,7 @@ export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemp
               const href = `${endpoint}/administrators/${administratorId}/newPartMedia/${m.partMediumId}/file`;
               return (
                 <div key={m.partMediumId} className="downloadMedium">
-                  <a href={href} download>
+                  <a href={href} download={m.filename}>
                     <DownloadMedium medium={m} />
                   </a>
                 </div>
