@@ -6,11 +6,13 @@ import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart, RawNewPart } from '@/domain/newPart';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
+import type { NewSubmission, RawNewSubmission } from '@/domain/newSubmission';
 import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 
 export type NewAssignmentWithChildren = NewAssignment & {
+  newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark'>;
   newAssignmentMedia: NewAssignmentMedium[];
   newParts: Array<NewPart & {
     newTextBoxes: Array<NewTextBox>;
@@ -20,6 +22,7 @@ export type NewAssignmentWithChildren = NewAssignment & {
 };
 
 type RawNewAssignmentWithChildren = RawNewAssignment & {
+  newSubmission: Omit<RawNewSubmission, 'complete' | 'points' | 'mark'>;
   newAssignmentMedia: RawNewAssignmentMedium[];
   newParts: Array<RawNewPart & {
     newTextBoxes: Array<RawNewTextBox>;
@@ -105,6 +108,14 @@ export class NewAssignmentService implements INewAssignmentService {
       ...newAssignment,
       created: new Date(newAssignment.created),
       modified: newAssignment.modified === null ? null : new Date(newAssignment.modified),
+      newSubmission: {
+        ...newAssignment.newSubmission,
+        submitted: newAssignment.newSubmission.submitted === null ? null : new Date(newAssignment.newSubmission.submitted),
+        transferred: newAssignment.newSubmission.transferred === null ? null : new Date(newAssignment.newSubmission.transferred),
+        closed: newAssignment.newSubmission.closed === null ? null : new Date(newAssignment.newSubmission.closed),
+        created: new Date(newAssignment.newSubmission.created),
+        modified: newAssignment.newSubmission.modified === null ? null : new Date(newAssignment.newSubmission.modified),
+      },
       newAssignmentMedia: newAssignment.newAssignmentMedia.map(m => ({
         ...m,
         created: new Date(m.created),

@@ -3,6 +3,7 @@ import type { NewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart } from '@/domain/newPart';
 import type { NewPartMedium } from '@/domain/newPartMedium';
+import type { NewSubmission } from '@/domain/newSubmission';
 import type { NewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignmentWithChildren } from '@/services/students/newAssignmentService';
@@ -30,10 +31,11 @@ export type PartState = NewPart & {
 };
 
 export type AssignmentState = NewAssignment & {
-  formState: FormState;
-  saveState: 'saved' | 'unsaved' | 'saving' | 'error';
+  newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark'>;
   newAssignmentMedia: NewAssignmentMedium[];
   parts: PartState[];
+  formState: FormState;
+  saveState: 'saved' | 'unsaved' | 'saving' | 'error';
 };
 
 export type State = {
