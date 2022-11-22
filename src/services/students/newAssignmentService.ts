@@ -34,6 +34,8 @@ export interface INewAssignmentService {
   uploadFile: (studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string, file: File) => Observable<ProgressResponse<NewUploadSlot>>;
   deleteFile: (studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
   downloadFile: (studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string) => Observable<void>;
+  downloadAssignmentMedia: (studentId: number, courseId: number, submissionId: string, assignmentId: string, assignmentMediaId: string) => Observable<void>;
+  downloadPartMedia: (studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, partMediaId: string) => Observable<void>;
 }
 
 export class NewAssignmentService implements INewAssignmentService {
@@ -81,6 +83,16 @@ export class NewAssignmentService implements INewAssignmentService {
 
   public downloadFile(studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, uploadSlotId: string): Observable<void> {
     const url = this.getUrl(studentId, courseId, submissionId, assignmentId) + `/parts/${partId}/uploadSlots/${uploadSlotId}/file`;
+    return this.httpService.download(url);
+  }
+
+  public downloadAssignmentMedia(studentId: number, courseId: number, submissionId: string, assignmentId: string, assignmentMediaId: string): Observable<void> {
+    const url = this.getUrl(studentId, courseId, submissionId, assignmentId) + `/media/${assignmentMediaId}/file`;
+    return this.httpService.download(url);
+  }
+
+  public downloadPartMedia(studentId: number, courseId: number, submissionId: string, assignmentId: string, partId: string, partMediaId: string): Observable<void> {
+    const url = this.getUrl(studentId, courseId, submissionId, assignmentId) + `/parts/${partId}/media/${partMediaId}/file`;
     return this.httpService.download(url);
   }
 

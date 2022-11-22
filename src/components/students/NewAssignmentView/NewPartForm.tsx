@@ -43,7 +43,7 @@ export const NewPartForm: FC<Props> = memo(props => {
               const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/parts/${part.partId}/media/${m.partMediumId}/file`;
               return (
                 <div key={m.partMediumId} className="downloadMedium">
-                  <a href={href} download>
+                  <a href={href} download={m.filename}>
                     <DownloadMedium medium={m} />
                   </a>
                 </div>
