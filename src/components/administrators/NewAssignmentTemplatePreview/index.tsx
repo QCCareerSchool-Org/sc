@@ -48,7 +48,7 @@ export const NewAssignmentTemplatePreview: FC<Props> = ({ administratorId, assig
                 const href = `${endpoint}/administrators/${administratorId}/newAssignmentMedia/${m.assignmentMediumId}/file`;
                 return (
                   <div key={m.assignmentMediumId} className="downloadMedium">
-                    <a href={href} download>
+                    <a href={href} download={m.filename}>
                       <DownloadMedium medium={m} />
                     </a>
                   </div>

@@ -162,6 +162,8 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
     return null;
   }
 
+  const assignment = state.assignment;
+
   const handleBackButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     void router.back();
   };
@@ -175,22 +177,22 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
     <>
       <Section>
         <div className="container">
-          {state.assignment.optional && <span className="text-danger">OPTIONAL</span>}
-          <h1>Assignment {state.assignment.assignmentNumber}{state.assignment.title && <>: {state.assignment.title}</>}</h1>
-          {state.assignment.description && <Description description={state.assignment.description} descriptionType={state.assignment.descriptionType} />}
+          {assignment.optional && <span className="text-danger">OPTIONAL</span>}
+          <h1>Assignment {assignment.assignmentNumber}{assignment.title && <>: {assignment.title}</>}</h1>
+          {assignment.description && <Description description={assignment.description} descriptionType={assignment.descriptionType} />}
           <div className="row">
             <div className="col-12 col-lg-10 col-xl-8">
-              {state.assignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
+              {assignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
                 <figure key={m.assignmentMediumId} className={`figure ${m.type}Figure d-block`}>
                   <NewAssignmentMediumView className="figure-img mb-0 mw-100" studentId={studentId} courseId={courseId} submissionId={submissionId} assignmentId={assignmentId} newAssignmentMedium={m} />
                   <figcaption className="figure-caption">{m.caption}</figcaption>
                 </figure>
               ))}
-              {state.assignment.newAssignmentMedia.filter(m => m.type === 'download').map(m => {
+              {assignment.newAssignmentMedia.filter(m => m.type === 'download').map(m => {
                 const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/media/${m.assignmentMediumId}/file`;
                 return (
                   <div key={m.assignmentMediumId} className="downloadMedium">
-                    <a href={href} download>
+                    <a href={href} download={m.filename}>
                       <DownloadMedium medium={m} />
                     </a>
                   </div>
@@ -200,7 +202,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
           </div>
         </div>
       </Section>
-      {state.assignment.parts.map(p => (
+      {assignment.parts.map(p => (
         <NewPartForm
           key={p.partId}
           studentId={studentId}
@@ -208,6 +210,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
           submissionId={submissionId}
           assignmentId={assignmentId}
           part={p}
+          locked={assignment.newSubmission.submitted !== null}
           updateText={updateText}
           saveText={saveText}
           uploadFile={uploadFile}
@@ -217,19 +220,19 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
       ))}
       <Section className="bg-dark text-light">
         <div className="container">
-          {state.assignment.complete && <p className="lead">All required parts are complete!</p>}
-          {!state.assignment.complete && (
+          {assignment.complete && <p className="lead">All required parts are complete!</p>}
+          {!assignment.complete && (
             <div className="mb-4">
               <p className="lead mb-2">Some required parts are incomplete:</p>
               <ul className="ps-3">
-                {state.assignment.parts.filter(p => !p.complete).map(p => (
+                {assignment.parts.filter(p => !p.complete).map(p => (
                   // we don't use an anchor link because we don't want the history to change
                   <li key={p.partId}><a onClick={e => handleIncompletePartClick(e, p.partId)} href={`#${p.partId}`} className="link-light text-decoration-none">{p.title}</a></li>
                 ))}
               </ul>
             </div>
           )}
-          <button onClick={handleBackButtonClick} className="btn btn-primary" disabled={state.assignment.saveState !== 'saved'}>Return to Unit Overview</button>
+          <button onClick={handleBackButtonClick} className="btn btn-primary" disabled={assignment.saveState !== 'saved'}>Return to Unit Overview</button>
         </div>
       </Section>
       <style jsx>{`

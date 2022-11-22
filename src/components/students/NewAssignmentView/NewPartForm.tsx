@@ -17,6 +17,7 @@ type Props = {
   submissionId: string;
   assignmentId: string;
   part: PartState;
+  locked: boolean;
   saveText: TextBoxFunction;
   updateText: TextBoxFunction;
   uploadFile: UploadSlotFunction;
@@ -25,7 +26,7 @@ type Props = {
 };
 
 export const NewPartForm: FC<Props> = memo(props => {
-  const { studentId, courseId, submissionId, assignmentId, part, saveText, updateText, uploadFile, deleteFile, downloadFile } = props;
+  const { studentId, courseId, submissionId, assignmentId, part, locked, saveText, updateText, uploadFile, deleteFile, downloadFile } = props;
   return (
     <Section id={part.partId}>
       <div className="container">
@@ -50,10 +51,10 @@ export const NewPartForm: FC<Props> = memo(props => {
               );
             })}
             {part.textBoxes.map(t => (
-              <NewTextBoxForm key={t.textBoxId} textBox={t} save={saveText} update={updateText} />
+              <NewTextBoxForm key={t.textBoxId} textBox={t} locked={locked} save={saveText} update={updateText} />
             ))}
             {part.uploadSlots.map(u => (
-              <NewUploadSlotForm key={u.uploadSlotId} uploadSlot={u} uploadFile={uploadFile} deleteFile={deleteFile} downloadFile={downloadFile} />
+              <NewUploadSlotForm key={u.uploadSlotId} uploadSlot={u} locked={locked} uploadFile={uploadFile} deleteFile={deleteFile} downloadFile={downloadFile} />
             ))}
           </div>
         </div>

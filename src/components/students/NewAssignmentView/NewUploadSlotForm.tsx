@@ -9,12 +9,13 @@ import type { UploadSlotState } from '@/components/students/NewAssignmentView/st
 
 type Props = {
   uploadSlot: UploadSlotState;
+  locked: boolean;
   uploadFile: UploadSlotFunction;
   deleteFile: UploadSlotFunction;
   downloadFile: UploadSlotFunction;
 };
 
-export const NewUploadSlotForm: FC<Props> = memo(({ uploadSlot, uploadFile, deleteFile, downloadFile }) => {
+export const NewUploadSlotForm: FC<Props> = memo(({ uploadSlot, locked, uploadFile, deleteFile, downloadFile }) => {
   const upload$ = useRef(new Subject<{ state: UploadSlotState; file: File }>());
   const download$ = useRef(new Subject<UploadSlotState>());
   const delete$ = useRef(new Subject<UploadSlotState>());
@@ -50,9 +51,9 @@ export const NewUploadSlotForm: FC<Props> = memo(({ uploadSlot, uploadFile, dele
         {uploadSlot.saveState === 'saving'
           ? <ProgressBar progress={uploadSlot.progress}>{uploadSlot.progress}%</ProgressBar>
           : uploadSlot.saveState === 'save error' || uploadSlot.saveState === 'empty'
-            ? <EmptySlot uploadSlot={uploadSlot} upload$={upload$.current} />
+            ? <EmptySlot uploadSlot={uploadSlot} locked={locked} upload$={upload$.current} />
             : uploadSlot.saveState === 'deleting' || uploadSlot.saveState === 'delete error' || uploadSlot.saveState === 'saved'
-              ? <FullSlot uploadSlot={uploadSlot} delete$={delete$.current} download$={download$.current} />
+              ? <FullSlot uploadSlot={uploadSlot} locked={locked} delete$={delete$.current} download$={download$.current} />
               : <div />
         }
         {uploadSlot.optional
@@ -79,10 +80,11 @@ NewUploadSlotForm.displayName = 'NewUploadSlotForm';
 
 type EmptySlotProps = {
   uploadSlot: UploadSlotState;
+  locked: boolean;
   upload$: Subject<{ state: UploadSlotState; file: File }>;
 };
 
-const EmptySlot: FC<EmptySlotProps> = ({ uploadSlot, upload$ }) => {
+const EmptySlot: FC<EmptySlotProps> = ({ uploadSlot, locked, upload$ }) => {
   const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = e => {
     const files = e.target.files;
     if (files?.length !== 1) {
@@ -100,7 +102,7 @@ const EmptySlot: FC<EmptySlotProps> = ({ uploadSlot, upload$ }) => {
 
   return (
     <>
-      <input onChange={handleFileInputChange} type="file" accept={accept(uploadSlot.allowedTypes)} className="form-control" id={uploadSlot.uploadSlotId} />
+      <input onChange={handleFileInputChange} type="file" accept={accept(uploadSlot.allowedTypes)} className="form-control" id={uploadSlot.uploadSlotId} readOnly={locked} />
       {uploadSlot.saveState === 'save error' && <small className="text-danger me-2">Error saving file</small>}
     </>
   );
@@ -108,11 +110,12 @@ const EmptySlot: FC<EmptySlotProps> = ({ uploadSlot, upload$ }) => {
 
 type FullSlotProps = {
   uploadSlot: UploadSlotState;
+  locked: boolean;
   delete$: Subject<UploadSlotState>;
   download$: Subject<UploadSlotState>;
 };
 
-const FullSlot: FC<FullSlotProps> = ({ uploadSlot, delete$, download$ }) => {
+const FullSlot: FC<FullSlotProps> = ({ uploadSlot, locked, delete$, download$ }) => {
   const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
     delete$.next(uploadSlot);
@@ -126,9 +129,11 @@ const FullSlot: FC<FullSlotProps> = ({ uploadSlot, delete$, download$ }) => {
   return (
     <>
       <div className="d-flex flex-column-reverse flex-md-row align-items-md-center">
-        <button onClick={handleDeleteClick} className="btn btn-danger me-0 me-md-3 mt-3 mt-md-0" style={{ width: 90 }} disabled={uploadSlot.saveState === 'deleting'}>
-          {uploadSlot.saveState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
-        </button>
+        {!locked && (
+          <button onClick={handleDeleteClick} className="btn btn-danger me-0 me-md-3 mt-3 mt-md-0" style={{ width: 90 }} disabled={uploadSlot.saveState === 'deleting'}>
+            {uploadSlot.saveState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
+          </button>
+        )}
         <div>{uploadSlot.filename && <><a href="#" onClick={handleDownloadClick}><span style={{ wordBreak: 'break-all' }}>{trimFilename(uploadSlot.filename)}</span></a>&nbsp; {uploadSlot.filesize && <>({humanReadablefilesize(uploadSlot.filesize)})</>}</>}</div>
       </div>
       {uploadSlot.saveState === 'delete error' && <small className="text-danger me-2">Error deleting file</small>}

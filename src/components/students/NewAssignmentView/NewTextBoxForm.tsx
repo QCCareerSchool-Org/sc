@@ -8,6 +8,7 @@ import type { TextBoxState } from '@/components/students/NewAssignmentView/state
 
 type Props = {
   textBox: TextBoxState;
+  locked: boolean;
   update: TextBoxFunction;
   save: TextBoxFunction;
 };
@@ -17,7 +18,7 @@ const saveDelay = 1000;
 
 const maxLength = 65_535;
 
-export const NewTextBoxForm: FC<Props> = memo(({ textBox, update, save }) => {
+export const NewTextBoxForm: FC<Props> = memo(({ textBox, locked, update, save }) => {
   const textChange$ = useRef(new Subject<string>());
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export const NewTextBoxForm: FC<Props> = memo(({ textBox, update, save }) => {
     <>
       <div className="textBox">
         {textBox.description && <label htmlFor={textBox.textBoxId} className="form-label fw-bold">{textBox.description}</label>}
-        <textarea maxLength={maxLength} onChange={handleTextareaChange} value={textBox.text} id={textBox.textBoxId} className="form-control" rows={textBox.lines ?? 7} />
+        <textarea maxLength={maxLength} onChange={handleTextareaChange} value={textBox.text} id={textBox.textBoxId} className="form-control" rows={textBox.lines ?? 7} readOnly={locked} />
         <div className="row">
           <div className="col">
             {textBox.formState === 'dirty' && (
