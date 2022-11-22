@@ -7,18 +7,29 @@ type Props = {
   children: ReactNode;
 };
 
+const minDistance = 750;
+
 export const Section: FC<Props> = ({ id, className, children }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [ scrollOffset, setScrollOffset ] = useState(false);
 
   useEffect(() => {
-    if (sectionRef.current) {
-      const distanceFromTop = sectionRef.current.getBoundingClientRect().top + window.scrollY;
-      if (distanceFromTop < 780) {
-        setScrollOffset(true);
-      }
+    if (id && sectionRef.current) {
+      const ref = sectionRef.current;
+
+      const calculateDistance = (): void => {
+        const distanceFromTop = ref.getBoundingClientRect().top + window.scrollY;
+        setScrollOffset(distanceFromTop < minDistance);
+        console.log(`#${id}`, distanceFromTop, distanceFromTop < minDistance);
+      };
+      calculateDistance();
+
+      const config = { attributes: true, childList: true, subtree: true };
+      const observer = new MutationObserver(calculateDistance);
+      observer.observe(document, config);
+      return () => observer.disconnect();
     }
-  }, []);
+  }, [ sectionRef, id ]);
 
   const sectionClassName = scrollOffset ? `menuScrollOffset${className ? ' ' + className : ''}` : className;
 

@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const CertificationLogoSection: FC<Props> = ({ certificationData, graduated }) => (
-  <Section>
+  <Section id="certification">
     <div className="container">
       <h2>Certification Logo</h2>
       {graduated
@@ -18,11 +18,11 @@ export const CertificationLogoSection: FC<Props> = ({ certificationData, graduat
             <p>Use the HTML code below on your own website to display your certification. Download the PDF to use in printed documents.</p>
             <h3 className="h5">{certificationData.code && <>{certificationData.code}{certificationData.codeRegistered ? <>&reg;</> : <>&trade;</>}&mdash;</>}{certificationData.name}{certificationData.nameTrademarked && <>&trade;</>}</h3>
             <div className="row align-items-center">
-              <div className="col-12 col-md-4">
+              <div className="col-12 col-md-4 mb-3 mb-md-0">
                 { /* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={`https://aeea626a74ffdd96fbcf-77df9cf355bf5239094a1d99115ccf2c.ssl.cf1.rackcdn.com/${certificationData.filename}.svg`} style={{ display: 'block', width: '100%', maxWidth: 255, margin: '0 auto 12px' }} alt={certificationData.name} />
                 <div style={{ textAlign: 'center' }}>
-                  <a download="" href={`https://aeea626a74ffdd96fbcf-77df9cf355bf5239094a1d99115ccf2c.ssl.cf1.rackcdn.com/${certificationData.filename}.pdf`}>Download PDF</a>
+                  <a download href={`https://aeea626a74ffdd96fbcf-77df9cf355bf5239094a1d99115ccf2c.ssl.cf1.rackcdn.com/${certificationData.filename}.pdf`} target="_blank" rel="noreferrer">Download PDF</a>
                 </div>
               </div>
               <div className="col-12 col-md-8">
