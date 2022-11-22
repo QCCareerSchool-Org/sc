@@ -40,7 +40,7 @@ export const NewPartForm: FC<Props> = memo(props => {
               </figure>
             ))}
             {part.newPartMedia.filter(m => m.type === 'download').map(m => {
-              const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/media/${m.partMediumId}/file`;
+              const href = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${submissionId}/assignments/${assignmentId}/parts/${part.partId}/media/${m.partMediumId}/file`;
               return (
                 <div key={m.partMediumId} className="downloadMedium">
                   <a href={href} download>

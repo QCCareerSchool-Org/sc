@@ -38,7 +38,7 @@ export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemp
               </figure>
             ))}
             {newPartTemplate.newPartMedia.filter(m => m.type === 'download').map(m => {
-              const href = `${endpoint}/administrators/${administratorId}/newAssignmentMedia/${m.partMediumId}/file`;
+              const href = `${endpoint}/administrators/${administratorId}/newPartMedia/${m.partMediumId}/file`;
               return (
                 <div key={m.partMediumId} className="downloadMedium">
                   <a href={href} download>
