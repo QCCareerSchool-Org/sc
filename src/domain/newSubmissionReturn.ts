@@ -2,7 +2,7 @@ export type NewSubmissionReturn = {
   /** uuid */
   submissionReturnId: string;
   /** uuid */
-  unitId: string;
+  submissionId: string;
   returned: Date;
   completed: Date | null;
 };
@@ -12,7 +12,7 @@ export type RawNewSubmissionReturn = {
   /** uuid */
   submissionReturnId: string;
   /** uuid */
-  unitId: string;
+  submissionId: string;
   /** string date */
   returned: string;
   /** string date */
