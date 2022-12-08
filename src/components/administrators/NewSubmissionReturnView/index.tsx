@@ -56,7 +56,7 @@ export const NewSubmissionReturnView: FC<Props> = ({ administratorId, submission
         <div className="row">
           <div className="col-12 col-lg-5 col-xl-4">
             <h1>Returned Unit</h1>
-            <table className="table table-bordered w-auto">
+            <table className="table table-bordered bg-white w-auto">
               <tbody>
                 <tr>
                   <th scope="row">Name</th>
@@ -80,7 +80,7 @@ export const NewSubmissionReturnView: FC<Props> = ({ administratorId, submission
                 </tr>
                 <tr>
                   <th scope="row">Unit</th>
-                  <td><Link href={`/administrators/new-units/${state.newSubmissionReturn.unitId}`}><a>{state.newSubmissionReturn.newSubmission.unitLetter}</a></Link></td>
+                  <td><Link href={`/administrators/new-units/${state.newSubmissionReturn.submissionId}`}><a>{state.newSubmissionReturn.newSubmission.unitLetter}</a></Link></td>
                 </tr>
               </tbody>
             </table>

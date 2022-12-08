@@ -30,7 +30,7 @@ const NewUnitReturnViewPage: NextPage<Props> = ({ submissionReturnId }) => {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
-  const submissionReturnIdParam = ctx.params?.unitReturnId;
+  const submissionReturnIdParam = ctx.params?.submissionReturnId;
   const submissionReturnId = typeof submissionReturnIdParam === 'string' ? submissionReturnIdParam : null;
   return { props: { submissionReturnId } };
 };
