@@ -12,7 +12,7 @@ export default class QCDocument extends Document {
           {googleAnalyticsId && (
             <>
               <script async src={getGoogleAnalyticsSrc(googleAnalyticsId)} />
-              <script dangerouslySetInnerHTML={{ __html: getGoogleAnalyticsScript(googleAnalyticsId, googleAdsId) }} />
+              <script dangerouslySetInnerHTML={{ __html: getGoogleAnalyticsScript(googleAnalyticsId) }} />
             </>
           )}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
