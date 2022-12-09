@@ -14,6 +14,7 @@ import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
 
 import '../style.scss';
+import { SessionRefresh } from '@/components/SessionRefresh';
 
 if (!TrackJS.isInstalled()) {
   TrackJS.install({
@@ -53,13 +54,15 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
     <AppErrorBoundary>
       <ScrollPreventer />
       <StateProvider>
-        {getLayout(
-          <RouteGuard>
-            <PageErrorBoundary fallback={<ErrorFallback />}>
-              <Component {...pageProps} />
-            </PageErrorBoundary>
-          </RouteGuard>,
-        )}
+        <SessionRefresh>
+          {getLayout(
+            <RouteGuard>
+              <PageErrorBoundary fallback={<ErrorFallback />}>
+                <Component {...pageProps} />
+              </PageErrorBoundary>
+            </RouteGuard>,
+          )}
+        </SessionRefresh>
       </StateProvider>
     </AppErrorBoundary>
   );
