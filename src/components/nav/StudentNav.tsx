@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 
@@ -44,7 +45,7 @@ export const StudentNav: FC<StudentNavProps> = props => {
             {otherNavPresent && <span className="d-none d-md-inline"><strong>S:</strong>&nbsp;&nbsp;</span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
-                <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/students/course-materials/index.bs.php">Home{index === 0 && <div className="active-indicator" />}</a>
+                <Link href="/students/courses"><a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a></Link>
               </li>
               <li className="nav-item">
                 <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/students/student-resources/vendors.bs.php"><span className="d-none d-xl-inline">Preferred </span>Partners{index === 1 && <div className="active-indicator" />}</a>
