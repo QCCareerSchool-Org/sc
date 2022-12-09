@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import type { ReactElement, ReactNode } from 'react';
 import { useEffect } from 'react';
 
+import { gaPageview } from '../lib/ga';
 import { StateProvider } from '../providers';
 import { TrackJS } from '../trackjs-isomorphic';
 import { AppErrorBoundary } from '@/components/AppErrorBoundary';
@@ -12,9 +13,9 @@ import { DefaultLayout } from '@/components/layouts/DefaultLayout';
 import { PageErrorBoundary } from '@/components/PageErrorBoundary';
 import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
+import { SessionRefresh } from '@/components/SessionRefresh';
 
 import '../style.scss';
-import { SessionRefresh } from '@/components/SessionRefresh';
 
 if (!TrackJS.isInstalled()) {
   TrackJS.install({
@@ -46,6 +47,20 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
   useEffect(() => {
     import('bootstrap'); // load the boostrap javascript library on the client only
   }, [ router ]);
+
+  useEffect(() => {
+    const handleRouteChange = (url: string): void => {
+      gaPageview(url);
+    };
+
+    // When the component is mounted, subscribe to router changes and log those page views
+    router.events.on('routeChangeComplete', handleRouteChange);
+
+    // If the component is unmounted, unsubscribe from the event with the `off` method
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [ router.events ]);
 
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? (page => <DefaultLayout>{page}</DefaultLayout>);
