@@ -13,6 +13,6 @@ export const CourseLink: FC<Props> = ({ course, children }) => {
     const href = `/students/courses/${course.courseId}`;
     return <Link href={href}><a>{children}</a></Link>;
   }
-  const href = `/students/course-materials/new.php?course_id=${course.courseId}`;
+  const href = `/students/course-materials/new.bs.php?course_id=${course.courseId}`;
   return <a href={href}>{children}</a>;
 };
