@@ -8,8 +8,8 @@ type Props = {
 export const CourseWarnings: FC<Props> = ({ courses }) => {
   const courseExists = (courseCode: string): boolean => courses.findIndex(c => c.code === courseCode) !== -1;
 
-  const i2 = courseExists('I2');
-  const st = courseExists('ST');
+  const i2 = courseExists('A');
+  const st = courseExists('T');
   const ap = courseExists('AP');
 
   const mz = courseExists('MZ');
