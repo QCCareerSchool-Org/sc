@@ -69,15 +69,14 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
     <AppErrorBoundary>
       <ScrollPreventer />
       <StateProvider>
-        <SessionRefresh>
-          {getLayout(
-            <RouteGuard>
-              <PageErrorBoundary fallback={<ErrorFallback />}>
-                <Component {...pageProps} />
-              </PageErrorBoundary>
-            </RouteGuard>,
-          )}
-        </SessionRefresh>
+        <SessionRefresh />
+        {getLayout(
+          <RouteGuard>
+            <PageErrorBoundary fallback={<ErrorFallback />}>
+              <Component {...pageProps} />
+            </PageErrorBoundary>
+          </RouteGuard>,
+        )}
       </StateProvider>
     </AppErrorBoundary>
   );

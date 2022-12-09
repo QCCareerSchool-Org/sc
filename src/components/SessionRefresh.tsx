@@ -1,13 +1,9 @@
-import type { FC, ReactNode } from 'react';
+import type { FC } from 'react';
 import { useEffect } from 'react';
 
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
-  children: ReactNode;
-};
-
-export const SessionRefresh: FC<Props> = ({ children }) => {
+export const SessionRefresh: FC = () => {
   const { studentId, tutorId, administratorId } = useAuthState();
 
   useEffect(() => {
@@ -40,5 +36,5 @@ export const SessionRefresh: FC<Props> = ({ children }) => {
     }
   }, [ administratorId ]);
 
-  return <>{children}</>;
+  return null;
 };
