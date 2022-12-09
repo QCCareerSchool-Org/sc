@@ -12,7 +12,7 @@ type Props = {
 export const CourseGrid: FC<Props> = ({ enrollments }) => (
   <div className="row">
     {enrollments.map(e => (
-      <div key={e.enrollmentId} className="col-6 col-md-4 mb-4">
+      <div key={e.enrollmentId} className="col-6 col-md-4 col-xl-3 mb-4">
         <CourseLink course={e.course}>
           <CourseButton courseId={e.courseId} courseName={e.course.name} />
         </CourseLink>
