@@ -1,7 +1,8 @@
 import type { FC } from 'react';
-import { useReducer } from 'react';
+import { useMemo, useReducer } from 'react';
 
-import { CourseButton } from './CourseButton';
+import { CourseGrid } from './CourseGrid';
+import { CourseWarnings } from './CourseWarnings';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
@@ -16,7 +17,9 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
 
   useInitialData(dispatch, studentId);
 
-  if (!state.student) {
+  const courses = useMemo(() => state.student?.enrollments.map(e => e.course), [ state.student?.enrollments ]);
+
+  if (!state.student || !courses) {
     return null;
   }
 
@@ -24,13 +27,15 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
     <Section>
       <div className="container">
         <h1>Online Student Center</h1>
-        <div className="row">
-          {state.student.enrollments.map(e => (
-            <div key={e.enrollmentId} className="col-6 col-md-4">
-              <CourseButton courseId={e.courseId} courseName={e.course.name} />
-            </div>
-          ))}
-        </div>
+        {state.student.enrollments.length === 0
+          ? <p className="lead">No enrollments found.</p>
+          : (
+            <>
+              <CourseWarnings courses={courses} />
+              <CourseGrid enrollments={state.student.enrollments} />
+            </>
+          )
+        }
       </div>
     </Section>
   );
