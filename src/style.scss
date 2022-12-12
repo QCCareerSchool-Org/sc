@@ -24,6 +24,7 @@ $theme-colors: (
   "light":     #f8f9fa,
   "dark":      #212529,
   "navy":      #2b2d42,
+  "red":       #ed1c35,
 );
 
 $headings-margin-bottom: 1rem;
@@ -166,35 +167,7 @@ main > section > .container {
   text-shadow: 1px 1px 4px rgb(0 0 0 / 50%);
 }
 
-// .mediaContent { max-width: 100%; }
-// @include media-breakpoint-up(sm) {
-//   // .mediaContent { max-width: 540px; }
-//   .mediaContent { max-width: 510px; }
-// }
-// @include media-breakpoint-up(md) {
-//   // .mediaContent { max-width: 720px; }
-//   .mediaContent { max-width: 690px; }
-// }
-// @include media-breakpoint-up(lg) {
-//   // .mediaContent { max-width: 960px; }
-//   .mediaContent { max-width: 930px; }
-// }
-// @include media-breakpoint-up(xl) {
-//   // .mediaContent { max-width: 1140px; }
-//   .mediaContent { max-width: 1110px; }
-// }
-// @include media-breakpoint-up(xxl) {
-//   // .mediaContent { max-width: 1302px; }
-//   .mediaContent { max-width: 1290px; }
-// }
+.btn-red {
+  color: white !important;
+}
 
-// @media(min-width: 992px) {
-  // .mainNav.navbar-expand-lg {
-  //   .navbar-nav {
-  //     .nav-link {
-  //       padding-right: 1rem;
-  //       padding-left: 0rem;
-  //     }
-  //   }
-  // }
-// }

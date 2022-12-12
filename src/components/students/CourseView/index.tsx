@@ -1,7 +1,9 @@
 import NextError from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
 import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
+import { FaDownload } from 'react-icons/fa';
 import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
 
 import { certificationDataDictionary } from './certificationData';
@@ -112,6 +114,11 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               <h1 className="mb-0 mb-2 text-shadow">{state.enrollment.course.name}</h1>
               <p className="lead mb-0 text-shadow">Student Number: <strong>{state.enrollment.course.code}&thinsp;{state.enrollment.studentNumber}</strong></p>
               {state.enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{state.enrollment.tutor.firstName} {state.enrollment.tutor.lastName}</strong></p>}
+              {state.enrollment.course.school.name === 'QC Pet Studies' && (
+                <div className="mt-4">
+                  <Link href="/student-handbooks/qc-pet-studies/content/index.html"><a target="_blank" rel="noreferrer"><button className="btn btn-lg btn-red">Student Handbook <FaDownload /></button></a></Link>
+                </div>
+              )}
               <div className="mt-5">
                 <p className="lead mb-0 text-shadow"><MdCollectionsBookmark /> <a href="#materials" style={{ textDecoration: 'none' }} className="text-white">Course Materials</a></p>
                 {hasResources && <p className="lead mb-0 text-shadow"><MdListAlt /> <a href="#resources" style={{ textDecoration: 'none' }} className="text-white">Resources</a></p>}
