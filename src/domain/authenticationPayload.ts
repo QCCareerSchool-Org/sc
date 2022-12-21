@@ -1,7 +1,9 @@
+export type StudentType = 'general' | 'design' | 'event' | 'writing';
+
 export type AuthenticationPayload = {
   studentCenter: {
     id: number;
-    studentType: 'general' | 'design' | 'event' | 'writing';
+    studentType: StudentType;
     type: 'admin' | 'tutor' | 'student';
   };
   crm?: {

@@ -25,7 +25,15 @@ export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | H
             } else if (authenticationPayload.studentCenter.type === 'tutor') {
               authDispatch({ type: 'TUTOR_LOG_IN', payload: { accountId: authenticationPayload.studentCenter.id, xsrfToken: authenticationPayload.xsrf } });
             } else if (authenticationPayload.studentCenter.type === 'student') {
-              authDispatch({ type: 'STUDENT_LOG_IN', payload: { accountId: authenticationPayload.studentCenter.id, xsrfToken: authenticationPayload.xsrf, crmId: authenticationPayload.crm?.id } });
+              authDispatch({
+                type: 'STUDENT_LOG_IN',
+                payload: {
+                  accountId: authenticationPayload.studentCenter.id,
+                  xsrfToken: authenticationPayload.xsrf,
+                  crmId: authenticationPayload.crm?.id,
+                  studentType: authenticationPayload.studentCenter.studentType,
+                },
+              });
             }
             if (mediaRef.current) {
               // eslint-disable-next-line no-self-assign

@@ -1,14 +1,17 @@
+import type { StudentType } from '@/domain/authenticationPayload';
+
 export type AuthState = {
   studentId?: number;
   tutorId?: number;
   administratorId?: number;
   crmId?: number;
+  studentType?: StudentType;
   xsrfToken?: string;
 };
 
 export type AuthAction =
   | { type: 'INITIALIZE'; payload: AuthState }
-  | { type: 'STUDENT_LOG_IN'; payload: { accountId: number; xsrfToken: string; crmId?: number } }
+  | { type: 'STUDENT_LOG_IN'; payload: { accountId: number; xsrfToken: string; crmId?: number; studentType: StudentType } }
   | { type: 'TUTOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
   | { type: 'ADMINISTRATOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } };
 
@@ -17,7 +20,13 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
     case 'INITIALIZE':
       return action.payload;
     case 'STUDENT_LOG_IN': {
-      const newState: AuthState = { ...state, studentId: action.payload.accountId, xsrfToken: action.payload.xsrfToken, crmId: action.payload.crmId };
+      const newState: AuthState = {
+        ...state,
+        studentId: action.payload.accountId,
+        xsrfToken: action.payload.xsrfToken,
+        crmId: action.payload.crmId,
+        studentType: action.payload.studentType,
+      };
       storeState(newState);
       return newState;
     }
