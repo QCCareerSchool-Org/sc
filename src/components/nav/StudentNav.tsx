@@ -111,10 +111,11 @@ type OldNavItemsProps = {
   studentId: number;
   index?: number;
   studentType?: StudentType;
+  profile?: boolean;
   assignmentsEnabled?: boolean;
 };
 
-const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnabled = true }) => (
+const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, studentId, profile = false, assignmentsEnabled = true }) => (
   <>
     <li className="nav-item">
       <a href="/students/index.php" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a>
@@ -177,8 +178,24 @@ const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnab
         <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/forum">Student Forum</a></li>
       </ul>
     </li>
+    {profile && (
+      <li className="nav-item dropdown">
+        <a className="nav-link dropdown-toggle" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Personal Website{index === 3 && <div className="active-indicator" />}
+        </a>
+        <ul className="dropdown-menu" aria-labelledby="navbarProfileDropdown">
+          <li><a className="dropdown-item" href="/students/profiles/edit.php">Details</a></li>
+          <li><a className="dropdown-item" href="/students/portraits/index.php">Portrait</a></li>
+          <li><a className="dropdown-item" href="/students/locations/edit.php">Service Locations</a></li>
+          <li><a className="dropdown-item" href="/students/portfolios/index.php">Portfolio</a></li>
+          <li><a className="dropdown-item" href="/students/testimonials/edit.php">Testimonials</a></li>
+          <li><a className="dropdown-item" href="/students/profiles/activate.php">Profile Visisbility</a></li>
+          <li><a className="dropdown-item" href={`https://www.qccareerschool.com/profiles/${studentId}`}>View My Profile</a></li>
+        </ul>
+      </li>
+    )}
     <li className="nav-item d-md-none d-lg-inline">
-      <a href="/students/forum" className={`nav-link ${index === 3 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Student Forum{index === 3 && <div className="active-indicator" />}</a>
+      <a href="/students/forum" className="nav-link">Student Forum</a>
     </li>
     <li className="nav-item">
       <a href="/students/logout.php" className="nav-link">Log Out</a>
