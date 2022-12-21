@@ -76,6 +76,9 @@ export const authInitializer = (): AuthState => {
           if (typeof parsedAuthState.crmId === 'number') {
             authState.crmId = parsedAuthState.crmId;
           }
+          if (isStudentType(parsedAuthState.studentType)) {
+            authState.studentType = parsedAuthState.studentType;
+          }
         } else {
           window.localStorage.removeItem('authState'); // it was invalid
         }
@@ -89,4 +92,8 @@ export const authInitializer = (): AuthState => {
 
 const isRecord = (u: unknown): u is Record<string | number | symbol, unknown> => {
   return typeof u === 'object' && u !== null;
+};
+
+const isStudentType = (u: unknown): u is StudentType => {
+  return typeof u === 'string' && [ 'general', 'design', 'event', 'writing' ].includes(u);
 };
