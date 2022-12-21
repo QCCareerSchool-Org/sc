@@ -117,7 +117,7 @@ type OldNavItemsProps = {
 const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnabled = true }) => (
   <>
     <li className="nav-item">
-      <Link href="/students"><a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a></Link>
+      <a href="/students/index.php" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a>
     </li>
     {(studentType === 'event' || studentType === 'design') && (
       <li className="nav-item dropdown">
@@ -178,10 +178,10 @@ const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnab
       </ul>
     </li>
     <li className="nav-item d-md-none d-lg-inline">
-      <Link href="/students/forum"><a className={`nav-link ${index === 3 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Student Forum{index === 3 && <div className="active-indicator" />}</a></Link>
+      <a href="/students/forum" className={`nav-link ${index === 3 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Student Forum{index === 3 && <div className="active-indicator" />}</a>
     </li>
     <li className="nav-item">
-      <Link href="/students/logout.php"><a className="nav-link">Log Out</a></Link>
+      <a href="/students/logout.php" className="nav-link">Log Out</a>
     </li>
   </>
 );
