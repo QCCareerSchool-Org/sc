@@ -1,5 +1,3 @@
-import Big from 'big.js';
-
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;

@@ -4,6 +4,7 @@ import type { Material } from '@/domain/material';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { NewSubmission } from '@/domain/newSubmission';
 import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
+import type { School } from '@/domain/school';
 import type { StudentStudent } from '@/domain/student/student';
 import type { StudentTutor } from '@/domain/student/tutor';
 import type { Unit } from '@/domain/unit';
@@ -18,6 +19,7 @@ export type MaterialWithCompletionForm = Material & {
 type EnrollmentState = Enrollment & {
   student: StudentStudent;
   course: Course & {
+    school: School;
     newSubmissionTemplates: NewSubmissionTemplate[];
     units: Array<Unit & {
       materials: MaterialWithCompletionForm[];

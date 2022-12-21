@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';

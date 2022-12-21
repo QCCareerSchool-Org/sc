@@ -8,6 +8,7 @@ import type { Material, RawMaterial } from '@/domain/material';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { NewSubmission, RawNewSubmission } from '@/domain/newSubmission';
 import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
+import type { School } from '@/domain/school';
 import type { RawStudentStudent, StudentStudent } from '@/domain/student/student';
 import type { StudentTutor } from '@/domain/student/tutor';
 import type { RawUnit, Unit } from '@/domain/unit';
@@ -17,6 +18,7 @@ import type { IHttpService } from '@/services/httpService';
 export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
   student: StudentStudent;
   course: Course & {
+    school: School;
     newSubmissionTemplates: NewSubmissionTemplate[];
     units: Array<Unit & {
       materials: Material[];
@@ -31,6 +33,7 @@ export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
 type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
   student: RawStudentStudent;
   course: Course & {
+    school: School;
     newSubmissionTemplates: RawNewSubmissionTemplate[];
     units: Array<RawUnit & {
       materials: RawMaterial[];
