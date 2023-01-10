@@ -22,6 +22,10 @@ interface PaysafeThreeDSOptions {
     endDate: string;
     frequency: number;
   };
+  /** This indicates whether a challenge is requested for this transaction. */
+  requestorChallengePreference?: 'CHALLENGE_MANDATED' | 'CHALLENGE_REQUESTED' | 'NO_PREFERENCE';
+  /** This identifies the type of transaction being authenticated. This element is required only in certain markets, e.g., Brazil */
+  transactionIntent?: 'GOODS_OR_SERVICE_PURCHASE' | 'CHECK_ACCEPTANCE' | 'ACCOUNT_FUNDING' | 'QUASI_CASH_TRANSACTION' | 'PREPAID_ACTIVATION';
 }
 
 interface PaysafeVaultOptions {
