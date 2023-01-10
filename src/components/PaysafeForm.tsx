@@ -166,9 +166,16 @@ export const PaysafeForm: FC<Props> = memo(props => {
           currency: currencyCode,
           accountId,
           useThreeDSecureVersion2: true,
+          requestorChallengePreference: 'CHALLENGE_MANDATED',
         },
         vault: {
           holderName: `${props.firstName} ${props.lastName}`,
+          billingAddress: {
+            country: props.countryCode,
+            zip: props.postalCode ?? '0',
+            city: props.city,
+            street: props.address1,
+          },
           shippingAddress: {
             recipientName: `${props.firstName} ${props.lastName}`,
             street: props.address1,
@@ -179,11 +186,19 @@ export const PaysafeForm: FC<Props> = memo(props => {
           },
         },
       };
-      if (options.vault?.shippingAddress) { // always true, needed for typescript
-        if (props.address2) {
+      if (props.address2) {
+        if (options.vault?.billingAddress) { // always true; needed for typescript
+          options.vault.billingAddress.street2 = props.address2;
+        }
+        if (options.vault?.shippingAddress) { // always true; needed for typescript
           options.vault.shippingAddress.street2 = props.address2;
         }
-        if (props.provinceCode) {
+      }
+      if (props.provinceCode) {
+        if (options.vault?.billingAddress) { // always true; needed for typescript
+          options.vault.billingAddress.state = props.provinceCode;
+        }
+        if (options.vault?.shippingAddress) { // always true; needed for typescript
           options.vault.shippingAddress.state = props.provinceCode;
         }
       }
