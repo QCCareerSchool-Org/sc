@@ -44,11 +44,6 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
 
   const handleT2202ReceiptClick = (e: MouseEvent<HTMLTableRowElement>, t2202ReceiptId: number, year: number): void => {
     switch (year) {
-      case 2019:
-      case 2020:
-      case 2021:
-        window.location.href = `/students/tax-receipts/view-2019.php?id=${encodeURIComponent(t2202ReceiptId)}`;
-        break;
       case 2018:
         window.location.href = `/students/tax-receipts/view-2018.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
@@ -59,6 +54,8 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
       case 2015:
         window.location.href = `/students/tax-receipts/view.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
+      default:
+        window.location.href = `/students/tax-receipts/view-2019.php?id=${encodeURIComponent(t2202ReceiptId)}`;
     }
   };
 
@@ -206,7 +203,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
                 </tr>
               </thead>
               <tbody>
-                {state.t2202Receipts.map(t => (
+                {state.t2202Receipts.filter(t => t.startYear <= 2021).map(t => (
                   <tr key={t.t2202ReceiptId} onClick={e => handleT2202ReceiptClick(e, t.t2202ReceiptId, t.startYear)} style={{ cursor: 'pointer' }}>
                     <td>{t.startYear}</td>
                     <td>{t.enrollment.course.name}</td>
