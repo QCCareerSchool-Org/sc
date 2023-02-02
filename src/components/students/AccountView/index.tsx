@@ -84,6 +84,11 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
                       <td style={{ verticalAlign: 'bottom' }} />
                     </tr>
                     <tr>
+                      <th scope="col">Portrait</th>
+                      <td />
+                      <td><a href="/students/portraits/index.bs.php">Change</a></td>
+                    </tr>
+                    <tr>
                       <th scope="row">Address</th>
                       <td>
                         {state.crmStudent.address1}<br />
@@ -152,6 +157,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
               <h1>My Account</h1>
               <ul>
                 <li><a href="/students/passwords/edit.php">Change Password</a></li>
+                <li><a href="/students/portraits/index.bs.php">Change Portrait</a></li>
               </ul>
 
               {state.student.enrollments.map(e => (
