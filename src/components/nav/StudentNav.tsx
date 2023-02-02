@@ -88,7 +88,7 @@ const GeneralNavItems: FC<GeneralNavItemsProps> = ({ studentId, index }) => (
       <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/virtual-classroom.php">Virtual Classroom</a>
     </li>
     <li className="nav-item">
-      <a className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/accounts/view.bs.php"><span className="d-none d-xl-inline">My </span>Account</a>
+      <Link href="/students/account"><a className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined}><span className="d-none d-xl-inline">My </span>Account</a></Link>
     </li>
   </>
 );
