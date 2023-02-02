@@ -84,22 +84,8 @@ const GeneralNavItems: FC<GeneralNavItemsProps> = ({ studentId, index }) => (
     <li className="nav-item">
       <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/students/badges.bs.php">{index === 2 && <div className="active-indicator" />}<span className="d-none d-xl-inline">School </span>Badges</a>
     </li>
-    <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <span className="d-none d-xl-inline">Professional </span>Profile{index === 3 && <div className="active-indicator" />}
-      </a>
-      <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-        <li><a className="dropdown-item" href="/students/profiles/edit.php">Details</a></li>
-        <li><a className="dropdown-item" href="/students/portraits/index.php">Portrait</a></li>
-        <li><a className="dropdown-item" href="/students/locations/edit.php">Service Locations</a></li>
-        <li><a className="dropdown-item" href="/students/portfolios/index.php">Portfolio</a></li>
-        <li><a className="dropdown-item" href="/students/testimonials/edit.php">Testimonials</a></li>
-        <li><a className="dropdown-item" href="/students/profiles/activate.php">Profile Visibility</a></li>
-        <li><a className="dropdown-item" href={`https://www.qccareerschool.com/profiles/${studentId}`}>View My Profile</a></li>
-      </ul>
-    </li>
     <li className="nav-item">
-      <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/forum"><span className="d-none d-xl-inline">Student </span>Forum</a>
+      <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/virtual-classroom.php">Virtual Classroom</a>
     </li>
     <li className="nav-item">
       <a className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/accounts/view.bs.php"><span className="d-none d-xl-inline">My </span>Account</a>
@@ -175,27 +161,11 @@ const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, studentId, prof
             <li><a className="dropdown-item" href="/students/showcases/new.php">Student Showcase</a></li>
           </>
         )}
-        <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/forum">Student Forum</a></li>
+        <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/virtual-classroom.php">Virtual Classroom</a></li>
       </ul>
     </li>
-    {profile && (
-      <li className="nav-item dropdown">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarProfileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Personal Website{index === 3 && <div className="active-indicator" />}
-        </a>
-        <ul className="dropdown-menu" aria-labelledby="navbarProfileDropdown">
-          <li><a className="dropdown-item" href="/students/profiles/edit.php">Details</a></li>
-          <li><a className="dropdown-item" href="/students/portraits/index.php">Portrait</a></li>
-          <li><a className="dropdown-item" href="/students/locations/edit.php">Service Locations</a></li>
-          <li><a className="dropdown-item" href="/students/portfolios/index.php">Portfolio</a></li>
-          <li><a className="dropdown-item" href="/students/testimonials/edit.php">Testimonials</a></li>
-          <li><a className="dropdown-item" href="/students/profiles/activate.php">Profile Visisbility</a></li>
-          <li><a className="dropdown-item" href={`https://www.qccareerschool.com/profiles/${studentId}`}>View My Profile</a></li>
-        </ul>
-      </li>
-    )}
     <li className="nav-item d-md-none d-lg-inline">
-      <a href="/students/forum" className="nav-link">Student Forum</a>
+      <a href="/students/virtual-classroom.php" className="nav-link">Virtual Classroom</a>
     </li>
     <li className="nav-item">
       <a href="/students/logout.php" className="nav-link">Log Out</a>
