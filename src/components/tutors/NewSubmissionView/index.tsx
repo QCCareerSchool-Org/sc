@@ -156,7 +156,7 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
                 <li>A student uploaded the wrong files (e.g., A2 was submitted in the slot for E2).</li>
                 <li>You received a corrupt or blank file from a student (i.e., you can't open it).</li>
               </ol>
-              <p>Please do not use this form to ask students to redo parts of an assignment or unit. Please mark the work as is. If the student does poorly, let the student know that he or she can resubmit the unit for a small fee. Advise the student to call the School to set this up.</p>
+              <p><strong className="text-danger">Please do not use this form to ask students to redo parts of an assignment or unit.</strong> Please mark the work as is. If the student does poorly, let the student know that he or she can resubmit the unit for a small fee. Advise the student to call the School to set this up.</p>
               <p>To send this assignment back to the student, enter a brief reason below and then click the &ldquo;Return&rdquo; button. We'll read your message and write our own message to the student.</p>
               <div className="mb-3">
                 <label htmlFor={'returnMessage' + submissionId} className="form-label fw-bold">Message to Student</label>
