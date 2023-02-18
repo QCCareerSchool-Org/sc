@@ -2,7 +2,7 @@ import Big from 'big.js';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent } from 'react';
-import { Fragment, useReducer } from 'react';
+import { Fragment, useMemo, useReducer } from 'react';
 
 import { CASocialInsuranceNumberForm } from './caSocialInsuranceNumberForm';
 import { initialState, reducer } from './state';
@@ -22,6 +22,8 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
   const router = useRouter();
 
   useInitialData(dispatch, studentId, crmId);
+
+  const filteredReceipts = useMemo(() => state.t2202Receipts?.filter(t => t.startYear <= 2022), [ state.t2202Receipts ]);
 
   if (state.error) {
     return (
@@ -196,7 +198,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
           </div>
         </Section>
       )}
-      {state.t2202Receipts.length > 0 && (
+      {filteredReceipts && filteredReceipts.length > 0 && (
         <Section>
           <div className="container">
             <h2>Tax Receipts</h2>
@@ -209,7 +211,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
                 </tr>
               </thead>
               <tbody>
-                {state.t2202Receipts.filter(t => t.startYear <= 2021).map(t => (
+                {filteredReceipts.map(t => (
                   <tr key={t.t2202ReceiptId} onClick={e => handleT2202ReceiptClick(e, t.t2202ReceiptId, t.startYear)} style={{ cursor: 'pointer' }}>
                     <td>{t.startYear}</td>
                     <td>{t.enrollment.course.name}</td>
