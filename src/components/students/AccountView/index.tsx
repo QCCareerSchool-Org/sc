@@ -44,18 +44,18 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
 
   const handleT2202ReceiptClick = (e: MouseEvent<HTMLTableRowElement>, t2202ReceiptId: number, year: number): void => {
     switch (year) {
-      case 2018:
-        window.location.href = `/students/tax-receipts/view-2018.php?id=${encodeURIComponent(t2202ReceiptId)}`;
+      case 2015:
+      case 2016:
+        window.location.href = `/students/tax-receipts/view-2015.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
       case 2017:
         window.location.href = `/students/tax-receipts/view-2017.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
-      case 2016:
-      case 2015:
-        window.location.href = `/students/tax-receipts/view.php?id=${encodeURIComponent(t2202ReceiptId)}`;
+      case 2018:
+        window.location.href = `/students/tax-receipts/view-2018.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
       default:
-        window.location.href = `/students/tax-receipts/view-2019.php?id=${encodeURIComponent(t2202ReceiptId)}`;
+        window.location.href = `/students/tax-receipts/view.php?id=${encodeURIComponent(t2202ReceiptId)}`;
     }
   };
 
