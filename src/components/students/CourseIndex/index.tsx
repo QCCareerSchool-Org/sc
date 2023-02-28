@@ -52,9 +52,11 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
       <Section className="bg-f1">
         <div className="container">
           <h2 className="h4">Continued Education</h2>
+          <p className="lead">Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses.</p>
           {schools?.map(s => courseSuggestionGroups[s].map(group => {
             return <ContinuingEducationGroup key={group.id} countryCode={student.country.code} provinceCode={student.province?.code} group={group} disabledCourses={courses} />;
           }))}
+          <button className="btn btn-outline-dark" style={{ borderRadius: 0, textTransform: 'uppercase' }}>View More Courses</button>
         </div>
       </Section>
     </>

@@ -2,8 +2,10 @@ import type { FC, ReactNode } from 'react';
 import { AdminServicesProvider } from './AdminServicesProvider';
 
 import { AuthStateProvider } from './AuthStateProvider';
+import { ModalProvider } from './ModalProvider';
 import { NavStateProvider } from './NavStateProvider';
 import { ScreenWidthProvider } from './ScreenWidthProvider';
+import { ScrollbarWidthProvider } from './ScrollbarWidthProvider';
 import { ServicesProvider } from './ServicesProvider';
 import { StudentServicesProvider } from './StudentServicesProvider';
 import { TutorServicesProvider } from './TutorServicesProvider';
@@ -22,7 +24,11 @@ export const StateProvider: FC<Props> = ({ children }) => (
             <AdminServicesProvider>
               <TutorServicesProvider>
                 <StudentServicesProvider>
-                  {children}
+                  <ModalProvider>
+                    <ScrollbarWidthProvider>
+                      {children}
+                    </ScrollbarWidthProvider>
+                  </ModalProvider>
                 </StudentServicesProvider>
               </TutorServicesProvider>
             </AdminServicesProvider>

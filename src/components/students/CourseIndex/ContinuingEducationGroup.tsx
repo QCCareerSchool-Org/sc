@@ -2,7 +2,7 @@ import Big from 'big.js';
 import type { StaticImageData } from 'next/image';
 import Image from 'next/image';
 import type { FC } from 'react';
-import { useMemo, useReducer, useState } from 'react';
+import { useReducer } from 'react';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 
 import AddValueHomes from '../../../images/course-suggestions/backgrounds/add-value-homes.jpg';
@@ -136,26 +136,29 @@ export const ContinuingEducationGroup: FC<Props> = ({ countryCode, provinceCode,
             />
             <h3 className="h2 mb-0 description">{group.description}</h3>
             <div className="d-flex justify-content-between plus">
-              <div>Learn More</div> {expanded ? <FaMinusCircle size={iconSize} /> : <FaPlusCircle size={iconSize} />}
+              <div><small className="text-uppercase">Learn More</small></div> {expanded ? <FaMinusCircle size={iconSize} /> : <FaPlusCircle size={iconSize} />}
             </div>
           </div>
         </button>
         {expanded && (
           <div>
-            {group.courseCodes.map(courseCode => (
+            {group.courses.map(course => (
               <ContinuingEducationCourse
-                key={courseCode}
-                selected={state.selectedCourses.findIndex(s => s.courseCode === courseCode) !== -1}
-                disabled={disabledCourses.findIndex(c => c.code === courseCode) !== -1}
+                key={course.code}
+                selected={state.selectedCourses.findIndex(s => s.courseCode === course.code) !== -1}
+                disabled={disabledCourses.findIndex(c => c.code === course.code) !== -1}
                 onToggle={handleToggle}
                 countryCode={countryCode}
                 provinceCode={provinceCode}
-                courseCode={courseCode}
+                courseCode={course.code}
+                name={course.name}
+                shortDescription={course.shortDescription}
+                description={course.description}
               />
             ))}
             {state.selectedCourses.length > 0 && (
               <div className="mt-3 bg-f1 total d-flex align-items-center justify-content-end">
-                <div><strong>Total:</strong> <del>{state.currency?.symbol}{state.normalPrice.toFixed(2)}</del> {state.currency?.symbol}{state.price.toFixed(2)}</div>
+                <div>Total: <span className="price"><span className="strike">{state.currency?.symbol}{state.normalPrice.toFixed(2)}</span>&nbsp; <span className="discountedPrice">{state.currency?.symbol}{state.price.toFixed(2)}</span></span></div>
                 <button className="btn btn-primary ms-4 enrollButton">Enroll Now</button>
               </div>
             )}
@@ -173,6 +176,14 @@ export const ContinuingEducationGroup: FC<Props> = ({ countryCode, provinceCode,
         .groupCard {
           background-color: white;
           margin-bottom: 1rem;
+          margin-left: -1rem;
+          margin-right: -1rem;
+        }
+        @media only screen and (min-width: 576px) {
+          .groupCard {
+            margin-left: 0;
+            margin-right: 0;
+          }
         }
         .groupCardPadding {
           padding: 1rem;
@@ -210,6 +221,33 @@ export const ContinuingEducationGroup: FC<Props> = ({ countryCode, provinceCode,
         .enrollButton {
           border-radius: 0;
           text-transform: uppercase;
+          box-shadow: none;
+        }
+        .price {
+          font-weight: bold;
+        }
+        .discountedPrice {
+          color: #ca0000;
+          font-size: 1.2rem;
+        }
+        .strike {
+          position: relative;
+          padding: 0 0.25rem;
+          margin: 0 0 0.5rem !important;
+        }
+        .strike::after {
+          border-bottom: 1px solid #333;
+          content: '';
+          left: 0;
+          right: 0;
+          top: 50%;
+          margin-top: calc(0.125rem / 2);
+          position: absolute;
+          transform: rotate(358deg);
+          -webkit-transform: rotate(358deg);
+          -moz-transform: rotate(358deg);
+          -o-transform: rotate(358deg);
+          -ms-transform: rotate(358deg);
         }
       `}</style>
     </div>

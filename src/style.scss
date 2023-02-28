@@ -76,6 +76,7 @@ $card-spacer-x: 1.25rem;
 body {
   overflow-y: scroll; /* Show scrollbars */
   background-color: rgb(250, 250, 250);
+  --scrollbar-width: calc(100vw - 100%);
 }
 
 .mainNav .navbar-nav > .nav-item .nav-link {
