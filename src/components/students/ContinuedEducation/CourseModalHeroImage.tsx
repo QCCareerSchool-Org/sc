@@ -31,7 +31,7 @@ import SK from '../../../images/course-suggestions/heroes/sk.jpg';
 import ST from '../../../images/course-suggestions/heroes/st.jpg';
 import WP from '../../../images/course-suggestions/heroes/wp.jpg';
 
-import type { CourseSuggestion } from '../CourseIndex/courseSuggestions';
+import type { CourseSuggestion } from './courseSuggestions';
 
 type Props = {
   course: CourseSuggestion;

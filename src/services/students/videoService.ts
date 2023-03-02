@@ -1,5 +1,4 @@
 import type { Observable } from 'rxjs';
-import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { Video } from '@/domain/video';

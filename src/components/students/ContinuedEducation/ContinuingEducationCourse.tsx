@@ -1,9 +1,9 @@
 import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { useEffect, useState } from 'react';
 
-import type { CourseSuggestion } from '../CourseIndex/courseSuggestions';
 import type { ShippingDetails } from './ContinuingEducationGroup';
 import { CourseModal } from './CourseModal';
+import type { CourseSuggestion } from './courseSuggestions';
 import { CourseThumbnailImage } from './CourseThumbnailImage';
 import { Modal } from '@/components/Modal';
 import type { PriceResult } from '@/domain/price';
