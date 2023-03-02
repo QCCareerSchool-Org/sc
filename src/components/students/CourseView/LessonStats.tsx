@@ -1,6 +1,6 @@
 import type { ChangeEventHandler } from 'react';
 import { useId } from 'react';
-import { FaBookmark, FaBookOpen, FaClock, FaLightbulb, FaPlayCircle } from 'react-icons/fa';
+import { FaBookmark, FaClock, FaLightbulb, FaPlayCircle } from 'react-icons/fa';
 
 import { MaterialButton } from './MaterialButton';
 import type { MaterialWithCompletionForm } from './state';
