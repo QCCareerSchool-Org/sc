@@ -6,22 +6,25 @@ import { courseSuggestionGroups } from './courseSuggestions';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
+import type { SchoolSlug } from '@/domain/school';
 
 type Props = {
   studentId: number;
 };
+
+const schoolSlugs: SchoolSlug[] = [
+  'design',
+  'event',
+  'makeup',
+  'pet',
+  'wellness',
+];
 
 export const ContinuedEducation: FC<Props> = ({ studentId }) => {
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, studentId);
-
-  const schoolSlugs = useMemo(() => {
-    return state.data?.student.enrollments
-      .map(e => e.course.school.slug)
-      .filter((item, pos, self) => self.indexOf(item) === pos);
-  }, [ state.data?.student.enrollments ]);
 
   const courses = useMemo(() => state.data?.student.enrollments.map(e => e.course), [ state.data?.student.enrollments ]);
 
@@ -35,7 +38,7 @@ export const ContinuedEducation: FC<Props> = ({ studentId }) => {
     <Section className="bg-f1">
       <div className="container">
         <h1>Continued Education</h1>
-        <p className="lead">Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses.</p>
+        <p className="lead">Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses  from any of QC's faculties including QC Makeup Academy, QC Event Planning, QC Design School, QC Pet Studies and QC Wellness Studies.</p>
         {crmStudent && schoolSlugs?.map((s, i) => courseSuggestionGroups[s].map(group => {
           return <ContinuingEducationGroup
             key={group.id}
