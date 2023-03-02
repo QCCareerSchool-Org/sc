@@ -190,9 +190,9 @@ export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlu
               />
             ))}
             {state.selectedCourses.length > 0 && (
-              <div className="mt-3 bg-f1 total d-flex flex-column flex-sm-row align-items-end align-items-sm-center justify-content-center justify-content-sm-end">
-                <div className="mb-3 mb-sm-0">Total: <span className="price"><span className="strike">{state.currency?.symbol}{state.normalPrice.toFixed(2)}</span>&nbsp; <span className="discountedPrice">{state.currency?.symbol}{state.price.toFixed(2)}</span></span></div>
-                <a href={enrollUrl} className="btn btn-primary ms-4 enrollButton" target="_blank" rel="noopener noreferrer">Enroll Now</a>
+              <div className="mt-3 bg-f1 total d-flex align-items-center justify-content-end w-100">
+                <div>Total: <span className="price"><span className="strike">{state.currency?.symbol}{state.normalPrice.toFixed(2)}</span>&nbsp; <span className="discountedPrice">{state.currency?.symbol}{state.price.toFixed(2)}</span></span></div>
+                <a href={enrollUrl} className="btn btn-primary ms-4 enrollButton" target="_blank" rel="noopener noreferrer" style={{ whiteSpace: 'nowrap' }}>Enroll Now</a>
               </div>
             )}
           </div>
