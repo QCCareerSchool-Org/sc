@@ -40,6 +40,7 @@ import SL from '../../../images/course-suggestions/heroes/sl.jpg';
 import ST from '../../../images/course-suggestions/heroes/st.jpg';
 import TT from '../../../images/course-suggestions/heroes/tt.jpg';
 // import VE from '../../../images/course-suggestions/heroes/ve.jpg';
+import VM from '../../../images/course-suggestions/heroes/vm.jpg';
 import WP from '../../../images/course-suggestions/heroes/wp.jpg';
 
 import type { CourseSuggestion } from './courseSuggestions';
@@ -119,6 +120,8 @@ const getSrc = (courseCode: string): StaticImageData => {
       return SF;
     case 'PF':
       return PF;
+    case 'VM':
+      return VM;
 
     // wellness
     case 'SL':
