@@ -151,11 +151,11 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
       description: 'QC Design School',
       courses: [
         {
-          code: 'LD',
-          name: 'Landscape Design',
-          certification: 'International Landscape Design Professional',
-          shortDescription: 'QC\'s Landscape Design course will jumpstart your career planning beautiful outdoor designs in this fast-growing industry.',
-          description: 'You\'ll develop a keen understanding of design concepts like scale and color theory, and how to apply these concepts to outdoor spaces. You\'ll learn to work with plants and other features to design living landscapes that thrive in different climates. Homeowners spend millions of dollars every year to create ideal outdoor spaces that suit their clients\' needs and add value to their homes.',
+          code: 'I2',
+          name: 'Interior Decorating',
+          certification: 'International Design and Decorating Professional',
+          shortDescription: 'QC\'s Interior Decorating course allows you to channel your passion for home decor into a successful career in a thriving, multi-billion dollar industry.',
+          description: 'You\'ll learn how to create custom interiors that exceed your client\'s expectations. Step-by-step videos featuring QC tutor Angie Chapman will walk you through creating a professional floorplan. You\'ll learn about color theory in home design, wall treatments, furniture placement, and more. You\'ll practice your design skills through hands-on and theory-based assignments.',
         },
         {
           code: 'ST',
@@ -163,13 +163,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           certification: 'International Staging and Redesign Professional',
           shortDescription: 'QC\'s Home Staging course prepares you for a highly sought after career designing homes that attract buyers and sell for the best price possible.',
           description: 'You\'ll learn to assess the client\'s home to optimize the space through the strategic organizing of existing furniture and home accessories. You\'ll study the process of depersonalizing, redesign and improving curb appeal. Through this process, you\'ll create a sense of possibility to potential home buyers and add perceived value to your clients\' homes.',
-        },
-        {
-          code: 'I2',
-          name: 'Interior Decorating',
-          certification: 'International Design and Decorating Professional',
-          shortDescription: 'QC\'s Interior Decorating course allows you to channel your passion for home decor into a successful career in a thriving, multi-billion dollar industry.',
-          description: 'You\'ll learn how to create custom interiors that exceed your client\'s expectations. Step-by-step videos featuring QC tutor Angie Chapman will walk you through creating a professional floorplan. You\'ll learn about color theory in home design, wall treatments, furniture placement, and more. You\'ll practice your design skills through hands-on and theory-based assignments.',
         },
         {
           code: 'LD',
@@ -193,13 +186,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           description: 'You\'ll be prepared to work with event planning professionals to execute breathtaking events. You\'ll learn to use color matching, popular themes and the latest trends to create a cohesive, modern look. Discover how you can combine all elements of an event to create a beautiful, cohesive presentation to win over any client.',
         },
         {
-          code: 'AP',
-          name: 'Aging in Place',
-          certification: 'Aging in Place Professional',
-          shortDescription: 'Apply your design skills to offer an essential service to any client with aging concerns. Create safe and convenient spaces for aging clients.',
-          description: 'Clients often hire an Aging in Place designer to help them stay in their home instead of moving to an assisted living facility. QC\'s Aging in Place course will prepare you to design beautiful, safe and functional spaces that allow your clients to keep their independence for as long as possible.',
-        },
-        {
           code: 'PO',
           name: 'Professional Organizing',
           certification: 'Advanced International Organizing Professional',
@@ -212,6 +198,13 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           certification: 'Advanced Feng Shui Design Professional',
           shortDescription: 'Make use of QC\'s expert training to offer feng shui design services and bring harmony and positive energy to your clients\' home.',
           description: 'You\'ll learn to design comfortable spaces and restore balance in your clients\' lives using ancient feng shui principles. You\'ll study ch\'i flow, the five elements, yin and yang energy and the baugua map. In this course, you\'ll also learn to personalize your feng shui practice to suit your clients\' modern needs.',
+        },
+        {
+          code: 'AP',
+          name: 'Aging in Place',
+          certification: 'Aging in Place Professional',
+          shortDescription: 'Apply your design skills to offer an essential service to any client with aging concerns. Create safe and convenient spaces for aging clients.',
+          description: 'Clients often hire an Aging in Place designer to help them stay in their home instead of moving to an assisted living facility. QC\'s Aging in Place course will prepare you to design beautiful, safe and functional spaces that allow your clients to keep their independence for as long as possible.',
         },
       ],
     },
