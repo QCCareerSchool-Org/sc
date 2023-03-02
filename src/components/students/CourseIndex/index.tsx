@@ -1,7 +1,8 @@
+import Link from 'next/link';
 import type { FC } from 'react';
 import { useMemo, useReducer } from 'react';
 
-import { ContinuingEducationGroup } from './ContinuingEducationGroup';
+import { ContinuingEducationGroup } from '../ContinuedEducation/ContinuingEducationGroup';
 import { CourseGrid } from './CourseGrid';
 import { courseSuggestionGroups } from './courseSuggestions';
 import { CourseWarnings } from './CourseWarnings';
@@ -76,7 +77,7 @@ export const CourseIndex: FC<Props> = ({ administratorId, studentId }) => {
                 disabledCourses={courses}
               />;
             }))}
-            <button className="btn btn-outline-dark" style={{ borderRadius: 0, textTransform: 'uppercase' }}>View More Courses</button>
+            <Link href="/students/courses/continued-education" passHref><button className="btn btn-outline-dark" style={{ borderRadius: 0, textTransform: 'uppercase' }}>View More Courses</button></Link>
           </div>
         </Section>
       )}
