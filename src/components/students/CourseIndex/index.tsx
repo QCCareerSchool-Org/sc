@@ -51,7 +51,7 @@ export const CourseIndex: FC<Props> = ({ administratorId, studentId }) => {
           }
         </div>
       </Section>
-      {administratorId && crmStudent && (
+      {crmStudent && (
         <Section className="bg-f1">
           <div className="container">
             <h2 className="h4">Continued Education</h2>
