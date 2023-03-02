@@ -1,5 +1,18 @@
-import type { CourseSuggestionGroup } from '../ContinuedEducation/courseSuggestions';
 import type { SchoolSlug } from '@/domain/school';
+
+export type CourseSuggestion = {
+  code: string;
+  name: string;
+  certification: string;
+  shortDescription: string;
+  description: string | string[] | JSX.Element;
+};
+
+export type CourseSuggestionGroup = {
+  id: string;
+  description: string;
+  courses: CourseSuggestion[];
+};
 
 export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]> = {
   event: [
@@ -35,12 +48,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           shortDescription: 'Plan upscale events to grow your business and appeal to high-budget clients.',
           description: 'With QC\'s Luxury Wedding & Event Planning course, you\'ll learn to manage large budgets to plan lavish weddings, meetings, parties and other celebrations. You\'ll study strategies to build a network of top suppliers and vendors and discover how to market your services as a luxury event planner to high-end clients and companies.',
         },
-      ],
-    },
-    {
-      id: 'beautiful-events',
-      description: 'Execute beautiful events with hands-on skills.',
-      courses: [
         {
           code: 'FD',
           name: 'Floral Design',
@@ -54,19 +61,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           certification: 'International Event Decorating Professional',
           shortDescription: 'QC\'s Event Decor course allows you to add event design services to your business and run your business effectively.',
           description: 'You\'ll be prepared to work with event planning professionals to execute breathtaking events. You\'ll learn to use color matching, popular themes and the latest trends to create a cohesive, modern look. Discover how you can combine all elements of an event to create a beautiful, cohesive presentation to win over any client.',
-        },
-      ],
-    },
-    {
-      id: 'corporate-clients',
-      description: 'Stand out to corporate clients.',
-      courses: [
-        {
-          code: 'CP',
-          name: 'Corporate Event Planning',
-          certification: 'International Corporate Event Planning Professional',
-          shortDescription: 'Expand your career opportunities with comprehensive training to plan successful events in the corporate world.',
-          description: 'QC\'s Corporate Event Planning certification will expand your business and prepare you to plan events in a wide range of industries, including tech, non-profit, government and fashion. You\'ll complete hands-on, practical assignments to learn how to plan and manage all types of corporate events from product launches and corporate social events to promotional campaigns.',
         },
         {
           code: 'PE',
@@ -140,12 +134,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           shortDescription: 'QC\'s Interior Decorating course allows you to channel your passion for home decor into a successful career in a thriving, multi-billion dollar industry.',
           description: 'You\'ll learn how to create custom interiors that exceed your client\'s expectations. Step-by-step videos featuring QC tutor Angie Chapman will walk you through creating a professional floorplan. You\'ll learn about color theory in home design, wall treatments, furniture placement, and more. You\'ll practice your design skills through hands-on and theory-based assignments.',
         },
-      ],
-    },
-    {
-      id: 'expand-skills-home',
-      description: 'Expand your design skills outside the home.',
-      courses: [
         {
           code: 'LD',
           name: 'Landscape Design',
@@ -167,12 +155,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           shortDescription: 'QC\'s Event Decor course allows you to add event design services to your business and run your business effectively.',
           description: 'You\'ll be prepared to work with event planning professionals to execute breathtaking events. You\'ll learn to use color matching, popular themes and the latest trends to create a cohesive, modern look. Discover how you can combine all elements of an event to create a beautiful, cohesive presentation to win over any client.',
         },
-      ],
-    },
-    {
-      id: 'difference-design',
-      description: 'Make a difference with design.',
-      courses: [
         {
           code: 'AP',
           name: 'Aging in Place',
@@ -196,7 +178,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
         },
       ],
     },
-
   ],
   pet: [
     {
@@ -253,12 +234,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           shortDescription: 'Take your makeup artistry skills to the next level with coveted tricks of the trade from celebrity makeup artist, Nathan Johnson.',
           description: 'Practice advanced makeup application techniques with specialized feedback from your tutor. You\'ll practice 15 glamorous makeup looks to prepare you for editorial work and special events. This course will help you gain the skills that creative directors and producers are looking for in a makeup artist.',
         },
-      ],
-    },
-    {
-      id: 'jumpstart-advanced',
-      description: 'Jumpstart your career with advanced training.',
-      courses: [
         {
           code: 'AB',
           name: 'Airbrush Makeup',
@@ -280,12 +255,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           shortDescription: 'Take your makeup artistry skills to the next level with coveted tricks of the trade from celebrity makeup artist, Nathan Johnson.',
           description: 'Practice advanced makeup application techniques with specialized feedback from your tutor. You\'ll practice 15 glamorous makeup looks to prepare you for editorial work and special events. This course will help you gain the skills that creative directors and producers are looking for in a makeup artist.',
         },
-      ],
-    },
-    {
-      id: 'tv-film-theatre',
-      description: 'Work in television, film and theater.',
-      courses: [
         {
           code: 'SF',
           name: 'Special FX Makeup',

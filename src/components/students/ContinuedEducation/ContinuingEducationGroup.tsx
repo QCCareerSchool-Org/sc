@@ -16,8 +16,8 @@ import JumpstartAdvances from '../../../images/course-suggestions/backgrounds/ju
 import LookTheirBest from '../../../images/course-suggestions/backgrounds/look-their-best.jpg';
 import SleepSpaces from '../../../images/course-suggestions/backgrounds/sleep-spaces.jpg';
 import TVFilmTheatre from '../../../images/course-suggestions/backgrounds/tv-film-theatre.jpg';
+import type { CourseSuggestionGroup } from '../CourseIndex/courseSuggestions';
 import { ContinuingEducationCourse } from './ContinuingEducationCourse';
-import type { CourseSuggestionGroup } from './courseSuggestions';
 import type { Course } from '@/domain/course';
 import type { Currency, PriceResult } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';
