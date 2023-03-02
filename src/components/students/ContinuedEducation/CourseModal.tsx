@@ -73,27 +73,25 @@ export const CourseModal: FC<Props> = ({ disabled, course, schoolSlug, price, sh
             : typeof course.description === 'string' ? <p className="mb-0">{course.description}</p> : course.description
           }
         </div>
-        <div className="modalFooter">
-          <div className="modalFooterLeftColumn">
-            <h5 className="mb-0">Contact a Student Advisor</h5>
-            <div className="footerIconRow">
-              <div className="footerIcon"><a href={`mailto:${mailto}`}><FaEnvelope size={iconSize} /></a></div>
-              <div className="footerIcon"><a href={`tel:${tel}`}><FaPhone size={iconSize} /></a></div>
+        {!disabled && (
+          <div className="modalFooter">
+            <div className="modalFooterLeftColumn">
+              <h5 className="mb-0">Contact a Student Advisor</h5>
+              <div className="footerIconRow">
+                <div className="footerIcon"><a href={`mailto:${mailto}`}><FaEnvelope size={iconSize} /></a></div>
+                <div className="footerIcon"><a href={`tel:${tel}`}><FaPhone size={iconSize} /></a></div>
+              </div>
+            </div>
+            <div className="modalFooterRightColumn">
+              {price && (
+                <div className="price">
+                  <span className="strike">{price.currency.symbol}{price.cost.toFixed(2)}</span>&nbsp; <span className="discountedPrice">{price.currency.symbol}{price.plans.full.total.toFixed(2)}</span>
+                </div>
+              )}
+              <a className="btn btn-primary btn-sm enrollButton" href={enrollUrl} target="_blank" rel="noopener noreferrer">Enroll Now</a>
             </div>
           </div>
-          <div className="modalFooterRightColumn">
-            {!disabled && (
-              <>
-                {price && (
-                  <div className="price">
-                    <span className="strike">{price.currency.symbol}{price.cost.toFixed(2)}</span>&nbsp; <span className="discountedPrice">{price.currency.symbol}{price.plans.full.total.toFixed(2)}</span>
-                  </div>
-                )}
-                <a className="btn btn-primary btn-sm enrollButton" href={enrollUrl} target="_blank" rel="noopener noreferrer">Enroll Now</a>
-              </>
-            )}
-          </div>
-        </div>
+        )}
       </div>
       <style jsx>{`
       .modalWrapper { background: white; }
