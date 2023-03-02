@@ -22,7 +22,7 @@ const CourseIndexPage: NextPage = () => {
   return (
     <>
       <Meta title="Courses" />
-      <CourseIndex studentId={authState.studentId} />
+      <CourseIndex administratorId={authState.administratorId} studentId={authState.studentId} />
     </>
   );
 

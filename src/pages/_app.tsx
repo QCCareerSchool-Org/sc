@@ -10,6 +10,7 @@ import { TrackJS } from '../trackjs-isomorphic';
 import { AppErrorBoundary } from '@/components/AppErrorBoundary';
 import { ErrorFallback } from '@/components/ErrorFallback';
 import { DefaultLayout } from '@/components/layouts/DefaultLayout';
+import { ModalBackdrop } from '@/components/ModalBackdrop';
 import { PageErrorBoundary } from '@/components/PageErrorBoundary';
 import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
@@ -78,6 +79,7 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
             </PageErrorBoundary>
           </RouteGuard>,
         )}
+        <ModalBackdrop />
       </StateProvider>
     </AppErrorBoundary>
   );
