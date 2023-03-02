@@ -10,7 +10,6 @@
     "test": "jest src/*"
   },
   "dependencies": {
-    "@qccareerschool/helper-functions": "^1.6.0",
     "@types/big.js": "^6.1.5",
     "@types/file-saver": "^2.0.5",
     "@types/react-dom": "^18.0.6",

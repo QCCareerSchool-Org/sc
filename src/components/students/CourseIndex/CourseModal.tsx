@@ -1,4 +1,3 @@
-import { telephoneNumber } from '@qccareerschool/helper-functions';
 import type { FC, MouseEventHandler } from 'react';
 import { FaEnvelope, FaPhone } from 'react-icons/fa';
 import { RiArrowGoBackFill } from 'react-icons/ri';
@@ -9,6 +8,7 @@ import { CourseModalHeroImage } from './CourseModalHeroImage';
 import type { CourseSuggestion } from './courseSuggestions';
 import type { PriceResult } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';
+import { getTelephoneNumber } from 'src/lib/helper-functions';
 
 type Props = {
   disabled: boolean;
@@ -41,7 +41,7 @@ const getMailto = (schoolSlug: SchoolSlug): string => {
 
 export const CourseModal: FC<Props> = ({ disabled, course, schoolSlug, price, shippingDetails, onClose }) => {
   const mailto = getMailto(schoolSlug);
-  const tel = telephoneNumber(shippingDetails.countryCode);
+  const tel = getTelephoneNumber(shippingDetails.countryCode);
   const enrollUrl = getEnrollUrl(schoolSlug, [ course.code ], shippingDetails);
 
   const handleClose: MouseEventHandler<HTMLButtonElement> = () => {
