@@ -75,7 +75,7 @@ export const CourseModal: FC<Props> = ({ disabled, course, schoolSlug, price, sh
         </div>
         <div className="modalFooter">
           <div className="modalFooterLeftColumn">
-            <h5>Contact a Student Advisor</h5>
+            <h5 className="mb-0">Contact a Student Advisor</h5>
             <div className="footerIconRow">
               <div className="footerIcon"><a href={`mailto:${mailto}`}><FaEnvelope size={iconSize} /></a></div>
               <div className="footerIcon"><a href={`tel:${tel}`}><FaPhone size={iconSize} /></a></div>
@@ -205,6 +205,7 @@ export const CourseModal: FC<Props> = ({ disabled, course, schoolSlug, price, sh
         font-weight: bold;
         line-height: 1;
         margin-bottom: 1rem;
+        white-space: nowrap;
       }
       .discountedPrice {
         color: #ff0006;
