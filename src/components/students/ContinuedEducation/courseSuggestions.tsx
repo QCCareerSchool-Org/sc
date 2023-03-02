@@ -200,6 +200,13 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           description: 'You\'ll learn to design comfortable spaces and restore balance in your clients\' lives using ancient feng shui principles. You\'ll study ch\'i flow, the five elements, yin and yang energy and the baugua map. In this course, you\'ll also learn to personalize your feng shui practice to suit your clients\' modern needs.',
         },
         {
+          code: 'CC',
+          name: 'Color Consultant Course',
+          certification: 'International Color Consulting Professional',
+          shortDescription: 'Our Color Consultant course prepares you to offer highly valuable consultation services, using color to create restful sleep spaces.',
+          description: 'You\'ll study challenging topics like the ways lighting and undertones affect color choices, and how to work with open-concept spaces. Learn key theoretical and practical skills to design custom interiors from award-winning interior designer and television personality Jane Lockhart in a series of instructional videos.',
+        },
+        {
           code: 'AP',
           name: 'Aging in Place',
           certification: 'Aging in Place Professional',
