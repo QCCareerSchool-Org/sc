@@ -2,7 +2,7 @@ import Big from 'big.js';
 import type { StaticImageData } from 'next/image';
 import Image from 'next/image';
 import type { FC } from 'react';
-import { useReducer } from 'react';
+import { useMemo, useReducer } from 'react';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 
 import AddValueHomes from '../../../images/course-suggestions/backgrounds/add-value-homes.jpg';
@@ -20,8 +20,23 @@ import { ContinuingEducationCourse } from './ContinuingEducationCourse';
 import type { CourseSuggestionGroup } from './courseSuggestions';
 import type { Course } from '@/domain/course';
 import type { Currency, PriceResult } from '@/domain/price';
+import type { SchoolSlug } from '@/domain/school';
 import { useScreenWidth } from '@/hooks/useScreenWidth';
 import { useToggle } from '@/hooks/useToggle';
+
+export type ShippingDetails = {
+  sex: 'M' | 'F';
+  firstName: string;
+  lastName: string;
+  address1: string;
+  address2: string;
+  city: string;
+  provinceCode: string | undefined;
+  postalCode: string | undefined;
+  countryCode: string;
+  telephoneNumber: string;
+  emailAddress: string;
+};
 
 type SelectedCourse = {
   courseCode: string;
@@ -29,8 +44,8 @@ type SelectedCourse = {
 };
 
 type Props = {
-  countryCode: string;
-  provinceCode: string | undefined;
+  shippingDetails: ShippingDetails;
+  schoolSlug: SchoolSlug;
   group: CourseSuggestionGroup;
   disabledCourses: Course[];
 };
@@ -96,7 +111,48 @@ const initialState: State = {
   price: 0,
 };
 
-export const ContinuingEducationGroup: FC<Props> = ({ countryCode, provinceCode, group, disabledCourses }) => {
+const getEnrollUrlBase = (schoolSlug: SchoolSlug): string => {
+  switch (schoolSlug) {
+    case 'design':
+      return 'https://enroll.qcdesignschool.com/continued-education';
+    case 'event':
+      return 'https://enroll.qceventplanning.com/continued-education';
+    case 'makeup':
+      return 'https://enroll.qcmakeupacademy.com/continued-education';
+    case 'pet':
+      return 'https://enroll.qcpetstudies.com/continued-education';
+    case 'wellness':
+      return 'https://enroll.qcwellnessstudies.com/continued-education';
+    case 'writing':
+      return 'https://enroll.winghill.com/continued-education';
+  }
+};
+
+export const getEnrollUrl = (schoolSlug: SchoolSlug, courses: string[], shippingDetails: ShippingDetails): string => {
+  const params = new URLSearchParams();
+  for (const c of courses) {
+    params.append('c', c);
+  }
+  params.append('sex', shippingDetails.sex);
+  params.append('firstName', shippingDetails.firstName);
+  params.append('lastName', shippingDetails.lastName);
+  params.append('address1', shippingDetails.address1);
+  params.append('address2', shippingDetails.address2);
+  params.append('city', shippingDetails.city);
+  if (shippingDetails.provinceCode) {
+    params.append('provinceCode', shippingDetails.provinceCode);
+  }
+  if (shippingDetails.postalCode) {
+    params.append('postalCode', shippingDetails.postalCode);
+  }
+  params.append('countryCode', shippingDetails.countryCode);
+  params.append('telephoneNumber', shippingDetails.telephoneNumber);
+  params.append('emailAddress', shippingDetails.emailAddress);
+
+  return getEnrollUrlBase(schoolSlug) + '?' + params.toString();
+};
+
+export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlug, group, disabledCourses }) => {
   const screenWidth = useScreenWidth();
   const [ expanded, toggleExpanded ] = useToggle(false);
 
@@ -117,6 +173,10 @@ export const ContinuingEducationGroup: FC<Props> = ({ countryCode, provinceCode,
   };
 
   const iconSize = screenWidth > 992 ? 24 : 20;
+
+  const enrollUrl = useMemo(() => {
+    return getEnrollUrl(schoolSlug, state.selectedCourses.map(s => s.courseCode), shippingDetails);
+  }, [ schoolSlug, state.selectedCourses, shippingDetails ]);
 
   return (
     <div className="groupCard">
@@ -148,18 +208,15 @@ export const ContinuingEducationGroup: FC<Props> = ({ countryCode, provinceCode,
                 selected={state.selectedCourses.findIndex(s => s.courseCode === course.code) !== -1}
                 disabled={disabledCourses.findIndex(c => c.code === course.code) !== -1}
                 onToggle={handleToggle}
-                countryCode={countryCode}
-                provinceCode={provinceCode}
-                courseCode={course.code}
-                name={course.name}
-                shortDescription={course.shortDescription}
-                description={course.description}
+                schoolSlug={schoolSlug}
+                shippingDetails={shippingDetails}
+                course={course}
               />
             ))}
             {state.selectedCourses.length > 0 && (
               <div className="mt-3 bg-f1 total d-flex align-items-center justify-content-end">
                 <div>Total: <span className="price"><span className="strike">{state.currency?.symbol}{state.normalPrice.toFixed(2)}</span>&nbsp; <span className="discountedPrice">{state.currency?.symbol}{state.price.toFixed(2)}</span></span></div>
-                <button className="btn btn-primary ms-4 enrollButton">Enroll Now</button>
+                <a href={enrollUrl} className="btn btn-primary ms-4 enrollButton" target="_blank" rel="noopener noreferrer">Enroll Now</a>
               </div>
             )}
           </div>

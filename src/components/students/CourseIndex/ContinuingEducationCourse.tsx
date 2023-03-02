@@ -1,40 +1,39 @@
 import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { useEffect, useState } from 'react';
-import { GrRevert } from 'react-icons/gr';
 
+import type { ShippingDetails } from './ContinuingEducationGroup';
 import { CourseModal } from './CourseModal';
+import type { CourseSuggestion } from './courseSuggestions';
+import { CourseThumbnailImage } from './CourseThumbnailImage';
 import { Modal } from '@/components/Modal';
 import type { PriceResult } from '@/domain/price';
 import { isPrice } from '@/domain/price';
+import type { SchoolSlug } from '@/domain/school';
 import { useScreenWidth } from '@/hooks/useScreenWidth';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   selected: boolean;
   disabled: boolean;
   onToggle: (selected: boolean, courseCode: string, price?: PriceResult) => void;
-  countryCode: string;
-  provinceCode: string | undefined;
-  courseCode: string;
-  name: string;
-  shortDescription: string;
-  description: string | string[] | JSX.Element;
+  schoolSlug: SchoolSlug;
+  shippingDetails: ShippingDetails;
+  course: CourseSuggestion;
 };
 
-export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onToggle, countryCode, provinceCode, courseCode, name, shortDescription, description }) => {
+export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onToggle, schoolSlug, shippingDetails, course }) => {
   const [ price, setPrice ] = useState<PriceResult>();
   const screenWidth = useScreenWidth();
   const [ popup, setPopup ] = useState(false);
 
   useEffect(() => {
-    fetchPrice(countryCode, provinceCode, courseCode).then(setPrice).catch(console.error);
-  }, [ countryCode, provinceCode, courseCode ]);
+    fetchPrice(shippingDetails.countryCode, shippingDetails.provinceCode, course.code).then(setPrice).catch(console.error);
+  }, [ shippingDetails.countryCode, shippingDetails.provinceCode, course.code ]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = () => {
     if (disabled) {
       return;
     }
-    onToggle(!selected, courseCode, price);
+    onToggle(!selected, course.code, price);
   };
 
   const handleClick: MouseEventHandler<HTMLAnchorElement> = e => {
@@ -57,14 +56,12 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
 
   const imageSize = xl ? 160 : lg ? 120 : md ? 90 : 120;
 
-  const src = `${endpoint}/courseIconImages/${3}`;
-
   return (
     <>
       <div className={`wrapper ${disabled ? 'disabled' : ''} mt-3`}>
         <div className="d-flex align-items-stretch">
           <div>
-            <img src={src} width={imageSize} height={imageSize} />
+            <CourseThumbnailImage course={course} size={imageSize} />
           </div>
           <div className="d-flex align-items-stretch justify-content-around justify-content-lg-start flex-grow-1 py-3 px-4">
             <div className="d-flex align-items-center me-4">
@@ -75,17 +72,17 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
             {lg && (
               <div className="d-flex align-items-center me-4 flex-grow-1">
                 <div>
-                  <h4 className="h5 mb-1">{name}</h4>
-                  <p className={`mb-0 ${!lg ? 'small' : ''} description`}><span className="muted">{shortDescription}</span> <a onClick={handleClick} href="#" className="learnMore">Learn More</a></p>
+                  <h4 className="h5 mb-1">{course.name}</h4>
+                  <p className={`mb-0 ${!lg ? 'small' : ''} description`}><span className="muted">{course.shortDescription}</span> <a onClick={handleClick} href="#" className="learnMore">Learn More</a></p>
                 </div>
               </div>
             )}
             {lg && <div className="d-flex align-items-center me-4 separator">&nbsp;</div>}
-            {md && !lg && <div className="d-flex align-items-center me-4 flex-grow-1"><h4 className="h5 mb-0">{name}</h4></div>}
+            {md && !lg && <div className="d-flex align-items-center me-4 flex-grow-1"><h4 className="h5 mb-0">{course.name}</h4></div>}
             <div className="d-flex align-items-center flex-shrink-0" style={{ width: lg ? 200 : undefined }}>
               <div className="w-100 text-center">
                 <div style={{ maxWidth: 203, margin: '0 auto' }}>
-                  {!md && <h4 className={`${sm ? 'h5' : 'h6'} mb-1`}>{name}</h4>}
+                  {!md && <h4 className={`${sm ? 'h5' : 'h6'} mb-1`}>{course.name}</h4>}
                 </div>
                 {disabled
                   ? <div><strong>Already Enrolled</strong></div>
@@ -100,24 +97,13 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
           </div>
         </div>
       </div>
-      {!lg && <div className="mt-2"><p className="mb-0 small description"><span className="muted">{shortDescription}</span> <a onClick={handleClick} href="#" className="learnMore">Learn More</a></p></div>}
+      {!lg && <div className="mt-2"><p className="mb-0 small description"><span className="muted">{course.shortDescription}</span> <a onClick={handleClick} href="#" className="learnMore">Learn More</a></p></div>}
       <Modal size="lg" show={popup} onClose={handleClose}>
-        <CourseModal title={name} onClose={handleClose}>
-          <p>{shortDescription}</p>
-          {Array.isArray(description)
-            ? description.map((d, i, a) => {
-              if (i === a.length - 1) {
-                return <p key={i} className="mb-0">{d}</p>;
-              }
-              return <p key={i}>{d}</p>;
-            })
-            : typeof description === 'string' ? <p className="mb-0">{description}</p> : description
-          }
-        </CourseModal>
+        <CourseModal disabled={disabled} course={course} price={price} schoolSlug={schoolSlug} shippingDetails={shippingDetails} onClose={handleClose} />
       </Modal>
       <style jsx>{`
       .wrapper {
-        border: 1px solid rgba(0,0,0,0.15);
+        border: 1px solid rgba(0,0,0,0.1);
       }
       .wrapper.disabled {
         background-color: #e5e5e5;
@@ -147,7 +133,7 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
         // text-decoration: none;
       }
       .separator {
-        border-right: 1.5px solid rgba(0, 0, 0, 0.3);
+        border-right: 1.5px solid rgba(0, 0, 0, 0.1);
       }
       .courseCheck {
         border-radius: 0;
