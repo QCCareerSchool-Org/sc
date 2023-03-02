@@ -129,6 +129,13 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           description: 'With QC\'s Infant Sleep Consultant course, you\'ll develop the skills you need to recommend sleep training methods that work for both infants and parents, and establish appropriate bedtime routines and sleep spaces. Through detailed lessons and course videos, you\'ll learn to consult with parents and caregivers, and create individualized sleep plans to set your clients up for success. You\'ll also discover how you can start your own sleep consulting business and market your services. ',
         },
         {
+          code: 'AP',
+          name: 'Aging in Place',
+          certification: 'Aging in Place Professional',
+          shortDescription: 'Apply your design skills to offer an essential service to any client with aging concerns. Create safe and convenient spaces for aging clients.',
+          description: 'Clients often hire an Aging in Place designer to help them stay in their home instead of moving to an assisted living facility. QC\'s Aging in Place course will prepare you to design beautiful, safe and functional spaces that allow your clients to keep their independence for as long as possible.',
+        },
+        {
           code: 'PO',
           name: 'Professional Organizing',
           certification: 'Advanced International Organizing Professional',
