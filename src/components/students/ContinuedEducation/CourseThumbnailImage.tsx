@@ -143,7 +143,7 @@ const getSrc = (courseCode: string): StaticImageData => {
       return BS;
 
     default:
-      console.warn(`unsupported course hero ${courseCode}`);
+      console.warn(`unsupported course thumbnail ${courseCode}`);
       return LD;
   }
 };
