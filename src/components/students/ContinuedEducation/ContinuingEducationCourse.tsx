@@ -72,8 +72,8 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
               </div>
             </div>
             {lg && (
-              <div className="d-flex align-items-center me-4 flex-grow-1">
-                <div>
+              <div className="d-flex align-items-center me-4 flex-grow-1 w-100">
+                <div className="w-100">
                   <h4 className="h5 mb-1">{course.name}</h4>
                   <p className={`mb-0 ${!lg ? 'small' : ''} description`}><span className="muted">{course.shortDescription}</span> <a onClick={handleClick} href="#" className="learnMore">Learn More</a></p>
                 </div>
@@ -81,7 +81,7 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
             )}
             {lg && <div className="d-flex align-items-center me-4 separator">&nbsp;</div>}
             {md && !lg && <div className="d-flex align-items-center me-4 flex-grow-1"><h4 className="h5 mb-0">{course.name}</h4></div>}
-            <div className="d-flex align-items-center flex-grow-1" style={{ width: lg ? 200 : undefined }}>
+            <div className="d-flex align-items-center flex-grow-1 flex-shrink-0" style={{ width: lg ? 200 : undefined }}>
               <div className="w-100 text-center">
                 <div style={{ maxWidth: 203, margin: '0 auto' }}>
                   {!md && <h4 className={`${sm ? 'h5' : 'h6'} mb-1`}>{course.name}</h4>}
