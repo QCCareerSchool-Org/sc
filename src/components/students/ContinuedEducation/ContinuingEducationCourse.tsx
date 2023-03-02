@@ -60,9 +60,11 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
     <>
       <div className={`wrapper ${disabled ? 'disabled' : ''} mt-3`}>
         <div className="d-flex align-items-stretch">
-          <div>
-            <CourseThumbnailImage course={course} size={imageSize} />
-          </div>
+          {screenWidth >= 440 && (
+            <div>
+              <CourseThumbnailImage course={course} size={imageSize} />
+            </div>
+          )}
           <div className="d-flex align-items-stretch justify-content-around justify-content-lg-start flex-grow-1 py-3 px-4">
             <div className="d-flex align-items-center me-4">
               <div className="form-check">
