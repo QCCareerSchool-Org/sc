@@ -36,7 +36,7 @@ export const ContinuedEducation: FC<Props> = ({ studentId }) => {
       <div className="container">
         <h1>Continued Education</h1>
         <p className="lead">Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses.</p>
-        {crmStudent && schoolSlugs?.map(s => courseSuggestionGroups[s].map(group => {
+        {crmStudent && schoolSlugs?.map((s, i) => courseSuggestionGroups[s].map(group => {
           return <ContinuingEducationGroup
             key={group.id}
             shippingDetails={{
@@ -55,6 +55,7 @@ export const ContinuedEducation: FC<Props> = ({ studentId }) => {
             schoolSlug={s}
             group={group}
             disabledCourses={courses}
+            startExpanded={i === 0}
           />;
         }))}
       </div>

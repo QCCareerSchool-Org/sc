@@ -36,6 +36,7 @@ type Props = {
   schoolSlug: SchoolSlug;
   group: CourseSuggestionGroup;
   disabledCourses: Course[];
+  startExpanded?: boolean;
 };
 
 type State = {
@@ -140,9 +141,9 @@ export const getEnrollUrl = (schoolSlug: SchoolSlug, courses: string[], shipping
   return getEnrollUrlBase(schoolSlug) + '?' + params.toString();
 };
 
-export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlug, group, disabledCourses }) => {
+export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlug, group, disabledCourses, startExpanded }) => {
   const screenWidth = useScreenWidth();
-  const [ expanded, toggleExpanded ] = useToggle(false);
+  const [ expanded, toggleExpanded ] = useToggle(!!startExpanded);
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
