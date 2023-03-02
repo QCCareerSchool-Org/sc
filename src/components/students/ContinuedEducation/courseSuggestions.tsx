@@ -18,7 +18,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
   event: [
     {
       id: 'high-budget-events',
-      description: 'Plan high-budget events.',
+      description: 'QC Event Planning',
       courses: [
         {
           code: 'EP',
@@ -33,6 +33,20 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           certification: 'International Corproate Event Planning Professional',
           shortDescription: 'Expand your career opportunities with comprehensive training to plan successful events in the corporate world.',
           description: 'QC\'s Corporate Event Planning certification will expand your business and prepare you to plan events in a wide range of industries, including tech, non-profit, government and fashion. You\'ll complete hands-on, practical assignments to learn how to plan and manage all types of corporate events from product launches and corporate social events to promotional campaigns.',
+        },
+        {
+          code: 'WP',
+          name: 'Wedding Planning Course',
+          certification: 'International Wedding Planning Professional',
+          shortDescription: 'Build a successful career helping couples achieve the wedding of their dreams.',
+          description: 'QC\'s Wedding Planning course will provide you with the practical planning tools you need to turn your clients\' dreams into reality. You\'ll learn to prepare the wedding budget, plan the wedding timeline, source reputable vendors, and explore cultural and religious variations of weddings. You\'ll also have the opportunity to study how you can start your own business and market your wedding planning services to clients.',
+        },
+        {
+          code: 'CE',
+          name: 'Private Event Planning Course',
+          certification: 'International Event Planning Professional',
+          shortDescription: 'Graduate with a competitive edge and set yourself up for success planning industry events and parties.',
+          description: 'QC\'s Private Event Planning course will prepare you to plan industry events, milestone parties, holiday parties and more that exceed your clients\' expectations. You\'ll study every aspect of event planning, from prioritizing the budget to day-of coordination. You\'ll also have the opportunity to study how you can start your own business and market your event planning services to a variety of clients.',
         },
         {
           code: 'DW',
@@ -83,14 +97,37 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           shortDescription: 'Take your business to the next level.',
           description: 'This course will walk you through the best business practices to grow your existing event planning business. With guidance from your expert tutor, you\'ll build customer personas, improve your online presence, develop marketing materials, and more! You\'ll graduate with an elevated business strategy to help you surpass the competition.',
         },
+        {
+          code: 'TT',
+          name: 'Travel and Toursim Course',
+          certification: 'International Travel and Tourism Consultant',
+          shortDescription: 'Expand your destination wedding planning business by offering full travel services.',
+          description: 'With QC\'s Travel and Tourism Course, you\'ll learn all about the history of travel, geography, cruise and tour booking, accommodations, transportation and more. You\'ll develop the skills you need to plan unforgettable vacations that your clients will talk about for years to come. Take your destination wedding planning skills to the next level by becoming a travel consultant.',
+
+        },
+        {
+          code: 'VE',
+          name: 'Virtual Events Training Course',
+          certification: 'Virtual Events Training Course Certificate',
+          shortDescription: 'Expand your business by offering virtual planning services.',
+          description: 'With QC\'s Virtual Events Training mini-course, you can help fill the demand for skilled virtual event planners. You\'ll build on your foundational event planning skills to learn to manage the technical aspects of a virtual event and create an experience that\'s just as engaging as an in-person event. Learn how to make a couple\'s wedding dreams come true virtually, plan an online conference with thousands of attendees, and much more.',
+
+        },
       ],
     },
   ],
   wellness: [
     {
       id: 'sleep-spaces',
-      description: 'Plan ideal sleep spaces.',
+      description: 'QC Wellness Studies',
       courses: [
+        {
+          code: 'SL',
+          name: 'Infant Sleep Consultant Course',
+          certification: 'Infant Sleep Consulting Professional',
+          shortDescription: 'Get certified to help parents and caregivers create healthy sleep habits for their infants and toddlers.',
+          description: 'With QC\'s Infant Sleep Consultant course, you\'ll develop the skills you need to recommend sleep training methods that work for both infants and parents, and establish appropriate bedtime routines and sleep spaces. Through detailed lessons and course videos, you\'ll learn to consult with parents and caregivers, and create individualized sleep plans to set your clients up for success. You\'ll also discover how you can start your own sleep consulting business and market your services. ',
+        },
         {
           code: 'PO',
           name: 'Professional Organizing',
@@ -111,7 +148,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
   design: [
     {
       id: 'add-value-homes',
-      description: 'Add value to your clients\' homes.',
+      description: 'QC Design School',
       courses: [
         {
           code: 'LD',
@@ -182,7 +219,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
   pet: [
     {
       id: 'full-service-dog-care',
-      description: 'Provide full-service dog care.',
+      description: 'QC Pet Studies',
       courses: [
         {
           code: 'DD',
@@ -211,7 +248,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
   makeup: [
     {
       id: 'look-their-best',
-      description: 'Help your clients feel and look their best.',
+      description: 'QC Makeup Academy',
       courses: [
         {
           code: 'HS',
@@ -249,13 +286,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           description: 'In this workshop, you\'ll learn to organize and execute styled shoots to produce high-quality photos that appeal to your clients. You\'ll learn essential skills to help you develop your professional network and advance your makeup artistry business.',
         },
         {
-          code: 'MW',
-          name: 'Pro Makeup Workshop',
-          certification: 'Pro Makeup Workshop Certificate',
-          shortDescription: 'Take your makeup artistry skills to the next level with coveted tricks of the trade from celebrity makeup artist, Nathan Johnson.',
-          description: 'Practice advanced makeup application techniques with specialized feedback from your tutor. You\'ll practice 15 glamorous makeup looks to prepare you for editorial work and special events. This course will help you gain the skills that creative directors and producers are looking for in a makeup artist.',
-        },
-        {
           code: 'SF',
           name: 'Special FX Makeup',
           certification: 'International Special FX Makeup Professional',
@@ -268,6 +298,28 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           certification: 'Airbrush Makeup Workshop Certificate',
           shortDescription: 'Diversify your techniques and service offerings by learning to apply airbrush makeup.',
           description: 'Learn impressive makeup techniques to create flawless complexions. In this course, you\'ll develop the skills you need to create gorgeous makeup looks for every occasion, including a focus on bridal makeup. You\'ll become certified to work in top sectors of the beauty industry.',
+        },
+        {
+          code: 'GB',
+          name: 'Global Beauty Workshop',
+          certification: 'Global Beauty Workshop Certificate',
+          shortDescription: 'Boost your professional makeup training with an international specialization.',
+          description: 'QC\'s Global Beauty Workshop will teach you to diversify your makeup techniques by creating gorgeous makeup looks form different cultural and religious traditions around the world. You\'ll study international makeup techniques for a range of skin tones and refine your skills with plenty of hands-on training.',
+        },
+        {
+          code: 'PF',
+          name: 'Fashion Styling',
+          certification: 'Certified International Styling Professional Certification',
+          shortDescription: 'Expand your beauty services by becoming a fashion stylist.',
+          description: 'Diversify your skills through QC\'s Fashion Styling course. Learn how to create fashionable looks for clients of all ages and body types. You can expand your services to become a more competitive professional in the beauty industry, while helping your clients feel and look their best.',
+
+        },
+        {
+          code: 'VM',
+          name: 'Virtual Makeup Training',
+          certification: 'Virtual Makeup Certificate',
+          shortDescription: 'QC\'s Virtual Makeup Training will teach you how to take your makeup or skincare business online.',
+          description: 'You\'ll develop the skills you need to grow your business by consulting with clients all over the world. You\'ll study the consultation process from start to finish, and watch Nathan Johnson take you through conduct a full consultation with a real client.',
         },
       ],
     },
