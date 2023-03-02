@@ -25,10 +25,14 @@ import MS from '../../../images/course-suggestions/heroes/ms.jpg';
 import MW from '../../../images/course-suggestions/heroes/mw.jpg';
 import MZ from '../../../images/course-suggestions/heroes/mz.jpg';
 import PE from '../../../images/course-suggestions/heroes/pe.jpg';
+import PF from '../../../images/course-suggestions/heroes/pf.jpg';
 import PO from '../../../images/course-suggestions/heroes/po.jpg';
 import PW from '../../../images/course-suggestions/heroes/pw.jpg';
+import SF from '../../../images/course-suggestions/heroes/sf.jpg';
 import SK from '../../../images/course-suggestions/heroes/sk.jpg';
 import ST from '../../../images/course-suggestions/heroes/st.jpg';
+import TT from '../../../images/course-suggestions/heroes/tt.jpg';
+// import VE from '../../../images/course-suggestions/heroes/ve.jpg';
 import WP from '../../../images/course-suggestions/heroes/wp.jpg';
 
 import type { CourseSuggestion } from './courseSuggestions';
@@ -82,6 +86,10 @@ const getSrc = (courseCode: string): StaticImageData => {
       return FL;
     case 'EB':
       return EB;
+    case 'TT':
+      return TT;
+      // case 'VE':
+      //   return VE;
 
     // makeup
     case 'MZ':
@@ -100,6 +108,10 @@ const getSrc = (courseCode: string): StaticImageData => {
       return SK;
     case 'PW':
       return PW;
+    case 'SF':
+      return SF;
+    case 'PF':
+      return PF;
 
     default:
       console.warn('unsupported course hero');
