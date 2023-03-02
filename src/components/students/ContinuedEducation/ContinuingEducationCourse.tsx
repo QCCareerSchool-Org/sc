@@ -42,11 +42,7 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
   };
 
   const handleClose = (): void => {
-    console.log('handle close called');
-    setPopup(prev => {
-      console.log('previous value is', prev);
-      return false;
-    });
+    setPopup(false);
   };
 
   const sm = screenWidth >= 576;
