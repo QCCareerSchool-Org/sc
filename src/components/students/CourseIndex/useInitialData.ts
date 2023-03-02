@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { Subject, takeUntil } from 'rxjs';
+import { map, of, Subject, switchMap, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
@@ -8,13 +8,21 @@ import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
 export const useInitialData = (dispatch: Dispatch<Action>, studentId: number): void => {
-  const { studentService } = useStudentServices();
+  const { studentService, crmStudentService } = useStudentServices();
   const navigateToLogin = useNavigateToLogin();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
     studentService.getStudent(studentId).pipe(
+      switchMap(student => {
+        if (student.apiUsername) {
+          return crmStudentService.getCRMStudent(student.apiUsername).pipe(
+            map(crmStudent => ({ student, crmStudent })),
+          );
+        }
+        return of({ student });
+      }),
       takeUntil(destroy$),
     ).subscribe({
       next: student => dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: student }),
@@ -31,5 +39,5 @@ export const useInitialData = (dispatch: Dispatch<Action>, studentId: number): v
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, studentId, studentService, navigateToLogin ]);
+  }, [ dispatch, studentId, studentService, crmStudentService, navigateToLogin ]);
 };
