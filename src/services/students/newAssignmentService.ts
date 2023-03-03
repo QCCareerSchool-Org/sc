@@ -3,11 +3,11 @@ import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
-import type { NewPart, RawNewPart } from '@/domain/newPart';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignment, RawNewAssignment } from '@/domain/student/newAssignment';
+import type { NewPart, RawNewPart } from '@/domain/student/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmission';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 

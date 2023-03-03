@@ -1,4 +1,4 @@
-import type { NewDescriptionType } from './newDescriptionType';
+import type { NewDescriptionType } from '../newDescriptionType';
 
 export type NewPart = {
   /** uuid */
