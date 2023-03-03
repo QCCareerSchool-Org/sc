@@ -29,22 +29,25 @@ export const NewAssignmentList: FC<Props> = memo(props => {
               </tr>
             </thead>
             <tbody>
-              {assignments.map(a => (
-                <tr key={a.assignmentId} onClick={e => props.onClick(e, a.assignmentId)}>
-                  <td className="text-center">{a.assignmentNumber}</td>
-                  <td>{a.title}</td>
-                  <td className="text-center">{a.points}</td>
-                  <td className="text-center">
-                    {a.points === 0
-                      ? 'n/a'
-                      : a.markOverride
-                        ? <span className="override">{a.markOverride}</span>
-                        : a.mark ?? '--'
-                    }
-                  </td>
-                  <td className="text-center">{gradeService.calculate(a.markOverride ?? a.mark, a.points, a.created)}</td>
-                </tr>
-              ))}
+              {assignments.map(a => {
+                const mark = a.markOverride ?? a.mark;
+                return (
+                  <tr key={a.assignmentId} onClick={e => props.onClick(e, a.assignmentId)}>
+                    <td className="text-center">{a.assignmentNumber}</td>
+                    <td>{a.title}</td>
+                    <td className="text-center">{a.points}</td>
+                    <td className="text-center">
+                      {a.points === 0
+                        ? 'n/a'
+                        : a.markOverride
+                          ? <span className="override">{a.markOverride}</span>
+                          : a.mark ?? '--'
+                      }
+                    </td>
+                    <td className="text-center">{mark === null ? 'n/a' : gradeService.calculate(mark, a.points, a.created)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )
