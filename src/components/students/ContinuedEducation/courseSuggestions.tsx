@@ -224,7 +224,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           code: 'CC',
           name: 'Color Consultant Course',
           certification: 'International Color Consulting Professional',
-          shortDescription: 'Our Color Consultant course prepares you to offer highly valuable consultation services, using color to create restful sleep spaces.',
+          shortDescription: 'Our Color Consultant course prepares you to offer highly valuable consultation services, using color to create the right atmosphere in any space.',
           description: 'You\'ll study challenging topics like the ways lighting and undertones affect color choices, and how to work with open-concept spaces. Learn key theoretical and practical skills to design custom interiors from award-winning interior designer and television personality Jane Lockhart in a series of instructional videos.',
         },
         {
