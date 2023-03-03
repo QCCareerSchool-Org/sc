@@ -1,36 +1,38 @@
-export type NewTextBox = {
+export type NewUploadSlot = {
   /** uuid */
-  textBoxId: string;
+  uploadSlotId: string;
   /** uuid */
   partId: string;
-  description: string | null;
-  lines: number | null;
+  label: string;
+  allowedTypes: string[];
   points: number;
   mark: number | null;
-  markOverride: number | null;
   notes: string | null;
   optional: boolean;
   order: number;
-  text: string;
+  filename: string | null;
+  filesize: number | null;
+  mimeTypeId: string | null;
   complete: boolean;
   created: Date;
   modified: Date | null;
 };
 
-export type RawNewTextBox = {
+export type RawNewUploadSlot = {
   /** uuid */
-  textBoxId: string;
+  uploadSlotId: string;
   /** uuid */
   partId: string;
-  description: string | null;
-  lines: number | null;
+  label: string;
+  allowedTypes: string[];
   points: number;
   mark: number | null;
-  markOverride: number | null;
   notes: string | null;
   optional: boolean;
   order: number;
-  text: string;
+  filename: string | null;
+  filesize: number | null;
+  mimeTypeId: string | null;
   complete: boolean;
   /** string date */
   created: string;

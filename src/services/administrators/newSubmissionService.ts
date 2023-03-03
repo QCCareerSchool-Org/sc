@@ -18,30 +18,30 @@ type RawNewSubmissionWithCourseAndAssignments = RawNewSubmission & {
 };
 
 export interface INewSubmissionService {
-  getSubmission: (administratorId: number, studentId: number, enrollmentId: number, unitId: string) => Observable<NewSubmissionWithCourseAndAssignments>;
-  restartSubmission: (administratorId: number, studentId: number, enrollmentId: number, unitId: string) => Observable<NewSubmission>;
+  getSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmissionWithCourseAndAssignments>;
+  restartSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmission>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getSubmission(administratorId: number, studentId: number, enrollmentId: number, submissionId: string): Observable<NewSubmissionWithCourseAndAssignments> {
-    const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${submissionId}`;
+  public getSubmission(administratorId: number, submissionId: string): Observable<NewSubmissionWithCourseAndAssignments> {
+    const url = `${this.getUrl(administratorId)}/${submissionId}`;
     return this.httpService.get<RawNewSubmissionWithCourseAndAssignments>(url).pipe(
       map(this.mapNewSubmissionWithCourseAndAssignments),
     );
   }
 
-  public restartSubmission(administratorId: number, studentId: number, enrollmentId: number, submissionId: string): Observable<NewSubmission> {
-    const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${submissionId}/restarts`;
+  public restartSubmission(administratorId: number, submissionId: string): Observable<NewSubmission> {
+    const url = `${this.getUrl(administratorId)}/${submissionId}/restarts`;
     return this.httpService.post<RawNewSubmission>(url).pipe(
       map(this.mapNewSubmission),
     );
   }
 
-  private getUrl(administratorId: number, studentId: number, enrollmentId: number): string {
-    return `${endpoint}/administrators/${administratorId}/students/${studentId}/enrollments/${enrollmentId}/newUnits`;
+  private getUrl(administratorId: number): string {
+    return `${endpoint}/administrators/${administratorId}/newSubmissions`;
   }
 
   private readonly mapNewSubmission = (newSubmission: RawNewSubmission): NewSubmission => {

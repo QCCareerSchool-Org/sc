@@ -22,7 +22,7 @@ const NewSubmissionViewPage: NextPage<Props> = ({ submissionId }) => {
 
   return (
     <>
-      <Meta title="View Unit" />
+      <Meta title="View Submission" />
       <NewSubmissionView administratorId={authState.administratorId} submissionId={submissionId} />
     </>
   );
@@ -30,7 +30,7 @@ const NewSubmissionViewPage: NextPage<Props> = ({ submissionId }) => {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
-  const submissionIdParam = ctx.params?.unitId;
+  const submissionIdParam = ctx.params?.submissionId;
   const submissionId = typeof submissionIdParam === 'string' ? submissionIdParam : null;
   return { props: { submissionId } };
 };

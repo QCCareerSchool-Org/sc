@@ -4,11 +4,11 @@ import { map } from 'rxjs';
 import { endpoint } from '../../basePath';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
-import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignment, RawNewAssignment } from '@/domain/student/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/student/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmission';
 import type { NewTextBox, RawNewTextBox } from '@/domain/student/newTextBox';
+import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/student/newUploadSlot';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 
 export type NewAssignmentWithChildren = NewAssignment & {

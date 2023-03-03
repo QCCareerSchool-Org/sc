@@ -3,7 +3,7 @@ import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
-import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
+import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/student/newUploadSlot';
 import type { NewAssignment, RawNewAssignment } from '@/domain/student/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/student/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmission';

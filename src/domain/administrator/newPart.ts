@@ -14,6 +14,7 @@ export type NewPart = {
   complete: boolean;
   points: number;
   mark: number | null;
+  markOverride: number | null;
   created: Date;
   modified: Date | null;
 };
@@ -33,6 +34,7 @@ export type RawNewPart = {
   complete: boolean;
   points: number;
   mark: number | null;
+  markOverride: number | null;
   /** date string */
   created: string;
   /** date string */
