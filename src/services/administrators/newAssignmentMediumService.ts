@@ -2,7 +2,7 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
-import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
+import type { NewAssignment, RawNewAssignment } from '@/domain/administrator/newAssignment';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';

@@ -1,10 +1,10 @@
 import type { Enrollment } from '@/domain/enrollment';
-import type { NewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPart } from '@/domain/newPart';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
+import type { NewAssignment } from '@/domain/tutor/newAssignment';
 import type { NewSubmission } from '@/domain/tutor/newSubmission';
 import type { NewAssignmentWithUnitAndChildren } from '@/services/tutors/newAssignmentService';
 
