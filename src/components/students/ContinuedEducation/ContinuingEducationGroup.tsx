@@ -5,7 +5,7 @@ import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 
 import { ContinuingEducationCourse } from './ContinuingEducationCourse';
 import type { CourseSuggestionGroup } from './courseSuggestions';
-import { GroupBackgroundImage } from './GroupBackgroundImage';
+import { GroupBannerImage } from './GroupBannerImage';
 import type { Course } from '@/domain/course';
 import type { Currency, PriceResult } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';
@@ -170,7 +170,7 @@ export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlu
       <div className="groupCardPadding">
         <button onClick={handleClick} className="clearButton">
           <div className="imageWrapper d-flex flex-column justify-content-center text-white">
-            <GroupBackgroundImage group={group} />
+            <GroupBannerImage group={group} />
             <h3 className="h2 mb-0 description">{group.description}</h3>
             <div className="d-flex justify-content-between plus">
               <div><small className="text-uppercase">Learn More</small></div> {expanded ? <FaMinusCircle size={iconSize} /> : <FaPlusCircle size={iconSize} />}

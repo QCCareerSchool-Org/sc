@@ -3,13 +3,13 @@ import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
-import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
-import type { NewPart, RawNewPart } from '@/domain/newPart';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
-import type { NewSubmission, RawNewSubmission } from '@/domain/newSubmission';
-import type { NewTextBox, RawNewTextBox } from '@/domain/newTextBox';
-import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/newUploadSlot';
+import type { NewAssignment, RawNewAssignment } from '@/domain/tutor/newAssignment';
+import type { NewPart, RawNewPart } from '@/domain/tutor/newPart';
+import type { NewSubmission, RawNewSubmission } from '@/domain/tutor/newSubmission';
+import type { NewTextBox, RawNewTextBox } from '@/domain/tutor/newTextBox';
+import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/tutor/newUploadSlot';
 import type { IHttpService } from '@/services/httpService';
 
 export type NewAssignmentWithUnitAndChildren = NewAssignment & {

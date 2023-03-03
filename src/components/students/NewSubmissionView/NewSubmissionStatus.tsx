@@ -3,7 +3,7 @@ import { memo } from 'react';
 
 import { endpoint } from '../../../basePath';
 import { Audio } from '@/components/Audio';
-import type { NewSubmission } from '@/domain/newSubmission';
+import type { NewSubmission } from '@/domain/student/newSubmission';
 
 type Props = {
   studentId: number;

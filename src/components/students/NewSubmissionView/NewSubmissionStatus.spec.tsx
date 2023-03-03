@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { axe } from 'jest-axe';
 
 import { NewSubmissionStatus } from './NewSubmissionStatus';
-import type { NewSubmission } from '@/domain/newSubmission';
+import type { NewSubmission } from '@/domain/student/newSubmission';
 
 describe('NewSubmissionStatus Component', () => {
   let studentId: number;

@@ -2,7 +2,7 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
-import type { NewPart, RawNewPart } from '@/domain/newPart';
+import type { NewPart, RawNewPart } from '@/domain/administrator/newPart';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';

@@ -17,7 +17,7 @@ export type CourseSuggestionGroup = {
 export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]> = {
   event: [
     {
-      id: 'high-budget-events',
+      id: 'school-event',
       description: 'QC Event Planning',
       courses: [
         {
@@ -118,7 +118,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
   ],
   wellness: [
     {
-      id: 'sleep-spaces',
+      id: 'school-wellness',
       description: 'QC Wellness Studies',
       courses: [
         {
@@ -168,7 +168,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
   ],
   design: [
     {
-      id: 'add-value-homes',
+      id: 'school-design',
       description: 'QC Design School',
       courses: [
         {
@@ -239,7 +239,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
   ],
   pet: [
     {
-      id: 'full-service-dog-care',
+      id: 'school-pet',
       description: 'QC Pet Studies',
       courses: [
         {
@@ -268,7 +268,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
   ],
   makeup: [
     {
-      id: 'look-their-best',
+      id: 'school-makeup',
       description: 'QC Makeup Academy',
       courses: [
         {

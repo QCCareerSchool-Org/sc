@@ -1,4 +1,4 @@
-import type { NewSubmission } from '@/domain/newSubmission';
+import type { NewSubmission } from '@/domain/tutor/newSubmission';
 import type { NewSubmissionWithEnrollmentAndAssignments } from '@/services/tutors/newSubmissionService';
 
 export type State = {
