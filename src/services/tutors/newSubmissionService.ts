@@ -5,7 +5,7 @@ import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
-import type { NewSubmission, RawNewSubmission } from '@/domain/newSubmission';
+import type { NewSubmission, RawNewSubmission } from '@/domain/tutor/newSubmission';
 import type { RawTutorStudent, TutorStudent } from '@/domain/tutor/student';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 

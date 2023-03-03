@@ -2,9 +2,9 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
+import type { NewSubmission, RawNewSubmission } from '@/domain/administrator/newSubmission';
 import type { Course } from '@/domain/course';
 import type { NewAssignment, RawNewAssignment } from '@/domain/newAssignment';
-import type { NewSubmission, RawNewSubmission } from '@/domain/newSubmission';
 import type { IHttpService } from '@/services/httpService';
 
 export type NewSubmissionWithCourseAndAssignments = NewSubmission & {
@@ -18,25 +18,25 @@ type RawNewSubmissionWithCourseAndAssignments = RawNewSubmission & {
 };
 
 export interface INewSubmissionService {
-  getUnit: (administratorId: number, studentId: number, enrollmentId: number, unitId: string) => Observable<NewSubmissionWithCourseAndAssignments>;
-  restartUnit: (administratorId: number, studentId: number, enrollmentId: number, unitId: string) => Observable<NewSubmission>;
+  getSubmission: (administratorId: number, studentId: number, enrollmentId: number, unitId: string) => Observable<NewSubmissionWithCourseAndAssignments>;
+  restartSubmission: (administratorId: number, studentId: number, enrollmentId: number, unitId: string) => Observable<NewSubmission>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getUnit(administratorId: number, studentId: number, enrollmentId: number, unitId: string): Observable<NewSubmissionWithCourseAndAssignments> {
-    const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${unitId}`;
+  public getSubmission(administratorId: number, studentId: number, enrollmentId: number, submissionId: string): Observable<NewSubmissionWithCourseAndAssignments> {
+    const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${submissionId}`;
     return this.httpService.get<RawNewSubmissionWithCourseAndAssignments>(url).pipe(
-      map(this.mapNewUnitWithCourseAndAssignments),
+      map(this.mapNewSubmissionWithCourseAndAssignments),
     );
   }
 
-  public restartUnit(administratorId: number, studentId: number, enrollmentId: number, unitId: string): Observable<NewSubmission> {
-    const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${unitId}/restarts`;
+  public restartSubmission(administratorId: number, studentId: number, enrollmentId: number, submissionId: string): Observable<NewSubmission> {
+    const url = `${this.getUrl(administratorId, studentId, enrollmentId)}/${submissionId}/restarts`;
     return this.httpService.post<RawNewSubmission>(url).pipe(
-      map(this.mapNewUnit),
+      map(this.mapNewSubmission),
     );
   }
 
@@ -44,26 +44,26 @@ export class NewSubmissionService implements INewSubmissionService {
     return `${endpoint}/administrators/${administratorId}/students/${studentId}/enrollments/${enrollmentId}/newUnits`;
   }
 
-  private readonly mapNewUnit = (newUnit: RawNewSubmission): NewSubmission => {
+  private readonly mapNewSubmission = (newSubmission: RawNewSubmission): NewSubmission => {
     return {
-      ...newUnit,
-      submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
-      transferred: newUnit.transferred === null ? null : new Date(newUnit.transferred),
-      closed: newUnit.closed === null ? null : new Date(newUnit.closed),
-      created: new Date(newUnit.created),
-      modified: newUnit.modified === null ? null : new Date(newUnit.modified),
+      ...newSubmission,
+      submitted: newSubmission.submitted === null ? null : new Date(newSubmission.submitted),
+      transferred: newSubmission.transferred === null ? null : new Date(newSubmission.transferred),
+      closed: newSubmission.closed === null ? null : new Date(newSubmission.closed),
+      created: new Date(newSubmission.created),
+      modified: newSubmission.modified === null ? null : new Date(newSubmission.modified),
     };
   };
 
-  private readonly mapNewUnitWithCourseAndAssignments = (newUnit: RawNewSubmissionWithCourseAndAssignments): NewSubmissionWithCourseAndAssignments => {
+  private readonly mapNewSubmissionWithCourseAndAssignments = (newSubmission: RawNewSubmissionWithCourseAndAssignments): NewSubmissionWithCourseAndAssignments => {
     return {
-      ...newUnit,
-      submitted: newUnit.submitted === null ? null : new Date(newUnit.submitted),
-      transferred: newUnit.transferred === null ? null : new Date(newUnit.transferred),
-      closed: newUnit.closed === null ? null : new Date(newUnit.closed),
-      created: new Date(newUnit.created),
-      modified: newUnit.modified === null ? null : new Date(newUnit.modified),
-      newAssignments: newUnit.newAssignments.map(a => ({
+      ...newSubmission,
+      submitted: newSubmission.submitted === null ? null : new Date(newSubmission.submitted),
+      transferred: newSubmission.transferred === null ? null : new Date(newSubmission.transferred),
+      closed: newSubmission.closed === null ? null : new Date(newSubmission.closed),
+      created: new Date(newSubmission.created),
+      modified: newSubmission.modified === null ? null : new Date(newSubmission.modified),
+      newAssignments: newSubmission.newAssignments.map(a => ({
         ...a,
         created: new Date(a.created),
         modified: a.modified === null ? null : new Date(a.modified),

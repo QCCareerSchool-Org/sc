@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { memo } from 'react';
 
 import { formatDate } from '../../../formatDate';
-import type { NewSubmission } from '@/domain/newSubmission';
+import type { NewSubmission } from '@/domain/student/newSubmission';
 import { useServices } from '@/hooks/useServices';
 
 type Props = {
