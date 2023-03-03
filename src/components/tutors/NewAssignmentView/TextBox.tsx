@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { Fragment } from 'react';
 
 import type { WithInputForm } from './state';
-import type { NewTextBox } from '@/domain/newTextBox';
+import type { NewTextBox } from '@/domain/tutor/newTextBox';
 
 type Props = {
   newTextBox: WithInputForm<NewTextBox>;

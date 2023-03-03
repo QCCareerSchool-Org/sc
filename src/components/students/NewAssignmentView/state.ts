@@ -1,11 +1,11 @@
 import { sanitize } from '../../../sanitize';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium } from '@/domain/newPartMedium';
-import type { NewTextBox } from '@/domain/newTextBox';
 import type { NewUploadSlot } from '@/domain/newUploadSlot';
 import type { NewAssignment } from '@/domain/student/newAssignment';
 import type { NewPart } from '@/domain/student/newPart';
 import type { NewSubmission } from '@/domain/student/newSubmission';
+import type { NewTextBox } from '@/domain/student/newTextBox';
 import type { NewAssignmentWithChildren } from '@/services/students/newAssignmentService';
 
 type FormState = 'pristine' | 'dirty';
