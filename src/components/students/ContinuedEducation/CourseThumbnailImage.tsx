@@ -39,7 +39,7 @@ import SK from '../../../images/course-suggestions/thumbnails/sk.jpg';
 import SL from '../../../images/course-suggestions/thumbnails/sl.jpg';
 import ST from '../../../images/course-suggestions/thumbnails/st.jpg';
 import TT from '../../../images/course-suggestions/thumbnails/tt.jpg';
-// import VE from '../../../images/course-suggestions/thumbnails/ve.jpg';
+import VE from '../../../images/course-suggestions/thumbnails/ve.jpg';
 import VM from '../../../images/course-suggestions/thumbnails/vm.jpg';
 import WP from '../../../images/course-suggestions/thumbnails/wp.jpg';
 
@@ -97,8 +97,8 @@ const getSrc = (courseCode: string): StaticImageData => {
       return EB;
     case 'TT':
       return TT;
-      // case 'VE':
-      //   return VE;
+    case 'VE':
+      return VE;
 
     // makeup
     case 'MZ':
