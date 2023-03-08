@@ -72,8 +72,8 @@ export class EnrollmentService implements IEnrollmentService {
         ...enrollment.student,
         lastLogin: enrollment.student.lastLogin === null ? null : new Date(enrollment.student.lastLogin),
         expiry: enrollment.student.expiry === null ? null : new Date(enrollment.student.expiry),
-        creationDate: new Date(enrollment.student.creationDate),
-        timestamp: new Date(enrollment.student.timestamp),
+        created: new Date(enrollment.student.created),
+        modified: new Date(enrollment.student.modified),
       },
       course: {
         ...enrollment.course,
