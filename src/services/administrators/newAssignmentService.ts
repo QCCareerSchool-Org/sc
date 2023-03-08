@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { endpoint } from '../../basePath';
 import type { NewAssignment, RawNewAssignment } from '@/domain/administrator/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/administrator/newPart';
+import type { NewSubmission, RawNewSubmission } from '@/domain/administrator/newSubmission';
 import type { NewTextBox, RawNewTextBox } from '@/domain/administrator/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/administrator/newUploadSlot';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
@@ -11,6 +12,7 @@ import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { IHttpService } from '@/services/httpService';
 
 export type NewAssignmentWithChildren = NewAssignment & {
+  newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark' | 'markOverride'>;
   newParts: Array<NewPart & {
     newTextBoxes: NewTextBox[];
     newUploadSlots: NewUploadSlot[];
@@ -20,6 +22,7 @@ export type NewAssignmentWithChildren = NewAssignment & {
 };
 
 type RawNewAssignmentWithChildren = RawNewAssignment & {
+  newSubmission: Omit<RawNewSubmission, 'complete' | 'points' | 'mark' | 'markOverride'>;
   newParts: Array<RawNewPart & {
     newTextBoxes: RawNewTextBox[];
     newUploadSlots: RawNewUploadSlot[];
@@ -76,6 +79,14 @@ export class NewAssignmentService implements INewAssignmentService {
       ...assignment,
       created: new Date(assignment.created),
       modified: assignment.modified === null ? null : new Date(assignment.modified),
+      newSubmission: {
+        ...assignment.newSubmission,
+        submitted: assignment.newSubmission.submitted === null ? null : new Date(assignment.newSubmission.submitted),
+        transferred: assignment.newSubmission.transferred === null ? null : new Date(assignment.newSubmission.transferred),
+        closed: assignment.newSubmission.closed === null ? null : new Date(assignment.newSubmission.closed),
+        created: new Date(assignment.newSubmission.created),
+        modified: assignment.newSubmission.modified === null ? null : new Date(assignment.newSubmission.modified),
+      },
       newParts: assignment.newParts.map(p => ({
         ...p,
         created: new Date(p.created),

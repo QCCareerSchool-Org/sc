@@ -1,7 +1,9 @@
 import type { FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
-
 import { catchError, EMPTY } from 'rxjs';
+
+import { endpoint } from '../../../basePath';
+import { formatDateTime } from '../../../formatDate';
 import { NewPartView } from './NewPartView';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
@@ -12,7 +14,6 @@ import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { useServices } from '@/hooks/useServices';
-import { endpoint } from 'src/basePath';
 
 type Props = {
   administratorId: number;
@@ -41,6 +42,7 @@ export const NewAssignmentView: FC<Props> = ({ administratorId, assignmentId }) 
   };
 
   const mark = state.newAssignment.markOverride ?? state.newAssignment.mark;
+  const submission = state.newAssignment.newSubmission;
 
   return (
     <>
@@ -48,7 +50,23 @@ export const NewAssignmentView: FC<Props> = ({ administratorId, assignmentId }) 
         <div className="container assignmentContainer">
           {state.newAssignment.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {state.newAssignment.assignmentNumber}{state.newAssignment.title && <>: {state.newAssignment.title}</>}</h1>
-          {state.newAssignment.newSubmission.submitted && <p>Mark: {state.newAssignment.points === 0 ? 'N/A' : gradeService.calculate(mark, state.newAssignment.points, state.newAssignment.newSubmission.submitted) ?? 'No mark recorded'}</p>}
+          <table className="table table-bordered w-auto bg-white">
+            <tbody>
+              <tr><th scope="row">Created</th><td>{formatDateTime(submission.created)}</td></tr>
+              {submission.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(submission.modified)}</td></tr>}
+              {submission.submitted && <tr><th scope="row">{submission.skipped ? 'Skipped' : 'Submitted'}</th><td>{formatDateTime(submission.submitted)}</td></tr>}
+              {submission.transferred && <tr><th scope="row">Transferred</th><td>{formatDateTime(submission.transferred)}</td></tr>}
+              {submission.closed && <tr><th scope="row">Closed</th><td>{formatDateTime(submission.closed)}</td></tr>}
+              {submission.submitted && submission.closed && !submission.skipped && (
+                <>
+                  {state.newAssignment.points > 0
+                    ? <tr><th scope="row">Mark</th><td>{mark ?? '--'} / {state.newAssignment.points}{mark !== null && <>&nbsp;&nbsp;({gradeService.calculate(mark, state.newAssignment.points, submission.submitted)})</>}</td></tr>
+                    : <tr><th scope="row">Mark</th><td>N/A</td></tr>
+                  }
+                </>
+              )}
+            </tbody>
+          </table>
           <div className="row">
             <div className="col-12 col-lg-10 col-xl-8">
               {state.newAssignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (

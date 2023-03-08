@@ -1,5 +1,6 @@
 import type { NewAssignment } from '@/domain/administrator/newAssignment';
 import type { NewPart } from '@/domain/administrator/newPart';
+import type { NewSubmission } from '@/domain/administrator/newSubmission';
 import type { NewTextBox } from '@/domain/administrator/newTextBox';
 import type { NewUploadSlot } from '@/domain/administrator/newUploadSlot';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
@@ -23,6 +24,7 @@ export type PartWithForms = NewPart & {
 
 export type State = {
   newAssignment?: NewAssignment & {
+    newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark' | 'markOverride'>;
     newParts: PartWithForms[];
     newAssignmentMedia: NewAssignmentMedium[];
   };
