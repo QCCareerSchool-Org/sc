@@ -130,7 +130,7 @@ export class AxiosHttpService implements IHttpService {
       tap(response => {
         const filename = /filename="(.*)"/u.exec(response.headers['content-disposition'])?.[1];
         if (response.data instanceof Blob) {
-          saveAs(response.data, filename);
+          saveAs(response.data, filename ? decodeURIComponent(filename) : undefined);
         }
       }),
       map(() => undefined),
