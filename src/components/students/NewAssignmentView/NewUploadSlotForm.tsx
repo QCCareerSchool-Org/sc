@@ -93,7 +93,7 @@ const EmptySlot: FC<EmptySlotProps> = ({ uploadSlot, locked, upload$ }) => {
     const file = files[0];
 
     if (file.size >= 33_554_432) {
-      alert('Maximum file size is 32 MB');
+      alert(`Maximum file size is 32 MB.`);
       return;
     }
 

@@ -55,8 +55,8 @@ export class StudentService implements IStudentService {
       ...student,
       lastLogin: student.lastLogin === null ? null : new Date(student.lastLogin),
       expiry: student.expiry === null ? null : new Date(student.expiry),
-      creationDate: new Date(student.creationDate),
-      timestamp: new Date(student.timestamp),
+      created: new Date(student.created),
+      modified: new Date(student.modified),
     };
   };
 
@@ -65,8 +65,8 @@ export class StudentService implements IStudentService {
       ...student,
       lastLogin: student.lastLogin === null ? null : new Date(student.lastLogin),
       expiry: student.expiry === null ? null : new Date(student.expiry),
-      creationDate: new Date(student.creationDate),
-      timestamp: new Date(student.timestamp),
+      created: new Date(student.created),
+      modified: new Date(student.modified),
       enrollments: student.enrollments.map(e => ({
         ...e,
         enrollmentDate: e.enrollmentDate === null ? null : new Date(e.enrollmentDate),

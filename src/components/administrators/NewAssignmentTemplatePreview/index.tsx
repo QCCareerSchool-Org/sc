@@ -4,13 +4,13 @@ import { useReducer } from 'react';
 
 import { catchError, EMPTY } from 'rxjs';
 import { endpoint } from '../../../basePath';
-import { NewAssignmentMediumView } from './NewAssignmentMediumView';
+import { NewAssignmentMediumView } from '../NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
+import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
-import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import { useAdminServices } from '@/hooks/useAdminServices';
 
 type Props = {
@@ -88,23 +88,4 @@ export const NewAssignmentTemplatePreview: FC<Props> = ({ administratorId, assig
       `}</style>
     </>
   );
-};
-
-type DescriptionProps = {
-  description: string;
-  descriptionType: NewDescriptionType;
-};
-
-const Description: FC<DescriptionProps> = ({ description, descriptionType }) => {
-  if (descriptionType === 'text') {
-    return (
-      <>
-        {description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
-      </>
-    );
-  }
-  if (descriptionType === 'html') {
-    return <div className="htmlDescription" dangerouslySetInnerHTML={{ __html: description }} />;
-  }
-  return null;
 };

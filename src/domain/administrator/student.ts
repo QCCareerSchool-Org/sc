@@ -11,7 +11,6 @@ export type AdministratorStudent = {
   lastLogin: Date | null;
   expiry: Date | null;
   emailAddress: string | null;
-  creationDate: Date;
   arrears: boolean;
   forumUsername: string | null;
   apiUsername: number | null;
@@ -20,7 +19,8 @@ export type AdministratorStudent = {
   ajaxUploads: boolean;
   upgradeNotification: boolean;
   entityVersion: number;
-  timestamp: Date;
+  created: Date;
+  modified: Date;
 };
 
 export type RawAdministratorStudent = {
@@ -38,8 +38,6 @@ export type RawAdministratorStudent = {
   /** string date */
   expiry: string | null;
   emailAddress: string | null;
-  /** string date */
-  creationDate: string;
   arrears: boolean;
   forumUsername: string | null;
   apiUsername: number | null;
@@ -49,5 +47,7 @@ export type RawAdministratorStudent = {
   upgradeNotification: boolean;
   entityVersion: number;
   /** string date */
-  timestamp: string;
+  created: string;
+  /** string date */
+  modified: string;
 };

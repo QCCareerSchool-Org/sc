@@ -7,7 +7,7 @@ export type TutorStudent = {
   firstName: string;
   lastName: string;
   entityVersion: number;
-  timestamp: Date;
+  modified: Date;
 };
 
 export type RawTutorStudent = {
@@ -21,5 +21,5 @@ export type RawTutorStudent = {
   lastName: string;
   entityVersion: number;
   /** string date */
-  timestamp: string;
+  modified: string;
 };
