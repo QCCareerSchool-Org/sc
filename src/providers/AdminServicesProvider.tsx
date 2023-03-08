@@ -12,6 +12,8 @@ import type { IMaterialService } from '@/services/administrators/materialService
 import { MaterialService } from '@/services/administrators/materialService';
 import type { INewAssignmentMediumService } from '@/services/administrators/newAssignmentMediumService';
 import { NewAssignmentMediumService } from '@/services/administrators/newAssignmentMediumService';
+import type { INewAssignmentService } from '@/services/administrators/newAssignmentService';
+import { NewAssignmentService } from '@/services/administrators/newAssignmentService';
 import type { INewAssignmentTemplateService } from '@/services/administrators/newAssignmentTemplateService';
 import { NewAssignmentTemplateService } from '@/services/administrators/newAssignmentTemplateService';
 import type { INewPartMediumService } from '@/services/administrators/newPartMediumService';
@@ -45,6 +47,7 @@ export type AdminServices = Readonly<{
   readonly newPartTemplateService: Readonly<INewPartTemplateService>;
   readonly newTextBoxTemplateService: Readonly<INewTextBoxTemplateService>;
   readonly newSubmissionService: Readonly<INewSubmissionService>;
+  readonly newAssignmentService: Readonly<INewAssignmentService>;
   readonly newSubmissionTemplateService: Readonly<INewSubmissionTemplateService>;
   readonly newUploadSlotTemplateService: Readonly<INewUploadSlotTemplateService>;
   readonly newSubmissionTemplatePriceService: Readonly<INewSubmissionTemplatePriceService>;
@@ -72,6 +75,7 @@ export const AdminServicesProvider: FC<Props> = ({ children }) => {
     newPartTemplateService: new NewPartTemplateService(httpService),
     newTextBoxTemplateService: new NewTextBoxTemplateService(httpService),
     newSubmissionService: new NewSubmissionService(httpService),
+    newAssignmentService: new NewAssignmentService(httpService),
     newSubmissionTemplateService: new NewSubmissionTemplateService(httpService),
     newUploadSlotTemplateService: new NewUploadSlotTemplateService(httpService),
     newSubmissionTemplatePriceService: new NewSubmissionTemplatePriceService(httpService),

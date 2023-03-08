@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import type { FC, MouseEvent } from 'react';
 import { useCallback, useReducer } from 'react';
 
@@ -12,13 +13,14 @@ type Props = {
 };
 
 export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) => {
+  const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, administratorId, submissionId);
 
-  const handleClick = useCallback((e: MouseEvent<HTMLTableRowElement>, sId: string): void => {
-    //
-  }, []);
+  const handleClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
+    void router.push(`/administrators/new-assignments/${assignmentId}`);
+  }, [ router ]);
 
   if (!state.newSubmission) {
     return null;

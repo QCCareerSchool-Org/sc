@@ -2,12 +2,12 @@ import type { FC, MouseEventHandler } from 'react';
 
 import { catchError, EMPTY } from 'rxjs';
 import { endpoint } from '../../../basePath';
-import { NewPartMediumView } from './NewPartMediumView';
+import { NewPartMediumView } from '../NewPartMediumView';
 import { NewTextBoxTemplatePreview } from './NewTextBoxTemplatePreview';
 import { NewUploadSlotTemplatePreview } from './NewUploadSlotTemplatePreview';
+import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
-import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
@@ -65,6 +65,9 @@ export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemp
       .downloadMedium {
         margin-bottom: 1rem;
       }
+      .downloadMedium:last-of-type {
+        margin-bottom: 0;
+      }
       .downloadMedium a {
         text-decoration: none;
         color: inherit;
@@ -72,23 +75,4 @@ export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemp
       `}</style>
     </Section>
   );
-};
-
-type DescriptionProps = {
-  description: string;
-  descriptionType: NewDescriptionType;
-};
-
-const Description: FC<DescriptionProps> = ({ description, descriptionType }) => {
-  if (descriptionType === 'text') {
-    return (
-      <>
-        {description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
-      </>
-    );
-  }
-  if (descriptionType === 'html') {
-    return <div className="htmlDescription" dangerouslySetInnerHTML={{ __html: description }} />;
-  }
-  return null;
 };
