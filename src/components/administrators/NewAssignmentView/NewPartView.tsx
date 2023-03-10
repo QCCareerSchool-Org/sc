@@ -13,7 +13,6 @@ import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import { useAdminServices } from '@/hooks/useAdminServices';
-import { useServices } from '@/hooks/useServices';
 
 type Props = {
   administratorId: number;
@@ -22,7 +21,6 @@ type Props = {
 };
 
 export const NewPartView: FC<Props> = memo(({ administratorId, part, saveInput }) => {
-  const { gradeService } = useServices();
   const { newPartMediumService } = useAdminServices();
 
   const saveTextBox = useCallback((partId: string, id: string, markOverride: number | null): void => {

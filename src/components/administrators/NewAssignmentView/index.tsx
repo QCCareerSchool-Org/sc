@@ -1,4 +1,5 @@
-import type { FC, MouseEvent, MouseEventHandler } from 'react';
+import ErrorPage from 'next/error';
+import type { FC, MouseEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
 import { catchError, EMPTY } from 'rxjs';
 
@@ -10,6 +11,7 @@ import { useInitialData } from './useInitialData';
 import type { InputType } from './useInputSave';
 import { useInputSave } from './useInputSave';
 import { NewAssignmentMediumView } from '@/components/administrators/NewAssignmentMediumView';
+import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import { useAdminServices } from '@/hooks/useAdminServices';
@@ -33,40 +35,53 @@ export const NewAssignmentView: FC<Props> = ({ administratorId, assignmentId }) 
     inputSave$.next({ inputType, administratorId, partId, id, markOverride });
   }, [ inputSave$, administratorId ]);
 
+  if (state.error) {
+    return <ErrorPage statusCode={state.errorCode ?? 500} />;
+  }
+
   if (!state.newAssignment) {
     return null;
   }
 
-  const handleUnmarkedIdClick = (e: MouseEvent, id: string): void => {
-    //
-  };
-
-  const mark = state.newAssignment.markOverride ?? state.newAssignment.mark;
+  // const mark = state.newAssignment.markOverride ?? state.newAssignment.mark;
   const submission = state.newAssignment.newSubmission;
 
   return (
     <>
       <Section>
         <div className="container assignmentContainer">
-          {state.newAssignment.optional && <span className="text-danger">OPTIONAL</span>}
-          <h1>Assignment {state.newAssignment.assignmentNumber}{state.newAssignment.title && <>: {state.newAssignment.title}</>}</h1>
-          <table className="table table-bordered w-auto bg-white">
-            <tbody>
-              <tr><th scope="row">Created</th><td>{formatDateTime(submission.created)}</td></tr>
-              {submission.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(submission.modified)}</td></tr>}
-              {submission.submitted && <tr><th scope="row">{submission.skipped ? 'Skipped' : 'Submitted'}</th><td>{formatDateTime(submission.submitted)}</td></tr>}
-              {submission.transferred && <tr><th scope="row">Transferred</th><td>{formatDateTime(submission.transferred)}</td></tr>}
-              {submission.closed && <tr><th scope="row">Closed</th><td>{formatDateTime(submission.closed)}</td></tr>}
-              {submission.submitted && submission.closed && !submission.skipped && (
-                <>
-                  {state.newAssignment.points > 0
-                    ? <tr><th scope="row">Mark</th><td>{mark ?? '--'} / {state.newAssignment.points}{mark !== null && <>&nbsp;&nbsp;({gradeService.calculate(mark, state.newAssignment.points, submission.submitted)})</>}</td></tr>
-                    : <tr><th scope="row">Mark</th><td>N/A</td></tr>
-                  }
-                </>
-              )}
-            </tbody>
-          </table>
+          <div className="row">
+            <div className="col-12 col-lg-8">
+              {state.newAssignment.optional && <span className="text-danger">OPTIONAL</span>}
+              <h1>Assignment {state.newAssignment.assignmentNumber}{state.newAssignment.title && <>: {state.newAssignment.title}</>}</h1>
+              {state.newAssignment.description && <Description description={state.newAssignment.description} descriptionType={state.newAssignment.descriptionType} />}
+
+            </div>
+            <div className="col-12 col-lg-4">
+              <table className="table table-bordered w-auto bg-white ms-lg-auto">
+                <tbody>
+                  <tr><th scope="row">Created</th><td>{formatDateTime(submission.created)}</td></tr>
+                  {submission.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(submission.modified)}</td></tr>}
+                  {submission.submitted && <tr><th scope="row">{submission.skipped ? 'Skipped' : 'Submitted'}</th><td>{formatDateTime(submission.submitted)}</td></tr>}
+                  {submission.transferred && <tr><th scope="row">Transferred</th><td>{formatDateTime(submission.transferred)}</td></tr>}
+                  {submission.closed && <tr><th scope="row">Marked</th><td>{formatDateTime(submission.closed)}</td></tr>}
+                  {submission.submitted && submission.closed && !submission.skipped && (
+                    <>
+                      {state.newAssignment.points > 0
+                        ? (
+                          <>
+                            <tr><th scope="row">Mark</th><td>{state.newAssignment.mark ?? '--'} / {state.newAssignment.points}{state.newAssignment.mark !== null && <>&nbsp;&nbsp;({gradeService.calculate(state.newAssignment.mark, state.newAssignment.points, submission.submitted)})</>}</td></tr>
+                            {state.newAssignment.markOverride !== null && <tr><th scope="row">Override</th><td>{state.newAssignment.markOverride} / {state.newAssignment.points}&nbsp;&nbsp;({gradeService.calculate(state.newAssignment.markOverride, state.newAssignment.points, submission.submitted)})</td></tr>}
+                          </>
+                        )
+                        : <tr><th scope="row">Mark</th><td>N/A</td></tr>
+                      }
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
           <div className="row">
             <div className="col-12 col-lg-10 col-xl-8">
               {state.newAssignment.newAssignmentMedia.filter(m => m.type !== 'download').map(m => (
@@ -102,32 +117,6 @@ export const NewAssignmentView: FC<Props> = ({ administratorId, assignmentId }) 
         </div>
       </Section>
       {state.newAssignment.newParts.map(p => <NewPartView key={p.partId} administratorId={administratorId} part={p} saveInput={saveInput} />)}
-      <Section className="bg-dark text-light">
-        <div className="container">
-          {state.newAssignment.mark !== null && <p className="lead mb-0">All answers are marked!</p>}
-          {state.newAssignment.mark === null && (
-            <>
-              <p className="lead mb-2">Some answers are not marked:</p>
-              <ul className="ps-3 mb-0">
-                {state.newAssignment.newParts.filter(p => p.mark === null).map(p => (
-                  // we don't use an anchor link because we don't want the history to change
-                  <li key={p.partId}>
-                    <a onClick={e => handleUnmarkedIdClick(e, p.partId)} href={`#${p.partId}`} className="link-light text-decoration-none">{p.title}</a>
-                    <ul>
-                      {p.newTextBoxes.filter(t => t.mark === null).map((t, i) => (
-                        <li key={t.textBoxId}><a onClick={e => handleUnmarkedIdClick(e, t.textBoxId)} href={`#${t.textBoxId}`} className="link-light text-decoration-none">Text Box: {t.description ?? `#${i + 1}`}</a></li>
-                      ))}
-                      {p.newUploadSlots.filter(u => u.mark === null).map(u => (
-                        <li key={u.uploadSlotId}><a onClick={e => handleUnmarkedIdClick(e, u.uploadSlotId)} href={`#${u.uploadSlotId}`} className="link-light text-decoration-none">Upload Slot: {u.label}</a></li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </div>
-      </Section>
       <style jsx>{`
       .alert p:last-of-type { margin-bottom: 0; }
       .assignmentContainer *:last-child { margin-bottom: 0; }

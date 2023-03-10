@@ -19,11 +19,11 @@ type Props = {
 export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, markOverride, notes, form, save }) => {
   const [ markFormValue, setMarkFormValue ] = useState(markOverride); // for the html input
 
-  const immediateMark = useRef(mark); // for sending updates
+  const immediateMarkOverride = useRef(markOverride); // for sending updates
 
   const valueChange$ = useRef(new Subject<{ markOverride: number | null }>());
 
-  useWarnIfUnsavedChanges(mark !== immediateMark.current);
+  useWarnIfUnsavedChanges(markOverride !== immediateMarkOverride.current);
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -50,13 +50,13 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, markOverrid
   const handleMarkChange: ChangeEventHandler<HTMLInputElement> = e => {
     if (e.target.value === '') {
       setMarkFormValue(null);
-      immediateMark.current = null;
+      immediateMarkOverride.current = null;
       valueChange$.current.next({ markOverride: null });
     } else {
       const m = parseInt(e.target.value, 10);
       if (!isNaN(m)) {
         setMarkFormValue(m);
-        immediateMark.current = m;
+        immediateMarkOverride.current = m;
         valueChange$.current.next({ markOverride: m });
       }
     }
@@ -80,7 +80,7 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, markOverrid
             <>
               <small>Tutor's Mark</small>
               <div className="fw-bold text-nowrap">
-                <div className="form-control mark" style={{ height: 38 }}>{mark}</div>
+                <div className="form-control mark" style={{ height: 38 }}>{mark}</div> / {points}
               </div>
               <small>Mark Override</small>
               <div className="fw-bold text-nowrap">

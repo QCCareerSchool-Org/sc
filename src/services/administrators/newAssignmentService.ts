@@ -50,7 +50,7 @@ export class NewAssignmentService implements INewAssignmentService {
 
   public saveTextBox(administratorId: number, textBoxId: string, markOverride: number | null): Observable<NewTextBox> {
     const url = `${endpoint}/administrators/${administratorId}/newTextBoxes/${textBoxId}`;
-    return this.httpService.patch<RawNewTextBox>(url, { markOverride }).pipe(
+    return this.httpService.put<RawNewTextBox>(url, { markOverride }).pipe(
       map(raw => ({
         ...raw,
         created: new Date(raw.created),
