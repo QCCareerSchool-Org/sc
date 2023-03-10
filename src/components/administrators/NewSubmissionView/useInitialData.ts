@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { Subject, takeUntil } from 'rxjs';
+import { map, Subject, switchMap, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
@@ -8,17 +8,20 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export const useInitialData = (dispatch: Dispatch<Action>, administratorId: number, submissionId: string): void => {
-  const { newSubmissionService } = useAdminServices();
+  const { studentService, newSubmissionService } = useAdminServices();
   const navigateToLogin = useNavigateToLogin();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
     newSubmissionService.getSubmission(administratorId, submissionId).pipe(
+      switchMap(newSubmission => studentService.getStudent(administratorId, newSubmission.enrollment.studentId).pipe(
+        map(student => ({ newSubmission, student })),
+      )),
       takeUntil(destroy$),
     ).subscribe({
-      next: submission => {
-        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: submission });
+      next: data => {
+        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: data });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -33,5 +36,5 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, administratorId, submissionId, newSubmissionService, navigateToLogin ]);
+  }, [ dispatch, administratorId, submissionId, studentService, newSubmissionService, navigateToLogin ]);
 };

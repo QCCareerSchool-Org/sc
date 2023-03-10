@@ -34,10 +34,13 @@ import type { INewUploadSlotTemplateService } from '@/services/administrators/ne
 import { NewUploadSlotTemplateService } from '@/services/administrators/newUploadSlotTemplateService';
 import type { ISchoolService } from '@/services/administrators/schoolService';
 import { SchoolService } from '@/services/administrators/schoolService';
+import type { IStudentService } from '@/services/administrators/studentService';
+import { StudentService } from '@/services/administrators/studentService';
 import { UnitService } from '@/services/administrators/unitService';
 import type { IUnitService } from '@/services/administrators/unitService';
 
 export type AdminServices = Readonly<{
+  readonly studentService: Readonly<IStudentService>;
   readonly courseService: Readonly<ICourseService>;
   readonly countryService: Readonly<ICountryService>;
   readonly currencyService: Readonly<ICurrencyService>;
@@ -66,6 +69,7 @@ type Props = {
 export const AdminServicesProvider: FC<Props> = ({ children }) => {
   const { httpService } = useServices();
   const [ state ] = useState({
+    studentService: new StudentService(httpService),
     courseService: new CourseService(httpService),
     countryService: new CountryService(httpService),
     currencyService: new CurrencyService(httpService),

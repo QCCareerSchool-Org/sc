@@ -104,8 +104,8 @@ export const reducer = (state: State, action: Action): State => {
             if (p.partId !== action.payload.partId) {
               if (p.markOverride) {
                 assignmentOverridden = true;
-                assignmentMarkOverride += p.markOverride ?? 0;
               }
+              assignmentMarkOverride += p.markOverride ?? p.mark ?? 0;
               return p;
             }
             let partMarkOverride = 0;
@@ -116,26 +116,33 @@ export const reducer = (state: State, action: Action): State => {
                 if (t.textBoxId !== action.payload.textBoxId) {
                   if (t.markOverride) {
                     partOverridden = true;
-                    partMarkOverride += t.markOverride ?? 0;
                   }
+                  partMarkOverride += t.markOverride ?? t.mark ?? 0;
                   return t;
                 }
-                if (t.markOverride) {
+                if (action.payload.markOverride !== null) {
                   partOverridden = true;
-                  partMarkOverride += t.markOverride ?? 0;
                 }
+                partMarkOverride += action.payload.markOverride ?? t.mark ?? 0;
                 return {
                   ...t,
                   markOverride: action.payload.markOverride,
                   form: { ...t.form, state: 'idle' },
                 };
               }),
+              newUploadSlots: p.newUploadSlots.map(u => {
+                if (u.markOverride) {
+                  partOverridden = true;
+                }
+                partMarkOverride += u.markOverride ?? u.mark ?? 0;
+                return u;
+              }),
               markOverride: partOverridden ? partMarkOverride : null,
             };
             if (partOverridden) {
               assignmentOverridden = true;
-              assignmentMarkOverride += partMarkOverride;
             }
+            assignmentMarkOverride += partMarkOverride ?? part.mark ?? 0;
             return part;
           }),
           markOverride: assignmentOverridden ? assignmentMarkOverride : null,
@@ -210,26 +217,33 @@ export const reducer = (state: State, action: Action): State => {
             if (p.partId !== action.payload.partId) {
               if (p.markOverride) {
                 assignmentOverridden = true;
-                assignmentMarkOverride += p.markOverride ?? 0;
               }
+              assignmentMarkOverride += p.markOverride ?? p.mark ?? 0;
               return p;
             }
             let partMarkOverride = 0;
             let partOverridden = false;
             const part: PartWithForms = {
               ...p,
+              newTextBoxes: p.newTextBoxes.map(t => {
+                if (t.markOverride) {
+                  partOverridden = true;
+                }
+                partMarkOverride += t.markOverride ?? t.mark ?? 0;
+                return t;
+              }),
               newUploadSlots: p.newUploadSlots.map(u => {
                 if (u.uploadSlotId !== action.payload.uploadSlotId) {
                   if (u.markOverride) {
                     partOverridden = true;
-                    partMarkOverride += u.markOverride ?? 0;
                   }
+                  partMarkOverride += u.markOverride ?? u.mark ?? 0;
                   return u;
                 }
-                if (u.markOverride) {
+                if (action.payload.markOverride !== null) {
                   partOverridden = true;
-                  partMarkOverride += u.markOverride ?? 0;
                 }
+                partMarkOverride += action.payload.markOverride ?? u.mark ?? 0;
                 return {
                   ...u,
                   markOverride: action.payload.markOverride,
@@ -240,8 +254,8 @@ export const reducer = (state: State, action: Action): State => {
             };
             if (partOverridden) {
               assignmentOverridden = true;
-              assignmentMarkOverride += partMarkOverride;
             }
+            assignmentMarkOverride += partMarkOverride ?? part.mark ?? 0;
             return part;
           }),
           markOverride: assignmentOverridden ? assignmentMarkOverride : null,

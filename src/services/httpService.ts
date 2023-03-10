@@ -51,7 +51,10 @@ export class AxiosHttpService implements IHttpService {
   }
 
   public postFile<T>(url: string, body: unknown, config?: HttpServiceConfig): Observable<ProgressResponse<T>> {
+    // for keeping track of the upload progress
     const progress$ = new Subject<number>();
+
+    // callback to update the progress tracker
     const onUploadProgress = (progressEvent: ProgressEvent): void => {
       const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
       if (completed >= 100) {
@@ -62,11 +65,13 @@ export class AxiosHttpService implements IHttpService {
       }
     };
 
+    // make the request including the progress tracker callback
     const data$ = this.instance.post<T>(url, body, { ...config, onUploadProgress }).pipe(
       map((response, index) => this.handleResponse(response, index)),
       catchError((err, caught) => this.handleError(err, caught)),
     );
 
+    // merge both observables
     return merge(
       data$.pipe(map(value => ({ type: 'data', value } as const))),
       progress$.pipe(map(value => ({ type: 'progress', value } as const))),
