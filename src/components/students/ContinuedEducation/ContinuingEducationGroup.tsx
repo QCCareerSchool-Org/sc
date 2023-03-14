@@ -183,7 +183,7 @@ export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlu
               <ContinuingEducationCourse
                 key={course.code}
                 selected={state.selectedCourses.findIndex(s => s.courseCode === course.code) !== -1}
-                disabled={disabledCourses.findIndex(c => c.code === course.code) !== -1}
+                disabled={disabledCourses.findIndex(c => c.code === course.prefix ?? course.code) !== -1}
                 onToggle={handleToggle}
                 schoolSlug={schoolSlug}
                 shippingDetails={shippingDetails}
