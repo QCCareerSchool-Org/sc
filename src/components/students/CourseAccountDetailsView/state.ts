@@ -5,8 +5,10 @@ import type { CRMPaymentMethod } from '@/domain/student/crm/crmPaymentMethod';
 import type { CRMTransaction } from '@/domain/student/crm/crmTransaction';
 import type { CRMEnrollmentWithCourse } from '@/services/students/crmEnrollmentService';
 
+type MetaData = { discountedCost: number; balance: number; nextInstallment: Date | null };
+
 export type State = {
-  crmEnrollment?: CRMEnrollmentWithCourse & { meta: { discountedCost: number; balance: number; nextInstallment: Date | null } };
+  crmEnrollment?: CRMEnrollmentWithCourse & { meta: MetaData };
   form: {
     data: {
       amount: number;
@@ -155,7 +157,7 @@ const getMeta = (crmEnrollment: CRMEnrollmentWithCourse): { discountedCost: numb
         const lastDayOfThisMonth = new Date(thisYear, thisMonth + 1, 0).getDate();
         const thisMonthPaymentDay = Math.min(paymentDay, lastDayOfThisMonth);
         nextInstallment = new Date(thisYear, thisMonth, thisMonthPaymentDay, paymentHour, paymentMinute);
-        if (nextInstallment.getTime() <= now.getTime()) {
+        while ((nextInstallment.getTime() < now.getTime()) || (crmEnrollment.paymentStart !== null && nextInstallment.getTime() < crmEnrollment.paymentStart.getTime())) {
           const lastDayOfNextMonth = new Date(thisYear, thisMonth + 2, 0).getDate();
           const nextMonthPaymentDay = Math.min(paymentDay, lastDayOfNextMonth);
           nextInstallment = new Date(thisYear, thisMonth + 1, nextMonthPaymentDay, paymentHour, paymentMinute);
@@ -164,14 +166,14 @@ const getMeta = (crmEnrollment: CRMEnrollmentWithCourse): { discountedCost: numb
     } else if (crmEnrollment.paymentFrequency === 'weekly') {
       if (crmEnrollment.paymentStart) {
         nextInstallment = new Date(crmEnrollment.paymentStart.getFullYear(), crmEnrollment.paymentStart.getMonth(), crmEnrollment.paymentStart.getDate(), paymentHour, paymentMinute);
-        while (nextInstallment.getTime() < now.getTime()) {
+        while (nextInstallment.getTime() < now.getTime() || nextInstallment.getTime() < crmEnrollment.paymentStart.getTime()) {
           nextInstallment.setDate(nextInstallment.getDate() + 7);
         }
       }
     } else if (crmEnrollment.paymentFrequency === 'biWeekly') {
       if (crmEnrollment.paymentStart) {
         nextInstallment = new Date(crmEnrollment.paymentStart.getFullYear(), crmEnrollment.paymentStart.getMonth(), crmEnrollment.paymentStart.getDate(), paymentHour, paymentMinute);
-        while (nextInstallment.getTime() < now.getTime()) {
+        while (nextInstallment.getTime() < now.getTime() || nextInstallment.getTime() < crmEnrollment.paymentStart.getTime()) {
           nextInstallment.setDate(nextInstallment.getDate() + 7);
         }
       }
