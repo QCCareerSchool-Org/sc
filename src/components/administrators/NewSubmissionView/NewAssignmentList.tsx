@@ -39,7 +39,7 @@ export const NewAssignmentList: FC<Props> = memo(props => {
                     <td className="text-center">
                       {a.points === 0
                         ? 'n/a'
-                        : a.markOverride
+                        : a.markOverride !== null
                           ? <span className="override">{a.markOverride}</span>
                           : a.mark ?? '--'
                       }
