@@ -73,7 +73,7 @@ type GeneralNavItemsProps = {
   index?: number;
 };
 
-const GeneralNavItems: FC<GeneralNavItemsProps> = ({ studentId, index }) => (
+const GeneralNavItems: FC<GeneralNavItemsProps> = ({ index }) => (
   <>
     <li className="nav-item">
       <Link href="/students/courses"><a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a></Link>
@@ -97,11 +97,10 @@ type OldNavItemsProps = {
   studentId: number;
   index?: number;
   studentType?: StudentType;
-  profile?: boolean;
   assignmentsEnabled?: boolean;
 };
 
-const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, studentId, profile = false, assignmentsEnabled = true }) => (
+const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnabled = true }) => (
   <>
     <li className="nav-item">
       <a href="/students/index.php" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a>

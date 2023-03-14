@@ -38,6 +38,7 @@ export const useWarnIfUnsavedChanges = (notSaved?: boolean, message = 'Changes y
       };
 
       // back or forward button, manual url change, but not clicking a Next/Link
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const beforePopStateCallback = (s: NextHistoryState): boolean => {
         if (!confirm(message)) {
           // restore the url (TODO: this messes up the foward button)

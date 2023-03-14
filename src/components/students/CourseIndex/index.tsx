@@ -15,19 +15,23 @@ type Props = {
   studentId: number;
 };
 
-export const CourseIndex: FC<Props> = ({ administratorId, studentId }) => {
+export const CourseIndex: FC<Props> = ({ studentId }) => {
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, studentId);
 
+  // get an array of the unique school slugs
   const schoolSlugs = useMemo(() => {
     return state.data?.student.enrollments
       .map(e => e.course.school.slug)
       .filter((item, pos, self) => self.indexOf(item) === pos);
   }, [ state.data?.student.enrollments ]);
 
-  const courses = useMemo(() => state.data?.student.enrollments.map(e => e.course), [ state.data?.student.enrollments ]);
+  // get an array of all the courses the student is enrolled in
+  const courses = useMemo(() => {
+    return state.data?.student.enrollments.map(e => e.course);
+  }, [ state.data?.student.enrollments ]);
 
   if (!state.data || !courses) {
     return null;

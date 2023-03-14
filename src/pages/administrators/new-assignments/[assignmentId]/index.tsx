@@ -2,7 +2,6 @@ import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
 
 import { NewAssignmentView } from '@/components/administrators/NewAssignmentView';
-import { NewSubmissionView } from '@/components/administrators/NewSubmissionView';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 

@@ -183,10 +183,12 @@ export class AxiosHttpService implements IHttpService {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private handleResponse<T>(response: AxiosResponse<T>, index: number): T {
     return response.data;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private handleError<T>(err: unknown, caught: Observable<T>): Observable<never> {
     if (err instanceof AbstractAxiosError) {
       const message = typeof err.response?.data === 'string' ? err.response?.data : '';
