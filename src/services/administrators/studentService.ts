@@ -2,17 +2,17 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
-import type { AdministratorStudent, RawAdministratorStudent } from '@/domain/administrator/student';
+import type { RawStudent, Student } from '@/domain/administrator/student';
 import type { Country } from '@/domain/country';
 import type { Province } from '@/domain/province';
 import type { IHttpService } from '@/services/httpService';
 
-type RawStudentWithCountryAndProvince = RawAdministratorStudent & {
+type RawStudentWithCountryAndProvince = RawStudent & {
   country: Country;
   province: Province | null;
 };
 
-export type StudentWithCountryAndProvince = AdministratorStudent & {
+export type StudentWithCountryAndProvince = Student & {
   country: Country;
   province: Province | null;
 };

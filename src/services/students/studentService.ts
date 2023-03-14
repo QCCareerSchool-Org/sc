@@ -7,16 +7,16 @@ import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { Province } from '@/domain/province';
 import type { School } from '@/domain/school';
-import type { RawStudentStudent, StudentStudent } from '@/domain/student/student';
+import type { RawStudent, Student } from '@/domain/student/student';
 import type { IHttpService } from '@/services/httpService';
 
-export type StudentWithCountryProvinceAndEnrollments = StudentStudent & {
+export type StudentWithCountryProvinceAndEnrollments = Student & {
   country: Country;
   province: Province | null;
   enrollments: Array<Enrollment & { course: Course & { school: School } }>;
 };
 
-export type RawStudentWithCountryProvinceAndEnrollments = RawStudentStudent & {
+export type RawStudentWithCountryProvinceAndEnrollments = RawStudent & {
   country: Country;
   province: Province | null;
   enrollments: Array<RawEnrollment & { course: Course & { school: School } }>;
@@ -24,7 +24,7 @@ export type RawStudentWithCountryProvinceAndEnrollments = RawStudentStudent & {
 
 export interface IStudentService {
   getStudent: (studentId: number) => Observable<StudentWithCountryProvinceAndEnrollments>;
-  updateEmailAddress: (studentId: number, emailAddress: string) => Observable<StudentStudent>;
+  updateEmailAddress: (studentId: number, emailAddress: string) => Observable<Student>;
 }
 
 export class StudentService implements IStudentService {
@@ -38,10 +38,10 @@ export class StudentService implements IStudentService {
     );
   }
 
-  public updateEmailAddress(studentId: number, emailAddress: string): Observable<StudentStudent> {
+  public updateEmailAddress(studentId: number, emailAddress: string): Observable<Student> {
     const url = `${this.getUrl(studentId)}/emailAddress`;
     const body = { emailAddress };
-    return this.httpService.put<RawStudentStudent>(url, body).pipe(
+    return this.httpService.put<RawStudent>(url, body).pipe(
       map(this.mapStudent),
     );
   }
@@ -50,7 +50,7 @@ export class StudentService implements IStudentService {
     return `${endpoint}/students/${studentId}`;
   }
 
-  private readonly mapStudent = (student: RawStudentStudent): StudentStudent => {
+  private readonly mapStudent = (student: RawStudent): Student => {
     return {
       ...student,
       lastLogin: student.lastLogin === null ? null : new Date(student.lastLogin),

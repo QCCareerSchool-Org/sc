@@ -7,7 +7,7 @@ import type { NewPart, RawNewPart } from '@/domain/administrator/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/administrator/newSubmission';
 import type { NewTextBox, RawNewTextBox } from '@/domain/administrator/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/administrator/newUploadSlot';
-import type { AdministratorTutor } from '@/domain/administrator/tutor';
+import type { Tutor } from '@/domain/administrator/tutor';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewTransfer, RawNewTransfer } from '@/domain/newTransfer';
@@ -24,8 +24,8 @@ export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission &
     }>;
   }>;
   newTransfers: Array<NewTransfer & {
-    preTutor: AdministratorTutor;
-    postTutor: AdministratorTutor;
+    preTutor: Tutor;
+    postTutor: Tutor;
   }>;
 };
 
@@ -40,8 +40,8 @@ type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & 
     }>;
   }>;
   newTransfers: Array<RawNewTransfer & {
-    preTutor: AdministratorTutor;
-    postTutor: AdministratorTutor;
+    preTutor: Tutor;
+    postTutor: Tutor;
   }>;
 };
 

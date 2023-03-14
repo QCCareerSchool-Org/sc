@@ -5,8 +5,8 @@ import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { School } from '@/domain/school';
 import type { NewSubmission } from '@/domain/student/newSubmission';
-import type { StudentStudent } from '@/domain/student/student';
-import type { StudentTutor } from '@/domain/student/tutor';
+import type { Student } from '@/domain/student/student';
+import type { Tutor } from '@/domain/student/tutor';
 import type { Unit } from '@/domain/unit';
 import type { Video } from '@/domain/video';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
@@ -17,7 +17,7 @@ export type MaterialWithCompletionForm = Material & {
 };
 
 type EnrollmentState = Enrollment & {
-  student: StudentStudent;
+  student: Student;
   course: Course & {
     school: School;
     newSubmissionTemplates: NewSubmissionTemplate[];
@@ -26,7 +26,7 @@ type EnrollmentState = Enrollment & {
       videos: Video[];
     }>;
   };
-  tutor: StudentTutor | null;
+  tutor: Tutor | null;
   newSubmissions: NewSubmission[];
   materialCompletions: MaterialCompletion[];
 };

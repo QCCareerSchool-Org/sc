@@ -1,4 +1,4 @@
-export type StudentStudent = {
+export type Student = {
   studentId: number;
   countryId: number;
   provinceId: number | null;
@@ -26,7 +26,7 @@ export type StudentStudent = {
   hasCASocialInsuranceNumber: boolean;
 };
 
-export type RawStudentStudent = {
+export type RawStudent = {
   studentId: number;
   countryId: number;
   provinceId: number | null;

@@ -3,8 +3,8 @@ import { map } from 'rxjs';
 
 import { endpoint } from '../../basePath';
 import type { NewSubmission, RawNewSubmission } from '@/domain/administrator/newSubmission';
-import type { AdministratorStudent, RawAdministratorStudent } from '@/domain/administrator/student';
-import type { AdministratorTutor } from '@/domain/administrator/tutor';
+import type { RawStudent, Student } from '@/domain/administrator/student';
+import type { Tutor } from '@/domain/administrator/tutor';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewSubmissionReturn, RawNewSubmissionReturn } from '@/domain/newSubmissionReturn';
@@ -12,20 +12,20 @@ import type { IHttpService } from '@/services/httpService';
 
 export type NewSubmissionReturnWithSubmissionWithTutorAndEnrollment = NewSubmissionReturn & {
   newSubmission: NewSubmission & {
-    tutor: AdministratorTutor;
+    tutor: Tutor;
     enrollment: Enrollment & {
       course: Course;
-      student: AdministratorStudent;
+      student: Student;
     };
   };
 };
 
 type RawNewSubmissionReturnWithSubmissionWithTutorAndEnrollment = RawNewSubmissionReturn & {
   newSubmission: RawNewSubmission & {
-    tutor: AdministratorTutor;
+    tutor: Tutor;
     enrollment: RawEnrollment & {
       course: Course;
-      student: RawAdministratorStudent;
+      student: RawStudent;
     };
   };
 };
