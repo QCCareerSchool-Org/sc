@@ -7,8 +7,10 @@ import type { NewPart, RawNewPart } from '@/domain/administrator/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/administrator/newSubmission';
 import type { NewTextBox, RawNewTextBox } from '@/domain/administrator/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/administrator/newUploadSlot';
+import type { AdministratorTutor } from '@/domain/administrator/tutor';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
+import type { NewTransfer, RawNewTransfer } from '@/domain/newTransfer';
 import type { IHttpService } from '@/services/httpService';
 
 export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission & {
@@ -21,6 +23,10 @@ export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission &
       newUploadSlots: NewUploadSlot[];
     }>;
   }>;
+  newTransfers: Array<NewTransfer & {
+    preTutor: AdministratorTutor;
+    postTutor: AdministratorTutor;
+  }>;
 };
 
 type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & {
@@ -32,6 +38,10 @@ type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & 
       newTextBoxes: RawNewTextBox[];
       newUploadSlots: RawNewUploadSlot[];
     }>;
+  }>;
+  newTransfers: Array<RawNewTransfer & {
+    preTutor: AdministratorTutor;
+    postTutor: AdministratorTutor;
   }>;
 };
 
@@ -104,6 +114,10 @@ export class NewSubmissionService implements INewSubmissionService {
             modified: u.modified === null ? null : new Date(u.modified),
           })),
         })),
+      })),
+      newTransfers: newSubmission.newTransfers.map(t => ({
+        ...t,
+        created: new Date(t.created),
       })),
     };
   };

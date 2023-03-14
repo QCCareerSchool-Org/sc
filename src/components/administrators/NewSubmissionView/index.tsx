@@ -6,6 +6,7 @@ import { useCallback, useReducer } from 'react';
 import { formatDateTime } from '../../../formatDate';
 import { NewAssignmentList } from './NewAssignmentList';
 import { NewSubmissionStatus } from './NewSubmissionStatus';
+import { NewTransfersList } from './NewTransfersList';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Audio } from '@/components/Audio';
@@ -44,12 +45,15 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
     <>
       <Section>
         <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-10 col-lg-6">
-              <h1 className="mb-0">Edit {enrollment.course.code}{enrollment.studentNumber} Submission {submission.unitLetter}</h1>
+          <div className="row mb-4">
+            <div className="col-12 col-lg-7 mb-4 mb-lg-0">
+              <h1 className="mb-0">{enrollment.course.code}{enrollment.studentNumber} Submission {submission.unitLetter}</h1>
               <p className="lead">{enrollment.course.name} v{enrollment.course.version}</p>
               {submission.description && <p className="lead">{submission.description}</p>}
-              <table className="table table-bordered w-auto bg-white">
+              <NewSubmissionStatus submission={submission} />
+            </div>
+            <div className="col-12 col-lg-5">
+              <table className="table table-sm table-bordered bg-white submissionStats ms-lg-auto">
                 <tbody>
                   <tr><th scope="row">Created</th><td>{formatDateTime(submission.created)}</td></tr>
                   {submission.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(submission.modified)}</td></tr>}
@@ -69,17 +73,15 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
                       }
                     </>
                   )}
+                  {submission.responseFilename !== null && <tr><th scope="row">Audio File</th><td style={{ padding: '0.3rem' }}><Audio controls src={`${endpoint}/administrators/${administratorId}/newSubmissions/${submissionId}/feedback`} style={{ marginBottom: -6, maxHeight: 32, maxWidth: 240 }} /></td></tr>}
                 </tbody>
               </table>
-              {submission.responseFilename !== null && (
-                <>
-                  <h2 className="h5">Tutor Audio Feedback</h2>
-                  <Audio controls src={`${endpoint}/administrators/${administratorId}/newSubmissions/${submissionId}/feedback`} />
-                </>
+              {submission.newTransfers.length > 0 && (
+                <div className="mt-4">
+                  <h2 className="h6">Transfers</h2>
+                  <NewTransfersList transfers={submission.newTransfers} />
+                </div>
               )}
-              <div className="mt-4">
-                <NewSubmissionStatus submission={submission} />
-              </div>
             </div>
           </div>
         </div>
@@ -90,6 +92,9 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
           <NewAssignmentList assignments={submission.newAssignments} onClick={handleClick} />
         </div>
       </Section>
+      <style jsx>{`
+      .submissionStats th, .submissionStats td { padding: 0.5rem 1rem; }
+      `}</style>
     </>
   );
 };
