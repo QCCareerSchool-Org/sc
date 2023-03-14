@@ -68,7 +68,7 @@ export abstract class AbstractAxiosError extends Error implements AxiosError {
   public get config(): AxiosRequestConfig { return this.originalError.config; }
   public get code(): string | undefined { return this.originalError.code; }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  public get request(): any { return this.originalError.request; }
+  public get request(): unknown { return this.originalError.request; }
   public get response(): AxiosResponse | undefined { return this.originalError.response; }
   public get isAxiosError(): boolean { return this.originalError.isAxiosError; }
 

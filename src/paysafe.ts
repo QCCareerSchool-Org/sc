@@ -2,7 +2,7 @@ declare global {
   interface Window {
     paysafe?: {
       fields: {
-        setup: (apiKey: string, options: any, callback: (instance: PaysafeInstance, err: Error | null) => void) => void;
+        setup: (apiKey: string, options: unknown, callback: (instance: PaysafeInstance, err: Error | null) => void) => void;
       };
     };
   }

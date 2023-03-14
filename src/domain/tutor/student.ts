@@ -1,4 +1,4 @@
-export type TutorStudent = {
+export type Student = {
   studentId: number;
   countryId: number;
   provinceId: number | null;
@@ -10,7 +10,7 @@ export type TutorStudent = {
   modified: Date;
 };
 
-export type RawTutorStudent = {
+export type RawStudent = {
   studentId: number;
   countryId: number;
   provinceId: number | null;

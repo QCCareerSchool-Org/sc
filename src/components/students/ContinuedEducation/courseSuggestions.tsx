@@ -2,6 +2,7 @@ import type { SchoolSlug } from '@/domain/school';
 
 export type CourseSuggestion = {
   code: string;
+  prefix?: string;
   name: string;
   certification: string;
   shortDescription: string;
@@ -173,6 +174,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
       courses: [
         {
           code: 'I2',
+          prefix: 'A',
           name: 'Interior Decorating',
           certification: 'International Design and Decorating Professional',
           shortDescription: 'QC\'s Interior Decorating course allows you to channel your passion for home decor into a successful career in a thriving, multi-billion dollar industry.',
@@ -180,6 +182,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
         },
         {
           code: 'ST',
+          prefix: 'T',
           name: 'Home Staging',
           certification: 'International Staging and Redesign Professional',
           shortDescription: 'QC\'s Home Staging course prepares you for a highly sought after career designing homes that attract buyers and sell for the best price possible.',
@@ -215,6 +218,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
         },
         {
           code: 'FS',
+          prefix: 'J',
           name: 'Feng Shui',
           certification: 'Advanced Feng Shui Design Professional',
           shortDescription: 'Make use of QC\'s expert training to offer feng shui design services and bring harmony and positive energy to your clients\' home.',

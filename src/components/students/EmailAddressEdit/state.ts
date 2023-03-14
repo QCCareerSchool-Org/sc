@@ -1,5 +1,5 @@
 import type { CRMStudent } from '@/domain/student/crm/crmStudent';
-import type { StudentStudent } from '@/domain/student/student';
+import type { Student } from '@/domain/student/student';
 import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 import type { StudentWithCountryProvinceAndEnrollments } from '@/services/students/studentService';
 
@@ -23,7 +23,7 @@ export type Action =
   | { type: 'LOAD_DATA_FAILED'; payload?: number }
   | { type: 'EMAIL_ADDRESS_UPDATED'; payload: string }
   | { type: 'UPDATE_EMAIL_ADDRESS_STARTED' }
-  | { type: 'UPDATE_EMAIL_ADDRESS_SUCEEDED'; payload: { student: StudentStudent; crmStudent?: CRMStudent } }
+  | { type: 'UPDATE_EMAIL_ADDRESS_SUCEEDED'; payload: { student: Student; crmStudent?: CRMStudent } }
   | { type: 'UPDATE_EMAIL_ADDRESS_FAILED'; payload?: string };
 
 export const reducer = (state: State, action: Action): State => {

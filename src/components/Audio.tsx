@@ -1,4 +1,4 @@
-import type { FC, ReactEventHandler } from 'react';
+import type { CSSProperties, FC, ReactEventHandler } from 'react';
 import { memo, useRef } from 'react';
 
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
@@ -8,6 +8,7 @@ type Props = {
   src: string;
   preload?: 'auto' | 'metadata' | 'none';
   className?: string;
+  style?: CSSProperties;
   onPlay?: ReactEventHandler<HTMLAudioElement>;
   onTimeUpdate?: ReactEventHandler<HTMLAudioElement>;
   onEnded?: ReactEventHandler<HTMLAudioElement>;
@@ -30,6 +31,7 @@ export const Audio: FC<Props> = memo(props => {
       src={props.src}
       preload={props.preload}
       className={props.className}
+      style={props.style}
       onError={handleError}
       onPlay={props.onPlay}
       onTimeUpdate={props.onTimeUpdate}

@@ -9,14 +9,14 @@ import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { School } from '@/domain/school';
 import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmission';
-import type { RawStudentStudent, StudentStudent } from '@/domain/student/student';
-import type { StudentTutor } from '@/domain/student/tutor';
+import type { RawStudent, Student } from '@/domain/student/student';
+import type { Tutor } from '@/domain/student/tutor';
 import type { RawUnit, Unit } from '@/domain/unit';
 import type { Video } from '@/domain/video';
 import type { IHttpService } from '@/services/httpService';
 
 export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
-  student: StudentStudent;
+  student: Student;
   course: Course & {
     school: School;
     newSubmissionTemplates: NewSubmissionTemplate[];
@@ -25,13 +25,13 @@ export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
       videos: Video[];
     }>;
   };
-  tutor: StudentTutor | null;
+  tutor: Tutor | null;
   newSubmissions: NewSubmission[];
   materialCompletions: MaterialCompletion[];
 };
 
 type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
-  student: RawStudentStudent;
+  student: RawStudent;
   course: Course & {
     school: School;
     newSubmissionTemplates: RawNewSubmissionTemplate[];
@@ -40,7 +40,7 @@ type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
       videos: Video[];
     }>;
   };
-  tutor: StudentTutor;
+  tutor: Tutor;
   newSubmissions: RawNewSubmission[];
   materialCompletions: MaterialCompletion[];
 };

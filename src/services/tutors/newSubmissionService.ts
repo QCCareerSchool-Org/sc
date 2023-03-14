@@ -6,13 +6,13 @@ import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewAssignment, RawNewAssignment } from '@/domain/tutor/newAssignment';
 import type { NewSubmission, RawNewSubmission } from '@/domain/tutor/newSubmission';
-import type { RawTutorStudent, TutorStudent } from '@/domain/tutor/student';
+import type { RawStudent, Student } from '@/domain/tutor/student';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 
 export type NewSubmissionWithEnrollmentAndAssignments = NewSubmission & {
   enrollment: Enrollment & {
     course: Course;
-    student: TutorStudent;
+    student: Student;
   };
   newAssignments: NewAssignment[];
 };
@@ -20,7 +20,7 @@ export type NewSubmissionWithEnrollmentAndAssignments = NewSubmission & {
 type RawNewSubmissionWithEnrollmentAndAssignments = RawNewSubmission & {
   enrollment: RawEnrollment & {
     course: Course;
-    student: RawTutorStudent;
+    student: RawStudent;
   };
   newAssignments: RawNewAssignment[];
 };
