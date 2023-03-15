@@ -43,7 +43,7 @@ const VideoPage: NextPageWithLayout<Props> = ({ videoId }) => {
     return null;
   }
 
-  return <VideoComponent controls src={video.src} poster={video.posterSrc} captionSrc={video.captionSrc ?? undefined} style={{ width: '100%' }} />;
+  return <VideoComponent controls src={video.src} poster={video.posterSrc} captionSrc={video.captionSrc ?? undefined} style={{ display: 'block', width: '100%' }} />;
 };
 
 VideoPage.getLayout = page => <BlankLayout>{page}</BlankLayout>;
