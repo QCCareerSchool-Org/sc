@@ -26,6 +26,10 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
     void router.push(`/administrators/new-assignments/${assignmentId}`);
   }, [ router ]);
 
+  const handleTutorChangeButtonClick = (): void => {
+    //
+  };
+
   if (state.error) {
     return <ErrorPage statusCode={state.errorCode ?? 500} />;
   }
@@ -49,7 +53,7 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
               <NewSubmissionStatus submission={submission} />
             </div>
             <div className="col-12 col-lg-5">
-              <NewSubmissionStatsTable administratorId={administratorId} submission={submission} />
+              <NewSubmissionStatsTable administratorId={administratorId} submission={submission} onTutorChangeButtonClick={handleTutorChangeButtonClick} />
               {submission.newTransfers.length > 0 && (
                 <div className="mt-4">
                   <h2 className="h6">Transfers</h2>
@@ -66,9 +70,6 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
           <NewAssignmentList assignments={submission.newAssignments} onClick={handleClick} />
         </div>
       </Section>
-      <style jsx>{`
-      .submissionStats th, .submissionStats td { padding: 0.5rem 1rem; }
-      `}</style>
     </>
   );
 };

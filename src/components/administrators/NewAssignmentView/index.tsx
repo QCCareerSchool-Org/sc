@@ -43,7 +43,6 @@ export const NewAssignmentView: FC<Props> = ({ administratorId, assignmentId }) 
     return null;
   }
 
-  // const mark = state.newAssignment.markOverride ?? state.newAssignment.mark;
   const submission = state.newAssignment.newSubmission;
 
   return (
