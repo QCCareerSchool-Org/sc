@@ -17,6 +17,7 @@ export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission &
   enrollment: Enrollment & {
     course: Course;
   };
+  tutor: Tutor | null;
   newAssignments: Array<NewAssignment & {
     newParts: Array<NewPart & {
       newTextBoxes: NewTextBox[];
@@ -33,6 +34,7 @@ type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & 
   enrollment: RawEnrollment & {
     course: Course;
   };
+  tutor: Tutor | null;
   newAssignments: Array<RawNewAssignment & {
     newParts: Array<RawNewPart & {
       newTextBoxes: RawNewTextBox[];
