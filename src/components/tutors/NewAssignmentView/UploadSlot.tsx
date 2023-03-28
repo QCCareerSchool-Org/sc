@@ -13,6 +13,7 @@ type Props = {
 
 export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot }) => {
   const id = useId();
+  const useableId = id.replaceAll(':', '_');
 
   const src = `${endpoint}/tutors/${tutorId}/newUploadSlots/${newUploadSlot.uploadSlotId}/file`;
 
@@ -23,14 +24,14 @@ export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot }) => {
         {newUploadSlot.mimeTypeId?.startsWith('image/')
           ? (
             <>
-              <button className="btn btn-link p-0 uploadSlotThumbnail" data-bs-toggle="modal" data-bs-target={`#${newUploadSlot.uploadSlotId}_modal_${id}`}>
+              <button className="btn btn-link p-0 uploadSlotThumbnail" data-bs-toggle="modal" data-bs-target={`#${newUploadSlot.uploadSlotId}_modal${useableId}`}>
                 <Img className="w-100" src={src} alt={newUploadSlot.label} />
               </button>
-              <div className="modal" tabIndex={-1} id={`${newUploadSlot.uploadSlotId}_modal_${id}`} aria-labelledby={`${newUploadSlot.uploadSlotId}_modalTitle_${id}`} aria-hidden="true">
+              <div className="modal" tabIndex={-1} id={`${newUploadSlot.uploadSlotId}_modal${useableId}`} aria-labelledby={`${newUploadSlot.uploadSlotId}_modalTitle${useableId}`} aria-hidden="true">
                 <div className="modal-dialog modal-fullscreen">
                   <div className="modal-content">
                     <div className="modal-header">
-                      <h5 className="modal-title" id={`${newUploadSlot.uploadSlotId}_modalTitle_${id}`}>{newUploadSlot.label}</h5>
+                      <h5 className="modal-title" id={`${newUploadSlot.uploadSlotId}_modalTitle${useableId}`}>{newUploadSlot.label}</h5>
                       <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                     </div>
                     <div className="modal-body d-flex align-items-center justify-content-center">
