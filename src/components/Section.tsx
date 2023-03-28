@@ -20,7 +20,6 @@ export const Section: FC<Props> = ({ id, className, children }) => {
       const calculateDistance = (): void => {
         const distanceFromTop = ref.getBoundingClientRect().top + window.scrollY;
         setScrollOffset(distanceFromTop < minDistance);
-        console.log(`#${id}`, distanceFromTop, distanceFromTop < minDistance);
       };
       calculateDistance();
 
