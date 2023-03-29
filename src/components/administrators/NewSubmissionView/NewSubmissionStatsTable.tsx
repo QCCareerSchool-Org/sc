@@ -20,7 +20,7 @@ export const NewSubmissionStatsTable: FC<Props> = props => {
     <>
       <table className="table table-sm table-bordered bg-white ms-lg-auto w-auto submissionStats">
         <tbody>
-          {submission.tutor && <tr><th scope="row">Tutor</th><td>{submission.tutor.firstName} {submission.tutor.lastName}{!submission.closed && <button onClick={props.onTutorChangeButtonClick} className="ms-4 btn btn-primary btn-sm">Change</button>}</td></tr>}
+          {submission.tutor && <tr><th scope="row">Tutor</th><td>{submission.tutor.firstName} {submission.tutor.lastName}{!submission.closed && <button onClick={props.onTutorChangeButtonClick} className="ms-2 btn btn-link btn-sm p-0">Change</button>}</td></tr>}
           <tr><th scope="row">Created</th><td>{formatDateTime(submission.created)}</td></tr>
           {submission.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(submission.modified)}</td></tr>}
           {submission.submitted && <tr><th scope="row">{submission.skipped ? 'Skippped' : 'Submitted'}</th><td>{formatDateTime(submission.submitted)}</td></tr>}

@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { map, Subject, switchMap, takeUntil } from 'rxjs';
+import { forkJoin, map, Subject, switchMap, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
@@ -8,15 +8,18 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export const useInitialData = (dispatch: Dispatch<Action>, administratorId: number, submissionId: string): void => {
-  const { studentService, newSubmissionService } = useAdminServices();
+  const { newSubmissionService, studentService, tutorService } = useAdminServices();
   const navigateToLogin = useNavigateToLogin();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
     newSubmissionService.getSubmission(administratorId, submissionId).pipe(
-      switchMap(newSubmission => studentService.getStudent(administratorId, newSubmission.enrollment.studentId).pipe(
-        map(student => ({ newSubmission, student })),
+      switchMap(newSubmission => forkJoin([
+        studentService.getStudent(administratorId, newSubmission.enrollment.studentId),
+        tutorService.getTutorsBySchool(administratorId, newSubmission.enrollment.course.schoolId),
+      ]).pipe(
+        map(([ student, tutors ]) => ({ newSubmission, student, tutors })),
       )),
       takeUntil(destroy$),
     ).subscribe({
@@ -36,5 +39,5 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, administratorId, submissionId, studentService, newSubmissionService, navigateToLogin ]);
+  }, [ dispatch, administratorId, submissionId, newSubmissionService, studentService, tutorService, navigateToLogin ]);
 };

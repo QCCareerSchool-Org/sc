@@ -36,6 +36,8 @@ import type { ISchoolService } from '@/services/administrators/schoolService';
 import { SchoolService } from '@/services/administrators/schoolService';
 import type { IStudentService } from '@/services/administrators/studentService';
 import { StudentService } from '@/services/administrators/studentService';
+import type { ITutorService } from '@/services/administrators/tutorService';
+import { TutorService } from '@/services/administrators/tutorService';
 import { UnitService } from '@/services/administrators/unitService';
 import type { IUnitService } from '@/services/administrators/unitService';
 
@@ -58,6 +60,7 @@ export type AdminServices = Readonly<{
   readonly schoolService: Readonly<ISchoolService>;
   readonly materialService: Readonly<IMaterialService>;
   readonly unitService: Readonly<IUnitService>;
+  readonly tutorService: Readonly<ITutorService>;
 }>;
 
 export const AdminServicesContext = createContext<AdminServices | undefined>(undefined);
@@ -87,6 +90,7 @@ export const AdminServicesProvider: FC<Props> = ({ children }) => {
     schoolService: new SchoolService(httpService),
     materialService: new MaterialService(httpService),
     unitService: new UnitService(httpService),
+    tutorService: new TutorService(httpService),
   } as const);
 
   return (
