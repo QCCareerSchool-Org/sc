@@ -50,6 +50,7 @@ type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & 
 export interface INewSubmissionService {
   getSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmissionWithEnrollmentAndCourseAndAssignments>;
   restartSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmission>;
+  transferSubmission: (administratorId: number, submissionId: string, tutorId: number) => Observable<NewSubmission>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
@@ -66,6 +67,14 @@ export class NewSubmissionService implements INewSubmissionService {
   public restartSubmission(administratorId: number, submissionId: string): Observable<NewSubmission> {
     const url = `${this.getUrl(administratorId)}/${submissionId}/restarts`;
     return this.httpService.post<RawNewSubmission>(url).pipe(
+      map(this.mapNewSubmission),
+    );
+  }
+
+  public transferSubmission(administratorId: number, submissionId: string, tutorId: number): Observable<NewSubmission> {
+    const url = `${this.getUrl(administratorId)}/${submissionId}/transfers`;
+    const body = { tutorId };
+    return this.httpService.post<RawNewSubmission>(url, body).pipe(
       map(this.mapNewSubmission),
     );
   }

@@ -1,9 +1,13 @@
 import type { FC } from 'react';
+import type { Tutor } from '@/domain/administrator/tutor';
 import type { NewTransfer } from '@/domain/newTransfer';
 import { formatDateTime } from 'src/formatDate';
 
 type Props = {
-  transfers: NewTransfer[];
+  transfers: Array<NewTransfer & {
+    preTutor: Tutor;
+    postTutor: Tutor;
+  }>;
 };
 
 export const NewTransfersList: FC<Props> = ({ transfers }) => (
@@ -19,8 +23,8 @@ export const NewTransfersList: FC<Props> = ({ transfers }) => (
       {transfers.map(t => (
         <tr key={t.transferId}>
           <td>{formatDateTime(t.created)}</td>
-          <td>{t.preTutorId}</td>
-          <td>{t.postTutorId}</td>
+          <td>{t.preTutor.firstName} {t.preTutor.lastName}</td>
+          <td>{t.postTutor.firstName} {t.postTutor.lastName}</td>
         </tr>
       ))}
     </tbody>
