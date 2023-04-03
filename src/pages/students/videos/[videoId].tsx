@@ -24,9 +24,10 @@ const VideoPage: NextPageWithLayout<Props> = ({ videoId }) => {
 
     request$.current.pipe(
       switchMap(({ studentId: s, videoId: v }) => {
-        return videoService.getVideo(s, v);
+        return videoService.getVideo(s, v).pipe(
+          catchError(() => EMPTY),
+        );
       }),
-      catchError(() => EMPTY),
       takeUntil(destroy$),
     ).subscribe(setVideo);
 

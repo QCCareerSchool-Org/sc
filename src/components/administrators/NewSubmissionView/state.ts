@@ -1,6 +1,6 @@
 import type { NewSubmission } from '@/domain/administrator/newSubmission';
 import type { Tutor } from '@/domain/administrator/tutor';
-import type { NewSubmissionWithEnrollmentAndCourseAndAssignments } from '@/services/administrators/newSubmissionService';
+import type { NewSubmissionWithEnrollmentAndCourseAndAssignments, NewTransferWithSubmissionAndTutors } from '@/services/administrators/newSubmissionService';
 import type { StudentWithCountryAndProvince } from '@/services/administrators/studentService';
 
 type Data = {
@@ -32,7 +32,7 @@ export type Action =
   | { type: 'TUTOR_ID_CHANGED'; payload: number | null }
   | { type: 'POPUP_TOGGLED' }
   | { type: 'SUBMISSION_TRANSFER_STARTED' }
-  | { type: 'SUBMISSION_TRANSFER_SUCCEEDED'; payload: NewSubmission }
+  | { type: 'SUBMISSION_TRANSFER_SUCCEEDED'; payload: NewTransferWithSubmissionAndTutors }
   | { type: 'SUBMISSION_TRANSFER_FAILED'; payload?: string };
 
 export const reducer = (state: State, action: Action): State => {
@@ -74,13 +74,15 @@ export const reducer = (state: State, action: Action): State => {
           ...state.data,
           newSubmission: {
             ...state.data.newSubmission,
-            ...action.payload,
+            ...action.payload.newSubmission,
+            newTransfers: [ ...state.data.newSubmission.newTransfers, action.payload ],
           },
         },
         form: {
           ...state.form,
           processingState: 'idle',
         },
+        popup: false, // close the popup
       };
     case 'SUBMISSION_TRANSFER_FAILED':
       return { ...state, form: { ...state.form, processingState: 'save error', errorMessage: action.payload } };
