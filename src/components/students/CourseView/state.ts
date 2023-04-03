@@ -4,6 +4,7 @@ import type { Material } from '@/domain/material';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { School } from '@/domain/school';
+import type { CRMEnrollment } from '@/domain/student/crm/crmEnrollment';
 import type { NewSubmission } from '@/domain/student/newSubmission';
 import type { Student } from '@/domain/student/student';
 import type { Tutor } from '@/domain/student/tutor';
@@ -31,8 +32,18 @@ type EnrollmentState = Enrollment & {
   materialCompletions: MaterialCompletion[];
 };
 
+type Data = {
+  enrollment: EnrollmentState;
+  crmEnrollment?: CRMEnrollment;
+};
+
+type DataPayload = {
+  enrollment: EnrollmentWithStudentCourseAndUnits;
+  crmEnrollment?: CRMEnrollment;
+};
+
 export type State = {
-  enrollment?: EnrollmentState;
+  data?: Data;
   form: {
     processingState: 'idle' | 'initializing' | 'initialize error';
     errorMessage?: string;
@@ -42,8 +53,8 @@ export type State = {
 };
 
 export type Action =
-  | { type: 'LOAD_ENROLLMENT_SUCCEEDED'; payload: EnrollmentWithStudentCourseAndUnits }
-  | { type: 'LOAD_ENROLLMENT_FAILED'; payload?: number }
+  | { type: 'LOAD_DATA_SUCCEEDED'; payload: DataPayload }
+  | { type: 'LOAD_DATA_FAILED'; payload?: number }
   | { type: 'INITIALIZE_UNIT_STARTED' }
   | { type: 'INITIALIZE_UNIT_SUCCEEDED'; payload: NewSubmission }
   | { type: 'INITIALIZE_UNIT_FAILED'; payload?: string }
@@ -59,150 +70,168 @@ export const initialState: State = {
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'LOAD_ENROLLMENT_SUCCEEDED':
+    case 'LOAD_DATA_SUCCEEDED':
       return {
         ...state,
-        enrollment: {
+        data: {
           ...action.payload,
-          course: {
-            ...action.payload.course,
-            units: action.payload.course.units.map(u => ({
-              ...u,
-              materials: u.materials.map(m => ({ ...m, processingState: 'idle' })),
-            })),
+          enrollment: {
+            ...action.payload.enrollment,
+            course: {
+              ...action.payload.enrollment.course,
+              units: action.payload.enrollment.course.units.map(u => ({
+                ...u,
+                materials: u.materials.map(m => ({ ...m, processingState: 'idle' })),
+              })),
+            },
           },
         },
         error: false,
       };
-    case 'LOAD_ENROLLMENT_FAILED':
+    case 'LOAD_DATA_FAILED':
       return { ...state, error: true, errorCode: action.payload };
     case 'INITIALIZE_UNIT_STARTED':
       return { ...state, form: { ...state.form, processingState: 'initializing', errorMessage: undefined } };
     case 'INITIALIZE_UNIT_SUCCEEDED':
-      if (typeof state.enrollment === 'undefined') {
-        throw Error('enrollment is undefined');
+      if (typeof state.data === 'undefined') {
+        throw Error('data is undefined');
       }
       return {
         ...state,
-        enrollment: { ...state.enrollment, newSubmissions: [ ...state.enrollment.newSubmissions, action.payload ] },
+        data: {
+          ...state.data,
+          enrollment: { ...state.data.enrollment, newSubmissions: [ ...state.data.enrollment.newSubmissions, action.payload ] },
+        },
         form: { ...state.form, processingState: 'idle' },
       };
     case 'INITIALIZE_UNIT_FAILED':
       return { ...state, form: { ...state.form, processingState: 'initialize error', errorMessage: action.payload } };
     case 'MATERIAL_COMPLETION_STARTED': {
-      if (typeof state.enrollment === 'undefined') {
-        throw Error('enrollment is undefined');
+      if (typeof state.data === 'undefined') {
+        throw Error('data is undefined');
       }
       return {
         ...state,
-        enrollment: {
-          ...state.enrollment,
-          course: {
-            ...state.enrollment.course,
-            units: state.enrollment.course.units.map(u => {
-              const material = u.materials.find(m => m.materialId === action.payload);
-              if (material) { // this is the unit that contains the material in question
-                return {
-                  ...u,
-                  materials: u.materials.map(m => {
-                    if (m === material) { // this is the material in question
-                      return { ...m, processingState: 'processing' };
-                    }
-                    return m; // return the original material
-                  }),
-                };
-              }
-              return u; // return the original unit
-            }),
+        data: {
+          ...state.data,
+          enrollment: {
+            ...state.data.enrollment,
+            course: {
+              ...state.data.enrollment.course,
+              units: state.data.enrollment.course.units.map(u => {
+                const material = u.materials.find(m => m.materialId === action.payload);
+                if (material) { // this is the unit that contains the material in question
+                  return {
+                    ...u,
+                    materials: u.materials.map(m => {
+                      if (m === material) { // this is the material in question
+                        return { ...m, processingState: 'processing' };
+                      }
+                      return m; // return the original material
+                    }),
+                  };
+                }
+                return u; // return the original unit
+              }),
+            },
           },
         },
       };
     }
     case 'MATERIAL_COMPLETION_INSERTED': {
-      if (typeof state.enrollment === 'undefined') {
-        throw Error('enrollment is undefined');
+      if (typeof state.data === 'undefined') {
+        throw Error('data is undefined');
       }
       return {
         ...state,
-        enrollment: {
-          ...state.enrollment,
-          course: {
-            ...state.enrollment.course,
-            units: state.enrollment.course.units.map(u => {
-              const material = u.materials.find(m => m.materialId === action.payload.materialId);
-              if (material) { // this is the unit that contains the material in question
-                return {
-                  ...u,
-                  materials: u.materials.map(m => {
-                    if (m === material) { // this is the material in question
-                      return { ...m, processingState: 'idle' };
-                    }
-                    return m; // return the original material
-                  }),
-                };
-              }
-              return u; // return the original unit
-            }),
+        data: {
+          ...state.data,
+          enrollment: {
+            ...state.data.enrollment,
+            course: {
+              ...state.data.enrollment.course,
+              units: state.data.enrollment.course.units.map(u => {
+                const material = u.materials.find(m => m.materialId === action.payload.materialId);
+                if (material) { // this is the unit that contains the material in question
+                  return {
+                    ...u,
+                    materials: u.materials.map(m => {
+                      if (m === material) { // this is the material in question
+                        return { ...m, processingState: 'idle' };
+                      }
+                      return m; // return the original material
+                    }),
+                  };
+                }
+                return u; // return the original unit
+              }),
+            },
+            materialCompletions: [ ...state.data.enrollment.materialCompletions, action.payload ],
           },
-          materialCompletions: [ ...state.enrollment.materialCompletions, action.payload ],
         },
       };
     }
     case 'MATERIAL_COMPLETION_DELETED': {
-      if (typeof state.enrollment === 'undefined') {
-        throw Error('enrollment is undefined');
+      if (typeof state.data === 'undefined') {
+        throw Error('data is undefined');
       }
       return {
         ...state,
-        enrollment: {
-          ...state.enrollment,
-          course: {
-            ...state.enrollment.course,
-            units: state.enrollment.course.units.map(u => {
-              const material = u.materials.find(m => m.materialId === action.payload);
-              if (material) { // this is the unit that contains the material in question
-                return {
-                  ...u,
-                  materials: u.materials.map(m => {
-                    if (m === material) { // this is the material in question
-                      return { ...m, processingState: 'idle' };
-                    }
-                    return m; // return the original material
-                  }),
-                };
-              }
-              return u; // return the original unit
-            }),
+        data: {
+          ...state.data,
+          enrollment: {
+            ...state.data.enrollment,
+            course: {
+              ...state.data.enrollment.course,
+              units: state.data.enrollment.course.units.map(u => {
+                const material = u.materials.find(m => m.materialId === action.payload);
+                if (material) { // this is the unit that contains the material in question
+                  return {
+                    ...u,
+                    materials: u.materials.map(m => {
+                      if (m === material) { // this is the material in question
+                        return { ...m, processingState: 'idle' };
+                      }
+                      return m; // return the original material
+                    }),
+                  };
+                }
+                return u; // return the original unit
+              }),
+            },
+            materialCompletions: state.data.enrollment.materialCompletions.filter(m => m.materialId !== action.payload),
           },
-          materialCompletions: state.enrollment.materialCompletions.filter(m => m.materialId !== action.payload),
         },
       };
     }
     case 'MATERIAL_COMPLETION_FAILED': {
-      if (typeof state.enrollment === 'undefined') {
-        throw Error('enrollment is undefined');
+      if (typeof state.data === 'undefined') {
+        throw Error('data is undefined');
       }
       return {
         ...state,
-        enrollment: {
-          ...state.enrollment,
-          course: {
-            ...state.enrollment.course,
-            units: state.enrollment.course.units.map(u => {
-              const material = u.materials.find(m => m.materialId === action.payload.materialId);
-              if (material) { // this is the unit that contains the material in question
-                return {
-                  ...u,
-                  materials: u.materials.map(m => {
-                    if (m === material) { // this is the material in question
-                      return { ...m, processingState: 'idle', errorMessage: action.payload.errorMessage };
-                    }
-                    return m; // return the original material
-                  }),
-                };
-              }
-              return u; // return the original unit
-            }),
+        data: {
+          ...state.data,
+          enrollment: {
+            ...state.data.enrollment,
+            course: {
+              ...state.data.enrollment.course,
+              units: state.data.enrollment.course.units.map(u => {
+                const material = u.materials.find(m => m.materialId === action.payload.materialId);
+                if (material) { // this is the unit that contains the material in question
+                  return {
+                    ...u,
+                    materials: u.materials.map(m => {
+                      if (m === material) { // this is the material in question
+                        return { ...m, processingState: 'idle', errorMessage: action.payload.errorMessage };
+                      }
+                      return m; // return the original material
+                    }),
+                  };
+                }
+                return u; // return the original unit
+              }),
+            },
           },
         },
       };
