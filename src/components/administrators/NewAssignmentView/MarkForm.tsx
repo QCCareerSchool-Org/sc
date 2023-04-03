@@ -79,8 +79,8 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, markOverrid
           {points > 0 && (
             <>
               <small>Tutor's Mark</small>
-              <div className="fw-bold text-nowrap">
-                <div className="form-control mark" style={{ height: 38 }}>{mark}</div> / {points}
+              <div className="fw-bold text-nowrap d-flex align-items-center">
+                <div className="form-control mark" style={{ height: 38 }}>{mark}</div> <span>&nbsp;/ {points}</span>
               </div>
               <small>Mark Override</small>
               <div className="fw-bold text-nowrap">
