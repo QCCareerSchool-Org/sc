@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { catchError, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
@@ -18,6 +18,7 @@ export const useInitialData = (dispatch: Dispatch<Action>, studentId: number): v
       switchMap(student => {
         if (student.apiUsername) {
           return crmStudentService.getCRMStudent(student.apiUsername).pipe(
+            catchError(() => of(undefined)),
             map(crmStudent => ({ student, crmStudent })),
           );
         }
