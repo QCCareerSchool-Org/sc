@@ -84,7 +84,7 @@ export class NewSubmissionService implements INewSubmissionService {
   }
 
   public transferSubmission(administratorId: number, submissionId: string, tutorId: number): Observable<NewTransferWithSubmissionAndTutors> {
-    const url = `${this.getUrl(administratorId)}/${submissionId}/transfers`;
+    const url = `${this.getUrl(administratorId)}/${submissionId}/newTransfers`;
     const body = { tutorId };
     return this.httpService.post<RawNewTransferWithSubmissionAndTutors>(url, body).pipe(
       map(this.mapNewTransferWithSubmissionAndTutors),
