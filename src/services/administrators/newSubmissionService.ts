@@ -47,10 +47,22 @@ type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & 
   }>;
 };
 
+export type NewTransferWithSubmissionAndTutors = NewTransfer & {
+  newSubmission: NewSubmission;
+  preTutor: Tutor;
+  postTutor: Tutor;
+};
+
+type RawNewTransferWithSubmissionAndTutors = RawNewTransfer & {
+  newSubmission: RawNewSubmission;
+  preTutor: Tutor;
+  postTutor: Tutor;
+};
+
 export interface INewSubmissionService {
   getSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmissionWithEnrollmentAndCourseAndAssignments>;
   restartSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmission>;
-  transferSubmission: (administratorId: number, submissionId: string, tutorId: number) => Observable<NewSubmission>;
+  transferSubmission: (administratorId: number, submissionId: string, tutorId: number) => Observable<NewTransferWithSubmissionAndTutors>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
@@ -71,11 +83,11 @@ export class NewSubmissionService implements INewSubmissionService {
     );
   }
 
-  public transferSubmission(administratorId: number, submissionId: string, tutorId: number): Observable<NewSubmission> {
+  public transferSubmission(administratorId: number, submissionId: string, tutorId: number): Observable<NewTransferWithSubmissionAndTutors> {
     const url = `${this.getUrl(administratorId)}/${submissionId}/transfers`;
     const body = { tutorId };
-    return this.httpService.post<RawNewSubmission>(url, body).pipe(
-      map(this.mapNewSubmission),
+    return this.httpService.post<RawNewTransferWithSubmissionAndTutors>(url, body).pipe(
+      map(this.mapNewTransferWithSubmissionAndTutors),
     );
   }
 
@@ -130,6 +142,21 @@ export class NewSubmissionService implements INewSubmissionService {
         ...t,
         created: new Date(t.created),
       })),
+    };
+  };
+
+  private readonly mapNewTransferWithSubmissionAndTutors = (newTransfer: RawNewTransferWithSubmissionAndTutors): NewTransferWithSubmissionAndTutors => {
+    return {
+      ...newTransfer,
+      created: new Date(newTransfer.created),
+      newSubmission: {
+        ...newTransfer.newSubmission,
+        submitted: newTransfer.newSubmission.submitted === null ? null : new Date(newTransfer.newSubmission.submitted),
+        transferred: newTransfer.newSubmission.transferred === null ? null : new Date(newTransfer.newSubmission.transferred),
+        closed: newTransfer.newSubmission.closed === null ? null : new Date(newTransfer.newSubmission.closed),
+        created: new Date(newTransfer.newSubmission.created),
+        modified: newTransfer.newSubmission.modified === null ? null : new Date(newTransfer.newSubmission.modified),
+      },
     };
   };
 }

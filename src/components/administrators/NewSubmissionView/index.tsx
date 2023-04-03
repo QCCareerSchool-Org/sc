@@ -1,4 +1,5 @@
 import ErrorPage from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, MouseEvent } from 'react';
 import { useCallback, useId, useReducer } from 'react';
@@ -13,6 +14,7 @@ import { useSubmissionTransfer } from './useSubmissionTransfer';
 import { Modal } from '@/components/Modal';
 import { ModalDialog } from '@/components/ModalDialog';
 import { Section } from '@/components/Section';
+import { Spinner } from '@/components/Spinner';
 
 type Props = {
   administratorId: number;
@@ -51,14 +53,16 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
     return null;
   }
 
-  const handleTransferFormSubmit = (): void => {
-    if (state.form.data.tutorId !== null) {
-      submissionTransfer$.next({ tutorId: state.form.data.tutorId });
-    }
+  const handleTransferFormSubmit: React.FormEventHandler<HTMLFormElement> = e => {
+    console.log('click');
+    e.preventDefault();
+    submissionTransfer$.next({ tutorId: state.form.data.tutorId, processingState: state.form.processingState });
   };
 
   const submission = state.data.newSubmission;
   const enrollment = submission.enrollment;
+
+  const enrollmentUrl = '/administrators/students/edit.php?id=' + encodeURIComponent(enrollment.enrollmentId);
 
   return (
     <>
@@ -86,8 +90,8 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
       <Modal show={state.popup} onClose={handlePopupClose}>
         <ModalDialog title="Transfer Submission" onClose={handlePopupClose}>
           <div className="alert alert-info">
-            <p>This will allow you to change the assigned tutor for <strong>this unit only</strong>. Any work already done on this unit by the current tutor will be attributed to the new tutor.</p>
-            <p className="mb-0">To change the tutor for all future units, go to this student's information form.</p>
+            <p>This will allow you to change the assigned tutor for <strong>this submission only</strong>. Any work already done on this submission by the current tutor will be attributed to the new tutor.</p>
+            <p className="mb-0">To change the tutor for all future submissions, go to <a className="alert-link" href={enrollmentUrl}>this enrollment's information page</a>.</p>
           </div>
           {state.data.newSubmission.tutor && <p>The current tutor for this unit is <strong>{state.data.newSubmission.tutor.firstName} {state.data.newSubmission.tutor.lastName}</strong>.</p>}
           <form onSubmit={handleTransferFormSubmit}>
@@ -98,7 +102,12 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
                 {state.data.tutors.map(t => <option key={t.tutorId} value={t.tutorId}>{t.firstName} {t.lastName}</option>)}
               </select>
             </div>
-            <button type="submit" className="btn btn-primary">Transfer</button>
+            <div className="d-flex align-items-center">
+              <button type="submit" className="btn btn-primary" style={{ width: 90 }}>
+                {state.form.processingState === 'saving' ? <Spinner size="sm" /> : 'Transfer'}
+              </button>
+              {state.form.processingState === 'save error' && <span className="text-danger ms-2">{state.form.errorMessage?.length ? state.form.errorMessage : 'Save Error'}</span>}
+            </div>
           </form>
         </ModalDialog>
       </Modal>
