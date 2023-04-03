@@ -202,7 +202,14 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
           </div>
         </Section>
       )}
-      {certificationData && <CertificationLogoSection certificationData={certificationData} graduated={state.enrollment.graduated} />}
+      {certificationData && (
+        <CertificationLogoSection
+          certificationData={certificationData}
+          graduated={state.enrollment.graduated}
+          graduatedDate={null}
+          amountPaidRate={state.enrollment.amountPaid === 0 ? 1 : state.enrollment.courseCost / state.enrollment.amountPaid}
+        />
+      )}
     </>
   );
 };
