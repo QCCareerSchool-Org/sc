@@ -22,19 +22,13 @@ export const NewAssignmentMediumView: FC<Props> = memo(({ className, administrat
 
   if (newAssignmentMedium.type === 'video') {
     return (
-      <>
-        <Video src={src} controls className={className} preload="auto" />
-        <a href={src}>Download</a>
-      </>
+      <Video src={src} controls className={className} preload="auto" />
     );
   }
 
   if (newAssignmentMedium.type === 'audio') {
     return (
-      <>
-        <Audio src={src} controls preload="auto" />
-        <a href={src}>Download</a>
-      </>
+      <Audio src={src} controls preload="auto" />
     );
   }
 

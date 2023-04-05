@@ -96,10 +96,20 @@ export const NewAssignmentMediumEdit: FC<Props> = ({ administratorId, mediumId }
             <img src={src} className="mediaContent" alt={state.newAssignmentMedium.caption} />
           )}
           {state.newAssignmentMedium.type === 'video' && (
-            <Video src={src} className="mediaContent" controls preload="auto" />
+            <>
+              <div>
+                <Video src={src} className="mediaContent" controls preload="auto" />
+              </div>
+              <a href={src}>Download</a>
+            </>
           )}
           {state.newAssignmentMedium.type === 'audio' && (
-            <Audio src={src} controls preload="auto" />
+            <>
+              <div>
+                <Audio src={src} controls preload="auto" />
+              </div>
+              <a href={src}>Download</a>
+            </>
           )}
           {state.newAssignmentMedium.type === 'download' && (
             <a onClick={handleDownloadClick} href={src} download><FileIcon mimeType={state.newAssignmentMedium.mimeTypeId} size={96} /></a>
