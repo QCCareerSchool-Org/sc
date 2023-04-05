@@ -22,13 +22,19 @@ export const NewPartMediumView: FC<Props> = memo(({ className, administratorId, 
 
   if (newPartMedium.type === 'video') {
     return (
-      <Video src={src} controls className={className} preload="auto" />
+      <>
+        <Video src={src} controls className={className} preload="auto" />
+        <a href={src}>Download</a>
+      </>
     );
   }
 
   if (newPartMedium.type === 'audio') {
     return (
-      <Audio src={src} controls preload="auto" />
+      <>
+        <Audio src={src} controls preload="auto" />
+        <a href={src}>Download</a>
+      </>
     );
   }
 
