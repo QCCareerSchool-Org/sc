@@ -1,5 +1,6 @@
 import type { ReactEventHandler } from 'react';
-import { forwardRef, memo, useRef } from 'react';
+import { forwardRef, memo, useEffect, useRef, useState } from 'react';
+import { UAParser } from 'ua-parser-js';
 
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
 import { mergeRefs } from 'src/mergeRefs';
@@ -22,17 +23,27 @@ export const Video = memo(forwardRef<HTMLVideoElement, Props>((props, ref) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const retry$ = useRefreshAndRetryMedia(videoRef);
 
+  const [ userAgent, setUserAgent ] = useState<UAParser.IResult | undefined>(undefined);
+
+  useEffect(() => {
+    setUserAgent(UAParser());
+  }, []);
+
   const handleError: ReactEventHandler<HTMLAudioElement> = () => {
     if (videoRef.current?.error?.code === 2) { // MEDIA_ERR_NETWORK
       retry$.next();
     }
   };
 
+  const src = userAgent?.os.name === 'iOS' && !props.src.includes('#')
+    ? `${props.src}#t=0.01`
+    : props.src;
+
   return (
     <video
       ref={mergeRefs(ref, videoRef)}
       controls={props.controls}
-      src={props.src}
+      src={src}
       poster={props.poster}
       preload={props.preload}
       playsInline={props.playsInline}
