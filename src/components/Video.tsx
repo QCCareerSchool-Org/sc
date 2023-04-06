@@ -10,6 +10,7 @@ type Props = {
   poster?: string;
   captionSrc?: string;
   preload?: 'auto' | 'metadata' | 'none';
+  playsInline?: boolean;
   className?: string;
   style?: React.CSSProperties;
   onPlay?: ReactEventHandler<HTMLVideoElement>;
@@ -34,6 +35,7 @@ export const Video = memo(forwardRef<HTMLVideoElement, Props>((props, ref) => {
       src={props.src}
       poster={props.poster}
       preload={props.preload}
+      playsInline={props.playsInline}
       className={props.className}
       onError={handleError}
       onPlay={props.onPlay}

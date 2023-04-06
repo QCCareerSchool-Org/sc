@@ -98,7 +98,7 @@ export const NewPartMediumEdit: FC<Props> = ({ administratorId, mediumId }) => {
           {state.newPartMedium.type === 'video' && (
             <>
               <div>
-                <Video src={src} className="mediaContent" controls preload="auto" />
+                <Video src={src} className="mediaContent" controls preload="auto" playsInline />
               </div>
               <a href={src}>Download</a>
             </>
