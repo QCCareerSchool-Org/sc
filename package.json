@@ -13,6 +13,7 @@
     "@types/big.js": "^6.1.5",
     "@types/file-saver": "^2.0.5",
     "@types/react-dom": "^18.0.6",
+    "@types/ua-parser-js": "^0.7.36",
     "axios": "^0.27.2",
     "axios-observable": "^1.5.0",
     "big.js": "^6.2.1",
@@ -25,7 +26,8 @@
     "rxjs": "^7.5.5",
     "sanitize-html": "^2.7.0",
     "trackjs": "^3.10.1",
-    "trackjs-node": "^1.0.1"
+    "trackjs-node": "^1.0.1",
+    "ua-parser-js": "^1.0.35"
   },
   "devDependencies": {
     "@ngneat/falso": "^2.27.0",
