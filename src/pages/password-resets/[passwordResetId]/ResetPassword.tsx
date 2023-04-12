@@ -16,7 +16,7 @@ type Props = {
   code: string;
 };
 
-export const UsePasswordResetRequest: FC<Props> = memo(({ passwordResetId, code }) => {
+export const ResetPassword: FC<Props> = memo(({ passwordResetId, code }) => {
   const id = useId();
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -118,4 +118,4 @@ export const UsePasswordResetRequest: FC<Props> = memo(({ passwordResetId, code 
   );
 });
 
-UsePasswordResetRequest.displayName = 'UsePasswordResetRequest';
+ResetPassword.displayName = 'ResetPassword';

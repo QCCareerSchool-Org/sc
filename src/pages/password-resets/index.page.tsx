@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 
+import { CreatePasswordResetRequest } from './CreatePasswordResetRequest';
 import { Meta } from '@/components/Meta';
-import { CreatePasswordResetRequest } from '@/components/passwordResets/CreatePasswordResetRequest';
 
 const CreatePasswordResetPage: NextPage = () => (
   <>

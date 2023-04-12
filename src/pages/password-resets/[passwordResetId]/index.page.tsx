@@ -1,15 +1,15 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
 
+import { ResetPassword } from './ResetPassword';
 import { Meta } from '@/components/Meta';
-import { UsePasswordResetRequest } from '@/components/passwordResets/UsePasswordResetRequest';
 
 type Props = {
   passwordResetId: number | null;
   code: string | null;
 };
 
-const UsePasswordResetPage: NextPage<Props> = ({ passwordResetId, code }) => {
+const ResetPasswordPage: NextPage<Props> = ({ passwordResetId, code }) => {
 
   if (passwordResetId === null || code === null) {
     return <ErrorPage statusCode={400} />;
@@ -18,7 +18,7 @@ const UsePasswordResetPage: NextPage<Props> = ({ passwordResetId, code }) => {
   return (
     <>
       <Meta title="Set a New Password" />
-      <UsePasswordResetRequest passwordResetId={passwordResetId} code={code} />
+      <ResetPassword passwordResetId={passwordResetId} code={code} />
     </>
   );
 };
@@ -32,4 +32,4 @@ export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   return { props: { passwordResetId, code } };
 };
 
-export default UsePasswordResetPage;
+export default ResetPasswordPage;
