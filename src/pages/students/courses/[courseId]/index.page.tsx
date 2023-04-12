@@ -1,9 +1,9 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
-
 import { useEffect } from 'react';
+
+import { CourseView } from './CourseView';
 import { Meta } from '@/components/Meta';
-import { CourseView } from '@/components/students/CourseView';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 

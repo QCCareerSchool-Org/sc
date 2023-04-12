@@ -2,14 +2,14 @@ import type { FC, MouseEventHandler } from 'react';
 import { memo } from 'react';
 import { catchError, EMPTY } from 'rxjs';
 
+import type { TextBoxFunction, UploadSlotFunction } from './NewAssignmentView';
 import { NewPartMediumView } from './NewPartMediumView';
 import { NewTextBoxForm } from './NewTextBoxForm';
 import { NewUploadSlotForm } from './NewUploadSlotForm';
-import type { TextBoxFunction, UploadSlotFunction } from '.';
+import type { PartState } from './state';
 import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
-import type { PartState } from '@/components/students/NewAssignmentView/state';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { endpoint } from 'src/basePath';
 

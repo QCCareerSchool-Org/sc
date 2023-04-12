@@ -2,10 +2,10 @@ import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { memo, useEffect, useRef } from 'react';
 import { exhaustMap, filter, Subject, takeUntil } from 'rxjs';
 
-import type { UploadSlotFunction } from '.';
+import type { UploadSlotFunction } from './NewAssignmentView';
+import type { UploadSlotState } from './state';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Spinner } from '@/components/Spinner';
-import type { UploadSlotState } from '@/components/students/NewAssignmentView/state';
 
 type Props = {
   uploadSlot: UploadSlotState;

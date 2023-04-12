@@ -2,9 +2,9 @@ import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { memo, useEffect, useRef } from 'react';
 import { debounceTime, exhaustMap, Subject, takeUntil } from 'rxjs';
 
-import type { TextBoxFunction } from '.';
+import type { TextBoxFunction } from './NewAssignmentView';
+import type { TextBoxState } from './state';
 import { Spinner } from '@/components/Spinner';
-import type { TextBoxState } from '@/components/students/NewAssignmentView/state';
 
 type Props = {
   textBox: TextBoxState;
