@@ -2,13 +2,13 @@ import Link from 'next/link';
 import type { FC } from 'react';
 import { useMemo, useReducer } from 'react';
 
-import { ContinuingEducationGroup } from '../ContinuedEducation/ContinuingEducationGroup';
 import { CourseGrid } from './CourseGrid';
 import { courseSuggestionGroups } from './courseSuggestions';
 import { CourseWarnings } from './CourseWarnings';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
+import { ContinuingEducationGroup } from '@/components/students/continuedEducation/ContinuingEducationGroup';
 
 type Props = {
   administratorId?: number;

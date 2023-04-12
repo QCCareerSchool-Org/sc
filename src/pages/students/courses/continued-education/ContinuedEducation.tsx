@@ -1,11 +1,11 @@
 import type { FC } from 'react';
 import { useMemo, useReducer } from 'react';
 
-import { ContinuingEducationGroup } from './ContinuingEducationGroup';
 import { courseSuggestionGroups } from './courseSuggestions';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
+import { ContinuingEducationGroup } from '@/components/students/continuedEducation/ContinuingEducationGroup';
 import type { SchoolSlug } from '@/domain/school';
 
 type Props = {

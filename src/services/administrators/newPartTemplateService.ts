@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
@@ -9,6 +8,7 @@ import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTempla
 import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewPartTemplateAddPayload = {
   assignmentId: string;

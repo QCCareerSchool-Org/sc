@@ -1,8 +1,8 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import { useEffect, useRef } from 'react';
 
-import { endpoint } from '../../../../basePath';
 import { useAuthState } from '@/hooks/useAuthState';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   materialId: string | null;

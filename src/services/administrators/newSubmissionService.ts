@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { NewAssignment, RawNewAssignment } from '@/domain/administrator/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/administrator/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/administrator/newSubmission';
@@ -12,6 +11,7 @@ import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewTransfer, RawNewTransfer } from '@/domain/newTransfer';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission & {
   enrollment: Enrollment & {

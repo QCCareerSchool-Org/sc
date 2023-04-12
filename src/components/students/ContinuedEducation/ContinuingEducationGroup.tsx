@@ -4,9 +4,9 @@ import { useMemo, useReducer } from 'react';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 
 import { ContinuingEducationCourse } from './ContinuingEducationCourse';
-import type { CourseSuggestionGroup } from './courseSuggestions';
 import { GroupBannerImage } from './GroupBannerImage';
 import type { Course } from '@/domain/course';
+import type { CourseSuggestionGroup } from '@/domain/courseSuggestion';
 import type { Currency, PriceResult } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';
 import { useScreenWidth } from '@/hooks/useScreenWidth';

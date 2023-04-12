@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 
 import type { ShippingDetails } from './ContinuingEducationGroup';
 import { CourseModal } from './CourseModal';
-import type { CourseSuggestion } from './courseSuggestions';
 import { CourseThumbnailImage } from './CourseThumbnailImage';
 import { Modal } from '@/components/Modal';
+import type { CourseSuggestion } from '@/domain/courseSuggestion';
 import type { PriceResult } from '@/domain/price';
 import { isPrice } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';

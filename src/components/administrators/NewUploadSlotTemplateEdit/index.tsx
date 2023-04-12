@@ -2,7 +2,6 @@ import NextError from 'next/error';
 import type { ChangeEventHandler, FC } from 'react';
 import { useCallback, useReducer } from 'react';
 
-import { formatDateTime } from '../../../formatDate';
 import { NewUploadSlotTemplateEditForm } from './NewUploadSlotTemplateEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
@@ -12,6 +11,7 @@ import { useUploadSlotSave } from './useUploadSlotSave';
 import { Section } from '@/components/Section';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
+import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;

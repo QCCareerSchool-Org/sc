@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, MouseEvent } from 'react';
 import { useCallback, useReducer } from 'react';
 
-import { formatDateTime } from '../../../formatDate';
 import { NewAssignmentMediumAddForm } from './NewAssignmentMediumAddForm';
 import { NewAssignmentMediumList } from './NewAssignmentMediumList';
 import { NewAssignmentTemplateEditForm } from './NewAssignmentTemplateEditForm';
@@ -21,6 +20,7 @@ import { Section } from '@/components/Section';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import { useServices } from '@/hooks/useServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
+import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;

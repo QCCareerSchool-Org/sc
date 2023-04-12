@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { Material, RawMaterial } from '@/domain/material';
@@ -14,6 +13,7 @@ import type { Tutor } from '@/domain/student/tutor';
 import type { RawUnit, Unit } from '@/domain/unit';
 import type { Video } from '@/domain/video';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
   student: Student;

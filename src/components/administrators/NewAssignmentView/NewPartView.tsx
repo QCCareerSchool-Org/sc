@@ -2,7 +2,6 @@ import { memo, useCallback } from 'react';
 import type { FC, MouseEventHandler } from 'react';
 import { catchError, EMPTY } from 'rxjs';
 
-import { endpoint } from '../../../basePath';
 import { MarkForm } from './MarkForm';
 import { NewTextBoxView } from './NewTextBoxView';
 import { NewUploadSlotView } from './NewUploadSlotView';
@@ -13,6 +12,7 @@ import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   administratorId: number;

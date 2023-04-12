@@ -11,8 +11,8 @@ import type { InputType } from './useInputSave';
 import { Description } from '@/components/Description';
 import { Section } from '@/components/Section';
 import { InaccessibleUnit } from '@/components/tutors/InaccessibleUnit';
-import { endpoint } from '@/src/basePath';
-import { scrollToId } from '@/src/scrollToId';
+import { endpoint } from 'src/basePath';
+import { scrollToId } from 'src/scrollToId';
 
 type Props = {
   tutorId: number;

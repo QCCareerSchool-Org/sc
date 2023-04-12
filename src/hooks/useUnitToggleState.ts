@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import { UnitToggleStateContext } from '../providers/UnitToggleStateProvider';
-import type { UnitToggleState } from '../state/unitToggles';
+import { UnitToggleStateContext } from '@/providers/UnitToggleStateProvider';
+import type { UnitToggleState } from '@/state/unitToggles';
 
 export const useUnitToggleState = (): UnitToggleState => {
   const state = useContext(UnitToggleStateContext);

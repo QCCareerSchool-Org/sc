@@ -1,7 +1,8 @@
 import type { Dispatch, FC, ReactNode } from 'react';
 import { createContext, useEffect, useReducer } from 'react';
-import type { AuthAction, AuthState } from '../state/auth';
-import { authInitializer, authInitialState, authReducer } from '../state/auth';
+
+import type { AuthAction, AuthState } from '@/state/auth';
+import { authInitializer, authInitialState, authReducer } from '@/state/auth';
 
 export const AuthStateContext = createContext<AuthState | undefined>(undefined);
 export const AuthDispatchContext = createContext<Dispatch<AuthAction> | undefined>(undefined);

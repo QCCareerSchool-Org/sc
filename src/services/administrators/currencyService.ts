@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Currency } from '@/domain/currency';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export interface ICurrencyService {
   getAllCurrencies: (administratorId: number) => Observable<Currency[]>;

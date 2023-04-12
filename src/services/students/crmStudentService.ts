@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { crmEndpoint } from '../../basePath';
 import type { CRMCountry } from '@/domain/crm/crmCountry';
 import type { CRMProvince } from '@/domain/crm/crmProvince';
 import type { CRMCourse, RawCRMCourse } from '@/domain/student/crm/crmCourse';
@@ -10,6 +9,7 @@ import type { CRMEnrollment, RawCRMEnrollment } from '@/domain/student/crm/crmEn
 import type { CRMStudent, RawCRMStudent } from '@/domain/student/crm/crmStudent';
 import type { CRMTransaction, RawCRMTransaction } from '@/domain/student/crm/crmTransaction';
 import type { IHttpService } from '@/services/httpService';
+import { crmEndpoint } from 'src/basePath';
 
 export type CRMStudentWithCountryProvinceAndEnrollments = CRMStudent & {
   province: CRMProvince | null;

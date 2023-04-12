@@ -1,7 +1,6 @@
 import type { FC, MouseEventHandler } from 'react';
 
 import { catchError, EMPTY } from 'rxjs';
-import { endpoint } from '../../../basePath';
 import { NewPartMediumView } from '../NewPartMediumView';
 import { NewTextBoxTemplatePreview } from './NewTextBoxTemplatePreview';
 import { NewUploadSlotTemplatePreview } from './NewUploadSlotTemplatePreview';
@@ -13,6 +12,7 @@ import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { endpoint } from 'src/basePath';
 
 type NewPartTemplateWithInputs = NewPartTemplate & {
   newTextBoxTemplates: NewTextBoxTemplate[];

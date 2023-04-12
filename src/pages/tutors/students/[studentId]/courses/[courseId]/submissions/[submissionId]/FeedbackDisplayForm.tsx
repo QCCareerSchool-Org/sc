@@ -6,8 +6,8 @@ import type { State } from './state';
 import type { FeedbackDeletePayload } from './useFeedbackDelete';
 import { Audio } from '@/components/Audio';
 import { Spinner } from '@/components/Spinner';
-import { endpoint } from '@/src/basePath';
-import { humanReadableFileSize } from '@/src/humanReadableFilesize';
+import { endpoint } from 'src/basePath';
+import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
 type Props = {
   tutorId: number;

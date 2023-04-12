@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 
-import { crmEndpoint } from '../basePath';
 import type { CRMProvince } from '@/domain/crm/crmProvince';
 import type { IHttpService } from '@/services/httpService';
+import { crmEndpoint } from 'src/basePath';
 
 export interface ICRMProvinceService {
   getAllCRMProvincesByCountryCode: (countryCode: string) => Observable<CRMProvince[]>;

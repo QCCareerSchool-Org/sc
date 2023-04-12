@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent } from 'react';
 
-import { basePath } from '../../../basePath';
 import { Section } from '@/components/Section';
 import type { NewSubmissionWithCourseAndChildren } from '@/services/students/newSubmissionService';
+import { basePath } from 'src/basePath';
 
 type Props = {
   unit: NewSubmissionWithCourseAndChildren;

@@ -2,9 +2,9 @@ import type { ChangeEventHandler, FC } from 'react';
 import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
-import { PaysafeForm } from '../../PaysafeForm';
 import type { State } from './state';
 import type { PaymentMethodInsertEvent } from './usePaymentMethodInsert';
+import { PaysafeForm } from '@/components/PaysafeForm';
 import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 
 type Props = {

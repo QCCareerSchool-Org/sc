@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Course } from '@/domain/course';
 import type { Currency } from '@/domain/currency';
 import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
@@ -9,6 +8,7 @@ import type { NewSubmissionTemplatePrice, RawNewSubmissionTemplatePrice } from '
 import type { School } from '@/domain/school';
 import type { RawUnit, Unit } from '@/domain/unit';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 type RawCourseWithSchoolAndSubmissionTemplatesAndPrices = Course & {
   school: School;

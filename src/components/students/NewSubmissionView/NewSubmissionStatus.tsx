@@ -1,9 +1,9 @@
 import type { FC } from 'react';
 import { memo } from 'react';
 
-import { endpoint } from '../../../basePath';
 import { Audio } from '@/components/Audio';
 import type { NewSubmission } from '@/domain/student/newSubmission';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;

@@ -21,7 +21,9 @@
       "@/domain/*": ["src/domain/*"],
       "@/hooks/*": ["src/hooks/*"],
       "@/services/*": ["src/services/*"],
-      "@/src/*": ["src/*"]
+      "@/providers/*": ["src/providers/*"],
+      "@/state/*": ["src/state/*"],
+      "@/images/*": ["src/images/*"]
     }
   },
   "include": [

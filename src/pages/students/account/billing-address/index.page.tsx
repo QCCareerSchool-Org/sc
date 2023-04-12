@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 
+import { BillingAddressEdit } from './BillingAddressEdit';
 import { Meta } from '@/components/Meta';
-import { BillingAddressEdit } from '@/components/students/BillingAddressEdit';
 import { DatabaseLinkError } from '@/components/students/DatabaseLinkError';
 import { useAuthState } from '@/hooks/useAuthState';
 

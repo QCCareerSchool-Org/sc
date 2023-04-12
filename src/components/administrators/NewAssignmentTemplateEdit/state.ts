@@ -1,9 +1,9 @@
-import { sanitize } from '../../../sanitize';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate } from '@/services/administrators/newAssignmentTemplateService';
 import type { IUUIDService } from '@/services/uuidService';
+import { sanitize } from 'src/sanitize';
 
 export type State = {
   newAssignmentTemplate?: NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate;

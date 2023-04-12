@@ -1,5 +1,6 @@
 import type { FC } from 'react';
-import { Section } from '../Section';
+
+import { Section } from '@/components/Section';
 
 export const DatabaseLinkError: FC = () => (
   <Section>

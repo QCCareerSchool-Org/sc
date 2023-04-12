@@ -1,8 +1,8 @@
 import type { FC, ReactEventHandler } from 'react';
 import { useRef } from 'react';
 
-import { endpoint } from '../../../basePath';
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   courseId: number;

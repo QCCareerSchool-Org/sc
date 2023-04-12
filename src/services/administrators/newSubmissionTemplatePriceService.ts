@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import type { IHttpService } from '../httpService';
 import type { NewSubmissionTemplatePrice, RawNewSubmissionTemplatePrice } from '@/domain/newSubmissionTemplatePrice';
+import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export type NewSubmissionTemplatePricePayload = Array<{

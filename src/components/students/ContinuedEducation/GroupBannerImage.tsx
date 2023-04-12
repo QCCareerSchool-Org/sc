@@ -2,24 +2,23 @@ import type { StaticImageData } from 'next/image';
 import Image from 'next/image';
 import type { FC } from 'react';
 
-import AddValueHomes from '../../../images/course-suggestions/banners/add-value-homes.jpg';
-import BeautifulEvents from '../../../images/course-suggestions/banners/beautiful-events.jpg';
-import CorporateClients from '../../../images/course-suggestions/banners/corporate-clients.jpg';
-import DifferenceDesign from '../../../images/course-suggestions/banners/difference-design.jpg';
-import ExpandSkillsHome from '../../../images/course-suggestions/banners/expand-skills-home.jpg';
-import FullServiceDogCare from '../../../images/course-suggestions/banners/full-service-dog-care.jpg';
-import HighBugdetEvents from '../../../images/course-suggestions/banners/high-budget-events.jpg';
-import JumpstartAdvances from '../../../images/course-suggestions/banners/jumpstart-advanced.jpg';
-import LookTheirBest from '../../../images/course-suggestions/banners/look-their-best.jpg';
-import SchoolDesign from '../../../images/course-suggestions/banners/school-design.jpg';
-import SchoolEvent from '../../../images/course-suggestions/banners/school-event.jpg';
-import SchoolMakeup from '../../../images/course-suggestions/banners/school-makeup.jpg';
-import SchoolPet from '../../../images/course-suggestions/banners/school-pet.jpg';
-import SchoolWellness from '../../../images/course-suggestions/banners/school-wellness.jpg';
-import SleepSpaces from '../../../images/course-suggestions/banners/sleep-spaces.jpg';
-import TVFilmTheatre from '../../../images/course-suggestions/banners/tv-film-theatre.jpg';
-
-import type { CourseSuggestionGroup } from './courseSuggestions';
+import type { CourseSuggestionGroup } from '@/domain/courseSuggestion';
+import AddValueHomes from '@/images/course-suggestions/banners/add-value-homes.jpg';
+import BeautifulEvents from '@/images/course-suggestions/banners/beautiful-events.jpg';
+import CorporateClients from '@/images/course-suggestions/banners/corporate-clients.jpg';
+import DifferenceDesign from '@/images/course-suggestions/banners/difference-design.jpg';
+import ExpandSkillsHome from '@/images/course-suggestions/banners/expand-skills-home.jpg';
+import FullServiceDogCare from '@/images/course-suggestions/banners/full-service-dog-care.jpg';
+import HighBugdetEvents from '@/images/course-suggestions/banners/high-budget-events.jpg';
+import JumpstartAdvances from '@/images/course-suggestions/banners/jumpstart-advanced.jpg';
+import LookTheirBest from '@/images/course-suggestions/banners/look-their-best.jpg';
+import SchoolDesign from '@/images/course-suggestions/banners/school-design.jpg';
+import SchoolEvent from '@/images/course-suggestions/banners/school-event.jpg';
+import SchoolMakeup from '@/images/course-suggestions/banners/school-makeup.jpg';
+import SchoolPet from '@/images/course-suggestions/banners/school-pet.jpg';
+import SchoolWellness from '@/images/course-suggestions/banners/school-wellness.jpg';
+import SleepSpaces from '@/images/course-suggestions/banners/sleep-spaces.jpg';
+import TVFilmTheatre from '@/images/course-suggestions/banners/tv-film-theatre.jpg';
 
 type Props = {
   group: CourseSuggestionGroup;

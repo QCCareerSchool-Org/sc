@@ -2,8 +2,8 @@ import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
 
 import { useEffect } from 'react';
+import { ContinuedEducation } from './ContinuedEducation';
 import { Meta } from '@/components/Meta';
-import { ContinuedEducation } from '@/components/students/ContinuedEducation';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 

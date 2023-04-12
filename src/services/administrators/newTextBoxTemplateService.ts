@@ -1,10 +1,10 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { NewPartTemplate, RawNewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewTextBoxTemplateAddPayload = {
   partId: string;

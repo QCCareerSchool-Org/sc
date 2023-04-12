@@ -2,9 +2,6 @@ import NextError from 'next/error';
 import type { ChangeEventHandler, FC, MouseEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
 
-import { endpoint } from '../../../basePath';
-import { formatDateTime } from '../../../formatDate';
-import { humanReadableFileSize } from '../../../humanReadableFilesize';
 import { NewAssignmentMediumEditForm } from './NewAssignmentMediumEditForm';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
@@ -15,6 +12,9 @@ import { FileIcon } from '@/components/FileIcon';
 import { Section } from '@/components/Section';
 import { Video } from '@/components/Video';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { endpoint } from 'src/basePath';
+import { formatDateTime } from 'src/formatDate';
+import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
 type Props = {
   administratorId: number;

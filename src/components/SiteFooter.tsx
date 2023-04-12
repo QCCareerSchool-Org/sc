@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { FC } from 'react';
 import { FaFacebookF, FaGooglePlusG, FaPinterest, FaRss, FaTwitter } from 'react-icons/fa';
 
-import BBBLogo from '../images/black-seal-250-52-whitetxt-qccareerschool-4175.png';
+import BBBLogo from '@/images/black-seal-250-52-whitetxt-qccareerschool-4175.png';
 
 export const SiteFooter: FC = () => {
 

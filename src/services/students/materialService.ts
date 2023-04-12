@@ -1,9 +1,9 @@
 import type { Observable } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Material, RawMaterial } from '@/domain/material';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export interface IMaterialService {
   insertMaterialCompletion: (studentId: number, enrollmentId: number, materialId: string) => Observable<MaterialCompletion>;

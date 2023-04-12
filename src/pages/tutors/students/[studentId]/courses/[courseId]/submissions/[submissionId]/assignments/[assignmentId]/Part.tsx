@@ -8,7 +8,7 @@ import { TextBox } from './TextBox';
 import { UploadSlot } from './UploadSlot';
 import type { InputType } from './useInputSave';
 import { Description } from '@/components/Description';
-import { endpoint } from '@/src/basePath';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   tutorId: number;

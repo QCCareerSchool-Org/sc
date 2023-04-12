@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { ScrollbarWidthContext } from '../providers/ScrollbarWidthProvider';
+import { ScrollbarWidthContext } from '@/providers/ScrollbarWidthProvider';
 
 export const useScrollbarWidth = (): number => {
   const state = useContext(ScrollbarWidthContext);

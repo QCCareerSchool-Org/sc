@@ -4,7 +4,7 @@ import { useId } from 'react';
 import type { WithInputForm } from './state';
 import { Img } from '@/components/Img';
 import type { NewUploadSlot } from '@/domain/tutor/newUploadSlot';
-import { endpoint } from '@/src/basePath';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   tutorId: number;

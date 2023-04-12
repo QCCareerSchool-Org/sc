@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Video } from '@/domain/video';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export interface IVideoService {
   getVideo: (studentId: number, videoId: string) => Observable<Video>;

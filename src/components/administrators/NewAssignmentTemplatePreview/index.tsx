@@ -3,7 +3,6 @@ import type { FC, MouseEventHandler } from 'react';
 import { useReducer } from 'react';
 
 import { catchError, EMPTY } from 'rxjs';
-import { endpoint } from '../../../basePath';
 import { NewAssignmentMediumView } from '../NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
@@ -12,6 +11,7 @@ import { Description } from '@/components/Description';
 import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import { useAdminServices } from '@/hooks/useAdminServices';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   administratorId: number;

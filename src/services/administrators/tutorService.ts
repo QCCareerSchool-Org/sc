@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Tutor } from '@/domain/administrator/tutor';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export interface ITutorService {
   getTutorsBySchool: (administratorId: number, schoolId: number) => Observable<Tutor[]>;

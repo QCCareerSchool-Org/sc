@@ -1,7 +1,8 @@
 import type { FC, ReactNode } from 'react';
-import { SiteNav } from '../nav';
-import { SiteFooter } from '../SiteFooter';
-import { SiteHeader } from '../SiteHeader';
+
+import { SiteNav } from '@/components/nav';
+import { SiteFooter } from '@/components/SiteFooter';
+import { SiteHeader } from '@/components/SiteHeader';
 
 type Props = {
   children: ReactNode;

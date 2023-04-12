@@ -1,6 +1,6 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
-import { getGoogleAnalyticsScript, getGoogleAnalyticsSrc } from '../lib/marketingScripts';
+import { getGoogleAnalyticsScript, getGoogleAnalyticsSrc } from 'src/lib/marketingScripts';
 
 const googleAnalyticsId = process.env.GOOGLE_ANALYTICS_ID;
 

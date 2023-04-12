@@ -4,8 +4,6 @@ import type { FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useEffect, useReducer } from 'react';
 import { catchError, EMPTY, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 
-import { endpoint } from '../../../basePath';
-import { scrollToId } from '../../../scrollToId';
 import { NewAssignmentMediumView } from './NewAssignmentMediumView';
 import { NewPartForm } from './NewPartForm';
 import { initialState, reducer } from './state';
@@ -16,6 +14,8 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { HttpServiceError } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
+import { scrollToId } from 'src/scrollToId';
 
 export type UploadSlotFunction = (partId: string, uploadSlotId: string, file?: File) => Observable<unknown>;
 export type TextBoxFunction = (partId: string, textBoxId: string, text: string) => Observable<unknown>;

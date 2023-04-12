@@ -5,7 +5,7 @@ import { RiArrowGoBackFill } from 'react-icons/ri';
 import type { ShippingDetails } from './ContinuingEducationGroup';
 import { getEnrollUrl } from './ContinuingEducationGroup';
 import { CourseModalHeroImage } from './CourseModalHeroImage';
-import type { CourseSuggestion } from './courseSuggestions';
+import type { CourseSuggestion } from '@/domain/courseSuggestion';
 import type { PriceResult } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';
 import { getTelephoneNumber } from 'src/lib/helper-functions';

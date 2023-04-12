@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
 
+import { AccountView } from './AccountView';
 import { Meta } from '@/components/Meta';
-import { AccountView } from '@/components/students/AccountView';
 import { useAuthState } from '@/hooks/useAuthState';
 
 const AccountPage: NextPage = () => {

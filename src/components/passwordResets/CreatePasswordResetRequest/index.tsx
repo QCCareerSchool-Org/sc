@@ -1,10 +1,10 @@
 import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 import { memo, useReducer } from 'react';
 
-import { Section } from '../../Section';
-import { Spinner } from '../../Spinner';
 import { initialState, reducer } from './state';
 import { usePasswordResetRequest } from './usePasswordResetRequest';
+import { Section } from '@/components/Section';
+import { Spinner } from '@/components/Spinner';
 
 export const CreatePasswordResetRequest: FC = memo(() => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

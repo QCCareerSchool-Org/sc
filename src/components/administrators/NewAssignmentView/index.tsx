@@ -3,8 +3,6 @@ import type { FC, MouseEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
 import { catchError, EMPTY } from 'rxjs';
 
-import { endpoint } from '../../../basePath';
-import { formatDateTime } from '../../../formatDate';
 import { NewPartView } from './NewPartView';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
@@ -16,6 +14,8 @@ import { DownloadMedium } from '@/components/DownloadMedium';
 import { Section } from '@/components/Section';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { useServices } from '@/hooks/useServices';
+import { endpoint } from 'src/basePath';
+import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;

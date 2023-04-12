@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
-
 import { useEffect } from 'react';
+
+import { CourseIndex } from './CourseIndex';
 import { Meta } from '@/components/Meta';
-import { CourseIndex } from '@/components/students/CourseIndex';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 

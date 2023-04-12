@@ -1,7 +1,7 @@
 import type { ErrorInfo, MouseEventHandler, ReactNode } from 'react';
 import { Component } from 'react';
 
-import { TrackJS } from '../trackjs-isomorphic';
+import { TrackJS } from 'src/trackjs-isomorphic';
 
 type Props = {
   children: ReactNode;

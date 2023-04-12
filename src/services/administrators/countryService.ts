@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Country } from '@/domain/country';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export interface ICountryService {
   getAllCountries: (administratorId: number) => Observable<Country[]>;

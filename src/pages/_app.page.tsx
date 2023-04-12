@@ -4,9 +4,6 @@ import { useRouter } from 'next/router';
 import type { ReactElement, ReactNode } from 'react';
 import { useEffect } from 'react';
 
-import { gaPageview } from '../lib/ga';
-import { StateProvider } from '../providers';
-import { TrackJS } from '../trackjs-isomorphic';
 import { AppErrorBoundary } from '@/components/AppErrorBoundary';
 import { ErrorFallback } from '@/components/ErrorFallback';
 import { DefaultLayout } from '@/components/layouts/DefaultLayout';
@@ -15,8 +12,11 @@ import { PageErrorBoundary } from '@/components/PageErrorBoundary';
 import { RouteGuard } from '@/components/RouteGuard';
 import { ScrollPreventer } from '@/components/ScrollPreventer';
 import { SessionRefresh } from '@/components/SessionRefresh';
+import { StateProvider } from '@/providers/index';
+import { gaPageview } from 'src/lib/ga';
+import { TrackJS } from 'src/trackjs-isomorphic';
 
-import '../style.scss';
+import 'src/style.scss';
 
 if (!TrackJS.isInstalled()) {
   TrackJS.install({

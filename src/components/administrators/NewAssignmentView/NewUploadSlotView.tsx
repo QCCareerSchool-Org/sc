@@ -1,10 +1,10 @@
 import type { FC } from 'react';
 import { useId } from 'react';
 
-import { endpoint } from '../../../basePath';
 import type { WithInputForm } from './state';
 import { Img } from '@/components/Img';
 import type { NewUploadSlot } from '@/domain/administrator/newUploadSlot';
+import { endpoint } from 'src/basePath';
 
 type Props = {
   administratorId: number;

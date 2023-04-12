@@ -1,8 +1,8 @@
 import type { Dispatch } from 'react';
 import { useContext } from 'react';
 
-import { UnitToggleDispatchContext } from '../providers/UnitToggleStateProvider';
-import type { UnitToggleAction } from '../state/unitToggles';
+import { UnitToggleDispatchContext } from '@/providers/UnitToggleStateProvider';
+import type { UnitToggleAction } from '@/state/unitToggles';
 
 export const useUnitToggleDispatch = (): Dispatch<UnitToggleAction> => {
   const dispatch = useContext(UnitToggleDispatchContext);

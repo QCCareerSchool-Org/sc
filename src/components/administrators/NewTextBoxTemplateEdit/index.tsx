@@ -2,7 +2,6 @@ import NextError from 'next/error';
 import type { ChangeEventHandler, FC } from 'react';
 import { useCallback, useReducer } from 'react';
 
-import { formatDateTime } from '../../../formatDate';
 import { NewTextBoxEditForm } from './NewTextBoxEditForm';
 import type { State } from './state';
 import { initialState, reducer } from './state';
@@ -12,6 +11,7 @@ import { useTextBoxSave } from './useTextBoxSave';
 import { Section } from '@/components/Section';
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
+import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;
