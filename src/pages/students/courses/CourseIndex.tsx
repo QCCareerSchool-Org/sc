@@ -7,8 +7,8 @@ import { courseSuggestionGroups } from './courseSuggestions';
 import { CourseWarnings } from './CourseWarnings';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
-import { Section } from '@/components/Section';
 import { ContinuingEducationGroup } from '@/components/continuedEducation/ContinuingEducationGroup';
+import { Section } from '@/components/Section';
 
 type Props = {
   administratorId?: number;
