@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { Observable } from 'rxjs';
 import { catchError, EMPTY, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
-import { basePath } from '../basePath';
+import { basePath } from '../../basePath';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 import type { AuthenticationPayload } from '@/domain/authenticationPayload';

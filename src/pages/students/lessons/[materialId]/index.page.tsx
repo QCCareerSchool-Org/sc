@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import { useEffect, useRef } from 'react';
 
-import { endpoint } from '../../../basePath';
+import { endpoint } from '../../../../basePath';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
