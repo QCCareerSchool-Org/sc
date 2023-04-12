@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 import { memo, useCallback } from 'react';
 
-import { endpoint } from '../../../basePath';
 import { MarkForm } from './MarkForm';
 import { Medium } from './Medium';
 import type { PartWithForms } from './state';
@@ -9,6 +8,7 @@ import { TextBox } from './TextBox';
 import { UploadSlot } from './UploadSlot';
 import type { InputType } from './useInputSave';
 import { Description } from '@/components/Description';
+import { endpoint } from '@/src/basePath';
 
 type Props = {
   tutorId: number;

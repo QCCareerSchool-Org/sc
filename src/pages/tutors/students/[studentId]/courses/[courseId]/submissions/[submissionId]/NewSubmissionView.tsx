@@ -3,8 +3,6 @@ import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
 
-import { formatDate } from '../../../formatDate';
-import { InaccessibleUnit } from '../InaccessibleUnit';
 import { AssignmentTable } from './AssignmentTable';
 import { FeebackUploadForm } from './FeebackUploadForm';
 import { FeedbackDisplayForm } from './FeedbackDisplayForm';
@@ -16,6 +14,8 @@ import { useInitialData } from './useInitialData';
 import { useReturn } from './useReturn';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
+import { InaccessibleUnit } from '@/components/tutors/InaccessibleUnit';
+import { formatDate } from '@/src/formatDate';
 
 type Props = {
   tutorId: number;

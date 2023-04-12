@@ -2,9 +2,6 @@ import NextError from 'next/error';
 import type { FC, MouseEvent } from 'react';
 import { useCallback, useReducer } from 'react';
 
-import { endpoint } from '../../../basePath';
-import { scrollToId } from '../../../scrollToId';
-import { InaccessibleUnit } from '../InaccessibleUnit';
 import { Medium } from './Medium';
 import { Part } from './Part';
 import { initialState, reducer } from './state';
@@ -13,6 +10,9 @@ import { useInputSave } from './useInputSave';
 import type { InputType } from './useInputSave';
 import { Description } from '@/components/Description';
 import { Section } from '@/components/Section';
+import { InaccessibleUnit } from '@/components/tutors/InaccessibleUnit';
+import { endpoint } from '@/src/basePath';
+import { scrollToId } from '@/src/scrollToId';
 
 type Props = {
   tutorId: number;

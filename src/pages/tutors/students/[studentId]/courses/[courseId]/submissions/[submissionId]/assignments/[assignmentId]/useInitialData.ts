@@ -1,8 +1,8 @@
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
-import type { Action } from './state';
 
+import type { Action } from './state';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';

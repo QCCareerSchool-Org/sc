@@ -1,8 +1,8 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
 
+import { NewSubmissionView } from './NewSubmissionView';
 import { Meta } from '@/components/Meta';
-import { NewSubmissionView } from '@/components/tutors/NewSubmissionView';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {

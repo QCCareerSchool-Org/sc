@@ -2,12 +2,12 @@ import type { FC, MouseEventHandler } from 'react';
 import { memo, useMemo } from 'react';
 import type { Subject } from 'rxjs';
 
-import { endpoint } from '../../../basePath';
-import { humanReadableFileSize } from '../../../humanReadableFilesize';
 import type { State } from './state';
 import type { FeedbackDeletePayload } from './useFeedbackDelete';
 import { Audio } from '@/components/Audio';
 import { Spinner } from '@/components/Spinner';
+import { endpoint } from '@/src/basePath';
+import { humanReadableFileSize } from '@/src/humanReadableFilesize';
 
 type Props = {
   tutorId: number;

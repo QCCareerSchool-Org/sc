@@ -1,8 +1,8 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
 
+import { NewAssignmentView } from './NewAssignmentView';
 import { Meta } from '@/components/Meta';
-import { NewAssignmentView } from '@/components/tutors/NewAssignmentView';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {

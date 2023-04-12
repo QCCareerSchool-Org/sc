@@ -20,7 +20,8 @@
       "@/components/*": ["src/components/*"],
       "@/domain/*": ["src/domain/*"],
       "@/hooks/*": ["src/hooks/*"],
-      "@/services/*": ["src/services/*"]
+      "@/services/*": ["src/services/*"],
+      "@/src/*": ["src/*"]
     }
   },
   "include": [
