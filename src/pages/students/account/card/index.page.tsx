@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
 
+import { NewCard } from './NewCard';
 import { Meta } from '@/components/Meta';
-import { NewCard } from '@/components/students/NewCard';
 import { useAuthState } from '@/hooks/useAuthState';
 
 const CardPage: NextPage = () => {

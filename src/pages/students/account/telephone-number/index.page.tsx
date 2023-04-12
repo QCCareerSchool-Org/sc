@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 
+import { TelephoneNumberEdit } from './TelephoneNumberEdit';
+import { DatabaseLinkError } from '@/components/DatabaseLinkError';
 import { Meta } from '@/components/Meta';
-import { DatabaseLinkError } from '@/components/students/DatabaseLinkError';
-import { TelephoneNumberEdit } from '@/components/students/TelephoneNumberEdit';
 import { useAuthState } from '@/hooks/useAuthState';
 
 const TelephoneNumberPage: NextPage = () => {

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
 
+import { EmailAddressEdit } from './EmailAddressEdit';
 import { Meta } from '@/components/Meta';
-import { EmailAddressEdit } from '@/components/students/EmailAddressEdit';
 import { useAuthState } from '@/hooks/useAuthState';
 
 const EmailAddressPage: NextPage = () => {

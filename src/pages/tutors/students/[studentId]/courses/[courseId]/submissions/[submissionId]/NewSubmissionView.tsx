@@ -14,7 +14,7 @@ import { useInitialData } from './useInitialData';
 import { useReturn } from './useReturn';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
-import { InaccessibleUnit } from '@/components/tutors/InaccessibleUnit';
+import { InaccessibleUnit } from '@/components/InaccessibleUnit';
 import { formatDate } from 'src/formatDate';
 
 type Props = {

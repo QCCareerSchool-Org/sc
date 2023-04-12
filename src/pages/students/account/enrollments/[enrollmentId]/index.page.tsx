@@ -1,9 +1,9 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
 
+import { CourseAccountDetailsView } from './CourseAccountDetailsView';
+import { DatabaseLinkError } from '@/components/DatabaseLinkError';
 import { Meta } from '@/components/Meta';
-import { CourseAccountDetailsView } from '@/components/students/CourseAccountDetailsView';
-import { DatabaseLinkError } from '@/components/students/DatabaseLinkError';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {

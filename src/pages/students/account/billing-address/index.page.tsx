@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 
 import { BillingAddressEdit } from './BillingAddressEdit';
+import { DatabaseLinkError } from '@/components/DatabaseLinkError';
 import { Meta } from '@/components/Meta';
-import { DatabaseLinkError } from '@/components/students/DatabaseLinkError';
 import { useAuthState } from '@/hooks/useAuthState';
 
 const BillingAddressPage: NextPage = () => {
