@@ -6,7 +6,7 @@ import { Video as VideoComponent } from '@/components/Video';
 import type { Video } from '@/domain/video';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useStudentServices } from '@/hooks/useStudentServices';
-import type { NextPageWithLayout } from 'src/pages/_app';
+import type { NextPageWithLayout } from 'src/pages/_app.page';
 
 type Props = {
   videoId: string | null;
