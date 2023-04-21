@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import type { StudentServices } from '../providers/StudentServicesProvider';
-import { StudentServicesContext } from '../providers/StudentServicesProvider';
+import type { StudentServices } from '@/providers/StudentServicesProvider';
+import { StudentServicesContext } from '@/providers/StudentServicesProvider';
 
 export const useStudentServices = (): StudentServices => {
   const state = useContext(StudentServicesContext);

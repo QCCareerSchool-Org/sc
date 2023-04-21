@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import type { FC } from 'react';
 
-import Logo from '../images/logo.svg';
 import { AccountIcon } from './AccountIcon';
 import { HeaderBar } from './HeaderBar';
 import { useScreenWidth } from '@/hooks/useScreenWidth';
+import Logo from '@/images/logo.svg';
 
 const calculateLogoWidth = (height: number): number => {
   return Math.round(Logo.width / Logo.height * height);

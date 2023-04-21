@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewAssignment, RawNewAssignment } from '@/domain/student/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/student/newPart';
@@ -9,6 +8,7 @@ import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmis
 import type { NewTextBox, RawNewTextBox } from '@/domain/student/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/student/newUploadSlot';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewSubmissionWithCourseAndChildren = NewSubmission & {
   enrollment: Enrollment;

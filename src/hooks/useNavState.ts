@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import { NavStateContext } from '../providers/NavStateProvider';
-import type { NavState } from '../state/nav';
+import { NavStateContext } from '@/providers/NavStateProvider';
+import type { NavState } from '@/state/nav';
 
 export const useNavState = (): NavState => {
   const state = useContext(NavStateContext);

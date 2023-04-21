@@ -1,8 +1,8 @@
 import type { Observable } from 'rxjs';
 
-import { crmEndpoint } from '../basePath';
 import type { IHttpService } from './httpService';
 import type { CRMTelephoneCountryCode } from '@/domain/crm/crmTelephoneCountryCode';
+import { crmEndpoint } from 'src/basePath';
 
 export interface ICRMTelephoneCountryCodeService {
   getTelephoneCountryCodes: () => Observable<CRMTelephoneCountryCode[]>;

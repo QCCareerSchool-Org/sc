@@ -1,7 +1,6 @@
 import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
-import { instance } from '../axiosInstance';
 import type { ICRMCountryService } from '@/services/crmCountryService';
 import { CRMCountryService } from '@/services/crmCountryService';
 import type { ICRMProvinceService } from '@/services/crmProvinceService';
@@ -18,6 +17,7 @@ import type { IPasswordResetRequestService } from '@/services/passwordResetReque
 import { PasswordResetRequestService } from '@/services/passwordResetRequestService';
 import type { IUUIDService } from '@/services/uuidService';
 import { UUIDService } from '@/services/uuidService';
+import { instance } from 'src/axiosInstance';
 
 export type Services = {
   httpService: IHttpService;

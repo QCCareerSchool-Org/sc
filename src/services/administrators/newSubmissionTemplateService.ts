@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { Country } from '@/domain/country';
 import type { Course } from '@/domain/course';
 import type { Currency } from '@/domain/currency';
@@ -9,6 +8,7 @@ import type { NewAssignmentTemplate, RawNewAssignmentTemplate } from '@/domain/n
 import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { NewSubmissionTemplatePrice, RawNewSubmissionTemplatePrice } from '@/domain/newSubmissionTemplatePrice';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewSubmissionTemplateAddPayload = {
   courseId: number;

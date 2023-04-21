@@ -1,11 +1,11 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
-import type { IHttpService, ProgressResponse } from '../httpService';
 import type { Course } from '@/domain/course';
 import type { Material, RawMaterial } from '@/domain/material';
 import type { RawUnit, Unit } from '@/domain/unit';
+import type { IHttpService, ProgressResponse } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type MaterialInsertPayload = {
   unitId: string;

@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { NewAssignment, RawNewAssignment } from '@/domain/administrator/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/administrator/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/administrator/newSubmission';
@@ -10,6 +9,7 @@ import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/administrator/new
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { IHttpService } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewAssignmentWithChildren = NewAssignment & {
   newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark' | 'markOverride'>;

@@ -1,8 +1,8 @@
 import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
-import { humanReadableFileSize } from '../../../humanReadableFilesize';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
+import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
 type Props = {
   media: NewAssignmentMedium[];

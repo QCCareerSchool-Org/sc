@@ -1,8 +1,8 @@
 import type { Dispatch } from 'react';
 import { useContext } from 'react';
 
-import { NavDispatchContext } from '../providers/NavStateProvider';
-import type { NavAction } from '../state/nav';
+import { NavDispatchContext } from '@/providers/NavStateProvider';
+import type { NavAction } from '@/state/nav';
 
 export const useNavDispatch = (): Dispatch<NavAction> => {
   const dispatch = useContext(NavDispatchContext);

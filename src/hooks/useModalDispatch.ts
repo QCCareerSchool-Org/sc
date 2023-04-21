@@ -1,8 +1,8 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useContext } from 'react';
 
-import type { ModalState } from '../providers/ModalProvider';
-import { ModalDispatchContext } from '../providers/ModalProvider';
+import type { ModalState } from '@/providers/ModalProvider';
+import { ModalDispatchContext } from '@/providers/ModalProvider';
 
 export const useModalDispatch = (): Dispatch<SetStateAction<ModalState>> => {
   const dispatch = useContext(ModalDispatchContext);

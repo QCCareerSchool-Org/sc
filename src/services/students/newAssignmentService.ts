@@ -1,7 +1,6 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../../basePath';
 import type { NewAssignmentMedium, RawNewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium, RawNewPartMedium } from '@/domain/newPartMedium';
 import type { NewAssignment, RawNewAssignment } from '@/domain/student/newAssignment';
@@ -10,6 +9,7 @@ import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmis
 import type { NewTextBox, RawNewTextBox } from '@/domain/student/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/student/newUploadSlot';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
+import { endpoint } from 'src/basePath';
 
 export type NewAssignmentWithChildren = NewAssignment & {
   newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark'>;

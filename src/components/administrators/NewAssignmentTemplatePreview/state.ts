@@ -1,5 +1,5 @@
-import { sanitize } from '../../../sanitize';
 import type { NewAssignmentTemplateWithSubmissionTemplateAndChildren } from '@/services/administrators/newAssignmentTemplateService';
+import { sanitize } from 'src/sanitize';
 
 export type State = {
   assignmentTemplate?: NewAssignmentTemplateWithSubmissionTemplateAndChildren;

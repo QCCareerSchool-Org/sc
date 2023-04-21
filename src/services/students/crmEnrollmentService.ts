@@ -1,13 +1,13 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { crmEndpoint } from '../../basePath';
 import type { CRMCourse, RawCRMCourse } from '@/domain/student/crm/crmCourse';
 import type { CRMCurrency } from '@/domain/student/crm/crmCurrency';
 import type { CRMEnrollment, RawCRMEnrollment } from '@/domain/student/crm/crmEnrollment';
 import type { CRMPaymentMethod, RawCRMPaymentMethod } from '@/domain/student/crm/crmPaymentMethod';
 import type { CRMTransaction, RawCRMTransaction } from '@/domain/student/crm/crmTransaction';
 import type { IHttpService } from '@/services/httpService';
+import { crmEndpoint } from 'src/basePath';
 
 export type CRMEnrollmentWithCourse = CRMEnrollment & {
   course: CRMCourse;

@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, MouseEvent } from 'react';
 import { useCallback, useReducer } from 'react';
 
-import { formatDateTime } from '../../../formatDate';
 import { NewPartMediumAddForm } from './NewPartMediumAddForm';
 import { NewPartMediumList } from './NewPartMediumList';
 import { NewPartTemplateEditForm } from './NewPartTemplateEditForm';
@@ -23,6 +22,7 @@ import { Section } from '@/components/Section';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import { useServices } from '@/hooks/useServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
+import { formatDateTime } from 'src/formatDate';
 
 type Props = {
   administratorId: number;

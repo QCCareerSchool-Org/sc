@@ -1,9 +1,9 @@
 import type { FC, MouseEventHandler } from 'react';
 import { memo, useEffect, useId, useState } from 'react';
 
-import type { PaysafeInstance, TokenizeOptions } from '../paysafe';
-import { createInstance, tokenize } from '../paysafe';
-import { Spinner } from './Spinner';
+import { Spinner } from '@/components/Spinner';
+import type { PaysafeInstance, TokenizeOptions } from 'src/paysafe';
+import { createInstance, tokenize } from 'src/paysafe';
 
 type Props = {
   currencyCode: string;

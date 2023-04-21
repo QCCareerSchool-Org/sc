@@ -1,9 +1,9 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
-import { endpoint } from '../basePath';
 import type { IHttpService } from './httpService';
 import type { PasswordResetRequest, RawPasswordResetRequest } from '@/domain/passwordResetRequest';
+import { endpoint } from 'src/basePath';
 
 export type CreatePasswordResetResult = {
   maskedEmailAddress: string;
