@@ -5,6 +5,7 @@ import type { FC, MouseEvent } from 'react';
 import { Fragment, useMemo, useReducer } from 'react';
 
 import { CASocialInsuranceNumberForm } from './caSocialInsuranceNumberForm';
+import { MZKitNotice } from './MZKitNotice';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
@@ -75,6 +76,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
       {state.crmStudent
         ? ( // new account info
           <>
+            <MZKitNotice crmId={crmId} />
             <Section>
               <div className="container">
                 <h1>My Account</h1>
