@@ -155,17 +155,21 @@ const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnab
             <li><a className="dropdown-item" href="/students/materials/career-center.php">Career Center</a></li>
             <li><a className="dropdown-item" href="/students/business-resources">Business Resources</a></li>
             <li><a className="dropdown-item" href="/students/student-resources/vendors.php">Preferred Partners</a></li>
-            <li><a className="dropdown-item" href="/students/badges.php">School Badges</a></li>
             <li><a className="dropdown-item" href="/students/certification-logos">Certification Logos</a></li>
             <li><a className="dropdown-item" href="/students/showcases/new.php">Student Showcase</a></li>
           </>
         )}
-        <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/virtual-classroom.php">Virtual Classroom</a></li>
+        <li><a className="dropdown-item" href="/students/badges.php">School Badges</a></li>
+        {(studentType === 'event' || studentType === 'design') && (
+          <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/virtual-classroom.php">Virtual Classroom</a></li>
+        )}
       </ul>
     </li>
-    <li className="nav-item d-md-none d-lg-inline">
-      <a href="/students/virtual-classroom.php" className="nav-link">Virtual Classroom</a>
-    </li>
+    {(studentType === 'event' || studentType === 'design') && (
+      <li className="nav-item d-md-none d-lg-inline">
+        <a href="/students/virtual-classroom.php" className="nav-link">Virtual Classroom</a>
+      </li>
+    )}
     <li className="nav-item">
       <a href="/students/logout.php" className="nav-link">Log Out</a>
     </li>
