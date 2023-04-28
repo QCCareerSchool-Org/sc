@@ -86,11 +86,14 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
               <tr><th scope="row">Student</th><td>{state.newSubmission.enrollment.student.firstName} {state.newSubmission.enrollment.student.lastName}</td></tr>
               <tr><th scope="row">Student Number</th><td>{state.newSubmission.enrollment.course.code}&thinsp;{state.newSubmission.enrollment.studentNumber}</td></tr>
               <tr><th scope="row">Submitted</th><td>{formatDate(state.newSubmission.submitted)}</td></tr>
-              {state.newSubmission.closed && state.newSubmission.tutorId === tutorId && state.newSubmission.responseFilename !== null && (
+              {state.newSubmission.closed && state.newSubmission.responseFilename !== null && (
                 <tr><th scope="row">Audio File</th><td style={{ padding: '0.3rem' }}><Audio controls src={`${endpoint}/tutors/${tutorId}/students/${studentId}/newSubmissions/${submissionId}/response`} style={{ marginBottom: -6, maxHeight: 32, maxWidth: 240 }} /></td></tr>
               )}
             </tbody>
           </table>
+          {state.newSubmission.tutorId !== tutorId && (
+            <div className="alert alert-info mt-4">This submission was marked by another tutor</div>
+          )}
         </div>
       </Section>
       <Section>
