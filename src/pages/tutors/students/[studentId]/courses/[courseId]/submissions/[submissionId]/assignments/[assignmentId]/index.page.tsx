@@ -26,7 +26,13 @@ const NewAssignmentViewPage: NextPage<Props> = ({ studentId, courseId, submissio
   return (
     <>
       <Meta title="Assignment View" />
-      <NewAssignmentView tutorId={authState.tutorId} studentId={studentId} courseId={courseId} submissionId={submissionId} assignmentId={assignmentId} />
+      <NewAssignmentView
+        tutorId={authState.tutorId}
+        studentId={studentId}
+        courseId={courseId}
+        submissionId={submissionId}
+        assignmentId={assignmentId}
+      />
     </>
   );
 };

@@ -14,9 +14,10 @@ type Props = {
   tutorId: number;
   newPart: PartWithForms;
   saveInput: (type: InputType, partId: string, id: string, mark: number | null, notes: string | null) => void;
+  submissionClosed: boolean;
 };
 
-export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput }) => {
+export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionClosed }) => {
   const saveTextBox = useCallback((partId: string, id: string, mark: number | null, notes: string | null): void => {
     saveInput('text box', partId, id, mark, notes);
   }, [ saveInput ]);
@@ -47,13 +48,13 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput }) => {
       {newPart.newTextBoxes.map(t => (
         <div key={t.textBoxId} className="input">
           <TextBox newTextBox={t} />
-          <MarkForm id={t.textBoxId} partId={t.partId} points={t.points} mark={t.mark} notes={t.notes} form={t.form} save={saveTextBox} />
+          <MarkForm id={t.textBoxId} partId={t.partId} points={t.points} mark={t.mark} notes={t.notes} form={t.form} save={saveTextBox} submissionClosed={submissionClosed} />
         </div>
       ))}
       {newPart.newUploadSlots.map(u => (
         <div key={u.uploadSlotId} className="input">
           <UploadSlot tutorId={tutorId} newUploadSlot={u} />
-          <MarkForm id={u.uploadSlotId} partId={u.partId} points={u.points} mark={u.mark} notes={u.notes} form={u.form} save={saveUploadSlot} />
+          <MarkForm id={u.uploadSlotId} partId={u.partId} points={u.points} mark={u.mark} notes={u.notes} form={u.form} save={saveUploadSlot} submissionClosed={submissionClosed} />
         </div>
       ))}
       <style jsx>{`
