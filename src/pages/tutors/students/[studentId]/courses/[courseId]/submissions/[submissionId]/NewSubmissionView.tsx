@@ -12,9 +12,11 @@ import { useFeedbackDelete } from './useFeedbackDelete';
 import { useFeedbackUpload } from './useFeedbackUpload';
 import { useInitialData } from './useInitialData';
 import { useReturn } from './useReturn';
+import { Audio } from '@/components/Audio';
 import { InaccessibleUnit } from '@/components/InaccessibleUnit';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
+import { endpoint } from 'src/basePath';
 import { formatDate } from 'src/formatDate';
 
 type Props = {
@@ -84,6 +86,9 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
               <tr><th scope="row">Student</th><td>{state.newSubmission.enrollment.student.firstName} {state.newSubmission.enrollment.student.lastName}</td></tr>
               <tr><th scope="row">Student Number</th><td>{state.newSubmission.enrollment.course.code}&thinsp;{state.newSubmission.enrollment.studentNumber}</td></tr>
               <tr><th scope="row">Submitted</th><td>{formatDate(state.newSubmission.submitted)}</td></tr>
+              {state.newSubmission.closed && state.newSubmission.tutorId === tutorId && state.newSubmission.responseFilename !== null && (
+                <tr><th scope="row">Audio File</th><td style={{ padding: '0.3rem' }}><Audio controls src={`${endpoint}/tutors/${tutorId}/newSubmissions/${submissionId}/feedback`} style={{ marginBottom: -6, maxHeight: 32, maxWidth: 240 }} /></td></tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -94,84 +99,88 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
           <AssignmentTable newSubmission={state.newSubmission} onClick={handleAssignmentClick} />
         </div>
       </Section>
-      <Section>
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-10 col-lg-8">
-              <h2 className="h3">Feedback</h2>
-              {state.newSubmission.responseFilename === null
-                ? (
-                  <FeebackUploadForm
-                    tutorId={tutorId}
-                    studentId={studentId}
-                    courseId={courseId}
-                    submissionId={submissionId}
-                    state={state}
-                    onFileChange={handleFileChange}
-                    upload$={feedbackUpload$}
-                  />
-                )
-                : (
-                  <FeedbackDisplayForm
-                    tutorId={tutorId}
-                    studentId={studentId}
-                    courseId={courseId}
-                    submissionId={submissionId}
-                    responseFilename={state.newSubmission.responseFilename}
-                    responseFilesize={state.newSubmission.responseFilesize ?? 0}
-                    responseMimeTypeId={state.newSubmission.responseMimeTypeId ?? 'audio/mp3'}
-                    processingState={state.processingState}
-                    errorMessage={state.errorMessage}
-                    delete$={feedbackDelete$}
-                  />
-                )}
-            </div>
-          </div>
-        </div>
-      </Section>
-      <Section>
-        <div className="container">
-          <h2 className="h3">Close Unit</h2>
-          {state.newSubmission.mark === null
-            ? <p className="lead">This unit is not yet marked.</p>
-            : state.newSubmission.responseFilename === null
-              ? <p className="lead">No feedback has been provided</p>
-              : <p className="lead">You can now close this unit.</p>
-          }
-          <div className="d-flex align-items-center">
-            <button onClick={handleCloseClick} className="btn btn-primary" style={{ width: 80 }} disabled={state.newSubmission.mark === null || state.newSubmission.responseFilename === null || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
-              {state.processingState === 'closing' ? <Spinner size="sm" /> : 'Close'}
-            </button>
-            {state.processingState === 'close error' && <span className="text-danger ms-2">{state.errorMessage ?? 'error'}</span>}
-          </div>
-        </div>
-      </Section>
-      <Section>
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-10 col-lg-8">
-              <h2 className="h3">Return to Student for Changes</h2>
-              <p>This form is to be used for the following reasons:</p>
-              <ol>
-                <li>A student uploaded the wrong files (e.g., A2 was submitted in the slot for E2).</li>
-                <li>You received a corrupt or blank file from a student (i.e., you can't open it).</li>
-              </ol>
-              <p><strong className="text-danger">Please do not use this form to ask students to redo parts of an assignment or unit.</strong> Please mark the work as is. If the student does poorly, let the student know that he or she can resubmit the unit for a small fee. Advise the student to call the School to set this up.</p>
-              <p>To send this assignment back to the student, enter a brief reason below and then click the &ldquo;Return&rdquo; button. We'll read your message and write our own message to the student.</p>
-              <div className="mb-3">
-                <label htmlFor={'returnMessage' + submissionId} className="form-label fw-bold">Message to Student</label>
-                <textarea onChange={handleMessageChange} value={state.returnForm.message} maxLength={1000} id={'returnMessage' + submissionId} className="form-control" rows={7} />
+      {state.newSubmission.closed === null && (
+        <>
+          <Section>
+            <div className="container">
+              <div className="row">
+                <div className="col-12 col-md-10 col-lg-8">
+                  <h2 className="h3">Feedback</h2>
+                  {state.newSubmission.responseFilename === null
+                    ? (
+                      <FeebackUploadForm
+                        tutorId={tutorId}
+                        studentId={studentId}
+                        courseId={courseId}
+                        submissionId={submissionId}
+                        state={state}
+                        onFileChange={handleFileChange}
+                        upload$={feedbackUpload$}
+                      />
+                    )
+                    : (
+                      <FeedbackDisplayForm
+                        tutorId={tutorId}
+                        studentId={studentId}
+                        courseId={courseId}
+                        submissionId={submissionId}
+                        responseFilename={state.newSubmission.responseFilename}
+                        responseFilesize={state.newSubmission.responseFilesize ?? 0}
+                        responseMimeTypeId={state.newSubmission.responseMimeTypeId ?? 'audio/mp3'}
+                        processingState={state.processingState}
+                        errorMessage={state.errorMessage}
+                        delete$={feedbackDelete$}
+                      />
+                    )}
+                </div>
               </div>
+            </div>
+          </Section>
+          <Section>
+            <div className="container">
+              <h2 className="h3">Close Unit</h2>
+              {state.newSubmission.mark === null
+                ? <p className="lead">This unit is not yet marked.</p>
+                : state.newSubmission.responseFilename === null
+                  ? <p className="lead">No feedback has been provided</p>
+                  : <p className="lead">You can now close this unit.</p>
+              }
               <div className="d-flex align-items-center">
-                <button onClick={handleReturnClick} className="btn btn-danger" style={{ width: 80 }} disabled={state.returnForm.message.length === 0 || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
-                  {state.processingState === 'returning' ? <Spinner size="sm" /> : 'Return'}
+                <button onClick={handleCloseClick} className="btn btn-primary" style={{ width: 80 }} disabled={state.newSubmission.mark === null || state.newSubmission.responseFilename === null || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
+                  {state.processingState === 'closing' ? <Spinner size="sm" /> : 'Close'}
                 </button>
-                {state.processingState === 'return error' && <span className="text-danger ms-2">{state.errorMessage ?? 'error'}</span>}
+                {state.processingState === 'close error' && <span className="text-danger ms-2">{state.errorMessage ?? 'error'}</span>}
               </div>
             </div>
-          </div>
-        </div>
-      </Section>
+          </Section>
+          <Section>
+            <div className="container">
+              <div className="row">
+                <div className="col-12 col-md-10 col-lg-8">
+                  <h2 className="h3">Return to Student for Changes</h2>
+                  <p>This form is to be used for the following reasons:</p>
+                  <ol>
+                    <li>A student uploaded the wrong files (e.g., A2 was submitted in the slot for E2).</li>
+                    <li>You received a corrupt or blank file from a student (i.e., you can't open it).</li>
+                  </ol>
+                  <p><strong className="text-danger">Please do not use this form to ask students to redo parts of an assignment or unit.</strong> Please mark the work as is. If the student does poorly, let the student know that he or she can resubmit the unit for a small fee. Advise the student to call the School to set this up.</p>
+                  <p>To send this assignment back to the student, enter a brief reason below and then click the &ldquo;Return&rdquo; button. We'll read your message and write our own message to the student.</p>
+                  <div className="mb-3">
+                    <label htmlFor={'returnMessage' + submissionId} className="form-label fw-bold">Message to Student</label>
+                    <textarea onChange={handleMessageChange} value={state.returnForm.message} maxLength={1000} id={'returnMessage' + submissionId} className="form-control" rows={7} />
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <button onClick={handleReturnClick} className="btn btn-danger" style={{ width: 80 }} disabled={state.returnForm.message.length === 0 || state.processingState === 'closing' || state.processingState === 'returning' || state.processingState === 'uploading' || state.processingState === 'deleting'}>
+                      {state.processingState === 'returning' ? <Spinner size="sm" /> : 'Return'}
+                    </button>
+                    {state.processingState === 'return error' && <span className="text-danger ms-2">{state.errorMessage ?? 'error'}</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Section>
+        </>
+      )}
     </>
   );
 };

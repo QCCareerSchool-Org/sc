@@ -13,9 +13,10 @@ type Props = {
   notes: string | null;
   form: InputForm;
   save: (partId: string, id: string, mark: number | null, notes: string | null) => void;
+  submissionClosed: boolean;
 };
 
-export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form, save }) => {
+export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form, save, submissionClosed }) => {
   const [ markFormValue, setMarkFormValue ] = useState(mark); // for the html input
   const [ notesFormValue, setNotesFormValue ] = useState(notes); // for the html input
 
@@ -88,18 +89,21 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form
   return (
     <div className="row markForm">
       <div className="col-12 col-lg-8">
-        <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
+        {submissionClosed
+          ? <div className="form-control">{notesFormValue}</div>
+          : <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
+        }
       </div>
       {(points > 0 || form.state === 'saving') && (
         <div className="col-lg-4 mt-3 mt-lg-0">
-          {/* <div className="d-flex align-items-center"> */}
           {points > 0 && (
             <div className="fw-bold text-nowrap">
-              <input onChange={handleMarkChange} value={markFormValue ?? ''} type="number" min={0} max={points} step={1} className="form-control mark tutorFillable" /> / {points}
+              {submissionClosed
+                ? <div className="form-control mark">{markFormValue}</div>
+                : <input onChange={handleMarkChange} value={markFormValue ?? ''} type="number" min={0} max={points} step={1} className="form-control mark tutorFillable" />
+              } / {points}
             </div>
           )}
-          {/* {form.state === 'saving' && <div className="ms-2"><Spinner size="sm" /></div>} */}
-          {/* </div> */}
         </div>
       )}
       <div className="col-12">
