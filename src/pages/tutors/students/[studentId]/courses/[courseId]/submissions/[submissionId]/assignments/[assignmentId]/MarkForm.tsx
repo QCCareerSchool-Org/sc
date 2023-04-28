@@ -90,7 +90,7 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form
     <div className="row markForm">
       <div className="col-12 col-lg-8">
         {submissionClosed
-          ? <div className="form-control">{notesFormValue}</div>
+          ? <div className="form-control" style={{ minHeight: 120 }}>{notesFormValue}</div>
           : <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
         }
       </div>

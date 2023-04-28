@@ -87,7 +87,7 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
               <tr><th scope="row">Student Number</th><td>{state.newSubmission.enrollment.course.code}&thinsp;{state.newSubmission.enrollment.studentNumber}</td></tr>
               <tr><th scope="row">Submitted</th><td>{formatDate(state.newSubmission.submitted)}</td></tr>
               {state.newSubmission.closed && state.newSubmission.tutorId === tutorId && state.newSubmission.responseFilename !== null && (
-                <tr><th scope="row">Audio File</th><td style={{ padding: '0.3rem' }}><Audio controls src={`${endpoint}/tutors/${tutorId}/newSubmissions/${submissionId}/feedback`} style={{ marginBottom: -6, maxHeight: 32, maxWidth: 240 }} /></td></tr>
+                <tr><th scope="row">Audio File</th><td style={{ padding: '0.3rem' }}><Audio controls src={`${endpoint}/tutors/${tutorId}/students/${studentId}/newSubmissions/${submissionId}/response`} style={{ marginBottom: -6, maxHeight: 32, maxWidth: 240 }} /></td></tr>
               )}
             </tbody>
           </table>
