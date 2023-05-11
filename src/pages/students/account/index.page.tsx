@@ -8,7 +8,7 @@ import { useAuthState } from '@/hooks/useAuthState';
 const AccountPage: NextPage = () => {
   const { studentId, crmId } = useAuthState();
 
-  if (typeof studentId === 'undefined' || typeof crmId === 'undefined') {
+  if (typeof studentId === 'undefined') {
     return <ErrorPage statusCode={500} />;
   }
 
