@@ -10,6 +10,7 @@ import CC from '@/images/course-suggestions/thumbnails/cc.jpg';
 import CE from '@/images/course-suggestions/thumbnails/ce.jpg';
 import CP from '@/images/course-suggestions/thumbnails/cp.jpg';
 import DB from '@/images/course-suggestions/thumbnails/db.jpg';
+import DC from '@/images/course-suggestions/thumbnails/dc.jpg';
 import DD from '@/images/course-suggestions/thumbnails/dd.jpg';
 import DG from '@/images/course-suggestions/thumbnails/dg.jpg';
 import DT from '@/images/course-suggestions/thumbnails/dt.jpg';
@@ -140,6 +141,8 @@ const getSrc = (courseCode: string): StaticImageData => {
       return DD;
     case 'BS':
       return BS;
+    case 'DC':
+      return DC;
 
     default:
       console.warn(`unsupported course thumbnail ${courseCode}`);
