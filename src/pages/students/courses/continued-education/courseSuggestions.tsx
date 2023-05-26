@@ -253,6 +253,13 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           shortDescription: 'Offer in-demand grooming services for your clients\' furry family members. With QC\'s hands-on training, develop the skills you need to groom a dog from start to finish.',
           description: 'This course will begin by outlining the fundamentals of grooming, including safety, first aid, dog anatomy and tools. You\'ll learn how to complete perfect prep work for a groom by practicing bathing, drying, nail clipping and brushing. Then you\'ll master pet cuts and breed standards through a series of practical assignments.',
         },
+        {
+          code: 'DC',
+          name: 'Dog Behavior',
+          certification: 'International Dog Behavior Specialist',
+          shortDescription: 'Dog owners often need help to address their pets’ challenging behavior issues. Help dogs overcome anxiety and reactivity to become the best furry companions they can be!',
+          description: 'Pet parents are desperate for specialized trainers who can help them overcome specific challenges and concerns with their pups, including anxiety and aggression. With QC’s Dog Behavior Course, you’ll take your training skill to the next level as you learn the entire behavior modification process from start to finish. You’ll be well-prepared to confidently address common concerns like anxiety, phobias and even aggression.',
+        },
       ],
     },
   ],
