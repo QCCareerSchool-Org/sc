@@ -229,7 +229,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           name: 'Dog Behavior',
           certification: 'International Dog Behavior Specialist',
           shortDescription: 'Dog owners often need help to address their pets’ challenging behavior issues. Help dogs overcome anxiety and reactivity to become the best furry companions they can be!',
-          description: <>Pet parents are desperate for specialized trainers who can help them overcome specific challenges and concerns with their pups, including anxiety and aggression. With QC’s Dog Behavior Course, you’ll take your training skill to the next level as you learn the entire behavior modification process from start to finish. You’ll be well-prepared to confidently address common concerns like anxiety, phobias and even aggression. <a href="https://www.qcpetstudies.com/teasers/dog-behavior/content/index.html" target="_blank" rel="noopener noreferrer">View the course teaser</a></>,
+          description: <>Pet parents are desperate for specialized trainers who can help them overcome specific challenges and concerns with their pups, including anxiety and aggression. With QC's Dog Behavior Course, you'll take your training skill to the next level as you learn the entire behavior modification process from start to finish. You'll be well-prepared to confidently address common concerns like anxiety, phobias and even aggression. <a href="https://www.qcpetstudies.com/teasers/dog-behavior/content/index.html" target="_blank" rel="noopener noreferrer">View the course teaser</a></>,
         },
       ],
     },
