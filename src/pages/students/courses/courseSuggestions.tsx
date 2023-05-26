@@ -222,7 +222,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           name: 'Dog Grooming',
           certification: 'International Dog Grooming Professional',
           shortDescription: 'Offer in-demand grooming services for your clients\' furry family members. With QC\'s hands-on training, develop the skills you need to groom a dog from start to finish.',
-          description: 'This course will begin by outlining the fundamentals of grooming, including safety, first aid, dog anatomy and tools. You\'ll learn how to complete perfect prep work for a groom by practicing bathing, drying, nail clipping and brushing. Then you\'ll master pet cuts and breed standards through a series of practical assignments.',
+          description: <>This course will begin by outlining the fundamentals of grooming, including safety, first aid, dog anatomy and tools. You\'ll learn how to complete perfect prep work for a groom by practicing bathing, drying, nail clipping and brushing. Then you\'ll master pet cuts and breed standards through a series of practical assignments. <a href="https://www.qcpetstudies.com/teasers/dog-behavior/content/index.html" target="_blank" rel="noopener noreferrer">View the course teaser</a></>,
         },
         {
           code: 'DC',

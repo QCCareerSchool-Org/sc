@@ -10,6 +10,7 @@ import CC from '@/images/course-suggestions/heroes/cc.jpg';
 import CE from '@/images/course-suggestions/heroes/ce.jpg';
 import CP from '@/images/course-suggestions/heroes/cp.jpg';
 import DB from '@/images/course-suggestions/heroes/db.jpg';
+import DC from '@/images/course-suggestions/heroes/dc.jpg';
 import DD from '@/images/course-suggestions/heroes/dd.jpg';
 import DG from '@/images/course-suggestions/heroes/dg.jpg';
 import DT from '@/images/course-suggestions/heroes/dt.jpg';
@@ -139,6 +140,8 @@ const getSrc = (courseCode: string): StaticImageData => {
       return DD;
     case 'BS':
       return BS;
+    case 'DC':
+      return DC;
 
     default:
       console.warn(`unsupported course hero ${courseCode}`);
