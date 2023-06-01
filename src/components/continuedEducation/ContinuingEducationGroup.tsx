@@ -173,7 +173,7 @@ export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlu
             <GroupBannerImage group={group} />
             <h3 className="h2 mb-0 description">{group.description}</h3>
             <div className="d-flex justify-content-between plus">
-              <div><small className="text-uppercase">Learn More</small></div> {expanded ? <FaMinusCircle size={iconSize} /> : <FaPlusCircle size={iconSize} />}
+              <div><small className="text-uppercase">Click to view courses</small></div> {expanded ? <FaMinusCircle size={iconSize} /> : <FaPlusCircle size={iconSize} />}
             </div>
           </div>
         </button>
