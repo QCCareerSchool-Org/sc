@@ -1,6 +1,8 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
+import type { CRMBonusItem, RawCRMBonusItem } from '@/domain/crm/crmBonusItem';
+import type { CRMBonusItemShipment, RawCRMBonusItemShipment } from '@/domain/crm/crmBonusItemShipment';
 import type { CRMCourse, RawCRMCourse } from '@/domain/student/crm/crmCourse';
 import type { CRMCurrency } from '@/domain/student/crm/crmCurrency';
 import type { CRMEnrollment, RawCRMEnrollment } from '@/domain/student/crm/crmEnrollment';
@@ -16,6 +18,7 @@ export type CRMEnrollmentWithCourse = CRMEnrollment & {
     paymentMethod: CRMPaymentMethod | null;
   }>;
   paymentMethods: CRMPaymentMethod[];
+  bonusItemShipments: Array<CRMBonusItemShipment & { bonusItem: CRMBonusItem }>;
 };
 
 type RawCRMEnrollmentWithCourse = RawCRMEnrollment & {
@@ -25,6 +28,7 @@ type RawCRMEnrollmentWithCourse = RawCRMEnrollment & {
     paymentMethod: RawCRMPaymentMethod | null;
   }>;
   paymentMethods: RawCRMPaymentMethod[];
+  bonusItemShipments: Array<RawCRMBonusItemShipment & { bonusItem: RawCRMBonusItem }>;
 };
 
 export interface ICRMEnrollmentService {
@@ -79,6 +83,18 @@ export class CRMEnrollmentService implements ICRMEnrollmentService {
       ...p,
       created: new Date(p.created),
       modified: p.modified === null ? null : new Date(p.modified),
+    })),
+    bonusItemShipments: raw.bonusItemShipments.map(s => ({
+      ...s,
+      qualified: s.qualified === null ? null : new Date(s.qualified),
+      prepared: s.prepared === null ? null : new Date(s.prepared),
+      shipped: s.shipped === null ? null : new Date(s.shipped),
+      created: new Date(s.created),
+      bonusItem: {
+        ...s.bonusItem,
+        created: new Date(s.bonusItem.created),
+        modified: s.bonusItem.modified === null ? null : new Date(s.bonusItem.modified),
+      },
     })),
   });
 }
