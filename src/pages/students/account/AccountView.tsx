@@ -6,6 +6,7 @@ import { Fragment, useMemo, useReducer } from 'react';
 
 import { CASocialInsuranceNumberForm } from './caSocialInsuranceNumberForm';
 import { MZKitNotice } from './MZKitNotice';
+import { OutstandingBalance } from './OutstandingBalance';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
@@ -25,6 +26,18 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
   useInitialData(dispatch, studentId, crmId);
 
   const filteredReceipts = useMemo(() => state.t2202Receipts?.filter(t => t.startYear <= 2022), [ state.t2202Receipts ]);
+
+  const unshippedDeluxeKitWithoutBrushes = useMemo(() => {
+    return state.crmStudent?.enrollments.some(e => e.bonusItemShipments.some(s => s.bonusItemId === '1f5fce32-f58a-11ed-b7ac-0050568e14ec' && !s.shipped));
+  }, [ state.crmStudent?.enrollments ]);
+
+  const hasOutstandingBalance = useMemo(() => {
+    return state.crmStudent?.enrollments.some(e => {
+      const amountPaid = e.transactions.filter(t => !t.extraCharge).map(t => t.amount).reduce((prev, cur) => prev.plus(cur), Big(0));
+      const twoInstallmentsWorth = Big(e.installment).times(2);
+      return Big(e.cost).minus(e.discount).minus(amountPaid).gte(twoInstallmentsWorth);
+    });
+  }, [ state.crmStudent?.enrollments ]);
 
   if (state.error) {
     return (
@@ -76,49 +89,63 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
       {state.crmStudent
         ? ( // new account info
           <>
-            <MZKitNotice crmId={crmId} />
             <Section>
               <div className="container">
                 <h1>My Account</h1>
-                <table className="table table-bordered bg-white w-auto">
-                  <tbody>
-                    <tr>
-                      <th scope="col">Name</th>
-                      <td>{state.crmStudent.firstName} {state.crmStudent.lastName}</td>
-                      <td style={{ verticalAlign: 'bottom' }} />
-                    </tr>
-                    <tr>
-                      <th scope="col">Portrait</th>
-                      <td />
-                      <td><a href="/students/portraits/index.bs.php">Change</a></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Address</th>
-                      <td>
-                        {state.crmStudent.address1}<br />
-                        {state.crmStudent.address2 && <>{state.crmStudent.address2}<br /></>}
-                        {state.crmStudent.city}{state.crmStudent.province && <>&nbsp;{state.crmStudent.province.code}</>}{state.crmStudent.postalCode && <>&nbsp;&nbsp;{state.crmStudent.postalCode}</>}<br />
-                        {state.crmStudent.country.name}
-                      </td>
-                      <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/billing-address"><a>Change</a></Link></td>
-                    </tr>
-                    <tr>
-                      <th scope="col">Email Address</th>
-                      <td>{state.crmStudent.emailAddress}</td>
-                      <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/email-address"><a>Change</a></Link></td>
-                    </tr>
-                    <tr>
-                      <th scope="col">Telephone Number</th>
-                      <td>{state.crmStudent.telephoneNumber}</td>
-                      <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/telephone-number"><a>Change</a></Link></td>
-                    </tr>
-                    <tr>
-                      <th scope="col">Password</th>
-                      <td>**********</td>
-                      <td style={{ verticalAlign: 'bottom' }}><a href="/students/passwords/edit.php">Change</a></td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div className="row">
+                  <div className="col-12 col-lg-6">
+                    <table className="table table-bordered bg-white w-auto">
+                      <tbody>
+                        <tr>
+                          <th scope="col">Name</th>
+                          <td>{state.crmStudent.firstName} {state.crmStudent.lastName}</td>
+                          <td style={{ verticalAlign: 'bottom' }} />
+                        </tr>
+                        <tr>
+                          <th scope="col">Portrait</th>
+                          <td />
+                          <td><a href="/students/portraits/index.bs.php">Change</a></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Address</th>
+                          <td>
+                            {state.crmStudent.address1}<br />
+                            {state.crmStudent.address2 && <>{state.crmStudent.address2}<br /></>}
+                            {state.crmStudent.city}{state.crmStudent.province && <>&nbsp;{state.crmStudent.province.code}</>}{state.crmStudent.postalCode && <>&nbsp;&nbsp;{state.crmStudent.postalCode}</>}<br />
+                            {state.crmStudent.country.name}
+                          </td>
+                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/billing-address"><a>Change</a></Link></td>
+                        </tr>
+                        <tr>
+                          <th scope="col">Email Address</th>
+                          <td>{state.crmStudent.emailAddress}</td>
+                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/email-address"><a>Change</a></Link></td>
+                        </tr>
+                        <tr>
+                          <th scope="col">Telephone Number</th>
+                          <td>{state.crmStudent.telephoneNumber}</td>
+                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/telephone-number"><a>Change</a></Link></td>
+                        </tr>
+                        <tr>
+                          <th scope="col">Password</th>
+                          <td>**********</td>
+                          <td style={{ verticalAlign: 'bottom' }}><a href="/students/passwords/edit.php">Change</a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  {unshippedDeluxeKitWithoutBrushes
+                    ? (
+                      <div className="col-12 col-lg-6">
+                        <MZKitNotice countryCode={state.crmStudent.country.code} />
+                      </div>
+                    )
+                    : hasOutstandingBalance && (
+                      <div className="col-12 col-lg-6">
+                        <OutstandingBalance countryCode={state.crmStudent.country.code} />
+                      </div>
+                    )}
+                </div>
               </div>
             </Section>
             <Section>

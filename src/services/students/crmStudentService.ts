@@ -1,6 +1,8 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
+import type { CRMBonusItem, RawCRMBonusItem } from '@/domain/crm/crmBonusItem';
+import type { CRMBonusItemShipment, RawCRMBonusItemShipment } from '@/domain/crm/crmBonusItemShipment';
 import type { CRMCountry } from '@/domain/crm/crmCountry';
 import type { CRMProvince } from '@/domain/crm/crmProvince';
 import type { CRMCourse, RawCRMCourse } from '@/domain/student/crm/crmCourse';
@@ -14,13 +16,23 @@ import { crmEndpoint } from 'src/basePath';
 export type CRMStudentWithCountryProvinceAndEnrollments = CRMStudent & {
   province: CRMProvince | null;
   country: CRMCountry;
-  enrollments: Array<CRMEnrollment & { course: CRMCourse; currency: CRMCurrency; transactions: CRMTransaction[] }>;
+  enrollments: Array<CRMEnrollment & {
+    course: CRMCourse;
+    currency: CRMCurrency;
+    transactions: CRMTransaction[];
+    bonusItemShipments: Array<CRMBonusItemShipment & { bonusItem: CRMBonusItem }>;
+  }>;
 };
 
 type RawCRMStudentWithCountryProvinceAndEnrollments = RawCRMStudent & {
   province: CRMProvince | null;
   country: CRMCountry;
-  enrollments: Array<RawCRMEnrollment & { course: RawCRMCourse; currency: RawCRMCurrency; transactions: RawCRMTransaction[] }>;
+  enrollments: Array<RawCRMEnrollment & {
+    course: RawCRMCourse;
+    currency: RawCRMCurrency;
+    transactions: RawCRMTransaction[];
+    bonusItemShipments: Array<RawCRMBonusItemShipment & { bonusItem: RawCRMBonusItem }>;
+  }>;
 };
 
 export type CRMStudentWithCountryAndProvince = CRMStudent & {
@@ -142,6 +154,18 @@ export class CRMStudentService implements ICRMStudentService {
         postedDate: t.postedDate === null ? null : new Date(t.postedDate),
         created: new Date(t.created),
         modified: t.modified === null ? null : new Date(t.modified),
+      })),
+      bonusItemShipments: e.bonusItemShipments.map(s => ({
+        ...s,
+        qualified: s.qualified === null ? null : new Date(s.qualified),
+        prepared: s.prepared === null ? null : new Date(s.prepared),
+        shipped: s.shipped === null ? null : new Date(s.shipped),
+        created: new Date(s.created),
+        bonusItem: {
+          ...s.bonusItem,
+          created: new Date(s.bonusItem.created),
+          modified: s.bonusItem.modified === null ? null : new Date(s.bonusItem.modified),
+        },
       })),
     })),
   });
