@@ -174,7 +174,7 @@ const getMeta = (crmEnrollment: CRMEnrollmentWithCourse): { discountedCost: numb
       if (crmEnrollment.paymentStart) {
         nextInstallment = new Date(crmEnrollment.paymentStart.getFullYear(), crmEnrollment.paymentStart.getMonth(), crmEnrollment.paymentStart.getDate(), paymentHour, paymentMinute);
         while (nextInstallment.getTime() < now.getTime() || nextInstallment.getTime() < crmEnrollment.paymentStart.getTime()) {
-          nextInstallment.setDate(nextInstallment.getDate() + 7);
+          nextInstallment.setDate(nextInstallment.getDate() + 14);
         }
       }
     }
