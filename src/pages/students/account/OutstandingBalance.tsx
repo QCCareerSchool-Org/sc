@@ -1,8 +1,6 @@
-import Image from 'next/image';
 import type { FC } from 'react';
 
 import styles from './MZKitNotice.module.css';
-import KitImage from './sc-deluxe-no-brushes.jpg';
 import { getTelephoneNumber } from 'src/lib/helper-functions';
 
 type Props = {
@@ -10,7 +8,7 @@ type Props = {
 };
 
 export const OutstandingBalance: FC<Props> = ({ countryCode }) => {
-  const mailtoHref = 'mailto:account@qccareerschool.com?subject=Paying Off My Balance&body=Please send me more information on any discounts and promotions that I qualify for if I pay off my balance.';
+  const mailtoHref = 'mailto:accounts@qccareerschool.com?subject=Paying Off My Balance&body=Please send me more information on any discounts and promotions that I qualify for if I pay off my balance.';
 
   const telephoneNumber = getTelephoneNumber(countryCode);
 
