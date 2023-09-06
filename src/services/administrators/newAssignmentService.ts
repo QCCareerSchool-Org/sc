@@ -61,7 +61,7 @@ export class NewAssignmentService implements INewAssignmentService {
 
   public saveUploadSlot(administratorId: number, uploadSlotId: string, markOverride: number | null): Observable<NewUploadSlot> {
     const url = `${endpoint}/administrators/${administratorId}/newUploadSlots/${uploadSlotId}`;
-    return this.httpService.patch<RawNewUploadSlot>(url, { markOverride }).pipe(
+    return this.httpService.put<RawNewUploadSlot>(url, { markOverride }).pipe(
       map(raw => ({
         ...raw,
         created: new Date(raw.created),
