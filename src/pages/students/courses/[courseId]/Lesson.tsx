@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaRegMinusSquare, FaRegPlusSquare } from 'react-icons/fa';
 
 import type { Subject } from 'rxjs';
+import { LessonBorder } from './LessonBorder';
 import { LessonStats } from './LessonStats';
 import type { MaterialWithCompletionForm } from './state';
 import type { MaterialCompleteEvent } from './useMaterialCompletion';
@@ -124,14 +125,3 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete,
     </>
   );
 };
-
-type LessonBorderProps = {
-  complete: boolean;
-  children: ReactNode;
-};
-
-const LessonBorder: FC<LessonBorderProps> = ({ complete, children }) => (
-  <div className="container" style={complete ? { backgroundColor: 'rgb(232, 255, 239)' } : {}}>
-    {children}
-  </div>
-);

@@ -40,14 +40,10 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
 
   const initializeNextUnit$ = useInitializeNextUnit(dispatch);
 
-  const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, submissionId: string): void => {
-    void router.push(`/students/courses/${courseId}/submissions/${submissionId}`);
-  }, [ router, courseId ]);
-
   const nextUnit = useMemo(() => getNextUnit(state.data?.enrollment), [ state.data?.enrollment ]);
 
   const hasVideos = useMemo(() => state.data?.enrollment.course.units.some(u => u.videos.length > 0), [ state.data?.enrollment.course.units ]);
-  // const hasResources = useMemo(() => state.data.enrollment.course.units.some(u => u.videos.length > 0), [ state.data.enrollment.course.units ]);
+  // const hasResources = useMemo(() => enrollment.course.units.some(u => u.videos.length > 0), [ enrollment.course.units ]);
   const hasResources = false;
 
   const certificationData = useMemo(() => (state.data?.enrollment.course.code ? certificationDataDictionary[state.data?.enrollment.course.code] : undefined), [ state.data?.enrollment.course.code ]);
@@ -69,9 +65,9 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 <p className="lead mb-0 placeholder-glow"><span className="placeholder col-6" /></p>
               </div>
               <div className="col-12 col-lg-6">
-                <h2 className="h4 placeholder-glow"><span className="placeholder col-6" /></h2>
+                {/* <h2 className="h4 placeholder-glow"><span className="placeholder col-6" /></h2>
                 <div className="placeholder-glow mb-4" style={{ height: 80 }}><span className="placeholder col-12 h-100" /></div>
-                <button className="btn btn-primary disabled placeholder" style={{ width: 120 }} />
+                <button className="btn btn-primary disabled placeholder" style={{ width: 120 }} /> */}
               </div>
             </div>
           </div>
@@ -83,11 +79,15 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
     );
   }
 
+  const enrollment = state.data.enrollment;
+  const enrollmentId = enrollment.enrollmentId;
+  const materialCompletions = enrollment.materialCompletions;
+
   const [ graduated, graduatedDate ] = state.data.crmEnrollment
     ? [ state.data.crmEnrollment.status === 'G', state.data.crmEnrollment.status === 'G' ? state.data.crmEnrollment.statusDate : null ]
-    : [ state.data.enrollment.graduated, null ];
+    : [ enrollment.graduated, null ];
 
-  if (state.data.enrollment.course.submissionType !== 1) {
+  if (enrollment.course.submissionType !== 1) {
     // courses with the old system should use the old page
     window.location.href = `/students/course-materials/new.bs.php?course_id=${courseId}`;
     return null;
@@ -101,9 +101,6 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
     });
   };
 
-  const enrollmentId = state.data.enrollment.enrollmentId;
-  const materialCompletions = state.data.enrollment.materialCompletions;
-
   const handleVideoPlay = (e: SyntheticEvent<HTMLVideoElement, Event>, videoId: string): void => {
     setPlayingVideoId(videoId);
   };
@@ -115,10 +112,10 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
         <div className="container text-white" style={{ minHeight: 240 }}>
           <div className="row">
             <div className="col-12 col-lg-6">
-              <h1 className="mb-0 mb-2 text-shadow">{state.data.enrollment.course.name}</h1>
-              <p className="lead mb-0 text-shadow">Student Number: <strong>{state.data.enrollment.course.code}&thinsp;{state.data.enrollment.studentNumber}</strong></p>
-              {state.data.enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{state.data.enrollment.tutor.firstName} {state.data.enrollment.tutor.lastName}</strong></p>}
-              {state.data.enrollment.course.school.name === 'QC Pet Studies' && (
+              <h1 className="mb-0 mb-2 text-shadow">{enrollment.course.name}</h1>
+              <p className="lead mb-0 text-shadow">Student Number: <strong>{enrollment.course.code}&thinsp;{enrollment.studentNumber}</strong></p>
+              {enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{enrollment.tutor.firstName} {enrollment.tutor.lastName}</strong></p>}
+              {enrollment.course.school.name === 'QC Pet Studies' && (
                 <div className="mt-4">
                   <Link href="/student-handbooks/qc-pet-studies/content/index.html"><a target="_blank" rel="noreferrer"><button className="btn btn-lg btn-red">Student Handbook <FaDownload /></button></a></Link>
                 </div>
@@ -131,8 +128,8 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              <p id="assignments" className="lead mb-2 text-shadow menuScrollOffset"><MdAssignmentTurnedIn /> Assignments</p>
-              <SubmissionsTable newSubmissions={state.data.enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
+              {/* <p id="assignments" className="lead mb-2 text-shadow menuScrollOffset"><MdAssignmentTurnedIn /> Assignments</p>
+              <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
               {nextUnit.success
                 ? (
                   <div className="d-flex align-items-center">
@@ -146,7 +143,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   </div>
                 )
                 : <NextUnitMessage nextUnit={nextUnit} />
-              }
+              } */}
             </div>
           </div>
         </div>
@@ -154,9 +151,9 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
       <Section id="materials">
         <div className="container">
           <h2>Course Materials</h2>
-          {state.data.enrollment.course.units.length > 0 && (
+          {enrollment.course.units.length > 0 && (
             <>
-              {state.data.enrollment.course.units.map((u, i) => (
+              {enrollment.course.units.map((u, i) => (
                 <UnitAccordion
                   key={u.unitId}
                   studentId={studentId}
@@ -166,6 +163,10 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   materialCompletions={materialCompletions}
                   materialCompletion$={materialCompletion$}
                   firstUnit={i === 0}
+                  submission={enrollment.newSubmissions.find(s => s.unitLetter === u.unitLetter)}
+                  nextUnit={nextUnit}
+                  onInitializeButtonClick={handleInitializeButtonClick}
+                  formState={state.form}
                 />
               ))}
             </>
@@ -184,7 +185,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
           <div className="container">
             <h2>Videos</h2>
             <p className="lead">You can re-watch your course videos below.</p>
-            {state.data.enrollment.course.units.map(u => {
+            {enrollment.course.units.map(u => {
               if (u.videos.length === 0) {
                 return null;
               }
@@ -211,14 +212,14 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
           certificationData={certificationData}
           graduated={graduated}
           graduatedDate={graduatedDate}
-          amountPaidRate={state.data.enrollment.amountPaid === 0 ? 1 : state.data.enrollment.courseCost / state.data.enrollment.amountPaid}
+          amountPaidRate={enrollment.amountPaid === 0 ? 1 : enrollment.courseCost / enrollment.amountPaid}
         />
       )}
     </>
   );
 };
 
-type NextUnitResult = {
+export type NextUnitResult = {
   success: true;
   unitLetter: string;
 } | {
