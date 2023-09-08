@@ -1,23 +1,21 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
-import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
+import type { FC, MouseEventHandler, SyntheticEvent } from 'react';
+import { Fragment, useMemo, useReducer, useState } from 'react';
 import { FaDownload } from 'react-icons/fa';
-import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
+import { MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
 
 import { certificationDataDictionary } from './certificationData';
 import { CertificationLogoSection } from './CertificationLogoSection';
 import { CourseHeaderImage } from './CourseHeaderImage';
 import { CourseVideo } from './CourseVideo';
 import { initialState, reducer } from './state';
-import { SubmissionsTable } from './SubmissionsTable';
 import { UnitAccordion } from './UnitAccordion';
 import { useInitialData } from './useInitialData';
 import { useInitializeNextUnit } from './useInitializeNextUnit';
 import { useMaterialCompletion } from './useMaterialCompletion';
 import { Section } from '@/components/Section';
-import { Spinner } from '@/components/Spinner';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
 
@@ -27,7 +25,6 @@ type Props = {
 };
 
 export const CourseView: FC<Props> = ({ studentId, courseId }) => {
-  const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const [ playingVideoId, setPlayingVideoId ] = useState<string>();
 
