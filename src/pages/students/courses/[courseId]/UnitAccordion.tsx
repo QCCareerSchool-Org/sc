@@ -1,19 +1,22 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { FC, MouseEventHandler } from 'react';
 import { Fragment, useEffect, useRef } from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
 import type { Subject } from 'rxjs';
-import { AssignmentReminder } from './AssignmentReminder';
 import type { NextUnitResult } from './CourseView';
 import { Lesson } from './Lesson';
-import { LessonBorder } from './LessonBorder';
+import { MaterialButton } from './MaterialButton';
+import PagesIcon from './pages.svg';
 import type { MaterialWithCompletionForm, State } from './state';
+import { UnitAccordionSectionPadding } from './UnitAccordionSectionPadding';
 import type { MaterialCompleteEvent } from './useMaterialCompletion';
 import { Spinner } from '@/components/Spinner';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { NewSubmission } from '@/domain/student/newSubmission';
 import type { Unit } from '@/domain/unit';
+import { useScreenWidth } from '@/hooks/useScreenWidth';
 import { useServices } from '@/hooks/useServices';
 import { useUnitToggleDispatch } from '@/hooks/useUnitToggleDispatch';
 import { useUnitToggleState } from '@/hooks/useUnitToggleState';
@@ -65,47 +68,29 @@ export const UnitAccordion: FC<Props> = props => {
         {open ? <AiOutlineMinusCircle size={iconSize} /> : <AiOutlinePlusCircle size={iconSize} />}
       </div>
       <Separator />
-      {open && (
-        <div className="my-4">
-          {unit.materials.filter(m => m.type !== 'assignment').map((m, i) => {
-            const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
-            return (
-              <Fragment key={m.materialId}>
-                {i > 0 && <hr />}
-                {m.type === 'lesson' && <Lesson studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} />}
-                {m.type === 'assignment' && <AssignmentReminder title={m.title} description={m.description} />}
-              </Fragment>
-            );
-          })}
-          {(submission || (nextUnit.success && nextUnit.unitLetter === unit.unitLetter)) && (
-            <>
-              <hr />
-              <LessonBorder complete={false}>
-                <div className="py-4">
+      {open
+        ? (
+          <div className="mb-4">
+            {unit.materials.filter(m => m.type !== 'assignment').map((m, i, a) => {
+              const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
+              return (
+                <Lesson key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} last={i === a.length - 1} />
+              );
+            })}
+            {(submission || (nextUnit.success && nextUnit.unitLetter === unit.unitLetter)) && (
+              <div className="container assignmentContainer">
+                <UnitAccordionSectionPadding>
                   {submission
-                    ? <SubmissionSection courseId={courseId} submission={submission} />
-                    : (
-                      <>
-                        <h4 className="title h6 mb-2">Assignments</h4>
-                        <p className="small">Once you've completed all of your lessons for this unit, you're ready to begin your assignments! Click the button below to get started.</p>
-                        <div className="d-flex align-items-center">
-                          <button onClick={props.onInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
-                            {formState.processingState === 'initializing'
-                              ? <Spinner size="sm" />
-                              : <>Start</>
-                            }
-                          </button>
-                          {formState.processingState === 'initialize error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'initializing'}</span>}
-                        </div>
-                      </>
-                    )
+                    ? <SubmissionSection courseId={courseId} unitLetter={unit.unitLetter} submission={submission} />
+                    : <EmptySubmissionSection unitLetter={unit.unitLetter} formState={formState} onInitializeButtonClick={props.onInitializeButtonClick} />
                   }
-                </div>
-              </LessonBorder>
-            </>
-          )}
-        </div>
-      )}
+                </UnitAccordionSectionPadding>
+              </div>
+            )}
+          </div>
+        )
+        : <div style={{ height: '1rem' }} />
+      }
       <style jsx>{`
       @media (min-width: 992px) {
         .title {
@@ -116,6 +101,10 @@ export const UnitAccordion: FC<Props> = props => {
         .title {
            font-size: 1.25rem;
         }
+      }
+      .assignmentContainer {
+        background: black;
+        color: white;
       }
       `}</style>
     </>
@@ -132,6 +121,7 @@ const Separator: FC = () => (
         border-left:0;
         border-bottom: 2px solid #c70c27;
         border-right:0;
+        margin-bottom: 0;
       }
     `}</style>
   </>
@@ -139,31 +129,148 @@ const Separator: FC = () => (
 
 type SubmissionSectionProps = {
   courseId: number;
+  unitLetter: string;
   submission: NewSubmission;
 };
 
 const SubmissionSection: FC<SubmissionSectionProps> = props => {
   const { courseId, submission } = props;
   const { gradeService } = useServices();
+  const screenWidth = useScreenWidth();
+  const lg = screenWidth >= 992;
 
   const grade = submission.mark === null ? null : gradeService.calculate(submission.mark, submission.points, submission.created);
 
   return (
     <>
-      <h4 className="title h6 mb-2">Submission {submission.unitLetter}{submission.title && <>: {submission.title}</>}</h4>
-
-      <p className="lead">
-        Status: {submission.closed
-          ? <>Marked {formatDate(submission.closed)}</>
-          : submission.submitted
-            ? <>{submission.skipped ? 'Skipped' : 'Submitted'} {formatDate(submission.submitted)}</>
-            : <>In Progress</>
+      <div className="d-flex align-items-center">
+        <div className="assignmentsLeft">
+          {submission.closed === null
+            ? <Image src={PagesIcon} alt="Assignments" />
+            : <GreenCircleCheck />
+          }
+        </div>
+        <div className="assignmentsCenter">
+          <h4 className="title h6 mb-2">Assignments Unit {props.unitLetter}{lg && submission.title && <span className="fw-normal">: {submission.title}</span>}</h4>
+          {submission.description && (
+            <div className="mb-2">
+              {submission.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="small mb-0">{p}</p>)}
+            </div>
+          )}
+          <p className="mb-0">
+            {submission.closed
+              ? <><span className="markedGreen fw-bold">Completed</span>{grade !== null && <> | Grade {grade}</>}</>
+              : submission.submitted
+                ? <><span className="text-primary fw-bold">{submission.skipped ? 'Skipped' : 'Submitted'}</span> | {formatDate(submission.submitted)}</>
+                : <><span className="text-primary fw-bold">Started</span> | {formatDate(submission.created)}</>
+            }
+          </p>
+          {!lg && (
+            <div className="mt-4">
+              <Link href={`${courseId}/submissions/${submission.submissionId}`}><a><MaterialButton color="blue">View Assignments</MaterialButton></a></Link>
+            </div>
+          )}
+        </div>
+        {lg && (
+          <div className="assignmentsRight">
+            <Link href={`${courseId}/submissions/${submission.submissionId}`}><a><MaterialButton color="blue">View Assignments</MaterialButton></a></Link>
+          </div>
+        )}
+      </div>
+      <style jsx>{`
+      .markedGreen {
+        color: #2dcb70;
+      }
+      .title {
+        font-size: 1.25rem;
+      }
+      .assignmentsLeft {
+        display: flex;
+        width: 100px;
+        justify-content: center;
+        margin-right: 0.5rem;
+      }
+      .assignmentsRight {
+        width: 185px;
+        text-align: right;
+        margin-left: 0.5rem;
+      }
+      .assignmentsCenter {
+        width: calc(100% - 100px - 1rem);
+        margin-left: 0.5rem;
+      }
+      @media (min-width: 992px) {
+        .assignmentsLeft {
+          width: 150px;
         }
-
-        {submission.closed && grade !== null && <><br />Grade: {grade}</>}
-      </p>
-
-      <Link href={`${courseId}/submissions/${submission.submissionId}`}><a className="btn btn-primary">View</a></Link>
+        .assignmentsCenter {
+          width: calc(100% - 150px - 185px - 2rem);
+          margin-right: 0.5rem;
+        }
+      }
+      `}</style>
     </>
+  );
+};
+
+const GreenCircleCheck: FC = () => (
+  <>
+    <div className="greenCircleCheck" />
+    <style jsx>{`
+      .greenCircleCheck {
+        display: inline-block;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 1.5rem;
+        background-color: #2dcb70;
+        border-color: #2dcb70;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m5.5 10 3 3 6-6'/%3e%3c/svg%3e");
+        color: white;
+      }
+    `}</style>
+  </>
+);
+
+type EmptySubmissionSectionProps = {
+  unitLetter: string;
+  formState: State['form'];
+  onInitializeButtonClick: MouseEventHandler;
+};
+
+const EmptySubmissionSection: FC<EmptySubmissionSectionProps> = props => {
+  return (
+    <div className="d-flex">
+      <div className="assignmentsLeft">
+        <Image src={PagesIcon} alt="Assignments" />
+      </div>
+      <div className="assignmentsCenter">
+        <h4 className="title h6 mb-2">Assignments Unit {props.unitLetter}</h4>
+        <p className="small">Once you've completed all of your lessons for this unit, you're ready to begin your assignments! Click the button below to get started.</p>
+        <div className="d-flex align-items-center">
+          <button onClick={props.onInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
+            {props.formState.processingState === 'initializing'
+              ? <Spinner size="sm" />
+              : <>Start</>
+            }
+          </button>
+          {props.formState.processingState === 'initialize error' && <span className="text-danger ms-2">{props.formState.errorMessage ?? 'initializing'}</span>}
+        </div>
+      </div>
+      <style jsx>{`
+      .title {
+        font-size: 1.25rem;
+      }
+      .assignmentsLeft {
+        width: 150px;
+        display: flex;
+        justify-content: center;
+        margin-right: 0.5rem;
+      }
+      .assignmentsCenter {
+        width: calc(100% - 150px - 1rem);
+        margin-left: 0.5rem;
+      }
+      `}</style>
+    </div>
   );
 };

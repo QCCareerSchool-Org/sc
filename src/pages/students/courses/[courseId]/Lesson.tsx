@@ -1,13 +1,15 @@
-import type { ChangeEventHandler, FC, MouseEventHandler, ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
-import { FaRegMinusSquare, FaRegPlusSquare } from 'react-icons/fa';
-
+import type { ChangeEventHandler, FC } from 'react';
+import { useId } from 'react';
+import { FaClock } from 'react-icons/fa';
 import type { Subject } from 'rxjs';
+
 import { LessonBorder } from './LessonBorder';
-import { LessonStats } from './LessonStats';
+import { MaterialButton } from './MaterialButton';
 import type { MaterialWithCompletionForm } from './state';
+import { UnitAccordionSectionPadding } from './UnitAccordionSectionPadding';
 import type { MaterialCompleteEvent } from './useMaterialCompletion';
 import { Img } from '@/components/Img';
+import { useScreenWidth } from '@/hooks/useScreenWidth';
 import { endpoint } from 'src/basePath';
 
 type Props = {
@@ -16,30 +18,15 @@ type Props = {
   material: MaterialWithCompletionForm;
   complete: boolean;
   materialCompletion$: Subject<MaterialCompleteEvent>;
+  last: boolean;
 };
 
-export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete, materialCompletion$ }) => {
-  const descriptionBox = useRef<HTMLDivElement>(null);
-  const [ expansion, setExpansion ] = useState(false);
-  const [ expanded, setExpanded ] = useState(false);
-
-  useEffect(() => {
-    if (descriptionBox.current === null) {
-      return;
-    }
-    const element = descriptionBox.current;
-    const handleResize = (): void => {
-      // setExpanded(false);
-      setExpansion(element.offsetHeight < element.scrollHeight);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const handleExpansionClick: MouseEventHandler = (): void => {
-    setExpanded(e => !e);
-  };
+export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete, materialCompletion$, last }) => {
+  const id = useId();
+  const screenwidth = useScreenWidth();
+  const md = screenwidth >= 768;
+  const lg = screenwidth >= 992;
+  const xl = screenwidth >= 1200;
 
   const handleCompleteChange: ChangeEventHandler<HTMLInputElement> = e => {
     materialCompletion$.next({
@@ -55,60 +42,73 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete,
   const imageSrc = `${endpoint}/students/${studentId}/materials/${material.materialId}/image`;
   return (
     <>
-      <LessonBorder complete={complete}>
-        <div className="row py-4">
-          <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
-            <div className="thumbnailWrapper">
-              <a href={href} target="_blank" rel="noopener noreferrer" className="thumbnail">
-                <Img src={imageSrc} className="img-fluid rounded-4 shadow" alt="image" />
-              </a>
+      <LessonBorder complete={complete} last={last}>
+        <UnitAccordionSectionPadding>
+          <div className="row">
+            <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
+              <div className="thumbnailWrapper">
+                <a href={href} target="_blank" rel="noopener noreferrer" className="thumbnail">
+                  <Img src={imageSrc} className="img-fluid rounded-4 shadow" alt="image" />
+                </a>
+              </div>
+            </div>
+            <div className="col-12 col-lg-8 col-xxl-9 d-flex">
+              <div className={`d-flex flex-column justify-content-between ${xl ? 'py-4' : lg ? 'py-2' : ''}`}>
+                <div>
+                  <h4 className="title h6 mb-2">{material.title}</h4>
+                  <p className="small mb-2 description">{material.description}</p>
+                  <div className="minutes"><div className="minutesIcon"><FaClock size={12} /></div> <span className="small"><span className="fw-bold">{material.minutes} min</span> to complete</span></div>
+                </div>
+                <div className={md ? 'd-flex justify-content-between' : ''}>
+                  <div className={md ? '' : 'mb-3'}>
+                    <a className="lessonButtonLink" href={href} target="_blank" rel="noopener noreferrer"><MaterialButton>View Lesson</MaterialButton></a>
+                  </div>
+
+                  <div className={`form-check round ${md ? 'right' : ''}`}>
+                    <input onChange={handleCompleteChange} checked={complete} className="form-check-input" type="checkbox" id={id} disabled={material.processingState === 'processing'} />
+                    <label className="form-check-label small fw-bold" htmlFor={id}>
+                      Click here when you have completed your lesson
+                    </label>
+                  </div>
+
+                </div>
+              </div>
             </div>
           </div>
-          <div className={`col-12 col-lg-5 col-xxl-6 mb-3 mb-lg-0 position-relative ${expanded ? '' : 'overflow-hidden'}`}>
-            <div ref={descriptionBox} className={`${expanded ? '' : 'description'}`}>
-              <h4 className="title h6 mb-2">{material.title}</h4>
-              <p className="small mb-0">{material.description}</p>
-            </div>
-            {(expansion || expanded) && <button onClick={handleExpansionClick} className={`moreLink ${expanded ? 'expanded' : 'collapsed'} link-secondary text-decoration-none d-none d-lg-block btn btn-link btn-sm p-0 w-100 cursor-pointed small text-end`}>{expanded ? <><FaRegMinusSquare /> show less</> : <><FaRegPlusSquare /> show more</>}</button>}
-          </div>
-          <div className="col-8 col-sm-6 col-md-5 col-lg-3">
-            {material.type === 'lesson' && <LessonStats material={material} complete={complete} onCompleteChange={handleCompleteChange} href={href} />}
-          </div>
-        </div>
+        </UnitAccordionSectionPadding>
       </LessonBorder>
       <style jsx>{`
-      .moreLink {
-        border: none;
-        bottom: -3px !important;
+      .description {
+        color: #777;
       }
-      .moreLink.expanded {
+      .form-check.round .form-check-input {
+        width: 1.25em;
+        height: 1.25em;
+        border-radius: 0.625em;
+        margin-top: 0.1875em;
       }
-      .moreLink.collapsed {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        padding-top: 3rem !important;
-        background: ${complete ? 'linear-gradient(rgba(232, 255, 239, 0.1), rgba(232, 255, 239, 1) 67%)' : 'linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 1) 67%)'};
+      .form-check.round .form-check-input:checked {
+        background-color: #2dcb70;
+        border-color: #2dcb70;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m5.5 10 3 3 6-6'/%3e%3c/svg%3e")
+      }
+      .form-check.right {
+        padding-left: 0;
+        padding-right: 1.625em;
+        text-align: end;
+      }
+      .form-check.right .form-check-input {
+        float: right;
+        margin-left: 0;
+        margin-right: -1.625em;       
+      }
+      .form-check.right .form-check-label {
+        text-align: end;
       }
       @media screen only and (max-width: 991px) {
         .thumbnailWrapper {
           max-width: 300px;
           margin: 0 auto 0 0;
-        }
-      }
-      @media screen only and (min-width: 992px) {
-        .description {
-          height: 193px;
-        }
-      }
-      @media screen only and (min-width: 1200px) {
-        .description {
-          height: 233px;
-        }
-      }
-      @media screen only and (min-width: 1400px) {
-        .description {
-          height: 200px;
         }
       }
       @media (min-width: 992px) {
@@ -120,6 +120,19 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete,
         .title {
            font-size: 1.25rem;
         }
+      }
+      .minutes {
+        display: flex;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        text-align: center;
+        font-weight: 500;
+      }
+      .minutesIcon {
+        position: relative;
+        top: -0.1875rem;
+        margin-right: 0.375rem;
       }
       `}</style>
     </>
