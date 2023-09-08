@@ -6,10 +6,10 @@ import type { NewSubmissionWithCourseAndChildren } from '@/services/students/new
 import { basePath } from 'src/basePath';
 
 type Props = {
-  unit: NewSubmissionWithCourseAndChildren;
+  submission: NewSubmissionWithCourseAndChildren;
 };
 
-export const AssignmentSection: FC<Props> = ({ unit }) => {
+export const AssignmentSection: FC<Props> = ({ submission }) => {
   const router = useRouter();
 
   const handleAssignmentClick = (e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
@@ -25,7 +25,7 @@ export const AssignmentSection: FC<Props> = ({ unit }) => {
     <Section className="assignmentSection">
       <div className="container">
         <h2>Assignments</h2>
-        {unit.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+        {submission.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
         <table className="table table-bordered table-hover bg-white w-auto">
           <thead>
             <tr>
@@ -35,7 +35,7 @@ export const AssignmentSection: FC<Props> = ({ unit }) => {
             </tr>
           </thead>
           <tbody>
-            {unit.newAssignments.map(a => (
+            {submission.newAssignments.map(a => (
               <tr key={a.assignmentId} onClick={e => handleAssignmentClick(e, a.assignmentId)} style={{ cursor: 'pointer' }}>
                 <th scope="row">{a.assignmentNumber}</th>
                 <td>{a.title}{a.optional && <span className="ms-1 text-danger">*</span>}</td>
@@ -44,7 +44,7 @@ export const AssignmentSection: FC<Props> = ({ unit }) => {
             ))}
           </tbody>
         </table>
-        {unit.newAssignments.some(a => a.optional) && <p><span className="ms-1 text-danger">*</span> Optional assignment</p>}
+        {submission.newAssignments.some(a => a.optional) && <p><span className="ms-1 text-danger">*</span> Optional assignment</p>}
       </div>
     </Section>
   );

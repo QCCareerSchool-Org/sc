@@ -1,27 +1,27 @@
-import type { FC, ReactNode } from 'react';
-import { FaArrowUp, FaBookOpen } from 'react-icons/fa';
+import type { FC, PropsWithChildren } from 'react';
 
 type Props = {
-  type: 'lesson' | 'assignment';
-  children: ReactNode;
+  color?: 'black' | 'blue';
 };
 
-export const MaterialButton: FC<Props> = ({ type, children }) => (
-  <>
-    <div className="lessonButton"><span className="icon">{type === 'lesson' ? <FaBookOpen /> : <FaArrowUp />}</span>{children}</div>
-    <style jsx>{`
-    .lessonButton {
-      background-color: black;
-      color: white;
-      text-align: center;
-      padding: 0.375rem 0.5rem;
-      border-radius: 1rem;
-      font-size: 0.875rem;
-      margin-bottom: 0.75rem;
-    }
-    .icon {
-      margin-right: 0.375rem;
-    }
-    `}</style>
-  </>
-);
+export const MaterialButton: FC<PropsWithChildren<Props>> = ({ color = 'black', children }) => {
+  return (
+    <>
+      <div className="lessonButton">{children}</div>
+      <style jsx>{`
+      .lessonButton {
+        display: inline-block;
+        background-color: ${color === 'black' ? 'black' : '#0d6efd'};
+        color: white;
+        text-align: center;
+        padding: 0.375rem 2rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+      }
+      .lessonButton:hover {
+        background-color: ${color === 'black' ? '#333' : '#0b5ed7'};
+      }
+      `}</style>
+    </>
+  );
+};

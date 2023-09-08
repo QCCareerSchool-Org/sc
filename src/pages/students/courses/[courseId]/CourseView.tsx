@@ -128,22 +128,9 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              {/* <p id="assignments" className="lead mb-2 text-shadow menuScrollOffset"><MdAssignmentTurnedIn /> Assignments</p>
-              <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
-              {nextUnit.success
-                ? (
-                  <div className="d-flex align-items-center">
-                    <button onClick={handleInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
-                      {state.form.processingState === 'initializing'
-                        ? <Spinner size="sm" />
-                        : <>Start Unit {nextUnit.unitLetter}</>
-                      }
-                    </button>
-                    {state.form.processingState === 'initialize error' && <span className="text-danger ms-2">{state.form.errorMessage ?? 'initializing'}</span>}
-                  </div>
-                )
-                : <NextUnitMessage nextUnit={nextUnit} />
-              } */}
+              {enrollment.enrollmentDate !== null && enrollment.enrollmentDate < new Date(Date.UTC(2023, 8, 8, 14)) && (
+                <p className="lead"><strong>Your assignments have moved!</strong> Scroll down to the end of each unit to access your assignments for that unit.</p>
+              )}
             </div>
           </div>
         </div>

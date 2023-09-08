@@ -51,7 +51,7 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
           </div>
         </div>
       </Section>
-      {showAssignments && <AssignmentSection unit={state.newSubmission} />}
+      {showAssignments && <AssignmentSection submission={state.newSubmission} />}
       {!state.newSubmission.submitted && (
         <>
           <SubmitSection
