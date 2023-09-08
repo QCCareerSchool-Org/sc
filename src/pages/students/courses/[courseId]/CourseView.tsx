@@ -40,10 +40,6 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
 
   const initializeNextUnit$ = useInitializeNextUnit(dispatch);
 
-  const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, submissionId: string): void => {
-    void router.push(`/students/courses/${courseId}/submissions/${submissionId}`);
-  }, [ router, courseId ]);
-
   const nextUnit = useMemo(() => getNextUnit(state.data?.enrollment), [ state.data?.enrollment ]);
 
   const hasVideos = useMemo(() => state.data?.enrollment.course.units.some(u => u.videos.length > 0), [ state.data?.enrollment.course.units ]);
@@ -169,7 +165,8 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   firstUnit={i === 0}
                   submission={enrollment.newSubmissions.find(s => s.unitLetter === u.unitLetter)}
                   nextUnit={nextUnit}
-                  onNewUnitClick={handleNewUnitClick}
+                  onInitializeButtonClick={handleInitializeButtonClick}
+                  formState={state.form}
                 />
               ))}
             </>
@@ -222,7 +219,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   );
 };
 
-type NextUnitResult = {
+export type NextUnitResult = {
   success: true;
   unitLetter: string;
 } | {

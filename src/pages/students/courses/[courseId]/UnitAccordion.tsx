@@ -1,19 +1,23 @@
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 import { Fragment, useEffect, useRef } from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
 import type { Subject } from 'rxjs';
 import { AssignmentReminder } from './AssignmentReminder';
+import type { NextUnitResult } from './CourseView';
 import { Lesson } from './Lesson';
-import type { MaterialWithCompletionForm } from './state';
-import { NewSubmissionStatus } from './submissions/[submissionId]/NewSubmissionStatus';
+import { LessonBorder } from './LessonBorder';
+import type { MaterialWithCompletionForm, State } from './state';
 import type { MaterialCompleteEvent } from './useMaterialCompletion';
+import { Spinner } from '@/components/Spinner';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { NewSubmission } from '@/domain/student/newSubmission';
 import type { Unit } from '@/domain/unit';
+import { useServices } from '@/hooks/useServices';
 import { useUnitToggleDispatch } from '@/hooks/useUnitToggleDispatch';
 import { useUnitToggleState } from '@/hooks/useUnitToggleState';
+import { formatDate } from 'src/formatDate';
 
 type Props = {
   studentId: number;
@@ -26,12 +30,15 @@ type Props = {
   materialCompletion$: Subject<MaterialCompleteEvent>;
   firstUnit: boolean;
   submission?: NewSubmission;
-  onNewUnitClick: (e: MouseEvent, submissionId: string) => void;
+  nextUnit: NextUnitResult;
+  onInitializeButtonClick: MouseEventHandler<HTMLButtonElement>;
+  formState: State['form'];
 };
 
 const iconSize = 24;
 
-export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, unit, materialCompletions, materialCompletion$, firstUnit, submission }) => {
+export const UnitAccordion: FC<Props> = props => {
+  const { studentId, enrollmentId, courseId, unit, materialCompletions, materialCompletion$, firstUnit, submission, nextUnit, formState } = props;
   const unitToggleState = useUnitToggleState();
   const unitToggleDispatch = useUnitToggleDispatch();
   const firstRender = useRef(true);
@@ -70,37 +77,33 @@ export const UnitAccordion: FC<Props> = ({ studentId, enrollmentId, courseId, un
               </Fragment>
             );
           })}
-          {submission
-            ? (
-              <>
-                <hr />
-                <div className="row py-4">
-                  <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
-                    {submission.skipped
-                      ? 'Skipped'
-                      : submission.closed
-                        ? 'Marked'
-                        : submission.submitted
-                          ? 'Submitted'
-                          : 'In Progress'
-                    }
-                  </div>
-                  <div className={`col-12 col-lg-5 col-xxl-6 mb-3 mb-lg-0 position-relative`}>
-                    <div>
-                      <h4 className="title h6 mb-2">Submission {submission.unitLetter}{submission.title && <>: {submission.title}</>}</h4>
-                      <NewSubmissionStatus studentId={studentId} courseId={courseId} newSubmission={submission} />
-                    </div>
-                  </div>
-                  <div className="col-8 col-sm-6 col-md-5 col-lg-3">
-                    <Link href={`${courseId}/submissions/${submission.submissionId}`}><a className="btn btn-primary">View</a></Link>
-                  </div>
+          {(submission || (nextUnit.success && nextUnit.unitLetter === unit.unitLetter)) && (
+            <>
+              <hr />
+              <LessonBorder complete={false}>
+                <div className="py-4">
+                  {submission
+                    ? <SubmissionSection courseId={courseId} submission={submission} />
+                    : (
+                      <>
+                        <h4 className="title h6 mb-2">Assignments</h4>
+                        <p className="small">Once you've completed all of your lessons for this unit, you're ready to begin your assignments! Click the button below to get started.</p>
+                        <div className="d-flex align-items-center">
+                          <button onClick={props.onInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
+                            {formState.processingState === 'initializing'
+                              ? <Spinner size="sm" />
+                              : <>Start</>
+                            }
+                          </button>
+                          {formState.processingState === 'initialize error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'initializing'}</span>}
+                        </div>
+                      </>
+                    )
+                  }
                 </div>
-              </>
-            )
-            : (
-              <>
-              </>
-            )}
+              </LessonBorder>
+            </>
+          )}
         </div>
       )}
       <style jsx>{`
@@ -133,3 +136,34 @@ const Separator: FC = () => (
     `}</style>
   </>
 );
+
+type SubmissionSectionProps = {
+  courseId: number;
+  submission: NewSubmission;
+};
+
+const SubmissionSection: FC<SubmissionSectionProps> = props => {
+  const { courseId, submission } = props;
+  const { gradeService } = useServices();
+
+  const grade = submission.mark === null ? null : gradeService.calculate(submission.mark, submission.points, submission.created);
+
+  return (
+    <>
+      <h4 className="title h6 mb-2">Submission {submission.unitLetter}{submission.title && <>: {submission.title}</>}</h4>
+
+      <p className="lead">
+        Status: {submission.closed
+          ? <>Marked {formatDate(submission.closed)}</>
+          : submission.submitted
+            ? <>{submission.skipped ? 'Skipped' : 'Submitted'} {formatDate(submission.submitted)}</>
+            : <>In Progress</>
+        }
+
+        {submission.closed && grade !== null && <><br />Grade: {grade}</>}
+      </p>
+
+      <Link href={`${courseId}/submissions/${submission.submissionId}`}><a className="btn btn-primary">View</a></Link>
+    </>
+  );
+};
