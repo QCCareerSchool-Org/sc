@@ -1,16 +1,17 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { FC, MouseEventHandler, SyntheticEvent } from 'react';
-import { Fragment, useMemo, useReducer, useState } from 'react';
+import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
+import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
 import { FaDownload } from 'react-icons/fa';
-import { MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
+import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
 
 import { certificationDataDictionary } from './certificationData';
 import { CertificationLogoSection } from './CertificationLogoSection';
 import { CourseHeaderImage } from './CourseHeaderImage';
 import { CourseVideo } from './CourseVideo';
 import { initialState, reducer } from './state';
+import { SubmissionsTable } from './SubmissionsTable';
 import { UnitAccordion } from './UnitAccordion';
 import { useInitialData } from './useInitialData';
 import { useInitializeNextUnit } from './useInitializeNextUnit';
@@ -25,6 +26,7 @@ type Props = {
 };
 
 export const CourseView: FC<Props> = ({ studentId, courseId }) => {
+  const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const [ playingVideoId, setPlayingVideoId ] = useState<string>();
 
@@ -44,6 +46,10 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   const hasResources = false;
 
   const certificationData = useMemo(() => (state.data?.enrollment.course.code ? certificationDataDictionary[state.data?.enrollment.course.code] : undefined), [ state.data?.enrollment.course.code ]);
+
+  const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, submissionId: string): void => {
+    void router.push(`/students/courses/${courseId}/submissions/${submissionId}`);
+  }, [ router, courseId ]);
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -125,8 +131,11 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              {enrollment.enrollmentDate !== null && enrollment.enrollmentDate < new Date(Date.UTC(2023, 8, 8, 14)) && (
-                <p className="lead"><strong>Your assignments have moved!</strong> Scroll down to the end of each unit to access your assignments for that unit.</p>
+              {enrollment.newSubmissions.length > 0 && (
+                <>
+                  <p id="assignments" className="lead mb-2 text-shadow menuScrollOffset"><MdAssignmentTurnedIn /> Assignments</p>
+                  <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
+                </>
               )}
             </div>
           </div>
