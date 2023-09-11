@@ -317,13 +317,13 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
           shortDescription: 'Diversify your techniques and service offerings by learning to apply airbrush makeup.',
           description: 'Learn impressive makeup techniques to create flawless complexions. In this course, you\'ll develop the skills you need to create gorgeous makeup looks for every occasion, including a focus on bridal makeup. You\'ll become certified to work in top sectors of the beauty industry.',
         },
-        {
-          code: 'GB',
-          name: 'Global Beauty Workshop',
-          certification: 'Global Beauty Workshop Certificate',
-          shortDescription: 'Boost your professional makeup training with an international specialization.',
-          description: 'QC\'s Global Beauty Workshop will teach you to diversify your makeup techniques by creating gorgeous makeup looks form different cultural and religious traditions around the world. You\'ll study international makeup techniques for a range of skin tones and refine your skills with plenty of hands-on training.',
-        },
+        // {
+        //   code: 'GB',
+        //   name: 'Global Beauty Workshop',
+        //   certification: 'Global Beauty Workshop Certificate',
+        //   shortDescription: 'Boost your professional makeup training with an international specialization.',
+        //   description: 'QC\'s Global Beauty Workshop will teach you to diversify your makeup techniques by creating gorgeous makeup looks form different cultural and religious traditions around the world. You\'ll study international makeup techniques for a range of skin tones and refine your skills with plenty of hands-on training.',
+        // },
         {
           code: 'PF',
           name: 'Fashion Styling',
