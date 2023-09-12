@@ -29,6 +29,6 @@ export const CourseVideo: FC<Props> = ({ videoId, src, posterSrc, captionSrc, pl
   };
 
   return (
-    <Video controls ref={videoRef} src={src} poster={posterSrc} captionSrc={captionSrc ?? undefined} style={{ width: '100%' }} onPlay={handlePlay} />
+    <Video controls ref={videoRef} src={src} preload="none" poster={posterSrc} captionSrc={captionSrc ?? undefined} style={{ width: '100%' }} onPlay={handlePlay} />
   );
 };
