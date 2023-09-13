@@ -33,7 +33,7 @@ export const FeebackUploadForm: FC<Props> = memo(props => {
       <div className="mb-3">
         {state.processingState === 'uploading'
           ? <ProgressBar progress={state.feedbackForm.progress}>{state.feedbackForm.progress}%</ProgressBar>
-          : <input onChange={props.onFileChange} type="file" accept="audio/*" className="form-control" id={submissionId} />
+          : <input onChange={props.onFileChange} type="file" accept="audio/mp3, audio/aac" className="form-control" id={submissionId} />
         }
       </div>
       <div className="d-flex align-items-center">
