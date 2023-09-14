@@ -30,7 +30,6 @@ export const Audio: FC<Props> = memo(props => {
       ref={audioRef}
       controls={props.controls}
       preload={props.preload}
-      crossOrigin="use-credentials"
       className={props.className}
       style={props.style}
       onError={handleError}
