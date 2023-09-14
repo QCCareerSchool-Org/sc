@@ -6,6 +6,7 @@ import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
 type Props = {
   controls?: boolean;
   src: string;
+  type?: string;
   preload?: 'auto' | 'metadata' | 'none';
   className?: string;
   style?: CSSProperties;
@@ -28,7 +29,6 @@ export const Audio: FC<Props> = memo(props => {
     <audio
       ref={audioRef}
       controls={props.controls}
-      src={props.src}
       preload={props.preload}
       className={props.className}
       style={props.style}
@@ -37,6 +37,7 @@ export const Audio: FC<Props> = memo(props => {
       onTimeUpdate={props.onTimeUpdate}
       onEnded={props.onEnded}
     >
+      <source src={props.src} type={props.type} />
       <p>Your browser doesn't support HTML5 audio. Here is a <a href={props.src}>link to download the audio</a> instead.</p>
     </audio>
   );
