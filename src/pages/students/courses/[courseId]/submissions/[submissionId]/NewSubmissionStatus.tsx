@@ -18,7 +18,7 @@ export const NewSubmissionStatus: FC<Props> = memo(({ studentId, courseId, newSu
       <div className="alert alert-success">
         <h5>Assignments Marked</h5>
         <p className="fw-bold">Your assignments have been marked. Please listen to your tutor's audio feedback below.</p>
-        <Audio src={responseSrc} controls preload="auto" />
+        <Audio src={responseSrc} type={newSubmission.responseMimeTypeId ?? undefined} controls preload="auto" />
       </div>
     );
   }
