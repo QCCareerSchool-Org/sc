@@ -46,7 +46,6 @@ export const Video = memo(forwardRef<HTMLVideoElement, Props>((props, ref) => {
       src={src}
       poster={props.poster}
       preload={props.preload}
-      crossOrigin="use-credentials"
       playsInline={props.playsInline}
       className={props.className}
       onError={handleError}
