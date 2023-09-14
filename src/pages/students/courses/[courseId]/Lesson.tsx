@@ -53,7 +53,7 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete,
               </div>
             </div>
             <div className="col-12 col-lg-8 col-xxl-9 d-flex">
-              <div className={`d-flex flex-column justify-content-between ${xl ? 'py-4' : lg ? 'py-2' : ''}`}>
+              <div className={`d-flex flex-column flex-grow-1 justify-content-between ${xl ? 'py-4' : lg ? 'py-2' : ''}`}>
                 <div>
                   <h4 className="title h6 mb-2">{material.title}</h4>
                   <p className="small mb-2 description">{material.description}</p>
