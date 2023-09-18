@@ -1,5 +1,5 @@
-import type { FC } from 'react';
-import { memo } from 'react';
+import type { FC, ReactEventHandler } from 'react';
+import { memo, useRef } from 'react';
 
 import { Audio } from '@/components/Audio';
 import type { NewSubmission } from '@/domain/student/newSubmission';
@@ -9,16 +9,34 @@ type Props = {
   studentId: number;
   courseId: number;
   newSubmission: NewSubmission;
+  progressStepSize?: number;
+  onProgress: (progress: number) => void;
 };
 
-export const NewSubmissionStatus: FC<Props> = memo(({ studentId, courseId, newSubmission }) => {
+export const NewSubmissionStatus: FC<Props> = memo(({ studentId, courseId, newSubmission, progressStepSize = 5, onProgress }) => {
+  const progress = useRef(0);
+
+  if (Math.floor(100 / progressStepSize) !== 100 / progressStepSize) {
+    throw Error('Invalid step value--must be a factor of 100');
+  }
+
+  const handleTimeUpdate: ReactEventHandler<HTMLAudioElement> = e => {
+    const target = e.target as HTMLAudioElement;
+    const newProgress = Math.floor(100 * target.currentTime / target.duration / progressStepSize) * progressStepSize;
+
+    if (newProgress > progress.current) {
+      progress.current = newProgress;
+      onProgress(newProgress);
+    }
+  };
+
   if (newSubmission.closed) {
     const responseSrc = `${endpoint}/students/${studentId}/courses/${courseId}/newSubmissions/${newSubmission.submissionId}/response`;
     return (
       <div className="alert alert-success">
         <h5>Assignments Marked</h5>
         <p className="fw-bold">Your assignments have been marked. Please listen to your tutor's audio feedback below.</p>
-        <Audio src={responseSrc} type={newSubmission.responseMimeTypeId ?? undefined} controls preload="auto" />
+        <Audio onTimeUpdate={handleTimeUpdate} src={responseSrc} type={newSubmission.responseMimeTypeId ?? undefined} controls preload="auto" />
       </div>
     );
   }
