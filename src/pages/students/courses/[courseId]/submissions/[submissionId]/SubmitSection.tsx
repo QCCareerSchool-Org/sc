@@ -2,7 +2,7 @@ import type { FC, MouseEventHandler } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
-import type { UnitSubmitEvent } from './useUnitSubmit';
+import type { UnitSubmitEvent } from './useSubmissionSubmit';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 

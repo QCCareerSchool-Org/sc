@@ -7,26 +7,26 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type UnitSubmitEvent = {
+export type SubmissionSubmitEvent = {
   studentId: number;
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
 };
 
-export const useUnitSubmit = (dispatch: Dispatch<Action>): Subject<UnitSubmitEvent> => {
+export const useSubmissionSubmit = (dispatch: Dispatch<Action>): Subject<SubmissionSubmitEvent> => {
   const { newSubmissionService } = useStudentServices();
   const navigateToLogin = useNavigateToLogin();
 
-  const skip$ = useRef(new Subject<UnitSubmitEvent>());
+  const submit$ = useRef(new Subject<SubmissionSubmitEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    skip$.current.pipe(
+    submit$.current.pipe(
       filter(({ processingState }) => processingState !== 'submitting' && processingState !== 'skipping'),
       tap(() => dispatch({ type: 'SUBMIT_STARTED' })),
-      exhaustMap(({ studentId, courseId, submissionId }) => newSubmissionService.submitUnit(studentId, courseId, submissionId).pipe(
+      exhaustMap(({ studentId, courseId, submissionId }) => newSubmissionService.submitSubmission(studentId, courseId, submissionId).pipe(
         tap({
           next: () => dispatch({ type: 'SUBMIT_SUCCEEDED' }),
           error: err => {
@@ -50,5 +50,5 @@ export const useUnitSubmit = (dispatch: Dispatch<Action>): Subject<UnitSubmitEve
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
-  return skip$.current;
+  return submit$.current;
 };

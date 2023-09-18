@@ -7,18 +7,18 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type UnitSkipEvent = {
+export type SubmissionSkipEvent = {
   studentId: number;
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
 };
 
-export const useUnitSkip = (dispatch: Dispatch<Action>): Subject<UnitSkipEvent> => {
+export const useSubmissionSkip = (dispatch: Dispatch<Action>): Subject<SubmissionSkipEvent> => {
   const { newSubmissionService } = useStudentServices();
   const navigateToLogin = useNavigateToLogin();
 
-  const skip$ = useRef(new Subject<UnitSkipEvent>());
+  const skip$ = useRef(new Subject<SubmissionSkipEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -26,7 +26,7 @@ export const useUnitSkip = (dispatch: Dispatch<Action>): Subject<UnitSkipEvent> 
     skip$.current.pipe(
       filter(({ processingState }) => processingState !== 'submitting' && processingState !== 'skipping'),
       tap(() => dispatch({ type: 'SKIP_STARTED' })),
-      exhaustMap(({ studentId, courseId, submissionId }) => newSubmissionService.skipUnit(studentId, courseId, submissionId).pipe(
+      exhaustMap(({ studentId, courseId, submissionId }) => newSubmissionService.skipSubmission(studentId, courseId, submissionId).pipe(
         tap({
           next: () => dispatch({ type: 'SKIP_SUCEEDED' }),
           error: err => {

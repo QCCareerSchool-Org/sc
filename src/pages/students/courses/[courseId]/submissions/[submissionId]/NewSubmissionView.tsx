@@ -10,8 +10,8 @@ import { initialState, reducer } from './state';
 import { SubmitSection } from './SubmitSection';
 import { useAudioProgress } from './useAudioProgress';
 import { useInitialData } from './useInitialData';
-import { useUnitSkip } from './useUnitSkip';
-import { useUnitSubmit } from './useUnitSubmit';
+import { useSubmissionSkip } from './useSubmissionSkip';
+import { useSubmissionSubmit } from './useSubmissionSubmit';
 import { Section } from '@/components/Section';
 
 type Props = {
@@ -25,8 +25,8 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
 
   useInitialData(dispatch, studentId, courseId, submissionId);
 
-  const submit$ = useUnitSubmit(dispatch);
-  const skip$ = useUnitSkip(dispatch);
+  const submit$ = useSubmissionSubmit(dispatch);
+  const skip$ = useSubmissionSkip(dispatch);
   const audioProgress$ = useAudioProgress(dispatch, studentId, courseId, submissionId);
 
   const handleAudioProgress = (progress: number): void => {
@@ -43,6 +43,9 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
 
   const showAssignments = (!!state.newSubmission.closed || !state.newSubmission.submitted);
 
+  const studentNumber = `${state.newSubmission.enrollment.course.code}${state.newSubmission.enrollment.studentNumber}`;
+  const surveyLink = `https://ng295qu8zyk.typeform.com/to/LlPgGmJY#student_number=${encodeURIComponent(studentNumber)}`;
+
   return (
     <>
       <Section>
@@ -53,6 +56,13 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
               <h1>Submission {state.newSubmission.unitLetter}{state.newSubmission.title && <>: {state.newSubmission.title}</>}</h1>
               <NewSubmissionInfoTable newSubmission={state.newSubmission} />
               <NewSubmissionStatus studentId={studentId} courseId={courseId} newSubmission={state.newSubmission} onProgress={handleAudioProgress} />
+              {state.newSubmission.enrollment.course.code === 'MZ' && state.newSubmission.responseProgress === 100 && (
+                <div className="alert alert-info">
+                  <h5>Please Complete the Course Experience Survey</h5>
+                  <p>We're working hard to make your course experience even better and your feedback is valuable. Please complete <a href="' . $surveyLink . '" className="alert-link">this two-minute survey</a>.</p>
+                  <a href={surveyLink} className="btn btn-info">Take the Survey</a>
+                </div>
+              )}
             </div>
           </div>
         </div>
