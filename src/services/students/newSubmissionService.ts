@@ -1,6 +1,7 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
+import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewAssignment, RawNewAssignment } from '@/domain/student/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/student/newPart';
@@ -11,7 +12,9 @@ import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export type NewSubmissionWithCourseAndChildren = NewSubmission & {
-  enrollment: Enrollment;
+  enrollment: Enrollment & {
+    course: Course;
+  };
   newAssignments: Array<NewAssignment & {
     newParts: Array<NewPart & {
       newTextBoxes: NewTextBox[];
@@ -21,7 +24,9 @@ export type NewSubmissionWithCourseAndChildren = NewSubmission & {
 };
 
 type RawNewSubmissionWithCourseAndChildren = RawNewSubmission & {
-  enrollment: RawEnrollment;
+  enrollment: RawEnrollment & {
+    course: Course;
+  };
   newAssignments: Array<RawNewAssignment & {
     newParts: Array<RawNewPart & {
       newTextBoxes: RawNewTextBox[];
@@ -32,10 +37,10 @@ type RawNewSubmissionWithCourseAndChildren = RawNewSubmission & {
 
 export interface INewSubmissionService {
   initializeNextUnit: (studentId: number, courseId: number) => Observable<NewSubmission>;
-  getUnit: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmissionWithCourseAndChildren>;
-  submitUnit: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmission>;
-  skipUnit: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmission>;
-  updateResponseProgress: (studentId: number, courseId: number, submissionId: string, progress: number) => Observable<NewSubmission>;
+  getSubmission: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmissionWithCourseAndChildren>;
+  submitSubmission: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmission>;
+  skipSubmission: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmission>;
+  updateResponseProgress: (studentId: number, courseId: number, submissionId: string, progress: number) => Observable<number | null>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
@@ -49,31 +54,31 @@ export class NewSubmissionService implements INewSubmissionService {
     );
   }
 
-  public getUnit(studentId: number, courseId: number, submissionId: string): Observable<NewSubmissionWithCourseAndChildren> {
+  public getSubmission(studentId: number, courseId: number, submissionId: string): Observable<NewSubmissionWithCourseAndChildren> {
     const url = `${this.getBaseUrl(studentId, courseId)}/${submissionId}`;
     return this.httpService.get<RawNewSubmissionWithCourseAndChildren>(url).pipe(
       map(this.mapNewUnitWithCourseAndChildren),
     );
   }
 
-  public submitUnit(studentId: number, courseId: number, submissionId: string): Observable<NewSubmission> {
+  public submitSubmission(studentId: number, courseId: number, submissionId: string): Observable<NewSubmission> {
     const url = `${this.getBaseUrl(studentId, courseId)}/${submissionId}/submissions`;
     return this.httpService.post<RawNewSubmission>(url).pipe(
       map(this.mapNewUnit),
     );
   }
 
-  public skipUnit(studentId: number, courseId: number, submissionId: string): Observable<NewSubmission> {
+  public skipSubmission(studentId: number, courseId: number, submissionId: string): Observable<NewSubmission> {
     const url = `${this.getBaseUrl(studentId, courseId)}/${submissionId}/skips`;
     return this.httpService.post<RawNewSubmission>(url).pipe(
       map(this.mapNewUnit),
     );
   }
 
-  public updateResponseProgress(studentId: number, courseId: number, submissionId: string, progress: number): Observable<NewSubmission> {
+  public updateResponseProgress(studentId: number, courseId: number, submissionId: string, progress: number): Observable<number | null> {
     const url = `${this.getBaseUrl(studentId, courseId)}/${submissionId}/responseProgress`;
     return this.httpService.put<RawNewSubmission>(url, { progress }).pipe(
-      map(this.mapNewUnit),
+      map(raw => raw.responseProgress),
     );
   }
 

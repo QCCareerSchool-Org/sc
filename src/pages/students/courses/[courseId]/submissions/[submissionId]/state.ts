@@ -18,7 +18,7 @@ export type Action =
   | { type: 'SKIP_STARTED' }
   | { type: 'SKIP_SUCEEDED' }
   | { type: 'SKIP_FAILED'; payload: string }
-  | { type: 'AUDIO_PROGRESSED'; payload: number };
+  | { type: 'AUDIO_PROGRESSED'; payload: number | null };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {

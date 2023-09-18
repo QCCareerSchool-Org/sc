@@ -2,7 +2,7 @@ import type { FC, MouseEventHandler } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
-import type { UnitSkipEvent } from './useUnitSkip';
+import type { UnitSkipEvent } from './useSubmissionSkip';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 

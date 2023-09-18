@@ -19,7 +19,7 @@ export const useAudioProgress = (dispatch: Dispatch<Action>, studentId: number, 
     skip$.current.pipe(
       exhaustMap(progress => newSubmissionService.updateResponseProgress(studentId, courseId, submissionId, progress).pipe(
         tap({
-          next: () => dispatch({ type: 'AUDIO_PROGRESSED', payload: progress }),
+          next: updatedProgress => dispatch({ type: 'AUDIO_PROGRESSED', payload: updatedProgress }),
           error: err => {
             if (err instanceof HttpServiceError) {
               if (err.login) {
