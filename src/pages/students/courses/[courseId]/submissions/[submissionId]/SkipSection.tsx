@@ -2,7 +2,7 @@ import type { FC, MouseEventHandler } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
-import type { UnitSkipEvent } from './useSubmissionSkip';
+import type { SubmissionSkipEvent } from './useSubmissionSkip';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
@@ -11,7 +11,7 @@ type Props = {
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
-  skip$: Subject<UnitSkipEvent>;
+  skip$: Subject<SubmissionSkipEvent>;
   errorMessage?: string;
 };
 
