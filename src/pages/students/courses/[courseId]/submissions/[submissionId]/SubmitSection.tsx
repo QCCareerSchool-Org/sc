@@ -2,7 +2,7 @@ import type { FC, MouseEventHandler } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
-import type { UnitSubmitEvent } from './useSubmissionSubmit';
+import type { SubmissionSubmitEvent } from './useSubmissionSubmit';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
@@ -11,7 +11,7 @@ type Props = {
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
-  submit$: Subject<UnitSubmitEvent>;
+  submit$: Subject<SubmissionSubmitEvent>;
   unitComplete: boolean;
   optionalAssignmentsIncomplete: boolean;
   errorMessage?: string;
