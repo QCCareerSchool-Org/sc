@@ -35,6 +35,7 @@ export interface INewSubmissionService {
   getUnit: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmissionWithCourseAndChildren>;
   submitUnit: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmission>;
   skipUnit: (studentId: number, courseId: number, submissionId: string) => Observable<NewSubmission>;
+  updateResponseProgress: (studentId: number, courseId: number, submissionId: string, progress: number) => Observable<NewSubmission>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
@@ -65,6 +66,13 @@ export class NewSubmissionService implements INewSubmissionService {
   public skipUnit(studentId: number, courseId: number, submissionId: string): Observable<NewSubmission> {
     const url = `${this.getBaseUrl(studentId, courseId)}/${submissionId}/skips`;
     return this.httpService.post<RawNewSubmission>(url).pipe(
+      map(this.mapNewUnit),
+    );
+  }
+
+  public updateResponseProgress(studentId: number, courseId: number, submissionId: string, progress: number): Observable<NewSubmission> {
+    const url = `${this.getBaseUrl(studentId, courseId)}/${submissionId}/responseProgress`;
+    return this.httpService.put<RawNewSubmission>(url, { progress }).pipe(
       map(this.mapNewUnit),
     );
   }

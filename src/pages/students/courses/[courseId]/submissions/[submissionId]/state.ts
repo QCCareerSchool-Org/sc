@@ -17,7 +17,8 @@ export type Action =
   | { type: 'SUBMIT_FAILED'; payload: string }
   | { type: 'SKIP_STARTED' }
   | { type: 'SKIP_SUCEEDED' }
-  | { type: 'SKIP_FAILED'; payload: string };
+  | { type: 'SKIP_FAILED'; payload: string }
+  | { type: 'AUDIO_PROGRESSED'; payload: number };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -57,6 +58,13 @@ export const reducer = (state: State, action: Action): State => {
     case 'SKIP_FAILED':
       return {
         ...state, processingState: 'skip error', errorMessage: action.payload,
+      };
+    case 'AUDIO_PROGRESSED':
+      if (!state.newSubmission) {
+        throw Error('newSubmission is undefined');
+      }
+      return {
+        ...state, newSubmission: { ...state.newSubmission, responseProgress: action.payload },
       };
   }
 };

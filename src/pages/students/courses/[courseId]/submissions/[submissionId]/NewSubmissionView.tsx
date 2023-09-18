@@ -8,6 +8,7 @@ import { NewSubmissionStatus } from './NewSubmissionStatus';
 import { SkipSection } from './SkipSection';
 import { initialState, reducer } from './state';
 import { SubmitSection } from './SubmitSection';
+import { useAudioProgress } from './useAudioProgress';
 import { useInitialData } from './useInitialData';
 import { useUnitSkip } from './useUnitSkip';
 import { useUnitSubmit } from './useUnitSubmit';
@@ -26,6 +27,11 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
 
   const submit$ = useUnitSubmit(dispatch);
   const skip$ = useUnitSkip(dispatch);
+  const audioProgress$ = useAudioProgress(dispatch, studentId, courseId, submissionId);
+
+  const handleAudioProgress = (progress: number): void => {
+    audioProgress$.next(progress);
+  };
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -46,7 +52,7 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
               {state.newSubmission.optional && <span className="text-danger">OPTIONAL</span>}
               <h1>Submission {state.newSubmission.unitLetter}{state.newSubmission.title && <>: {state.newSubmission.title}</>}</h1>
               <NewSubmissionInfoTable newSubmission={state.newSubmission} />
-              <NewSubmissionStatus studentId={studentId} courseId={courseId} newSubmission={state.newSubmission} />
+              <NewSubmissionStatus studentId={studentId} courseId={courseId} newSubmission={state.newSubmission} onProgress={handleAudioProgress} />
             </div>
           </div>
         </div>
