@@ -59,8 +59,8 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
               {state.newSubmission.enrollment.course.code === 'MZ' && state.newSubmission.responseProgress === 100 && (
                 <div className="alert alert-info">
                   <h5>Please Complete the Course Experience Survey</h5>
-                  <p>We're working hard to make your course experience even better and your feedback is valuable. Please complete <a href="' . $surveyLink . '" className="alert-link">this two-minute survey</a>.</p>
-                  <a href={surveyLink} className="btn btn-info">Take the Survey</a>
+                  <p>We're working hard to make your course experience even better and your feedback is valuable. Please complete <a target="_blank" rel="noreferrer" href={surveyLink} className="alert-link">this two-minute survey</a>.</p>
+                  <a target="_blank" rel="noreferrer" href={surveyLink} className="btn btn-info">Take the Survey</a>
                 </div>
               )}
             </div>
