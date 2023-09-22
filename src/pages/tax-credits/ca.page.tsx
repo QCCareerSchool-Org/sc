@@ -1,8 +1,12 @@
 import type { NextPage } from 'next';
 
+import { Meta } from '@/components/Meta';
+import { Section } from '@/components/Section';
+
 const CATaxCreditsPage: NextPage = () => (
   <>
-    <section>
+    <Meta title="Canadian Tax Credits" />
+    <Section>
       <div className="container">
         <h1>Canadian Tax Credits</h1>
         <p>QC is a certified educational institution with <strong>Employment and Social Development Canada</strong>. At the end of the year, we'll be sending you a T2202 tax receipt for the course fees you paid during the year. You can use the receipt to get a tax refund.</p>
@@ -23,8 +27,8 @@ const CATaxCreditsPage: NextPage = () => (
           Please ensure that you have updated your Online Student Center account with your SIN if you have not already done so.
         </div>
       </div>
-    </section>
-    <section>
+    </Section>
+    <Section>
       <div className="container">
         <h2 className="h1">Sample Calculation</h2>
         <p>Tania decides to enroll in QC's Dog Grooming course. As current QC student she is entitled to a 50% discount, bringing her $2398 tuition down to $1199.</p>
@@ -48,7 +52,7 @@ const CATaxCreditsPage: NextPage = () => (
         </div>
         <p>Your personal tax situation may be different. Please reach out to your personal accountant for further guidance.</p>
       </div>
-    </section>
+    </Section>
   </>
 );
 
