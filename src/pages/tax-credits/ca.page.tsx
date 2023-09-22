@@ -42,7 +42,7 @@ const CATaxCreditsPage: NextPage = () => (
           <table>
             <tbody>
               <tr><td className="text-end pe-2">$2398.00</td><th scope="row">Cost of Course</th></tr>
-              <tr><td className="text-end pe-2">$1199.00</td><th scope="row">QC-Student Discount</th></tr>
+              <tr><td className="text-end pe-2">&minus; $1199.00</td><th scope="row">QC-Student Discount</th></tr>
               <tr><td className="text-end pe-2">&minus; $599.50</td><th scope="row">CTC</th></tr>
               <tr><td className="text-end pe-2">&minus; $89.93</td><th scope="row">Tuition Tax Credit</th></tr>
               <tr><td colSpan={2}><hr className="my-1" /></td></tr>
