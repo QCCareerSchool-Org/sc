@@ -49,7 +49,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
       <Section>
         <div className="container">
           <h1>Online Student Center</h1>
-          {!state.data.student.passwordChanged && <UnchangedPasswordWarning />}
+          {state.data.student.created >= new Date(Date.UTC(2023, 8, 22, 4)) && !state.data.student.passwordChanged && <UnchangedPasswordWarning />}
           {state.data.student.enrollments.length === 0
             ? <p className="lead">No enrollments found.</p>
             : (

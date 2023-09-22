@@ -68,9 +68,8 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 <p className="lead mb-0 placeholder-glow"><span className="placeholder col-6" /></p>
               </div>
               <div className="col-12 col-lg-6">
-                {/* <h2 className="h4 placeholder-glow"><span className="placeholder col-6" /></h2>
+                <h2 className="h4 placeholder-glow"><span className="placeholder col-6" /></h2>
                 <div className="placeholder-glow mb-4" style={{ height: 80 }}><span className="placeholder col-12 h-100" /></div>
-                <button className="btn btn-primary disabled placeholder" style={{ width: 120 }} /> */}
               </div>
             </div>
           </div>
@@ -121,6 +120,11 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               {enrollment.course.school.name === 'QC Pet Studies' && (
                 <div className="mt-4">
                   <Link href="/student-handbooks/qc-pet-studies/content/index.html"><a target="_blank" rel="noreferrer"><button className="btn btn-lg btn-red">Student Handbook <FaDownload /></button></a></Link>
+                </div>
+              )}
+              {enrollment.course.school.name === 'QC Makeup Academy' && (
+                <div className="mt-4">
+                  <Link href="/student-handbooks/qc-makeup-academy/content/index.html"><a target="_blank" rel="noreferrer"><button className="btn btn-lg btn-red">Student Handbook <FaDownload /></button></a></Link>
                 </div>
               )}
               <div className="mt-5">
