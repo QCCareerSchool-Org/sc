@@ -30,7 +30,7 @@ export const CertificationLogoSection: FC<Props> = ({ certificationData, graduat
                   </div>
                 </div>
                 <div className="col-12 col-md-8">
-                  <p className="code"><span className="a-tag">&lt;a href=<span className="attribute">&quot;https://www.qceventplanning.com/&quot;</span>&gt;<span className="img-tag">&lt;img src=<span className="attribute">&quot;https://aeea626a74ffdd96fbcf-77df9cf355bf5239094a1d99115ccf2c.ssl.cf1.rackcdn.com/{certificationData.filename}.svg&quot;</span> alt=<span className="attribute">&quot;{certificationData.name}&quot;</span>&gt;</span>&lt;/a&gt;</span></p>
+                  <p className="code"><span className="a-tag">&lt;a href=<span className="attribute">&quot;{certificationData.url}&quot;</span>&gt;<span className="img-tag">&lt;img src=<span className="attribute">&quot;https://aeea626a74ffdd96fbcf-77df9cf355bf5239094a1d99115ccf2c.ssl.cf1.rackcdn.com/{certificationData.filename}.svg&quot;</span> height=<span className="attribute">&quot;190&quot;</span> alt=<span className="attribute">&quot;{certificationData.name}&quot;</span> /&gt;</span>&lt;/a&gt;</span></p>
                 </div>
               </div>
             </>
