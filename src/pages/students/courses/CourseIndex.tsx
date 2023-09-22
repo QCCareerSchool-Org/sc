@@ -6,6 +6,8 @@ import { CourseGrid } from './CourseGrid';
 import { courseSuggestionGroups } from './courseSuggestions';
 import { CourseWarnings } from './CourseWarnings';
 import { initialState, reducer } from './state';
+import { TaxCreditMessage } from './TaxCreditMessage';
+import { UnchangedPasswordWarning } from './UnchangedPasswordWarning';
 import { useInitialData } from './useInitialData';
 import { ContinuingEducationGroup } from '@/components/continuedEducation/ContinuingEducationGroup';
 import { Section } from '@/components/Section';
@@ -39,11 +41,15 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
 
   const crmStudent = state.data.crmStudent;
 
+  const month = new Date().getMonth();
+  const showTaxCreditMessage = state.data.student.country.code === 'CA' && month >= 9 && month <= 11; // between October 1 and December 31
+
   return (
     <>
       <Section>
         <div className="container">
           <h1>Online Student Center</h1>
+          {!state.data.student.passwordChanged && <UnchangedPasswordWarning />}
           {state.data.student.enrollments.length === 0
             ? <p className="lead">No enrollments found.</p>
             : (
@@ -60,6 +66,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
           <div className="container">
             <h2 className="h4">Continued Education</h2>
             <p className="lead">Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses.</p>
+            {showTaxCreditMessage && <TaxCreditMessage />}
             {schoolSlugs?.map(s => courseSuggestionGroups[s].map(group => {
               return <ContinuingEducationGroup
                 key={group.id}
