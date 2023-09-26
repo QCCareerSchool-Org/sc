@@ -2,6 +2,7 @@ import type { GetServerSideProps } from 'next';
 import { useEffect, useRef, useState } from 'react';
 import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
 import { BlankLayout } from '@/components/layouts/BlankLayout';
+import { Meta } from '@/components/Meta';
 import { Video as VideoComponent } from '@/components/Video';
 import type { Video } from '@/domain/video';
 import { useServices } from '@/hooks/useServices';
@@ -42,7 +43,12 @@ const VideoPage: NextPageWithLayout<Props> = ({ videoId }) => {
     return null;
   }
 
-  return <VideoComponent controls src={video.src} poster={video.posterSrc} captionSrc={video.captionSrc ?? undefined} style={{ display: 'block', width: '100%' }} />;
+  return (
+    <>
+      <Meta title={video.title} description={video.description} />
+      <VideoComponent controls src={video.src} poster={video.posterSrc} captionSrc={video.captionSrc ?? undefined} style={{ display: 'block', width: '100%' }} />;
+    </>
+  );
 };
 
 VideoPage.getLayout = page => <BlankLayout>{page}</BlankLayout>;
