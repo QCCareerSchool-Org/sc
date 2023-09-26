@@ -17,6 +17,8 @@ import type { IPasswordResetRequestService } from '@/services/passwordResetReque
 import { PasswordResetRequestService } from '@/services/passwordResetRequestService';
 import type { IUUIDService } from '@/services/uuidService';
 import { UUIDService } from '@/services/uuidService';
+import type { IVideoService } from '@/services/videoService';
+import { VideoService } from '@/services/videoService';
 import { instance } from 'src/axiosInstance';
 
 export type Services = {
@@ -25,6 +27,7 @@ export type Services = {
   passwordResetRequestService: IPasswordResetRequestService;
   uuidService: IUUIDService;
   gradeService: IGradeService;
+  videoService: IVideoService;
   crmTelephoneCountryCodeService: ICRMTelephoneCountryCodeService;
   crmCountryService: ICRMCountryService;
   crmProvinceService: ICRMProvinceService;
@@ -45,6 +48,7 @@ export const ServicesProvider: FC<Props> = ({ children }) => {
     passwordResetRequestService: new PasswordResetRequestService(axiosHttpService),
     uuidService: new UUIDService(),
     gradeService: new GradeService(),
+    videoService: new VideoService(axiosHttpService),
     crmTelephoneCountryCodeService: new CRMTelephoneCountryCodeService(axiosHttpService),
     crmCountryService: new CRMCountryService(axiosHttpService),
     crmProvinceService: new CRMProvinceService(axiosHttpService),
