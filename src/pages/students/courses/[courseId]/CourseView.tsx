@@ -162,6 +162,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   firstUnit={i === 0}
                   submission={enrollment.newSubmissions.find(s => s.unitLetter === u.unitLetter)}
                   nextUnit={nextUnit}
+                  assignmentsDisabled={enrollment.assignmentsDisabled}
                   onInitializeButtonClick={handleInitializeButtonClick}
                   formState={state.form}
                 />
