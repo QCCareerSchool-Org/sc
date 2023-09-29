@@ -34,6 +34,7 @@ type Props = {
   firstUnit: boolean;
   submission?: NewSubmission;
   nextUnit: NextUnitResult;
+  assignmentsDisabled: boolean;
   onInitializeButtonClick: MouseEventHandler<HTMLButtonElement>;
   formState: State['form'];
 };
@@ -41,7 +42,7 @@ type Props = {
 const iconSize = 24;
 
 export const UnitAccordion: FC<Props> = props => {
-  const { studentId, enrollmentId, courseId, unit, materialCompletions, materialCompletion$, firstUnit, submission, nextUnit, formState } = props;
+  const { studentId, enrollmentId, courseId, unit, materialCompletions, materialCompletion$, firstUnit, submission, nextUnit, assignmentsDisabled, formState } = props;
   const unitToggleState = useUnitToggleState();
   const unitToggleDispatch = useUnitToggleDispatch();
   const firstRender = useRef(true);
@@ -77,7 +78,7 @@ export const UnitAccordion: FC<Props> = props => {
                 <Lesson key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} last={i === a.length - 1} />
               );
             })}
-            {(submission || (nextUnit.success && nextUnit.unitLetter === unit.unitLetter)) && (
+            {(submission || (!assignmentsDisabled && nextUnit.success && nextUnit.unitLetter === unit.unitLetter)) && (
               <div className="container assignmentContainer">
                 <UnitAccordionSectionPadding>
                   {submission
