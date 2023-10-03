@@ -44,11 +44,20 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
   const month = new Date().getMonth();
   const showTaxCreditMessage = state.data.student.country.code === 'CA' && month >= 9 && month <= 11; // between October 1 and December 31
 
+  const now = new Date();
+  const halloweenMessageEndDate = new Date(Date.UTC(2023, 9, 16, 15)); // October 16, 11:00 (15:00 UTC)
+  const showHalloweenMessage = now < halloweenMessageEndDate && schoolSlugs?.includes('makeup');
+
   return (
     <>
       <Section>
         <div className="container">
           <h1>Online Student Center</h1>
+          {showHalloweenMessage && (
+            <div className="alert alert-info">
+              Our Annual <a className="alert-link" href="https://forms.gle/sCu2QbQhbZj1wL6P8" target="_blank" rel="noreferrer">Halloween Contest</a> is back! Join the festivities with your peers in the <a className="alert-link" href="https://www.facebook.com/groups/qcmakeupacademyvc" target="_blank" rel="noreferrer">Virtual Classroom</a>!
+            </div>
+          )}
           {state.data.student.created >= new Date(Date.UTC(2023, 8, 22, 4)) && !state.data.student.passwordChanged && <UnchangedPasswordWarning />}
           {state.data.student.enrollments.length === 0
             ? <p className="lead">No enrollments found.</p>
@@ -61,6 +70,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
           }
         </div>
       </Section>
+
       {crmStudent && (
         <Section className="bg-f1">
           <div className="container">
