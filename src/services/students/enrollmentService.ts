@@ -10,6 +10,8 @@ import type { School } from '@/domain/school';
 import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmission';
 import type { RawStudent, Student } from '@/domain/student/student';
 import type { Tutor } from '@/domain/student/tutor';
+import type { Survey } from '@/domain/survey';
+import type { RawSurveyCompletion, SurveyCompletion } from '@/domain/surveyCompletion';
 import type { RawUnit, Unit } from '@/domain/unit';
 import type { Video } from '@/domain/video';
 import type { IHttpService } from '@/services/httpService';

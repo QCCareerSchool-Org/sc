@@ -19,7 +19,7 @@ export const CourseWarnings: FC<Props> = ({ courses }) => {
   return (
     <>
       {i2 && (st || ap) && (
-        <div className="alert alert-info mb-4" role="alert">
+        <div className="alert alert-info" role="alert">
           <><strong>Important note:</strong> </>
           {!ap ?
             <><em>Staging for Designers</em> builds </>
@@ -37,7 +37,7 @@ export const CourseWarnings: FC<Props> = ({ courses }) => {
         </div>
       )}
       {mz && (mw || vm) && (
-        <div className="alert alert-info mb-4" role="alert">
+        <div className="alert alert-info" role="alert">
           <><strong>Important note:</strong> </>
           {!vm ?
             <><em>Pro Makeup Workshop</em> builds </>

@@ -9,6 +9,7 @@ import { initialState, reducer } from './state';
 import { TaxCreditMessage } from './TaxCreditMessage';
 import { UnchangedPasswordWarning } from './UnchangedPasswordWarning';
 import { useInitialData } from './useInitialData';
+import { WelcomeSurveys } from './WelcomeSurveys';
 import { ContinuingEducationGroup } from '@/components/continuedEducation/ContinuingEducationGroup';
 import { Section } from '@/components/Section';
 
@@ -53,6 +54,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
       <Section>
         <div className="container">
           <h1>Online Student Center</h1>
+          <WelcomeSurveys student={state.data.student} />
           {showHalloweenMessage && (
             <div className="alert alert-info">
               Our Annual <a className="alert-link" href="https://forms.gle/sCu2QbQhbZj1wL6P8" target="_blank" rel="noreferrer">Halloween Contest</a> is back! Join the festivities with your peers in the <a className="alert-link" href="https://www.facebook.com/groups/qcmakeupacademyvc" target="_blank" rel="noreferrer">Virtual Classroom</a>!
