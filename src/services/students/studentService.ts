@@ -7,6 +7,8 @@ import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { Province } from '@/domain/province';
 import type { School } from '@/domain/school';
 import type { RawStudent, Student } from '@/domain/student/student';
+import type { Survey } from '@/domain/survey';
+import type { RawSurveyCompletion, SurveyCompletion } from '@/domain/surveyCompletion';
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
@@ -14,12 +16,18 @@ export type StudentWithCountryProvinceAndEnrollments = Student & {
   country: Country;
   province: Province | null;
   enrollments: Array<Enrollment & { course: Course & { school: School } }>;
+  surveyCompletions: Array<SurveyCompletion & {
+    survey: Survey;
+  }>;
 };
 
 export type RawStudentWithCountryProvinceAndEnrollments = RawStudent & {
   country: Country;
   province: Province | null;
   enrollments: Array<RawEnrollment & { course: Course & { school: School } }>;
+  surveyCompletions: Array<RawSurveyCompletion & {
+    survey: Survey;
+  }>;
 };
 
 export interface IStudentService {
@@ -70,6 +78,11 @@ export class StudentService implements IStudentService {
       enrollments: student.enrollments.map(e => ({
         ...e,
         enrollmentDate: e.enrollmentDate === null ? null : new Date(e.enrollmentDate),
+      })),
+      surveyCompletions: student.surveyCompletions.map(s => ({
+        ...s,
+        created: new Date(s.created),
+        modified: s.modified === null ? null : new Date(s.modified),
       })),
     };
   };
