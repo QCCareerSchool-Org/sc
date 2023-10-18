@@ -9,8 +9,8 @@ import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdPoli
 import { certificationDataDictionary } from './certificationData';
 import { CertificationLogoSection } from './CertificationLogoSection';
 import { CourseHeaderImage } from './CourseHeaderImage';
+import { CourseProgress } from './CourseProgress';
 import { CourseVideo } from './CourseVideo';
-import { LessonProgress } from './LessonProgress';
 import { initialState, reducer } from './state';
 import { SubmissionsTable } from './SubmissionsTable';
 import { UnitAccordion } from './UnitAccordion';
@@ -63,7 +63,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
           <CourseHeaderImage courseId={courseId} />
           <div className="container text-white" style={{ minHeight: 240 }} aria-hidden="true">
             <div className="row">
-              <div className="col-12 col-lg-6">
+              <div className="col-12 col-lg-6 mb-4 mb-lg-0">
                 <h1 className="mb-0 placeholder-glow"><span className="placeholder col-8" /></h1>
                 <p className="lead mb-0 placeholder-glow"><span className="placeholder col-6" /></p>
                 <p className="lead mb-0 placeholder-glow"><span className="placeholder col-6" /></p>
@@ -114,7 +114,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
         <CourseHeaderImage courseId={courseId} />
         <div className="container text-white" style={{ minHeight: 240 }}>
           <div className="row">
-            <div className="col-12 col-lg-6">
+            <div className="col-12 col-lg-6 mb-4 mb-lg-0">
               <h1 className="mb-0 mb-2 text-shadow">{enrollment.course.name}</h1>
               <p className="lead mb-0 text-shadow">Student Number: <strong>{enrollment.course.code}&thinsp;{enrollment.studentNumber}</strong></p>
               {enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{enrollment.tutor.firstName} {enrollment.tutor.lastName}</strong></p>}
@@ -134,7 +134,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 {hasVideos && <p className="lead mb-0 text-shadow"><MdMovie /> <a href="#videos" style={{ textDecoration: 'none' }} className="text-white">Videos</a></p>}
                 {certificationData && <p className="lead mb-0 text-shadow"><MdPolicy /> <a href="#certification" style={{ textDecoration: 'none' }} className="text-white">Certification Logo</a></p>}
               </div>
-              <LessonProgress enrollment={enrollment} />
+              <CourseProgress enrollment={enrollment} />
             </div>
             <div className="col-12 col-lg-6">
               {enrollment.newSubmissions.length > 0 && (
