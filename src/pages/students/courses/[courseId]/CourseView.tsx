@@ -10,6 +10,7 @@ import { certificationDataDictionary } from './certificationData';
 import { CertificationLogoSection } from './CertificationLogoSection';
 import { CourseHeaderImage } from './CourseHeaderImage';
 import { CourseVideo } from './CourseVideo';
+import { LessonProgress } from './LessonProgress';
 import { initialState, reducer } from './state';
 import { SubmissionsTable } from './SubmissionsTable';
 import { UnitAccordion } from './UnitAccordion';
@@ -133,6 +134,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 {hasVideos && <p className="lead mb-0 text-shadow"><MdMovie /> <a href="#videos" style={{ textDecoration: 'none' }} className="text-white">Videos</a></p>}
                 {certificationData && <p className="lead mb-0 text-shadow"><MdPolicy /> <a href="#certification" style={{ textDecoration: 'none' }} className="text-white">Certification Logo</a></p>}
               </div>
+              <LessonProgress enrollment={enrollment} />
             </div>
             <div className="col-12 col-lg-6">
               {enrollment.newSubmissions.length > 0 && (
