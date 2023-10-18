@@ -7,12 +7,15 @@ type Props = {
   enrollment: EnrollmentState;
 };
 
+/** the relative weight a submission compared to an assignment */
+const submissionWeight = 3;
+
 export const CourseProgress: FC<Props> = memo(({ enrollment }) => {
   const [ progress, max ] = useMemo(() => {
     // const uniqueSubmissions = enrollment.newSubmissions.filter((item, pos, arr) => arr.findIndex(v => v.unitLetter === item.unitLetter) === pos);
     return [
-      enrollment.materialCompletions.length + enrollment.newSubmissions.filter(s => s.submitted !== null).length,
-      enrollment.course.units.reduce((prev, u) => prev + u.materials.filter(m => m.type === 'lesson').length, 0) + enrollment.course.newSubmissionTemplates.length,
+      enrollment.materialCompletions.length + (enrollment.newSubmissions.filter(s => s.submitted !== null).length * submissionWeight),
+      enrollment.course.units.reduce((prev, u) => prev + u.materials.filter(m => m.type === 'lesson').length, 0) + (enrollment.course.newSubmissionTemplates.length * submissionWeight),
     ];
   }, [ enrollment ]);
 
