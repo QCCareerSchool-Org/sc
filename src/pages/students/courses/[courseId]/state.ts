@@ -17,7 +17,7 @@ export type MaterialWithCompletionForm = Material & {
   errorMessage?: string;
 };
 
-type EnrollmentState = Enrollment & {
+export type EnrollmentState = Enrollment & {
   student: Student;
   course: Course & {
     school: School;
