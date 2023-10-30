@@ -135,6 +135,11 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 {certificationData && <p className="lead mb-0 text-shadow"><MdPolicy /> <a href="#certification" style={{ textDecoration: 'none' }} className="text-white">Certification Logo</a></p>}
               </div>
               <CourseProgress enrollment={enrollment} />
+              {enrollment.onHold && (
+                <div className="alert alert-danger mt-4">
+                  This course is on hold. Please contact the School for more information.
+                </div>
+              )}
             </div>
             <div className="col-12 col-lg-6">
               {enrollment.newSubmissions.length > 0 && (
