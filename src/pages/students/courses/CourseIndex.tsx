@@ -49,6 +49,12 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
   const halloweenMessageEndDate = new Date(Date.UTC(2023, 9, 16, 15)); // October 16, 11:00 (15:00 UTC)
   const showHalloweenMessage = now < halloweenMessageEndDate && schoolSlugs?.includes('makeup');
 
+  const blackFridayMessage = now >= new Date(Date.UTC(2023, 10, 16, 14, 30)) && now < new Date(Date.UTC(2023, 10, 27, 5))
+    ? <><strong>Special Black Friday Offer:</strong> Take your career to the next level by expanding your skillset. Until November 26th, get <strong style={{ color: '#ca0000' }}>60% off</strong> all continued education makeup, event, and design courses.</>
+    : now >= new Date(Date.UTC(2023, 10, 27, 5)) && now < new Date(Date.UTC(2023, 11, 1, 5))
+      ? <><strong>Special Cyber Monday Offer:</strong> Take your career to the next level by expanding your skillset. Until November 30th, get <strong style={{ color: '#ca0000' }}>60% off</strong> all continued education makeup, event, and design courses.</>
+      : undefined;
+
   return (
     <>
       <Section>
@@ -77,7 +83,12 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
         <Section className="bg-f1">
           <div className="container">
             <h2 className="h4">Continued Education</h2>
-            <p className="lead">Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses.</p>
+            <p className="lead">
+              {blackFridayMessage
+                ? blackFridayMessage
+                : <>Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses.</>
+              }
+            </p>
             {showTaxCreditMessage && <TaxCreditMessage />}
             {schoolSlugs?.map(s => courseSuggestionGroups[s].map(group => {
               return <ContinuingEducationGroup
