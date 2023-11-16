@@ -181,9 +181,15 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
 const fetchPrice = async (countryCode: string, provinceCode: string | undefined, courseCode: string): Promise<PriceResult> => {
   const url = 'https://api.qccareerschool.com/prices';
 
+  const now = new Date().getTime();
+
+  const promoCode = now >= Date.UTC(2023, 10, 16, 14, 30) && now < Date.UTC(2023, 11, 1, 5)
+    ? 'SAVE60'
+    : '';
+
   const queryString = provinceCode
-    ? `countryCode=${encodeURIComponent(countryCode)}&provinceCode=${encodeURIComponent(provinceCode)}&courses[]=${encodeURIComponent(courseCode)}&options[discountAll]=true`
-    : `countryCode=${encodeURIComponent(countryCode)}&courses[]=${encodeURIComponent(courseCode)}&options[discountAll]=true`;
+    ? `countryCode=${encodeURIComponent(countryCode)}&provinceCode=${encodeURIComponent(provinceCode)}&courses[]=${encodeURIComponent(courseCode)}&options[discountAll]=true&options[promoCode]=${encodeURIComponent(promoCode)}`
+    : `countryCode=${encodeURIComponent(countryCode)}&courses[]=${encodeURIComponent(courseCode)}&options[discountAll]=true&options[promoCode]=${encodeURIComponent(promoCode)}`;
 
   const response = await fetch(`${url}?${queryString}`, {
     headers: { 'x-api-version': '2' },
