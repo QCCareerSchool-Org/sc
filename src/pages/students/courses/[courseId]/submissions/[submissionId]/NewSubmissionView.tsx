@@ -13,6 +13,7 @@ import { useInitialData } from './useInitialData';
 import { useSubmissionSkip } from './useSubmissionSkip';
 import { useSubmissionSubmit } from './useSubmissionSubmit';
 import { Section } from '@/components/Section';
+import { getVirtualClassroomLink } from 'src/lib/virtualClassroomLink';
 
 type Props = {
   studentId: number;
@@ -46,6 +47,8 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
   const studentNumber = `${state.newSubmission.enrollment.course.code}${state.newSubmission.enrollment.studentNumber}`;
   const surveyLink = `https://ng295qu8zyk.typeform.com/to/LlPgGmJY#student_number=${encodeURIComponent(studentNumber)}`;
 
+  const virtualClassroomLink = getVirtualClassroomLink(state.newSubmission.enrollment.course.school.slug);
+
   return (
     <>
       <Section>
@@ -56,11 +59,18 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
               <h1>Submission {state.newSubmission.unitLetter}{state.newSubmission.title && <>: {state.newSubmission.title}</>}</h1>
               <NewSubmissionInfoTable newSubmission={state.newSubmission} />
               <NewSubmissionStatus studentId={studentId} courseId={courseId} newSubmission={state.newSubmission} onProgress={handleAudioProgress} />
-              {state.newSubmission.enrollment.course.code === 'MZ' && state.newSubmission.responseProgress === 100 && (
-                <div className="alert alert-info">
+              {state.newSubmission.unitLetter === 'A' && state.newSubmission.enrollment.course.code === 'MZ' && state.newSubmission.responseProgress === 100 && (
+                <div className="alert alert-info" role="alert">
                   <h5>Please Complete the Course Experience Survey</h5>
                   <p>We're working hard to make your course experience even better and your feedback is valuable. Please complete <a target="_blank" rel="noreferrer" href={surveyLink} className="alert-link">this two-minute survey</a>.</p>
                   <a target="_blank" rel="noreferrer" href={surveyLink} className="btn btn-info">Take the Survey</a>
+                </div>
+              )}
+              {virtualClassroomLink !== null && (
+                <div className="alert alert-primary" role="alert">
+                  <h5>Virtual Classroom</h5>
+                  <p>Haven't joined yet? It's time to jump into our Facebook Virtual Classrooms! You'll find mentors, exclusive content from industry experts, and network with peers. Don't miss out&mdash;<a target="_blank" rel="noreferrer" href={virtualClassroomLink} className="alert-link">request to join today!</a>.</p>
+                  <a target="_blank" rel="noreferrer" href={virtualClassroomLink} className="btn btn-primary">Join the Virtual Classroom</a>
                 </div>
               )}
             </div>
