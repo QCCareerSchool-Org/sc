@@ -69,16 +69,6 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
               Our Annual <a className="alert-link" href="https://forms.gle/sCu2QbQhbZj1wL6P8" target="_blank" rel="noreferrer">Halloween Contest</a> is back! Join the festivities with your peers in the <a className="alert-link" href="https://www.facebook.com/groups/qcmakeupacademyvc" target="_blank" rel="noreferrer">Virtual Classroom</a>!
             </div>
           )}
-          {showVirtualClassroomAlert && (
-            <div className="alert alert-primary">
-              <h2 className="h4">Virtual Classroom</h2>
-              <p>Our QC community is leveling up! Join our Virtual Classrooms on Facebook. Engage with mentors, get exclusive content from industry experts, and network with peers. Excited? We are too! See you there&mdash;request to join now!</p>
-              {schoolSlugs?.includes('design') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('design')} className="alert-link">QC Design School Virtual Classroom</a></p>}
-              {schoolSlugs?.includes('event') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('event')} className="alert-link">QC Event School Virtual Classroom</a></p>}
-              {schoolSlugs?.includes('makeup') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('makeup')} className="alert-link">QC Makeup Academy Virtual Classroom</a></p>}
-              {schoolSlugs?.includes('pet') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('pet')} className="alert-link">QC Pet Studies Virtual Classroom</a></p>}
-            </div>
-          )}
           {state.data.student.created >= new Date(Date.UTC(2023, 8, 22, 4)) && !state.data.student.passwordChanged && <UnchangedPasswordWarning />}
           {state.data.student.enrollments.length === 0
             ? <p className="lead">No enrollments found.</p>
@@ -89,6 +79,16 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
               </>
             )
           }
+          {showVirtualClassroomAlert && (
+            <div className="alert alert-primary">
+              <h2 className="h4">Virtual Classroom</h2>
+              <p>Our QC community is leveling up! Join our Virtual Classrooms on Facebook. Engage with mentors, get exclusive content from industry experts, and network with peers. Excited? We are too! See you there&mdash;request to join now!</p>
+              {schoolSlugs?.includes('design') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('design')} className="alert-link">QC Design School Virtual Classroom</a></p>}
+              {schoolSlugs?.includes('event') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('event')} className="alert-link">QC Event School Virtual Classroom</a></p>}
+              {schoolSlugs?.includes('makeup') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('makeup')} className="alert-link">QC Makeup Academy Virtual Classroom</a></p>}
+              {schoolSlugs?.includes('pet') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('pet')} className="alert-link">QC Pet Studies Virtual Classroom</a></p>}
+            </div>
+          )}
         </div>
       </Section>
 
