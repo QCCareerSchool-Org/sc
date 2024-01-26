@@ -81,8 +81,8 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
           }
           {showVirtualClassroomAlert && (
             <div className="alert alert-primary">
-              <h2 className="h4">Virtual Classroom</h2>
-              <p>Our QC community is leveling up! Join our Virtual Classrooms on Facebook. Engage with mentors, get exclusive content from industry experts, and network with peers. Excited? We are too! See you there&mdash;request to join now!</p>
+              <h2 className="h5">Bonus: Join our Virtual Classroom!</h2>
+              <p>Our QC community is leveling up! In addition to completing your course here on the Online Student Center, you can join our Virtual Classroom on Facebook! Engage with mentors, get exclusive content from industry experts, and network with peers in this dynamic space. Excited? We are too! See you there&mdash;request to join now!</p>
               {schoolSlugs?.includes('design') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('design')} className="alert-link">QC Design School Virtual Classroom</a></p>}
               {schoolSlugs?.includes('event') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('event')} className="alert-link">QC Event School Virtual Classroom</a></p>}
               {schoolSlugs?.includes('makeup') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('makeup')} className="alert-link">QC Makeup Academy Virtual Classroom</a></p>}
