@@ -69,7 +69,7 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
               {virtualClassroomLink !== null && (
                 <div className="alert alert-primary" role="alert">
                   <h5>Virtual Classroom</h5>
-                  <p>Haven't joined yet? It's time to jump into our Facebook Virtual Classroom! You'll find mentors, get exclusive content from industry experts, and network with peers. Don't miss out&mdash;request to join today!<a target="_blank" rel="noreferrer" href={virtualClassroomLink} className="alert-link">request to join today!</a></p>
+                  <p>Haven't joined yet? It's time to jump into our Facebook Virtual Classroom! You'll find mentors, get exclusive content from industry experts, and network with peers. Don't miss out&mdash;<a target="_blank" rel="noreferrer" href={virtualClassroomLink} className="alert-link">request to join today!</a></p>
                   <a target="_blank" rel="noreferrer" href={virtualClassroomLink} className="btn btn-primary">Join the Virtual Classroom</a>
                 </div>
               )}
