@@ -3,6 +3,7 @@ import { map } from 'rxjs';
 
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
+import type { School } from '@/domain/school';
 import type { NewAssignment, RawNewAssignment } from '@/domain/student/newAssignment';
 import type { NewPart, RawNewPart } from '@/domain/student/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmission';
@@ -13,7 +14,9 @@ import { endpoint } from 'src/basePath';
 
 export type NewSubmissionWithCourseAndChildren = NewSubmission & {
   enrollment: Enrollment & {
-    course: Course;
+    course: Course & {
+      school: School;
+    };
   };
   newAssignments: Array<NewAssignment & {
     newParts: Array<NewPart & {
@@ -25,7 +28,9 @@ export type NewSubmissionWithCourseAndChildren = NewSubmission & {
 
 type RawNewSubmissionWithCourseAndChildren = RawNewSubmission & {
   enrollment: RawEnrollment & {
-    course: Course;
+    course: Course & {
+      school: School;
+    };
   };
   newAssignments: Array<RawNewAssignment & {
     newParts: Array<RawNewPart & {
