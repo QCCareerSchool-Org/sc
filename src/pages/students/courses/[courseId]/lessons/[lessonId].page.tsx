@@ -68,7 +68,7 @@ const LessonPage: NextPage<Props> = ({ lessonId }) => {
   }
 
   if (!ready) {
-    return;
+    return null;
   }
 
   const handleClick: MouseEventHandler = () => {
