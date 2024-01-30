@@ -208,6 +208,7 @@ module.exports = {
     'react/jsx-props-no-multi-spaces': 'error',
     'react/jsx-tag-spacing': [ 'error', { beforeClosing: 'never' } ],
     'react/no-unescaped-entities': [ 'error', { forbid: [ '>', '"', '}', '“', '”', '‘', '’' ] } ],
+    'react/no-unknown-property': [ 'error', { ignore: [ 'jsx', 'global' ] } ],
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/self-closing-comp': 'error',
