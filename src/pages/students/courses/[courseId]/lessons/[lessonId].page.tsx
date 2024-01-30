@@ -6,8 +6,6 @@ import { useAuthState } from '@/hooks/useAuthState';
 
 import { ScormAPI } from 'src/lib/scorm';
 
-declare const qcWindowOpen: (url: string, target?: string) => WindowProxy;
-
 type Props = {
   lessonId: string | null;
 };
@@ -78,18 +76,11 @@ const LessonPage: NextPage<Props> = ({ lessonId }) => {
     childWindow.current = window.open(url, lessonId ?? '_blank');
   };
 
-  const handleClick2: MouseEventHandler = () => {
-    const url = `/api/sc/v1/students/50/static/lessons/${lessonId}/scormdriver/indexAPI.html`;
-    childWindow.current = qcWindowOpen(url, lessonId ?? '_blank');
-  };
-
   return (
     <section>
       <div className="container">
         <h1>Test {lessonId}</h1>
         <button onClick={handleClick} className="btn btn-primary">Open Lesson</button>
-        <button onClick={handleClick2} className="btn btn-primary">Open Lesson 2</button>
-        <a href={`/api/sc/v1/students/50/static/lessons/${lessonId}/scormdriver/indexAPI.html`} target={lessonId ?? '_blank'}>Open Lesson Link</a>
       </div>
     </section>
   );
