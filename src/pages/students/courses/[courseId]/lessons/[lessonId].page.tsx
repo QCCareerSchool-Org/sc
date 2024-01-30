@@ -72,7 +72,7 @@ const LessonPage: NextPage<Props> = ({ lessonId }) => {
   }
 
   const handleClick: MouseEventHandler = () => {
-    const url = `/api/sc/v1/students/50/static/lessons/${lessonId}/scormcontent/`;
+    const url = `/api/sc/v1/students/50/static/lessons/${lessonId}/scormdriver/indexAPI.html`;
     childWindow.current = window.open(url, lessonId ?? '_blank');
   };
 
