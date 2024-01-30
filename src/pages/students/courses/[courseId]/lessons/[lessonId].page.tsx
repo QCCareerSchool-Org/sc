@@ -81,6 +81,7 @@ const LessonPage: NextPage<Props> = ({ lessonId }) => {
       <div className="container">
         <h1>Test {lessonId}</h1>
         <button onClick={handleClick} className="btn btn-primary">Open Lesson</button>
+        <a href={`/api/sc/v1/students/50/static/lessons/${lessonId}/scormdriver/indexAPI.html`} target={lessonId ?? '_blank'}>Open</a>
       </div>
     </section>
   );
