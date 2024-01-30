@@ -11,7 +11,7 @@ type Props = {
   courseId: number | null;
 };
 
-const CourseViewPage: NextPage<Props> = ({ courseId }: Props) => {
+const CourseViewPage: NextPage<Props> = ({ courseId }) => {
   const authState = useAuthState();
   const navDispatch = useNavDispatch();
 
