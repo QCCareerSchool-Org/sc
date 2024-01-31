@@ -144,16 +144,16 @@ const Duration: FC<DurationProps> = ({ seconds }) => {
   }
 
   if (days) {
-    return <>{days} days, {hours} hours</>;
+    return <>{days} day{days !== 1 && 's'}, {hours} hour{hours !== 1 && 's'}</>;
   }
 
   if (hours) {
-    return <>{hours} hours, {minutes} minutes</>;
+    return <>{hours} hour{hours !== 1 && 's'}, {minutes} minute{minutes !== 1 && 's'}</>;
   }
 
   if (minutes) {
-    return <>{minutes} minutes</>;
+    return <>{minutes} minute{minutes !== 1 && 's'}</>;
   }
 
-  return <>Under a minute</>;
+  return <>Less than a minute</>;
 };
