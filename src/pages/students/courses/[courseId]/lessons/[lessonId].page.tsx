@@ -4,6 +4,7 @@ import type { MouseEventHandler } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useAuthState } from '@/hooks/useAuthState';
 
+import { useServices } from '@/hooks/useServices';
 import { ScormAPI } from 'src/lib/scorm';
 
 type Props = {
@@ -12,12 +13,13 @@ type Props = {
 
 const LessonPage: NextPage<Props> = ({ lessonId }) => {
   const authState = useAuthState();
+  const { loginService } = useServices();
 
   const scormAPI = useRef<ScormAPI>();
 
   const childWindow = useRef<Window | null>(null);
 
-  const ready = useState(false);
+  const [ ready, setReady ] = useState(false);
 
   const commit = useRef((data: Record<string, string>): boolean => {
     for (const [ element, value ] of Object.entries(data)) {
@@ -47,6 +49,7 @@ const LessonPage: NextPage<Props> = ({ lessonId }) => {
 
     scormAPI.current = new ScormAPI(lessonId, commit.current, data);
     window.API_1484_11 = scormAPI.current;
+    setReady(true);
   }, [ lessonId ]);
 
   useEffect(() => {
@@ -68,12 +71,14 @@ const LessonPage: NextPage<Props> = ({ lessonId }) => {
   }
 
   if (!ready) {
-    return null;
+    return false;
   }
 
   const handleClick: MouseEventHandler = () => {
-    const url = `/api/sc/v1/students/50/static/lessons/${lessonId}/scormdriver/indexAPI.html`;
-    childWindow.current = window.open(url, lessonId ?? '_blank');
+    loginService.refresh().subscribe(() => {
+      const url = `/api/sc/v1/students/50/static/lessons/${lessonId}/scormdriver/indexAPI.html`;
+      childWindow.current = window.open(url, lessonId ?? '_blank');
+    });
   };
 
   return (
