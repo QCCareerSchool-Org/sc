@@ -1,11 +1,12 @@
 import { parse as parseInterval, toSeconds } from 'iso8601-duration';
 import type { FC, MouseEventHandler } from 'react';
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 
 import { Subject, takeUntil } from 'rxjs';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
-import { useMaterialDataUpdate } from './useInitializeNextUnit';
+import { useMaterialDataUpdate } from './useMaterialDataUpdate';
+import { useRefresh } from './useRefresh';
 import { Img } from '@/components/Img';
 import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
@@ -22,11 +23,12 @@ export const LessonView: FC<Props> = ({ studentId, materialId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, studentId, materialId);
+  const refresh$ = useRefresh(dispatch, studentId, materialId);
   const materialDataUpdate$ = useMaterialDataUpdate();
 
   const scormAPI = useRef<ScormAPI>();
 
-  const childWindow = useRef<Window | null>(null);
+  const [ childWindow, setChildWindow ] = useState<Window | null>(null);
 
   const commit = useRef((data: Record<string, string>): boolean => {
     materialDataUpdate$.next({ studentId, materialId, data });
@@ -65,14 +67,26 @@ export const LessonView: FC<Props> = ({ studentId, materialId }) => {
   }, [ state.material ]);
 
   useEffect(() => {
+    if (!childWindow) {
+      return;
+    }
     const listener = (): void => {
-      if (childWindow.current) {
-        childWindow.current.close();
-      }
+      childWindow.close();
     };
     window.addEventListener('beforeunload', listener);
-    return () => window.removeEventListener('beforeunload', listener);
-  }, []);
+
+    const intervalId = setInterval(() => {
+      if (childWindow.closed) {
+        refresh$.next();
+        setChildWindow(null);
+      }
+    }, 300);
+
+    return () => {
+      window.removeEventListener('beforeunload', listener);
+      clearInterval(intervalId);
+    };
+  }, [ refresh$, childWindow ]);
 
   if (!state.material) {
     return null;
@@ -89,7 +103,7 @@ export const LessonView: FC<Props> = ({ studentId, materialId }) => {
   const imageSrc = `${endpoint}/students/${studentId}/materials/${state.material.materialId}/image`;
 
   const handleClick: MouseEventHandler = () => {
-    childWindow.current = window.open(href, materialId ?? '_blank');
+    setChildWindow(window.open(href, materialId ?? '_blank'));
   };
 
   return (
@@ -103,7 +117,7 @@ export const LessonView: FC<Props> = ({ studentId, materialId }) => {
             <h1>{state.material.title}</h1>
             {state.material.description && <p>{state.material.description}</p>}
             {typeof totalTime !== 'undefined' && <p className="mb-0"><strong>Time in Lesson:</strong> <Duration seconds={totalTime} /></p>}
-            <p className="mb-0"><strong>Status:</strong> {state.material.materialData['cmi.completion_status'] === 'completed' ? 'Complete' : 'Incomplete' }</p>
+            <p className="mb-0"><strong>Status:</strong> {state.material.materialData['cmi.completion_status'] === 'completed' ? 'Complete' : 'Incomplete'}</p>
             {typeof state.material.materialData['cmi.score.scaled'] !== 'undefined' && (
               <p className="mb-0"><strong>Score:</strong> {Math.round(parseFloat(state.material.materialData['cmi.score.scaled']) * 100)}%</p>
             )}
