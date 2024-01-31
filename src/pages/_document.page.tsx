@@ -20,8 +20,6 @@ export default class QCDocument extends Document {
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" />
           { /* eslint-disable-next-line @next/next/no-sync-scripts */}
           <script src="https://hosted.paysafe.com/js/v1/latest/paysafe.min.js" />
-          { /* eslint-disable-next-line @next/next/no-sync-scripts */}
-          <script src="/js/window.js" />
         </Head>
         <body>
           <Main />
