@@ -102,9 +102,13 @@ export const LessonView: FC<Props> = ({ studentId, materialId }) => {
           <div className="col-12 col-sm-6">
             <h1>{state.material.title}</h1>
             {state.material.description && <p>{state.material.description}</p>}
-            {typeof totalTime !== 'undefined' && <p>Time in Lesson: <Duration seconds={totalTime} /></p>}
+            {typeof totalTime !== 'undefined' && <p className="mb-0"><strong>Time in Lesson:</strong> <Duration seconds={totalTime} /></p>}
+            <p className="mb-0"><strong>Status:</strong> {state.material.materialData['cmi.completion_status'] === 'completed' ? 'Complete' : 'Incomplete' }</p>
+            {typeof state.material.materialData['cmi.score.scaled'] !== 'undefined' && (
+              <p className="mb-0"><strong>Score:</strong> {Math.round(parseFloat(state.material.materialData['cmi.score.scaled']) * 100)}%</p>
+            )}
 
-            <button onClick={handleClick} className="btn btn-primary">Open Lesson</button>
+            <button onClick={handleClick} className="btn btn-primary mt-3">Open Lesson</button>
 
           </div>
         </div>
