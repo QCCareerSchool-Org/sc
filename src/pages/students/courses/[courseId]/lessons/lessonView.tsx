@@ -75,7 +75,7 @@ export const LessonView: FC<Props> = ({ studentId, materialId }) => {
   }, []);
 
   if (!state.material) {
-    return false;
+    return null;
   }
 
   let totalTime: number | undefined = undefined;
