@@ -13,6 +13,7 @@ import type { Video } from '@/domain/video';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
 
 export type MaterialWithCompletionForm = Material & {
+  materialData: Record<string, string>;
   processingState: 'idle' | 'processing';
   errorMessage?: string;
 };

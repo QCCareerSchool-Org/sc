@@ -1,4 +1,5 @@
-import type { ChangeEventHandler, FC } from 'react';
+import Link from 'next/link';
+import type { ChangeEventHandler, FC, PropsWithChildren } from 'react';
 import { useId } from 'react';
 import { FaClock } from 'react-icons/fa';
 import type { Subject } from 'rxjs';
@@ -9,19 +10,21 @@ import type { MaterialWithCompletionForm } from './state';
 import { UnitAccordionSectionPadding } from './UnitAccordionSectionPadding';
 import type { MaterialCompleteEvent } from './useMaterialCompletion';
 import { Img } from '@/components/Img';
+import type { Material } from '@/domain/material';
 import { useScreenWidth } from '@/hooks/useScreenWidth';
 import { endpoint } from 'src/basePath';
 
 type Props = {
   studentId: number;
   enrollmentId: number;
+  courseId: number;
   material: MaterialWithCompletionForm;
   complete: boolean;
   materialCompletion$: Subject<MaterialCompleteEvent>;
   last: boolean;
 };
 
-export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete, materialCompletion$, last }) => {
+export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material, complete, materialCompletion$, last }) => {
   const id = useId();
   const screenwidth = useScreenWidth();
   const md = screenwidth >= 768;
@@ -38,18 +41,19 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete,
     });
   };
 
-  const href = `${endpoint}/students/${studentId}/static/lessons/${material.materialId}${material.entryPoint}`;
+  const scormComplete = material.materialData['cmi.completion_status'] === 'completed';
+
   const imageSrc = `${endpoint}/students/${studentId}/materials/${material.materialId}/image`;
   return (
     <>
-      <LessonBorder complete={complete} last={last}>
+      <LessonBorder complete={scormComplete || complete} last={last}>
         <UnitAccordionSectionPadding>
           <div className="row">
             <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
               <div className="thumbnailWrapper">
-                <a href={href} target="_blank" rel="noopener noreferrer" className="thumbnail">
+                <LesssonLink studentId={studentId} courseId={courseId} material={material} className="thumbnail">
                   <Img src={imageSrc} className="img-fluid rounded-4 shadow" alt="image" />
-                </a>
+                </LesssonLink>
               </div>
             </div>
             <div className="col-12 col-lg-8 col-xxl-9 d-flex">
@@ -61,16 +65,16 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete,
                 </div>
                 <div className={md ? 'd-flex justify-content-between' : ''}>
                   <div className={md ? '' : 'mb-3'}>
-                    <a className="lessonButtonLink" href={href} target="_blank" rel="noopener noreferrer"><MaterialButton>View Lesson</MaterialButton></a>
+                    <LesssonLink studentId={studentId} courseId={courseId} material={material} className="lessonButtonLink"><MaterialButton>View Lesson</MaterialButton></LesssonLink>
                   </div>
-
-                  <div className={`form-check round ${md ? 'right' : ''}`}>
-                    <input onChange={handleCompleteChange} checked={complete} className="form-check-input" type="checkbox" id={id} disabled={material.processingState === 'processing'} />
-                    <label className="form-check-label small fw-bold" htmlFor={id}>
-                      Click here when you have completed your lesson
-                    </label>
-                  </div>
-
+                  {material.type !== 'scorm2004' && (
+                    <div className={`form-check round ${md ? 'right' : ''}`}>
+                      <input onChange={handleCompleteChange} checked={complete} className="form-check-input" type="checkbox" id={id} disabled={material.processingState === 'processing'} />
+                      <label className="form-check-label small fw-bold" htmlFor={id}>
+                        Click here when you have completed your lesson
+                      </label>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -137,4 +141,19 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, material, complete,
       `}</style>
     </>
   );
+};
+
+type LessonLinkProps = {
+  studentId: number;
+  courseId: number;
+  material: Material;
+  className?: string;
+};
+
+const LesssonLink: FC<PropsWithChildren<LessonLinkProps>> = ({ studentId, courseId, material, className, children }) => {
+  if (material.type === 'scorm2004') {
+    return <Link href={`${courseId}/materials/${material.materialId}`}><a className={className}>{children}</a></Link>;
+  }
+
+  return <a className={className} href={`${endpoint}/students/${studentId}/static/lessons/${material.materialId}${material.entryPoint}`} target={material.materialId} rel="noreferrer">{children}</a>;
 };

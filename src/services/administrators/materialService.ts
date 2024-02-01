@@ -2,14 +2,14 @@ import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
 import type { Course } from '@/domain/course';
-import type { Material, RawMaterial } from '@/domain/material';
+import type { Material, MaterialType, RawMaterial } from '@/domain/material';
 import type { RawUnit, Unit } from '@/domain/unit';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export type MaterialInsertPayload = {
   unitId: string;
-  type: 'lesson' | 'video' | 'download' | 'assignment';
+  type: MaterialType;
   title: string;
   description: string;
   order: number;

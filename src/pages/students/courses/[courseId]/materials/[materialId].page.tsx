@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import ErrorPage from 'next/error';
 
-import { LessonView } from './lessonView';
+import { MaterialView } from './materialView';
 import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
@@ -19,7 +19,7 @@ const LessonPage: NextPage<Props> = ({ materialId }) => {
     return <ErrorPage statusCode={400} />;
   }
 
-  return <LessonView studentId={studentId} materialId={materialId} />;
+  return <MaterialView studentId={studentId} materialId={materialId} />;
 };
 
 export default LessonPage;
