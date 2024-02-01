@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { memo, useMemo } from 'react';
 
-import type { EnrollmentState } from './state';
+import type { EnrollmentState, MaterialWithCompletionForm } from './state';
 
 type Props = {
   enrollment: EnrollmentState;
@@ -10,12 +10,26 @@ type Props = {
 /** the relative weight a submission compared to an assignment */
 const submissionWeight = 3;
 
+const onlyLessons = (m: MaterialWithCompletionForm): boolean => m.type === 'lesson' || m.type === 'scorm2004';
+
 export const CourseProgress: FC<Props> = memo(({ enrollment }) => {
   const [ progress, max ] = useMemo(() => {
-    // const uniqueSubmissions = enrollment.newSubmissions.filter((item, pos, arr) => arr.findIndex(v => v.unitLetter === item.unitLetter) === pos);
+    let p = 0;
+    for (const unit of enrollment.course.units) {
+      for (const material of unit.materials.filter(onlyLessons)) {
+        if (material.materialData['cmi.completion_status'] === 'completed') { // SCORM data indicated material is completed
+          p++;
+        } else {
+          if (enrollment.materialCompletions.findIndex(c => c.materialId === material.materialId) !== -1) { // we have a materialCompletion recorded
+            p++;
+          }
+        }
+      }
+    }
+
     return [
-      enrollment.materialCompletions.length + (enrollment.newSubmissions.filter(s => s.submitted !== null).length * submissionWeight),
-      enrollment.course.units.reduce((prev, u) => prev + u.materials.filter(m => m.type === 'lesson').length, 0) + (enrollment.course.newSubmissionTemplates.length * submissionWeight),
+      p + (enrollment.newSubmissions.filter(s => s.submitted !== null).length * submissionWeight),
+      enrollment.course.units.reduce((prev, u) => prev + u.materials.filter(onlyLessons).length, 0) + (enrollment.course.newSubmissionTemplates.length * submissionWeight),
     ];
   }, [ enrollment ]);
 

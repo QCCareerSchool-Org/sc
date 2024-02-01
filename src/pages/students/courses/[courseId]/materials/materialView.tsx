@@ -33,7 +33,7 @@ export const MaterialView: FC<Props> = ({ studentId, materialId }) => {
   const [ childWindow, setChildWindow ] = useState<Window | null>(null);
 
   const commit = useRef((data: Record<string, string>): boolean => {
-    if (typeof authState.administratorId === 'undefined') {
+    if (typeof authState.administratorId === 'undefined') { // don't save if logged in as an admin
       materialDataUpdate$.next({ studentId, materialId, data });
     }
     return true;
