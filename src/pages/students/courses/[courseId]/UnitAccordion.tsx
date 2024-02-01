@@ -75,7 +75,7 @@ export const UnitAccordion: FC<Props> = props => {
             {unit.materials.filter(m => m.type !== 'assignment').map((m, i, a) => {
               const complete = materialCompletions.some(mc => mc.materialId === m.materialId);
               return (
-                <Lesson key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} material={m} complete={complete} materialCompletion$={materialCompletion$} last={i === a.length - 1} />
+                <Lesson key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} courseId={courseId} material={m} complete={complete} materialCompletion$={materialCompletion$} last={i === a.length - 1} />
               );
             })}
             {(submission || (!assignmentsDisabled && nextUnit.success && nextUnit.unitLetter === unit.unitLetter)) && (

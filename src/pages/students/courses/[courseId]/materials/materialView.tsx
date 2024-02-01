@@ -17,7 +17,7 @@ type Props = {
   materialId: string;
 };
 
-export const LessonView: FC<Props> = ({ studentId, materialId }) => {
+export const MaterialView: FC<Props> = ({ studentId, materialId }) => {
   const { loginService } = useServices();
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -109,11 +109,11 @@ export const LessonView: FC<Props> = ({ studentId, materialId }) => {
   return (
     <section>
       <div className="container">
-        <div className="row">
-          <div className="col-12 col-sm-6">
-            <Img src={imageSrc} alt={state.material.title} className="img-fluid" />
+        <div className="row justify-content-center">
+          <div className="col-8 col-sm-4 mb-4 mb-sm-0">
+            <Img src={imageSrc} alt={state.material.title} className="w-100 img-fluid" />
           </div>
-          <div className="col-12 col-sm-6">
+          <div className="col-12 col-sm-8">
             <h1>{state.material.title}</h1>
             {state.material.description && <p>{state.material.description}</p>}
             {typeof totalTime !== 'undefined' && <p className="mb-0"><strong>Time in Lesson:</strong> <Duration seconds={totalTime} /></p>}

@@ -1,4 +1,4 @@
-export type MaterialType = 'lesson' | 'video' | 'download' | 'assignment';
+export type MaterialType = 'lesson' | 'video' | 'download' | 'assignment' | 'scorm2004';
 
 export type Material = {
   /** uuid */

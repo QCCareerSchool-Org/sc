@@ -58,7 +58,7 @@ export const MaterialAddForm: FC<Props> = memo(props => {
     if (!valid) {
       return;
     }
-    if (formState.data.type === 'lesson' || formState.data.type === 'download') {
+    if (formState.data.type === 'lesson' || formState.data.type === 'scorm2004' || formState.data.type === 'download') {
       if (formState.data.content === null) {
         throw Error('file is null');
       }
