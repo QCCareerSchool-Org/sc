@@ -8,6 +8,7 @@ import { useInitialData } from './useInitialData';
 import { useMaterialDataUpdate } from './useMaterialDataUpdate';
 import { useRefresh } from './useRefresh';
 import { Img } from '@/components/Img';
+import { useAuthState } from '@/hooks/useAuthState';
 import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { ScormAPI } from 'src/lib/scorm';
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export const MaterialView: FC<Props> = ({ studentId, materialId }) => {
+  const authState = useAuthState();
   const { loginService } = useServices();
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -31,7 +33,9 @@ export const MaterialView: FC<Props> = ({ studentId, materialId }) => {
   const [ childWindow, setChildWindow ] = useState<Window | null>(null);
 
   const commit = useRef((data: Record<string, string>): boolean => {
-    materialDataUpdate$.next({ studentId, materialId, data });
+    if (typeof authState.administratorId === 'undefined') {
+      materialDataUpdate$.next({ studentId, materialId, data });
+    }
     return true;
   });
 
