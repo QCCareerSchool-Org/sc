@@ -47,7 +47,7 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="adminNav">
-            {otherNavPresent && <span className="d-none d-md-inline"><strong>A:</strong>&nbsp;&nbsp;</span>}
+            {otherNavPresent && <span className="d-none d-md-inline me-4" style={{ minWidth: 70 }}><span className="badge text-bg-primary">Admin</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
                 {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}

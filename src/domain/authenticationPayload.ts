@@ -4,7 +4,7 @@ export type AuthenticationPayload = {
   studentCenter: {
     id: number;
     studentType: StudentType;
-    type: 'admin' | 'tutor' | 'student';
+    type: 'admin' | 'tutor' | 'student' | 'auditor';
   };
   crm?: {
     id: number;
