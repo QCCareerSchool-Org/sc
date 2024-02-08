@@ -3,6 +3,7 @@ import type { StudentType } from '@/domain/authenticationPayload';
 export type AuthState = {
   studentId?: number;
   tutorId?: number;
+  auditorId?: number;
   administratorId?: number;
   crmId?: number;
   studentType?: StudentType;
@@ -13,7 +14,8 @@ export type AuthAction =
   | { type: 'INITIALIZE'; payload: AuthState }
   | { type: 'STUDENT_LOG_IN'; payload: { accountId: number; xsrfToken: string; crmId?: number; studentType: StudentType } }
   | { type: 'TUTOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
-  | { type: 'ADMINISTRATOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } };
+  | { type: 'ADMINISTRATOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
+  | { type: 'AUDITOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } };
 
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
@@ -32,6 +34,11 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
     }
     case 'TUTOR_LOG_IN': {
       const newState: AuthState = { ...state, tutorId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
+      storeState(newState);
+      return newState;
+    }
+    case 'AUDITOR_LOG_IN': {
+      const newState: AuthState = { ...state, auditorId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
       storeState(newState);
       return newState;
     }
@@ -69,6 +76,9 @@ export const authInitializer = (): AuthState => {
           }
           if (typeof parsedAuthState.studentId === 'number') {
             authState.studentId = parsedAuthState.studentId;
+          }
+          if (typeof parsedAuthState.auditorId === 'number') {
+            authState.auditorId = parsedAuthState.auditorId;
           }
           if (typeof parsedAuthState.xsrfToken === 'string') {
             authState.xsrfToken = parsedAuthState.xsrfToken;

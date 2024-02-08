@@ -1,4 +1,4 @@
-type NavType = 'administrator' | 'tutor' | 'student';
+type NavType = 'administrator' | 'tutor' | 'student' | 'auditor';
 
 export type NavState = {
   type?: NavType;

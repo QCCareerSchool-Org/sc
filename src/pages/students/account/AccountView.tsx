@@ -77,7 +77,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
 
   return (
     <>
-      {state.recentEnrollment && state.student.country.code === 'CA' && !state.student.hasCASocialInsuranceNumber && (
+      {state.student.country.code === 'CA' && !state.student.hasCASocialInsuranceNumber && (
         <Section className="bg-dark text-white">
           <div className="container">
             <h2>Social Insurance Number</h2>
