@@ -34,7 +34,8 @@ export const StudentNav: FC<StudentNavProps> = props => {
 
   const adminLoggedIn = typeof authState.administratorId !== 'undefined';
   const tutorLoggedIn = typeof authState.tutorId !== 'undefined';
-  const otherNavPresent = adminLoggedIn || tutorLoggedIn;
+  const auditorLoggedIn = typeof authState.auditorId !== 'undefined';
+  const otherNavPresent = adminLoggedIn || tutorLoggedIn || auditorLoggedIn;
 
   const index = navState.type === 'student' ? navState.index : undefined;
 
@@ -47,7 +48,7 @@ export const StudentNav: FC<StudentNavProps> = props => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="studentNav">
-            {otherNavPresent && <span className="d-none d-md-inline me-4" style={{ minWidth: 70 }}><span className="badge text-bg-secondary">Student</span></span>}
+            {otherNavPresent && <span className="d-none d-md-inline me-3" style={{ minWidth: 64 }}><span className="badge text-bg-secondary">Student</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               {authState.studentType === 'general'
                 ? <GeneralNavItems studentId={authState.studentId} index={index} />

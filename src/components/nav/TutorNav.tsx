@@ -28,7 +28,8 @@ export const TutorNav: FC<TutorNavProps> = props => {
 
   const adminLoggedIn = typeof authState.administratorId !== 'undefined';
   const studentLoggedIn = typeof authState.studentId !== 'undefined';
-  const otherNavPresent = adminLoggedIn || studentLoggedIn;
+  const auditorLoggedIn = typeof authState.auditorId !== 'undefined';
+  const otherNavPresent = adminLoggedIn || studentLoggedIn || auditorLoggedIn;
 
   const index = navState.type === 'tutor' ? navState.index : null;
 
@@ -41,7 +42,7 @@ export const TutorNav: FC<TutorNavProps> = props => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="tutorNav">
-            {otherNavPresent && <span className="d-none d-md-inline me-4" style={{ minWidth: 70 }}><span className="badge text-bg-success">Tutor</span></span>}
+            {otherNavPresent && <span className="d-none d-md-inline me-3" style={{ minWidth: 64 }}><span className="badge text-bg-success">Tutor</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/tutors/index.php">Home{index === 0 && <div className="active-indicator" />}</a>

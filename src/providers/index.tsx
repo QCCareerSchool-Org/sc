@@ -1,6 +1,7 @@
-import type { FC, ReactNode } from 'react';
-import { AdminServicesProvider } from './AdminServicesProvider';
+import type { FC, PropsWithChildren } from 'react';
 
+import { AdminServicesProvider } from './AdminServicesProvider';
+import { AuditorServicesProvider } from './AuditorServicesProvider';
 import { AuthStateProvider } from './AuthStateProvider';
 import { ModalProvider } from './ModalProvider';
 import { NavStateProvider } from './NavStateProvider';
@@ -11,11 +12,7 @@ import { StudentServicesProvider } from './StudentServicesProvider';
 import { TutorServicesProvider } from './TutorServicesProvider';
 import { UnitToggleStateProvider } from './UnitToggleStateProvider';
 
-type Props = {
-  children: ReactNode;
-};
-
-export const StateProvider: FC<Props> = ({ children }) => (
+export const StateProvider: FC<PropsWithChildren> = ({ children }) => (
   <AuthStateProvider>
     <NavStateProvider>
       <UnitToggleStateProvider>
@@ -23,13 +20,15 @@ export const StateProvider: FC<Props> = ({ children }) => (
           <ServicesProvider>
             <AdminServicesProvider>
               <TutorServicesProvider>
-                <StudentServicesProvider>
-                  <ModalProvider>
-                    <ScrollbarWidthProvider>
-                      {children}
-                    </ScrollbarWidthProvider>
-                  </ModalProvider>
-                </StudentServicesProvider>
+                <AuditorServicesProvider>
+                  <StudentServicesProvider>
+                    <ModalProvider>
+                      <ScrollbarWidthProvider>
+                        {children}
+                      </ScrollbarWidthProvider>
+                    </ModalProvider>
+                  </StudentServicesProvider>
+                </AuditorServicesProvider>
               </TutorServicesProvider>
             </AdminServicesProvider>
           </ServicesProvider>

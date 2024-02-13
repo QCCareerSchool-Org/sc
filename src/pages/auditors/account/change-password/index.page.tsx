@@ -1,23 +1,23 @@
 import type { NextPage } from 'next';
 import { useEffect } from 'react';
 
-import { StudentList } from './studentList';
+import { ChangePassword } from './changePassword';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 
-const AuditorStudenListPage: NextPage = () => {
+const AuditorChangePasswordPage: NextPage = () => {
   const { auditorId } = useAuthState();
   const navDispatch = useNavDispatch();
 
   useEffect(() => {
-    navDispatch({ type: 'SET_PAGE', payload: { type: 'auditor', index: 1 } });
+    navDispatch({ type: 'SET_PAGE', payload: { type: 'auditor', index: 2 } });
   }, [ navDispatch ]);
 
   if (typeof auditorId === 'undefined') {
     return null;
   }
 
-  return <StudentList auditorId={auditorId} />;
+  return <ChangePassword auditorId={auditorId} />;
 };
 
-export default AuditorStudenListPage;
+export default AuditorChangePasswordPage;

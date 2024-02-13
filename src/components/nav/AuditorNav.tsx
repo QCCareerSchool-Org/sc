@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 
+import { ActiveIndicator } from './ActiveIndicator';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';
 
@@ -42,21 +43,21 @@ export const AuditorNav: FC<AuditorNavProps> = props => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="auditorNav">
-            {otherNavPresent && <span className="d-none d-md-inline me-4" style={{ minWidth: 70 }}><span className="badge text-bg-warning">Auditor</span></span>}
+            {otherNavPresent && <span className="d-none d-md-inline me-3" style={{ minWidth: 64 }}><span className="badge text-bg-warning">Auditor</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
-                <Link href="/auditors"><a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a></Link>
+                <Link href="/auditors"><a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <ActiveIndicator />}</a></Link>
               </li>
               <li className="nav-item">
-                <Link href="/auditors/students"><a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Students{index === 0 && <div className="active-indicator" />}</a></Link>
+                <Link href="/auditors/students"><a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Students{index === 1 && <ActiveIndicator />}</a></Link>
               </li>
               <li className="nav-item dropdown">
-                <a className={`nav-link dropdown-toggle ${index === 5 ? 'active' : ''}`} href="#" id="auditorNavAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Account{index === 5 && <div className="active-indicator" />}
+                <a className={`nav-link dropdown-toggle ${index === 2 ? 'active' : ''}`} href="#" id="auditorNavAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Account{index === 2 && <ActiveIndicator />}
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="auditorNavAccountDropdown">
-                  <li><Link href="/auditors/change-password"><a className="dropdown-item">Change Password</a></Link></li>
-                  <li><Link href="/auditors/change-email-address"><a className="dropdown-item">Change Email Address</a></Link></li>
+                  <li><Link href="/auditors/account/change-password"><a className="dropdown-item">Change Password</a></Link></li>
+                  <li><Link href="/auditors/account/change-email-address"><a className="dropdown-item">Change Email Address</a></Link></li>
                   <li><hr className="dropdown-divider" /></li>
                   <li><a className="dropdown-item" href="/auditors/logout.php">Log Out</a></li>
                 </ul>
