@@ -1,7 +1,10 @@
 import { type FC, useReducer } from 'react';
 
+import { EnrollmentsTable } from './enrollmentsTable';
 import { initialState, reducer } from './state';
+import { StudentDetails } from './studentDetails';
 import { useInitialData } from './useInitialData';
+import { Spinner } from '@/components/Spinner';
 
 type Props = {
   auditorId: number;
@@ -16,10 +19,17 @@ export const StudentView: FC<Props> = ({ auditorId, studentId }) => {
   return (
     <section>
       <div className="container">
-        <h1>Student {studentId}</h1>
-        <pre>
-          {JSON.stringify(state.student, null, ' ')}
-        </pre>
+        <h1>Student Details</h1>
+        {state.student
+          ? (
+            <>
+              <StudentDetails student={state.student} />
+              <h2>Courses</h2>
+              <EnrollmentsTable student={state.student} />
+            </>
+          )
+          : <Spinner />
+        }
       </div>
     </section>
   );

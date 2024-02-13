@@ -44,7 +44,7 @@ export const NewAssignmentList: FC<Props> = memo(props => {
                           : a.mark ?? '--'
                       }
                     </td>
-                    <td className="text-center">{mark === null ? 'n/a' : gradeService.calculate(mark, a.points, a.created)}</td>
+                    <td className="text-center">{mark === null || a.points <= 0 ? 'n/a' : gradeService.calculate(mark, a.points, a.created)}</td>
                   </tr>
                 );
               })}
