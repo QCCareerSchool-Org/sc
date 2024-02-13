@@ -1,0 +1,8 @@
+.badge {
+  min-width: 34px;
+  font-family: var(--bs-font-monospace);
+}
+
+.badge.hover:hover {
+  background-color: #0a58ca !important;
+}

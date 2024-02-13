@@ -29,7 +29,8 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
 
   const tutorLoggedIn = typeof authState.tutorId !== 'undefined';
   const studentLoggedIn = typeof authState.studentId !== 'undefined';
-  const otherNavPresent = tutorLoggedIn || studentLoggedIn;
+  const auditorLoggedIn = typeof authState.auditorId !== 'undefined';
+  const otherNavPresent = tutorLoggedIn || studentLoggedIn || auditorLoggedIn;
 
   const index = navState.type === 'administrator' ? navState.index : null;
 
@@ -47,7 +48,7 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="adminNav">
-            {otherNavPresent && <span className="d-none d-md-inline me-4" style={{ minWidth: 70 }}><span className="badge text-bg-primary">Admin</span></span>}
+            {otherNavPresent && <span className="d-none d-md-inline me-3" style={{ minWidth: 64 }}><span className="badge text-bg-primary">Admin</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
                 {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
@@ -71,34 +72,12 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
                   <li><a className="dropdown-item" href="/administrators/students/list-unassigned.php?school_id=3">Design</a></li>
                   <li><a className="dropdown-item" href="/administrators/students/list-unassigned.php?school_id=2">Event</a></li>
                   <li><a className="dropdown-item" href="/administrators/students/list-unassigned.php?school_id=1">Makeup</a></li>
-                  {/* <li><a className="dropdown-item" href="/administrators/students/list-unassigned.php?school_id=4">Travel</a></li> */}
                   <li><a className="dropdown-item" href="/administrators/students/list-unassigned.php?school_id=7">Writing</a></li>
-                  {/* <li><a className="dropdown-item" href="/administrators/students/list-unassigned.php?school_id=5">Style</a></li> */}
                   <li><a className="dropdown-item" href="/administrators/students/list-unassigned.php?school_id=6">Pet</a></li>
                   <li><a className="dropdown-item" href="/administrators/students/list-unassigned.php?school_id=8">Wellness</a></li>
                 </ul>
               </li>
-              <li className="nav-item dropdown d-block d-md-none d-lg-block">
-                <a className={`nav-link dropdown-toggle ${index === 4 ? 'active' : ''}`} href="#" id="adminNavUnmarkedUnitsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Unmarked Units{index === 4 && <div className="active-indicator" />}
-                </a>
-                <ul className="dropdown-menu" aria-labelledby="adminNavUnmarkedUnitsDropdown">
-                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php" aria-current={index === 4 ? 'page' : undefined}>All</a></li>
-                  <li><hr className="dropdown-divider" /></li>
-                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=3">Design</a></li>
-                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=2">Event</a></li>
-                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=1">Makeup</a></li>
-                  {/* <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=4">Travel</a></li> */}
-                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=7">Writing</a></li>
-                  {/* <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=5">Style</a></li> */}
-                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=6">Pet</a></li>
-                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=8">Wellness</a></li>
-                </ul>
-              </li>
-              <li className="nav-item d-block d-md-none d-xl-block">
-                <a className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined} href="/administrators/returned-units">Returned Units{index === 5 && <div className="active-indicator" />}</a>
-              </li>
-              <li className="nav-item dropdown d-md-none d-xl-block">
+              <li className="nav-item dropdown d-md-none d-lg-block">
                 <a className={`nav-link dropdown-toggle ${index === 6 ? 'active' : ''}`} href="#" id="adminNavInvoicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Invoices{index === 6 && <div className="active-indicator" />}
                 </a>
@@ -108,23 +87,38 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
                   <li><a className="dropdown-item" href="/administrators/invoices/select-tutor.php?school_id=3">Design</a></li>
                   <li><a className="dropdown-item" href="/administrators/invoices/select-tutor.php?school_id=2">Event</a></li>
                   <li><a className="dropdown-item" href="/administrators/invoices/select-tutor.php?school_id=1">Makeup</a></li>
-                  {/* <li><a className="dropdown-item" href="/administrators/invoices/select-tutor.php?school_id=4">Travel</a></li> */}
                   <li><a className="dropdown-item" href="/administrators/invoices/select-tutor.php?school_id=7">Writing</a></li>
-                  {/* <li><a className="dropdown-item" href="/administrators/invoices/select-tutor.php?school_id=5">Style</a></li> */}
                   <li><a className="dropdown-item" href="/administrators/invoices/select-tutor.php?school_id=6">Pet</a></li>
                   <li><a className="dropdown-item" href="/administrators/invoices/select-tutor.php?school_id=8">Wellness</a></li>
                 </ul>
               </li>
+              <li className="nav-item dropdown d-block d-md-none d-xl-block">
+                <a className={`nav-link dropdown-toggle ${index === 4 ? 'active' : ''}`} href="#" id="adminNavUnmarkedUnitsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Unmarked Submissions{index === 4 && <div className="active-indicator" />}
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="adminNavUnmarkedUnitsDropdown">
+                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php" aria-current={index === 4 ? 'page' : undefined}>All</a></li>
+                  <li><hr className="dropdown-divider" /></li>
+                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=3">Design</a></li>
+                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=2">Event</a></li>
+                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=1">Makeup</a></li>
+                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=7">Writing</a></li>
+                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=6">Pet</a></li>
+                  <li><a className="dropdown-item" href="/administrators/units/list-unmarked.php?school_id=8">Wellness</a></li>
+                </ul>
+              </li>
+              <li className="nav-item d-block d-md-none d-xxl-block">
+                <a className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined} href="/administrators/returned-units">Returned Submissions{index === 5 && <div className="active-indicator" />}</a>
+              </li>
 
               <li className="nav-item dropdown">
-                <a className={`nav-link dropdown-toggle ${index === 7 ? 'active' : ''}`} href="#" id="adminNavInvoicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a className={`nav-link dropdown-toggle ${index === 7 ? 'active' : ''}`} href="#" id="adminMoreDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   More{index === 7 && <div className="active-indicator" />}
                 </a>
-                <ul className="dropdown-menu" aria-labelledby="adminNavInvoicesDropdown">
-                  <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/administrators/units/list-unmarked.php">Unmarked Units</a></li>
-                  <li><a className="dropdown-item d-none d-md-block d-xl-none" href="/administrators/invoices/select-tutor.php">Invoices</a></li>
-                  <li><a className="dropdown-item d-none d-md-block d-xl-none" href="/administrators/returned-units/index.php">Returned Units</a></li>
-                  <li><a className="dropdown-item" href="/administrators/forum/login.php" onClick={handleForumLinkClick}>Student Forum</a></li>
+                <ul className="dropdown-menu" aria-labelledby="adminMoreDropdown">
+                  <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/administrators/invoices/select-tutor.php">Invoices</a></li>
+                  <li><a className="dropdown-item d-none d-md-block d-xl-none" href="/administrators/units/list-unmarked.php">Unmarked Submissions</a></li>
+                  <li><a className="dropdown-item d-none d-md-block d-xxl-none" href="/administrators/returned-units/index.php">Returned Submissions</a></li>
                   <li><a className="dropdown-item" href="/administrators/final-submissions/">Final Submissions</a></li>
                   <li><Link href="/administrators/course-development"><a className="dropdown-item">Course Development</a></Link></li>
                   <li><a className="dropdown-item" href="/administrators/materials/">Course Materials</a></li>
