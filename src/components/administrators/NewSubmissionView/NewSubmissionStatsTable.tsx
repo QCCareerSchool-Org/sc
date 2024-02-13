@@ -31,8 +31,8 @@ export const NewSubmissionStatsTable: FC<Props> = props => {
               {submission.points > 0
                 ? (
                   <>
-                    <tr><th scope="row">Mark</th><td>{submission.mark ?? '--'} / {submission.points}{submission.mark !== null && <>&nbsp;&nbsp;({gradeService.calculate(submission.mark, submission.points, submission.submitted)})</>}</td></tr>
-                    {submission.markOverride !== null && <tr><th scope="row">Override</th><td>{submission.markOverride} / {submission.points}&nbsp;&nbsp;({gradeService.calculate(submission.markOverride, submission.points, submission.submitted)})</td></tr>}
+                    <tr><th scope="row">Mark</th><td>{submission.mark ?? '--'} / {submission.points}{submission.mark !== null && submission.points > 0 && <>&nbsp;&nbsp;({gradeService.calculate(submission.mark, submission.points, submission.submitted)})</>}</td></tr>
+                    {submission.markOverride !== null && <tr><th scope="row">Override</th><td>{submission.markOverride} / {submission.points}{submission.points > 0 && <>&nbsp;&nbsp;({gradeService.calculate(submission.markOverride, submission.points, submission.submitted)})</>}</td></tr>}
                   </>
                 )
                 : <tr><th scope="row">Mark</th><td>N/A</td></tr>

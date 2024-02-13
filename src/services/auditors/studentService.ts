@@ -13,7 +13,6 @@ import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/n
 import type { Province } from '@/domain/province';
 import type { School } from '@/domain/school';
 import type { RawUnit, Unit } from '@/domain/unit';
-import type { Video } from '@/domain/video';
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
@@ -41,7 +40,6 @@ type RawAuditorStudent = RawStudent & {
       newSubmissionTemplates: RawNewSubmissionTemplate[];
       units: Array<RawUnit & {
         materials: Array<RawMaterial & { materialData: Record<string, string> }>;
-        videos: Video[];
       }>;
     };
     tutor: Tutor | null;
@@ -62,7 +60,6 @@ export type AuditorStudent = Student & {
       newSubmissionTemplates: NewSubmissionTemplate[];
       units: Array<Unit & {
         materials: Array<Material & { materialData: Record<string, string> }>;
-        videos: Video[];
       }>;
     };
     tutor: Tutor | null;
