@@ -1,5 +1,6 @@
-import type { FC } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { useReducer } from 'react';
+
 import { initialState, reducer } from './state';
 import { StudentListFilterForm } from './StudentListFilterForm';
 import { StudentTable } from './StudentTable';
@@ -16,12 +17,26 @@ export const StudentList: FC<Props> = ({ auditorId }) => {
   useInitialData(dispatch, auditorId);
   const filter$ = useFilter(dispatch);
 
+  const handleGroupClick = (e: MouseEvent, group: string): void => {
+    console.log('here');
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch({ type: 'GROUP_CHANGED', payload: group });
+    filter$.next({
+      auditorId,
+      name: state.form.data.name,
+      location: state.form.data.location,
+      group,
+      processingState: state.form.processingState,
+    });
+  };
+
   return (
     <section>
       <div className="container">
         <h1>Student List</h1>
         <StudentListFilterForm auditorId={auditorId} dispatch={dispatch} formState={state.form} filter$={filter$} />
-        <StudentTable students={state.students} />
+        <StudentTable students={state.students} onGroupClick={handleGroupClick} />
       </div>
     </section>
   );

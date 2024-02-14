@@ -1,6 +1,8 @@
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
+import type { NewAssignment } from '@/domain/administrator/newAssignment';
+import type { RawNewSubmission } from '@/domain/administrator/newSubmission';
 import type { NewSubmission } from '@/domain/auditor/newSubmission';
 import type { RawStudent, Student } from '@/domain/auditor/student';
 import type { Tutor } from '@/domain/auditor/tutor';
@@ -44,7 +46,7 @@ type RawAuditorStudent = RawStudent & {
     };
     tutor: Tutor | null;
     oldSubmissions: unknown[];
-    newSubmissions: NewSubmission[];
+    newSubmissions: RawNewSubmission[];
     materialCompletions: MaterialCompletion[];
   }>;
   groups: string[];
@@ -70,6 +72,42 @@ export type AuditorStudent = Student & {
   groups: string[];
 };
 
+type RawAuditorEnrollment = RawEnrollment & {
+  course: Course & {
+    school: School;
+    oldSubmissionTemplates: unknown[];
+    newSubmissionTemplates: RawNewSubmissionTemplate[];
+    units: Array<Unit & {
+      materials: Array<RawMaterial & { materialData: Record<string, string> }>;
+    }>;
+  };
+  tutor: Tutor | null;
+  oldSubmissions: unknown[];
+  newSubmissions: Array<RawNewSubmission & {
+    newAssignments: NewAssignment[];
+    tutor: Tutor | null;
+  }>;
+  materialCompletions: MaterialCompletion[];
+};
+
+export type AuditorEnrollment = Enrollment & {
+  course: Course & {
+    school: School;
+    oldSubmissionTemplates: unknown[];
+    newSubmissionTemplates: NewSubmissionTemplate[];
+    units: Array<Unit & {
+      materials: Array<Material & { materialData: Record<string, string> }>;
+    }>;
+  };
+  tutor: Tutor | null;
+  oldSubmissions: unknown[];
+  newSubmissions: Array<NewSubmission & {
+    newAssignments: NewAssignment[];
+    tutor: Tutor | null;
+  }>;
+  materialCompletions: MaterialCompletion[];
+};
+
 type FilterConditions = {
   name?: string;
   group?: string;
@@ -79,6 +117,7 @@ type FilterConditions = {
 export interface IStudentService {
   getAllStudents: (auditorId: number, filter?: FilterConditions) => Observable<AuditorStudentList>;
   getStudent: (auditorId: number, studentId: number) => Observable<AuditorStudent>;
+  getEnrollment: (auditorId: number, studentId: number, courseId: number) => Observable<AuditorEnrollment>;
 }
 
 export class StudentService implements IStudentService {
@@ -101,6 +140,13 @@ export class StudentService implements IStudentService {
     const url = `${this.getBaseUrl(auditorId)}/${studentId}`;
     return this.httpService.get<RawAuditorStudent>(url).pipe(
       map(this.mapStudent),
+    );
+  }
+
+  public getEnrollment(auditorId: number, studentId: number, courseId: number): Observable<AuditorEnrollment> {
+    const url = `${this.getBaseUrl(auditorId)}/${studentId}/courses/${courseId}`;
+    return this.httpService.get<RawAuditorEnrollment>(url).pipe(
+      map(this.mapEnrollment),
     );
   }
 
@@ -152,9 +198,45 @@ export class StudentService implements IStudentService {
         },
         newSubmissions: e.newSubmissions.map(n => ({
           ...n,
+          submitted: n.submitted === null ? null : new Date(n.submitted),
+          transferred: n.transferred === null ? null : new Date(n.transferred),
+          closed: n.closed === null ? null : new Date(n.closed),
           created: new Date(n.created),
           modified: n.modified === null ? null : new Date(n.modified),
         })),
+      })),
+    };
+  };
+
+  private readonly mapEnrollment = (raw: RawAuditorEnrollment): AuditorEnrollment => {
+    return {
+      ...raw,
+      enrollmentDate: raw.enrollmentDate === null ? null : new Date(raw.enrollmentDate),
+      course: {
+        ...raw.course,
+        newSubmissionTemplates: raw.course.newSubmissionTemplates.map(t => ({
+          ...t,
+          created: new Date(t.created),
+          modified: t.modified === null ? null : new Date(t.modified),
+        })),
+        units: raw.course.units.map(u => ({
+          ...u,
+          created: new Date(u.created),
+          modified: u.modified === null ? null : new Date(u.modified),
+          materials: u.materials.map(m => ({
+            ...m,
+            created: new Date(m.created),
+            modified: m.modified === null ? null : new Date(m.modified),
+          })),
+        })),
+      },
+      newSubmissions: raw.newSubmissions.map(n => ({
+        ...n,
+        submitted: n.submitted === null ? null : new Date(n.submitted),
+        transferred: n.transferred === null ? null : new Date(n.transferred),
+        closed: n.closed === null ? null : new Date(n.closed),
+        created: new Date(n.created),
+        modified: n.modified === null ? null : new Date(n.modified),
       })),
     };
   };

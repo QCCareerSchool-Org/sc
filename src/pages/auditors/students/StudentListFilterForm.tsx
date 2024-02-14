@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, Dispatch, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, Dispatch, FC, FormEventHandler, MouseEventHandler } from 'react';
 import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -35,6 +35,21 @@ export const StudentListFilterForm: FC<Props> = ({ auditorId, dispatch, formStat
       name: formState.data.name,
       group: formState.data.group,
       location: formState.data.location,
+      processingState: formState.processingState,
+    });
+  };
+
+  const handleReset: MouseEventHandler<HTMLButtonElement> = e => {
+    e.preventDefault();
+    dispatch({ type: 'NAME_CHANGED', payload: '' });
+    dispatch({ type: 'LOCATION_CHANGED', payload: '' });
+    dispatch({ type: 'GROUP_CHANGED', payload: '' });
+    filter$.next({
+      auditorId,
+      name: '',
+      group: '',
+      location: '',
+      processingState: formState.processingState,
     });
   };
 
@@ -57,6 +72,7 @@ export const StudentListFilterForm: FC<Props> = ({ auditorId, dispatch, formStat
         </div>
         <div className="d-flex align-items-center">
           <button type="submit" className="btn btn-primary">Filter</button>
+          <button type="button" className="btn btn-secondary ms-2" onClick={handleReset}>Reset</button>
           {formState.processingState === 'submitting' && <div className="ms-2"><Spinner size="sm" /></div>}
         </div>
       </form>

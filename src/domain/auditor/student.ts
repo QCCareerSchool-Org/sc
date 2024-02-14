@@ -9,7 +9,7 @@ export type Student = {
   numLogins: number;
   lastLogin: Date | null;
   expiry: Date | null;
-  emailAddress: string | null;
+  emailAddress: undefined;
   arrears: boolean;
   entityVersion: number;
   created: Date;
@@ -29,7 +29,7 @@ export type RawStudent = {
   lastLogin: string | null;
   /** string date */
   expiry: string | null;
-  emailAddress: string | null;
+  emailAddress: undefined;
   arrears: boolean;
   entityVersion: number;
   /** string date */
