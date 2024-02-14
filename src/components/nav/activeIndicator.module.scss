@@ -1,9 +1,9 @@
 @media screen and (min-width: 768px) {
   .activeIndicator {
     position: absolute;
-    width: calc(100% - 2 * var(--bs-navbar-nav-link-padding-x));
+    width: calc(100% - var(--bs-navbar-nav-link-padding-x));
     height: 5px;
-    left: var(--bs-navbar-nav-link-padding-x);
+    left: calc(var(--bs-navbar-nav-link-padding-x) * 0.5);
     top: 46px;
     background: #e10019;
     background: linear-gradient(to right, #e10019, #b70404);

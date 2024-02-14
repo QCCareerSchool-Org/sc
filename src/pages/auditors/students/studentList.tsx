@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 import { useReducer } from 'react';
 import { initialState, reducer } from './state';
-import { StudentListFilterForm } from './studentListFilterForm';
-import { StudentTable } from './studentTable';
+import { StudentListFilterForm } from './StudentListFilterForm';
+import { StudentTable } from './StudentTable';
 import { useFilter } from './useFilter';
 import { useInitialData } from './useInitialData';
 

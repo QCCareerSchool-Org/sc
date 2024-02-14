@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-import { EnrollmentsTableRow } from './enrollmentsTableRow';
+import { EnrollmentsTableRow } from './EnrollmentsTableRow';
 import type { StudentData } from './state';
 
 type Props = {
@@ -14,6 +14,7 @@ export const EnrollmentsTable: FC<Props> = ({ student }) => {
         <tr>
           <th>Name</th>
           <th>Enrollment Date</th>
+          <th>Tutor</th>
           <th>Progress</th>
         </tr>
       </thead>
