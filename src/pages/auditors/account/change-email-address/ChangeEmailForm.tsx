@@ -35,14 +35,14 @@ export const ChangeEmailForm: FC<Props> = props => {
   };
 
   return (
-    <form onSubmit={handleSubmit} autoComplete="off">
+    <form onSubmit={handleSubmit}>
       <div className="mb-3">
         <label htmlFor={`${id}emailAddress`} className="form-label">New Email Address</label>
         <input type="email" name="emailAddress" id={`${id}emailAddress`} className="form-control" autoComplete="off" value={props.formState.data.newEmailAddress} onChange={handleNewEmailAddressChange} />
       </div>
       <div className="mb-3">
         <label htmlFor={`${id}password`} className="form-label">Password</label>
-        <input type="password" name="password" id={`${id}password`} className="form-control" autoComplete="off" value={props.formState.data.password} onChange={handlePasswordChange} />
+        <input type="password" name="password" id={`${id}password`} className="form-control" autoComplete="password" value={props.formState.data.password} onChange={handlePasswordChange} />
       </div>
       <div className="d-flex align-items-center">
         <button type="submit" className="btn btn-primary">Update Email Address</button>
