@@ -1,8 +1,8 @@
 import { type FC, useReducer } from 'react';
 
-import { EnrollmentsTable } from './EnrollmentsTable';
+import { EnrollmentsTable } from './enrollmentsTablex';
 import { initialState, reducer } from './state';
-import { StudentDetails } from './StudentDetails';
+import { StudentDetails } from './studentDetailsx';
 import { useInitialData } from './useInitialData';
 import { Spinner } from '@/components/Spinner';
 

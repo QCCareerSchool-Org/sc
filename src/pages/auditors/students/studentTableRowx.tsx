@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import type { FC, MouseEventHandler } from 'react';
 import { Fragment } from 'react';
 
-import { EnrollmentsCell } from './EnrollmentsCell';
+import { EnrollmentsCell } from './enrollmentsCellx';
 import type { StudentData } from './state';
 
 type Props = {

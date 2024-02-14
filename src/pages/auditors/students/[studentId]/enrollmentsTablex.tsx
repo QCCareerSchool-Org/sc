@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-import { EnrollmentsTableRow } from './EnrollmentsTableRow';
+import { EnrollmentsTableRow } from './enrollmentsTableRowx';
 import type { StudentData } from './state';
 
 type Props = {

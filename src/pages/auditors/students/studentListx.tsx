@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { useReducer } from 'react';
 import { initialState, reducer } from './state';
 import { StudentListFilterForm } from './StudentListFilterForm';
-import { StudentTable } from './StudentTable';
+import { StudentTable } from './studentTablex';
 import { useFilter } from './useFilter';
 import { useInitialData } from './useInitialData';
 

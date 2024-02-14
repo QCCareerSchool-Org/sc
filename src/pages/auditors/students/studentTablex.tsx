@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { memo } from 'react';
 
 import type { StudentData } from './state';
-import { StudentTableRow } from './StudentTableRow';
+import { StudentTableRow } from './studentTableRowx';
 import { Spinner } from '@/components/Spinner';
 
 type Props = {
