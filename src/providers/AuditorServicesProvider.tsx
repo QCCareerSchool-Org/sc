@@ -2,10 +2,12 @@ import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
 import { useServices } from '@/hooks/useServices';
+import { AuditorService, type IAuditorService } from '@/services/auditors/auditorService';
 import type { IStudentService } from '@/services/auditors/studentService';
 import { StudentService } from '@/services/auditors/studentService';
 
 export type AuditorServices = {
+  auditorService: IAuditorService;
   studentService: IStudentService;
 };
 
@@ -18,6 +20,7 @@ type Props = {
 export const AuditorServicesProvider: FC<Props> = ({ children }) => {
   const { httpService } = useServices();
   const [ state ] = useState({
+    auditorService: new AuditorService(httpService),
     studentService: new StudentService(httpService),
   });
 

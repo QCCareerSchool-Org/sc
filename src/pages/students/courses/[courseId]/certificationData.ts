@@ -28,6 +28,13 @@ export const certificationDataDictionary: Record<string, CertificationData> = {
     filename: '2019/standard/idtp',
     url: 'https://www.qcpetstudies.com/',
   },
+  DC: {
+    code: 'IDBS',
+    name: 'International Dog Behavior Specialist',
+    filename: '2019/standard/idbs',
+    url: 'https://www.qcpetstudies.com/',
+  },
+
   // Makeup
   MZ: {
     code: 'MIMP',
