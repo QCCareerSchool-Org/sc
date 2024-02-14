@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { useEffect } from 'react';
 
-import { StudentList } from './studentListx';
+import { StudentList } from './StudentList';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 
