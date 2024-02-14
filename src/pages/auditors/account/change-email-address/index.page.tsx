@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { useEffect } from 'react';
 
-import { ChangeEmailAddress } from './ChangeEmailAddress';
+import { ChangeEmailAddress } from './ChangeEmailAddressx';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 
