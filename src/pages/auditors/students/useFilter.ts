@@ -2,7 +2,7 @@ import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
-import type { Action } from './state';
+import type { Action, State } from './state';
 import { useAuditorServices } from '@/hooks/useAuditorServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
@@ -12,6 +12,7 @@ export type StudentFilterEvent = {
   name: string;
   group: string;
   location: string;
+  processingState: State['form']['processingState'];
 };
 
 export const useFilter = (dispatch: Dispatch<Action>): Subject<StudentFilterEvent> => {

@@ -26,7 +26,7 @@ export const EnrollmentsCell: FC<Props> = ({ enrollments }) => {
 
         return (
           <Fragment key={enrollment.enrollmentId}>
-            <Badge onClick={handleClick} title={enrollment.course.name}>{enrollment.course.code}</Badge>
+            <Badge onClick={handleClick} title={enrollment.course.name}><div className="font-monospace" style={{ minWidth: '1rem' }}>{enrollment.course.code}</div></Badge>
             {' '}
           </Fragment>
         );

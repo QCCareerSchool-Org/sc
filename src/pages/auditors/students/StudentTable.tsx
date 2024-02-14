@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
 
 import type { StudentData } from './state';
@@ -7,10 +7,11 @@ import { Spinner } from '@/components/Spinner';
 
 type Props = {
   students?: StudentData[];
+  onGroupClick: (e: MouseEvent, group: string) => void;
 };
 
-export const StudentTable: FC<Props> = memo(({ students }) => {
-  if (!students) {
+export const StudentTable: FC<Props> = memo(props => {
+  if (!props.students) {
     return <Spinner size="lg" />;
   }
 
@@ -26,8 +27,8 @@ export const StudentTable: FC<Props> = memo(({ students }) => {
           </tr>
         </thead>
         <tbody>
-          {students.map(s => (
-            <StudentTableRow key={s.studentId} student={s} />
+          {props.students.map(s => (
+            <StudentTableRow key={s.studentId} student={s} onGroupClick={props.onGroupClick} />
           ))}
         </tbody>
       </table>
