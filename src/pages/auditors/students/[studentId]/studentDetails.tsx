@@ -14,7 +14,7 @@ export const StudentDetails: FC<Props> = ({ student }) => {
         <tr><th scope="row">Name</th><td>{student.firstName} {student.lastName}</td></tr>
         <tr><th scope="row">Location</th><td>{student.province ? `${student.province.name}, ${student.country.code}` : student.country.code}</td></tr>
         <tr><th scope="row">Groups</th><td /></tr>
-        <tr><th scope="row">Last Log In</th><td>{student.lastLogin ? formatDateTime(student.lastLogin) : 'never'}</td></tr>
+        <tr><th scope="row">Last Log In</th><td>{student.lastLogin ? formatDateTime(student.lastLogin) : 'N/A'}</td></tr>
       </tbody>
     </table>
   );

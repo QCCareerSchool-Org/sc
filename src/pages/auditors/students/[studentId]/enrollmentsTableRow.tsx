@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import type { FC, MouseEventHandler } from 'react';
 
+import { CourseProgress } from './CourseProgress';
 import type { StudentData } from './state';
 import { formatDate } from 'src/formatDate';
 
@@ -19,8 +20,9 @@ export const EnrollmentsTableRow: FC<Props> = ({ enrollment }) => {
   return (
     <tr onClick={handleClick} style={{ cursor: 'pointer' }}>
       <td>{enrollment.course.name}</td>
-      <td>{enrollment.enrollmentDate ? formatDate(enrollment.enrollmentDate) : 'n/a'}</td>
-      <td>4 / 6</td>
+      <td>{enrollment.enrollmentDate ? formatDate(enrollment.enrollmentDate) : 'N/A'}</td>
+      <td>{enrollment.tutor ? `${enrollment.tutor.firstName} ${enrollment.tutor.lastName}` : 'N/A'}</td>
+      <td><CourseProgress enrollment={enrollment} /></td>
     </tr>
   );
 };

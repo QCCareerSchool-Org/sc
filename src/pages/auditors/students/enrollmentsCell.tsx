@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import type { FC, MouseEventHandler } from 'react';
 import { Fragment } from 'react';
 
-import { Badge } from './badge';
+import { Badge } from './Badge';
 import type { Course } from '@/domain/course';
 import type { Enrollment } from '@/domain/enrollment';
 
