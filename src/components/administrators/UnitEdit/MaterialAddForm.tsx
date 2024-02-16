@@ -85,13 +85,13 @@ export const MaterialAddForm: FC<Props> = memo(props => {
     });
   };
 
-  const allowedMimeTypes: string[] = formState.data.type === 'lesson'
+  const allowedMimeTypes: string[] = (formState.data.type === 'lesson' || formState.data.type === 'scorm2004')
     ? [ 'application/zip' ]
     : formState.data.type === 'download'
       ? defaultMimeTypes
       : [];
 
-  if (formState.data.type === 'lesson' && formState.data.lessonMeta === null) {
+  if ((formState.data.type === 'lesson' || formState.data.type === 'scorm2004') && formState.data.lessonMeta === null) {
     throw Error('lessonMeta is missing');
   }
 
@@ -103,10 +103,11 @@ export const MaterialAddForm: FC<Props> = memo(props => {
           <div className="formGroup">
             <label htmlFor={id + '_materialType'} className="form-label">Type <span className="text-danger">*</span></label>
             <select onChange={props.onTypeChange} value={formState.data.type} id={id + '_materialType'} className={`form-select ${formState.validationMessages.type ? 'is-invalid' : ''}`} required>
+              <option value="scorm2004">SCORM 2004</option>
               <option value="lesson">Lesson</option>
               <option value="video">Video</option>
               <option value="download">Download</option>
-              <option value="assignment">Assignment Reminder</option>
+              {/* <option value="assignment">Assignment Reminder</option> */}
             </select>
             {formState.validationMessages.type && <div className="invalid-feedback">{formState.validationMessages.type}</div>}
           </div>
@@ -128,7 +129,7 @@ export const MaterialAddForm: FC<Props> = memo(props => {
             <div id={id + '_materialOrderHelp'} className="form-text">The order in which the material should appear within its unit</div>
             {formState.validationMessages.order && <div className="invalid-feedback">{formState.validationMessages.order}</div>}
           </div>
-          {(formState.data.type === 'lesson' || formState.data.type === 'download') && (
+          {(formState.data.type === 'lesson' || formState.data.type === 'scorm2004' || formState.data.type === 'download') && (
             <div className="formGroup">
               <label htmlFor={id + '_materialContent'} className="form-label">Content <span className="text-danger">*</span></label>
               <input key={formState.contentKey} onChange={props.onContentChange} className={`form-control ${formState.validationMessages.content ? 'is-invalid' : ''}`} type="file" accept={allowedMimeTypes.join(',')} id={id + '_materialContent'} aria-describedby={id + '_materialContentHelp'} required />
@@ -150,7 +151,7 @@ export const MaterialAddForm: FC<Props> = memo(props => {
             <div id={id + '_materialImageHelp'} className="form-text">Select a file from your computer to upload</div>
             {formState.validationMessages.image && <div className="invalid-feedback">{formState.validationMessages.image}</div>}
           </div>
-          {formState.data.type === 'lesson' && formState.data.lessonMeta && (
+          {(formState.data.type === 'lesson' || formState.data.type === 'scorm2004') && formState.data.lessonMeta && (
             <div className="row">
               <div className="col-6">
                 <div className="formGroup">

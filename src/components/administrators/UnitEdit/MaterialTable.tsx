@@ -35,6 +35,8 @@ const materialTypeName = (type: MaterialType): string => {
   switch (type) {
     case 'lesson':
       return 'Lesson';
+    case 'scorm2004':
+      return 'SCORM 2004 Lesson';
     case 'video':
       return 'Video';
     case 'download':
