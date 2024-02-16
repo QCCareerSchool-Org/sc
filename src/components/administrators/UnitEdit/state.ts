@@ -302,7 +302,7 @@ export const reducer = (state: State, action: Action): State => {
         return state;
       }
 
-      const type: MaterialType = [ 'lesson', 'video', 'download', 'assignment' ].includes(action.payload)
+      const type: MaterialType = [ 'lesson', 'video', 'download', 'assignment', 'scorm2004' ].includes(action.payload)
         ? action.payload as MaterialType
         : 'lesson';
 
@@ -317,7 +317,7 @@ export const reducer = (state: State, action: Action): State => {
             type,
             content: null,
             externalData: '',
-            lessonMeta: type === 'lesson' ? {
+            lessonMeta: type === 'lesson' || type === 'scorm2004' ? {
               minutes: '0',
               chapters: '0',
               videos: '0',
@@ -395,7 +395,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'MATERIAL_CONTENT_CHANGED': {
       let validationMessage: string | undefined;
       if (action.payload) {
-        if (state.materialForm.data.type === 'lesson') {
+        if (state.materialForm.data.type === 'lesson' || state.materialForm.data.type === 'scorm2004') {
           const maxSize = 268_435_456; // 256 MiB
           if (action.payload.size > maxSize) {
             validationMessage = 'File exceeds maximum size';
