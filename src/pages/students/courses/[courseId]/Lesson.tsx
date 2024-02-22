@@ -28,8 +28,6 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material,
   const id = useId();
   const screenwidth = useScreenWidth();
   const md = screenwidth >= 768;
-  const lg = screenwidth >= 992;
-  const xl = screenwidth >= 1200;
 
   const handleCompleteChange: ChangeEventHandler<HTMLInputElement> = e => {
     materialCompletion$.next({

@@ -1,15 +1,15 @@
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
-import { Subject, switchMap, takeUntil } from 'rxjs';
+import { forkJoin, Subject, switchMap, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useRefresh = (dispatch: Dispatch<Action>, studentId: number, materialId: string): Subject<void> => {
+export const useRefresh = (dispatch: Dispatch<Action>, studentId: number, courseId: number, materialId: string): Subject<void> => {
   const navigateToLogin = useNavigateToLogin();
-  const { materialService } = useStudentServices();
+  const { enrollmentService, materialService } = useStudentServices();
 
   const refresh$ = useRef(new Subject<void>());
 
@@ -17,11 +17,14 @@ export const useRefresh = (dispatch: Dispatch<Action>, studentId: number, materi
     const destroy$ = new Subject<void>();
 
     refresh$.current.pipe(
-      switchMap(() => materialService.getMaterial(studentId, materialId)),
+      switchMap(() => forkJoin({
+        material: materialService.getMaterial(studentId, materialId),
+        enrollment: enrollmentService.getEnrollment(studentId, courseId),
+      })),
       takeUntil(destroy$),
     ).subscribe({
-      next: material => {
-        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: material });
+      next: data => {
+        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: data });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -36,7 +39,7 @@ export const useRefresh = (dispatch: Dispatch<Action>, studentId: number, materi
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, studentId, materialId, materialService, navigateToLogin ]);
+  }, [ dispatch, studentId, courseId, materialId, materialService, enrollmentService, navigateToLogin ]);
 
   return refresh$.current;
 };

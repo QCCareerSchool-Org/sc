@@ -1,8 +1,8 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { FC, MouseEvent, MouseEventHandler, ReactEventHandler, SyntheticEvent } from 'react';
-import { Fragment, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
+import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
 import { FaDownload } from 'react-icons/fa';
 import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
 
@@ -20,7 +20,7 @@ import { useMaterialCompletion } from './useMaterialCompletion';
 import { Section } from '@/components/Section';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
-import { formatDate, formatDateTime } from 'src/formatDate';
+import { formatDate } from 'src/formatDate';
 
 type Props = {
   studentId: number;
