@@ -57,4 +57,6 @@ export const AccountIcon: FC = () => {
       </>
     );
   }
+
+  return null;
 };
