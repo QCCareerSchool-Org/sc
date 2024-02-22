@@ -26,7 +26,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, studentId, courseId, materialId);
-  const refresh$ = useRefresh(dispatch, studentId, materialId);
+  const refresh$ = useRefresh(dispatch, studentId, courseId, materialId);
   const materialDataUpdate$ = useMaterialDataUpdate();
 
   const scormAPI = useRef<ScormAPI>();

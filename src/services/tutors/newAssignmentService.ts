@@ -94,6 +94,7 @@ export class NewAssignmentService implements INewAssignmentService {
         enrollment: {
           ...newAssignment.newSubmission.enrollment,
           enrollmentDate: newAssignment.newSubmission.enrollment.enrollmentDate === null ? null : new Date(newAssignment.newSubmission.enrollment.enrollmentDate),
+          dueDate: newAssignment.newSubmission.enrollment.dueDate === null ? null : new Date(newAssignment.newSubmission.enrollment.dueDate),
         },
       },
       newAssignmentMedia: newAssignment.newAssignmentMedia.map(m => ({
