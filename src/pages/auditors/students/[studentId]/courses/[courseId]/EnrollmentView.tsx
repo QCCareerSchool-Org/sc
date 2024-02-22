@@ -5,6 +5,7 @@ import { NewSubmissionsTable } from './NewSubmissionsTable';
 import { initialState, reducer } from './state';
 import { UnitsTable } from './UnitsTable';
 import { useInitialData } from './useInitialData';
+import { Spinner } from '@/components/Spinner';
 import { formatDate } from 'src/formatDate';
 
 type Props = {
@@ -22,12 +23,13 @@ export const EnrollmentView: FC<Props> = ({ auditorId, studentId, courseId }) =>
     <section>
       <div className="container">
         <h1>Course Details</h1>
-        {state.enrollment && (
+        {state.enrollment ? (
           <>
             <table className="table table-bordered w-auto">
               <tbody>
                 <tr><th scope="row">Course</th><td>{state.enrollment.course.name}</td></tr>
                 <tr><th scope="row">Enrollment Date</th><td>{state.enrollment.enrollmentDate ? formatDate(state.enrollment.enrollmentDate) : 'N/A'}</td></tr>
+                {state.enrollment.dueDate && (<tr><th scope="row">End Date</th><td>{formatDate(state.enrollment.dueDate)}</td></tr>)}
                 {!state.enrollment.course.noTutor && (
                   <tr><th scope="row">Tutor</th><td>{state.enrollment.tutor ? `${state.enrollment.tutor.firstName} ${state.enrollment.tutor.lastName}` : 'N/A'}</td></tr>
                 )}
@@ -37,7 +39,9 @@ export const EnrollmentView: FC<Props> = ({ auditorId, studentId, courseId }) =>
             {state.enrollment.course.units.length > 0 && <UnitsTable enrollment={state.enrollment} />}
             {state.enrollment.newSubmissions.length > 0 && <NewSubmissionsTable newSubmissions={state.enrollment.newSubmissions} />}
           </>
-        )}
+        )
+          : <Spinner />
+        }
       </div>
     </section>
   );

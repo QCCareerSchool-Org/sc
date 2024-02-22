@@ -1,24 +1,27 @@
 import type { Dispatch } from 'react';
 import { useEffect } from 'react';
-import { Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useInitialData = (dispatch: Dispatch<Action>, studentId: number, materialId: string): void => {
+export const useInitialData = (dispatch: Dispatch<Action>, studentId: number, courseId: number, materialId: string): void => {
   const navigateToLogin = useNavigateToLogin();
-  const { materialService } = useStudentServices();
+  const { enrollmentService, materialService } = useStudentServices();
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    materialService.getMaterial(studentId, materialId).pipe(
+    forkJoin({
+      material: materialService.getMaterial(studentId, materialId),
+      enrollment: enrollmentService.getEnrollment(studentId, courseId),
+    }).pipe(
       takeUntil(destroy$),
     ).subscribe({
-      next: material => {
-        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: material });
+      next: data => {
+        dispatch({ type: 'LOAD_DATA_SUCCEEDED', payload: data });
       },
       error: err => {
         let errorCode: number | undefined;
@@ -33,5 +36,5 @@ export const useInitialData = (dispatch: Dispatch<Action>, studentId: number, ma
     });
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ dispatch, studentId, materialId, materialService, navigateToLogin ]);
+  }, [ dispatch, studentId, courseId, materialId, materialService, enrollmentService, navigateToLogin ]);
 };

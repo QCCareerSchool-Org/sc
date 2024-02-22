@@ -44,6 +44,7 @@ export class T2202ReceiptService implements IT2202ReceiptService {
       enrollment: {
         ...raw.enrollment,
         enrollmentDate: raw.enrollment.enrollmentDate === null ? null : new Date(raw.enrollment.enrollmentDate),
+        dueDate: raw.enrollment.dueDate === null ? null : new Date(raw.enrollment.dueDate),
       },
     };
   };

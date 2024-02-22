@@ -15,7 +15,11 @@ export type AuthAction =
   | { type: 'STUDENT_LOG_IN'; payload: { accountId: number; xsrfToken: string; crmId?: number; studentType: StudentType } }
   | { type: 'TUTOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
   | { type: 'ADMINISTRATOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
-  | { type: 'AUDITOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } };
+  | { type: 'AUDITOR_LOG_IN'; payload: { accountId: number; xsrfToken: string } }
+  | { type: 'ADMINISTRATOR_LOG_OUT' }
+  | { type: 'AUDITOR_LOG_OUT' }
+  | { type: 'TUTOR_LOG_OUT' }
+  | { type: 'STUDENT_LOG_OUT' };
 
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
@@ -44,6 +48,26 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
     }
     case 'ADMINISTRATOR_LOG_IN': {
       const newState: AuthState = { ...state, administratorId: action.payload.accountId, xsrfToken: action.payload.xsrfToken };
+      storeState(newState);
+      return newState;
+    }
+    case 'ADMINISTRATOR_LOG_OUT': {
+      const newState: AuthState = { ...state, administratorId: undefined };
+      storeState(newState);
+      return newState;
+    }
+    case 'AUDITOR_LOG_OUT': {
+      const newState: AuthState = { ...state, auditorId: undefined };
+      storeState(newState);
+      return newState;
+    }
+    case 'TUTOR_LOG_OUT': {
+      const newState: AuthState = { ...state, tutorId: undefined };
+      storeState(newState);
+      return newState;
+    }
+    case 'STUDENT_LOG_OUT': {
+      const newState: AuthState = { ...state, studentId: undefined };
       storeState(newState);
       return newState;
     }

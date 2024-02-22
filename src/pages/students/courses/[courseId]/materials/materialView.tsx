@@ -15,16 +15,17 @@ import { ScormAPI } from 'src/lib/scorm';
 
 type Props = {
   studentId: number;
+  courseId: number;
   materialId: string;
 };
 
-export const MaterialView: FC<Props> = ({ studentId, materialId }) => {
+export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const authState = useAuthState();
   const { loginService } = useServices();
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useInitialData(dispatch, studentId, materialId);
+  useInitialData(dispatch, studentId, courseId, materialId);
   const refresh$ = useRefresh(dispatch, studentId, materialId);
   const materialDataUpdate$ = useMaterialDataUpdate();
 
@@ -62,13 +63,13 @@ export const MaterialView: FC<Props> = ({ studentId, materialId }) => {
       return;
     }
 
-    if (!state.material) {
+    if (!state.data) {
       return;
     }
 
-    scormAPI.current = new ScormAPI(state.material.materialId, commit.current, state.material.materialData);
+    scormAPI.current = new ScormAPI(state.data.material.materialId, commit.current, state.data.material.materialData);
     window.API_1484_11 = scormAPI.current;
-  }, [ state.material ]);
+  }, [ state.data ]);
 
   useEffect(() => {
     if (!childWindow) {
@@ -92,19 +93,19 @@ export const MaterialView: FC<Props> = ({ studentId, materialId }) => {
     };
   }, [ refresh$, childWindow ]);
 
-  if (!state.material) {
+  if (!state.data) {
     return null;
   }
 
   let totalTime: number | undefined = undefined;
-  if (typeof state.material.materialData['cmi.total_time'] === 'string') {
+  if (typeof state.data.material.materialData['cmi.total_time'] === 'string') {
     try {
-      totalTime = toSeconds(parseInterval(state.material.materialData['cmi.total_time']));
+      totalTime = toSeconds(parseInterval(state.data.material.materialData['cmi.total_time']));
     } catch { /* */ }
   }
 
-  const href = `${endpoint}/students/${studentId}/static/lessons/${state.material.materialId}${state.material.entryPoint}`;
-  const imageSrc = `${endpoint}/students/${studentId}/materials/${state.material.materialId}/image`;
+  const href = `${endpoint}/students/${studentId}/static/lessons/${state.data.material.materialId}${state.data.material.entryPoint}`;
+  const imageSrc = `${endpoint}/students/${studentId}/materials/${state.data.material.materialId}/image`;
 
   const handleClick: MouseEventHandler = () => {
     setChildWindow(window.open(href, materialId ?? '_blank'));
@@ -115,19 +116,25 @@ export const MaterialView: FC<Props> = ({ studentId, materialId }) => {
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-8 col-sm-4 mb-4 mb-sm-0">
-            <Img src={imageSrc} alt={state.material.title} className="w-100 img-fluid" />
+            <Img src={imageSrc} alt={state.data.material.title} className="w-100 img-fluid" />
           </div>
           <div className="col-12 col-sm-8">
-            <h1>{state.material.title}</h1>
-            {state.material.description && <p>{state.material.description}</p>}
+            <h1>{state.data.material.title}</h1>
+            {state.data.material.description && <p>{state.data.material.description}</p>}
             {typeof totalTime !== 'undefined' && <p className="mb-0"><strong>Time in Lesson:</strong> <Duration seconds={totalTime} /></p>}
-            <p className="mb-0"><strong>Status:</strong> {state.material.materialData['cmi.completion_status'] === 'completed' ? 'Complete' : 'Incomplete'}</p>
-            {typeof state.material.materialData['cmi.score.scaled'] !== 'undefined' && (
-              <p className="mb-0"><strong>Score:</strong> {Math.round(parseFloat(state.material.materialData['cmi.score.scaled']) * 100)}%</p>
+            <p className="mb-0"><strong>Status:</strong> {state.data.material.materialData['cmi.completion_status'] === 'completed' ? 'Complete' : 'Incomplete'}</p>
+            {typeof state.data.material.materialData['cmi.score.scaled'] !== 'undefined' && (
+              <p className="mb-0"><strong>Score:</strong> {Math.round(parseFloat(state.data.material.materialData['cmi.score.scaled']) * 100)}%</p>
             )}
 
             <button onClick={handleClick} className="btn btn-primary mt-3">Open Lesson</button>
 
+            {state.data.enrollment.dueDate && state.data.enrollment.dueDate <= new Date() && (
+              <div className="alert alert-danger mt-4">
+                <p>Your course due date has passed. Please contact the School to extend your course.</p>
+                <p className="mb-0">You will be unable to submit assignments or complete lessons until your course has been extended.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

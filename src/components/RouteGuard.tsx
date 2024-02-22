@@ -20,6 +20,9 @@ const validPath = (path: string, authState: AuthState): boolean => {
   if (path.startsWith('/administrator') && typeof authState.administratorId === 'undefined') {
     return false;
   }
+  if (path.startsWith('/auditors') && typeof authState.auditorId === 'undefined') {
+    return false;
+  }
   return true;
 };
 
@@ -38,9 +41,19 @@ export const RouteGuard: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (valid === false) {
-      navigateToLogin();
+      if (authState.administratorId) {
+        void router.push('/administrators');
+      } else if (authState.auditorId) {
+        void router.push('/auditors');
+      } else if (authState.tutorId) {
+        void router.push('/tutors');
+      } else if (authState.studentId) {
+        void router.push('/students');
+      } else {
+        navigateToLogin();
+      }
     }
-  }, [ valid, navigateToLogin ]);
+  }, [ authState, valid, router, navigateToLogin ]);
 
   if (valid) {
     return <>{children}</>;

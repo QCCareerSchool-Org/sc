@@ -1,8 +1,8 @@
 import NextError from 'next/error';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
-import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
+import type { FC, MouseEvent, MouseEventHandler, ReactEventHandler, SyntheticEvent } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { FaDownload } from 'react-icons/fa';
 import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
 
@@ -20,6 +20,7 @@ import { useMaterialCompletion } from './useMaterialCompletion';
 import { Section } from '@/components/Section';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
+import { formatDate, formatDateTime } from 'src/formatDate';
 
 type Props = {
   studentId: number;
@@ -108,6 +109,8 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
     setPlayingVideoId(videoId);
   };
 
+  const expired = enrollment.dueDate !== null && enrollment.dueDate <= new Date();
+
   return (
     <>
       <Section>
@@ -118,6 +121,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               <h1 className="mb-0 mb-2 text-shadow">{enrollment.course.name}</h1>
               <p className="lead mb-0 text-shadow">Student Number: <strong>{enrollment.course.code}&thinsp;{enrollment.studentNumber}</strong></p>
               {enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{enrollment.tutor.firstName} {enrollment.tutor.lastName}</strong></p>}
+              {enrollment.dueDate && <p className="lead mb-0 text-shadow">Due Date: <strong>{formatDate(enrollment.dueDate)}</strong></p>}
               {enrollment.course.school.name === 'QC Pet Studies' && (
                 <div className="mt-4">
                   <Link href="/student-handbooks/qc-pet-studies/content/index.html"><a target="_blank" rel="noreferrer"><button className="btn btn-lg btn-red">Student Handbook <FaDownload /></button></a></Link>
@@ -135,11 +139,6 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 {certificationData && <p className="lead mb-0 text-shadow"><MdPolicy /> <a href="#certification" style={{ textDecoration: 'none' }} className="text-white">Certification Logo</a></p>}
               </div>
               <CourseProgress enrollment={enrollment} />
-              {enrollment.onHold && (
-                <div className="alert alert-danger mt-4">
-                  This course is on hold. Please contact the School for more information.
-                </div>
-              )}
             </div>
             <div className="col-12 col-lg-6">
               {enrollment.newSubmissions.length > 0 && (
@@ -147,6 +146,17 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   <p id="assignments" className="lead mb-2 text-shadow menuScrollOffset"><MdAssignmentTurnedIn /> Assignments</p>
                   <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
                 </>
+              )}
+              {enrollment.onHold && (
+                <div className="alert alert-danger mt-4">
+                  This course is on hold. Please contact the School for more information.
+                </div>
+              )}
+              {expired && (
+                <div className="alert alert-danger mt-3">
+                  <p>Your course due date has passed. Please contact the School to extend your course.</p>
+                  <p className="mb-0">You will be unable to submit assignments or complete lessons until your course has been extended.</p>
+                </div>
               )}
             </div>
           </div>
@@ -167,6 +177,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   materialCompletions={materialCompletions}
                   materialCompletion$={materialCompletion$}
                   firstUnit={i === 0}
+                  expired={expired}
                   submission={enrollment.newSubmissions.find(s => s.unitLetter === u.unitLetter)}
                   nextUnit={nextUnit}
                   assignmentsDisabled={enrollment.assignmentsDisabled}

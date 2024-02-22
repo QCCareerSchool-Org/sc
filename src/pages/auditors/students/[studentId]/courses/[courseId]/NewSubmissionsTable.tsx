@@ -16,8 +16,8 @@ export const NewSubmissionsTable: FC<Props> = ({ newSubmissions }) => {
 
   return (
     <div className="mt-4">
-      <h2>Submissions</h2>
-      <table className="table table-bordered table-hover">
+      <h2>Assignments</h2>
+      <table className="table table-bordered">
         <thead>
           <tr>
             <th className="text-center">Unit</th>

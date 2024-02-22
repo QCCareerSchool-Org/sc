@@ -164,6 +164,7 @@ export class StudentService implements IStudentService {
       enrollments: r.enrollments.map(e => ({
         ...e,
         enrollmentDate: e.enrollmentDate === null ? null : new Date(e.enrollmentDate),
+        dueDate: e.dueDate === null ? null : new Date(e.dueDate),
       })),
     }));
   };
@@ -178,6 +179,7 @@ export class StudentService implements IStudentService {
       enrollments: raw.enrollments.map(e => ({
         ...e,
         enrollmentDate: e.enrollmentDate === null ? null : new Date(e.enrollmentDate),
+        dueDate: e.dueDate === null ? null : new Date(e.dueDate),
         course: {
           ...e.course,
           newSubmissionTemplates: e.course.newSubmissionTemplates.map(t => ({
@@ -212,6 +214,7 @@ export class StudentService implements IStudentService {
     return {
       ...raw,
       enrollmentDate: raw.enrollmentDate === null ? null : new Date(raw.enrollmentDate),
+      dueDate: raw.dueDate === null ? null : new Date(raw.dueDate),
       course: {
         ...raw.course,
         newSubmissionTemplates: raw.course.newSubmissionTemplates.map(t => ({

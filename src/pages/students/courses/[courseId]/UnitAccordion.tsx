@@ -32,6 +32,7 @@ type Props = {
   materialCompletions: MaterialCompletion[];
   materialCompletion$: Subject<MaterialCompleteEvent>;
   firstUnit: boolean;
+  expired: boolean;
   submission?: NewSubmission;
   nextUnit: NextUnitResult;
   assignmentsDisabled: boolean;
@@ -65,7 +66,7 @@ export const UnitAccordion: FC<Props> = props => {
   return (
     <>
       <div onClick={handleClick} className="d-flex justify-content-between" style={{ cursor: 'pointer' }}>
-        <h3 className="h5 mb-0">Unit {unit.unitLetter}</h3>
+        <h3 className="h5 mb-0">{unit.title ?? <>Unit {unit.unitLetter}</>}</h3>
         {open ? <AiOutlineMinusCircle size={iconSize} /> : <AiOutlinePlusCircle size={iconSize} />}
       </div>
       <Separator />
@@ -83,7 +84,7 @@ export const UnitAccordion: FC<Props> = props => {
                 <UnitAccordionSectionPadding>
                   {submission
                     ? <SubmissionSection courseId={courseId} unitLetter={unit.unitLetter} submission={submission} />
-                    : <EmptySubmissionSection unitLetter={unit.unitLetter} formState={formState} onInitializeButtonClick={props.onInitializeButtonClick} />
+                    : <EmptySubmissionSection unitLetter={unit.unitLetter} formState={formState} expired={props.expired} onInitializeButtonClick={props.onInitializeButtonClick} />
                   }
                 </UnitAccordionSectionPadding>
               </div>
@@ -235,10 +236,13 @@ const GreenCircleCheck: FC = () => (
 type EmptySubmissionSectionProps = {
   unitLetter: string;
   formState: State['form'];
+  expired: boolean;
   onInitializeButtonClick: MouseEventHandler;
 };
 
 const EmptySubmissionSection: FC<EmptySubmissionSectionProps> = props => {
+  const buttonDisabled = props.expired || props.formState.processingState === 'initializing';
+
   return (
     <div className="d-flex">
       <div className="assignmentsLeft">
@@ -248,7 +252,7 @@ const EmptySubmissionSection: FC<EmptySubmissionSectionProps> = props => {
         <h4 className="title h6 mb-2">Assignments Unit {props.unitLetter}</h4>
         <p className="small">Once you've completed all of your lessons for this unit, you're ready to begin your assignments! Click the button below to get started.</p>
         <div className="d-flex align-items-center">
-          <button onClick={props.onInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }}>
+          <button onClick={props.onInitializeButtonClick} className="btn btn-primary" style={{ width: 120 }} disabled={buttonDisabled}>
             {props.formState.processingState === 'initializing'
               ? <Spinner size="sm" />
               : <>Start</>

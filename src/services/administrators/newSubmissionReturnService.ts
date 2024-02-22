@@ -96,6 +96,7 @@ export class NewSubmissionReturnService implements INewSubmissionReturnService {
         enrollment: {
           ...raw.newSubmission.enrollment,
           enrollmentDate: raw.newSubmission.enrollment.enrollmentDate === null ? null : new Date(raw.newSubmission.enrollment.enrollmentDate),
+          dueDate: raw.newSubmission.enrollment.dueDate === null ? null : new Date(raw.newSubmission.enrollment.dueDate),
           student: {
             ...raw.newSubmission.enrollment.student,
             lastLogin: raw.newSubmission.enrollment.student.lastLogin === null ? null : new Date(raw.newSubmission.enrollment.student.lastLogin),

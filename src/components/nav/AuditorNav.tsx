@@ -1,22 +1,47 @@
 import Link from 'next/link';
-import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import type { FC, MouseEventHandler } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
 import { ActiveIndicator } from './ActiveIndicator';
+import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';
+import { useServices } from '@/hooks/useServices';
 
 export type AuditorNavProps = Record<string, never>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const AuditorNav: FC<AuditorNavProps> = props => {
+  const { loginService } = useServices();
   const authState = useAuthState();
+  const authDispatch = useAuthDispatch();
   const navState = useNavState();
   const [ loaded, setLoaded ] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+  const logOut$ = useRef(new Subject<void>());
+
+  const handleLogoutClick: MouseEventHandler = e => {
+    e.preventDefault();
+    logOut$.current.next();
+  };
+
+  useEffect(() => {
+    const destroy$ = new Subject<void>();
+    logOut$.current.pipe(
+      switchMap(() => loginService.logOut()),
+      catchError(() => EMPTY),
+      takeUntil(destroy$),
+    ).subscribe(() => {
+      authDispatch({ type: 'AUDITOR_LOG_OUT' });
+    });
+    return () => { destroy$.next(); destroy$.complete(); };
+  }, [ authState, loginService, authDispatch ]);
 
   // Loading the bootstrap javascript library on the server causes errors due
   // to missing window, etc., so we only load it on the client in _app.tsx. The
@@ -59,7 +84,7 @@ export const AuditorNav: FC<AuditorNavProps> = props => {
                   <li><Link href="/auditors/account/change-password"><a className="dropdown-item">Change Password</a></Link></li>
                   <li><Link href="/auditors/account/change-email-address"><a className="dropdown-item">Change Email Address</a></Link></li>
                   <li><hr className="dropdown-divider" /></li>
-                  <li><a className="dropdown-item" href="/auditors/logout.php">Log Out</a></li>
+                  <li><a href="#" onClick={handleLogoutClick} className="dropdown-item">Log Out</a></li>
                 </ul>
               </li>
             </ul>
