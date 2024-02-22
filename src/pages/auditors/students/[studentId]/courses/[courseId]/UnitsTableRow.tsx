@@ -36,7 +36,8 @@ export const UnitsTableRow: FC<Props> = ({ unit, materialCompletions }) => {
     <tr>
       <td className="text-center">{unit.unitLetter}</td>
       <td>{unit.title}</td>
-      <td className="text-center">{total > 0 ? `${Math.round(progress / total * 100)}%` : '--'}</td>
+      <td className="text-center">{total > 0 ? `${Math.round(progress / total * 100)}%` : 'N/A'}</td>
+      <td className="text-center">N/A</td>
     </tr>
   );
 };
