@@ -9,13 +9,14 @@ type Props = {
 
 export const UnitsTable: FC<Props> = ({ enrollment }) => (
   <div className="mt-4">
-    <h2>Coursse Materials</h2>
+    <h2>Course Materials</h2>
     <table className="table table-bordered w-auto">
       <thead>
         <tr>
           <th className="text-center">Unit</th>
           <th>Title</th>
           <th className="text-center">Progress</th>
+          <th className="text-center">Mark</th>
         </tr>
       </thead>
       <tbody>
