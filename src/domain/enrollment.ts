@@ -15,6 +15,7 @@ export type Enrollment = {
   amountPaid: number;
   monthlyInstallment: number | null;
   enrollmentDate: Date | null;
+  dueDate: Date | null;
   fastTrack: boolean;
   paymentsDisabled: boolean;
 };
@@ -36,6 +37,7 @@ export type RawEnrollment = {
   amountPaid: number;
   monthlyInstallment: number | null;
   enrollmentDate: string | null;
+  dueDate: string | null;
   fastTrack: boolean;
   paymentsDisabled: boolean;
 };

@@ -1,22 +1,48 @@
 import Link from 'next/link';
-import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import type { FC, MouseEventHandler } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
 import type { StudentType } from '@/domain/authenticationPayload';
+import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';
+import { useServices } from '@/hooks/useServices';
 
 export type StudentNavProps = Record<string, never>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const StudentNav: FC<StudentNavProps> = props => {
+  const router = useRouter();
+  const { loginService } = useServices();
   const authState = useAuthState();
+  const authDispatch = useAuthDispatch();
   const navState = useNavState();
   const [ loaded, setLoaded ] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+  const logOut$ = useRef(new Subject<void>());
+
+  const handleLogoutClick: MouseEventHandler = e => {
+    e.preventDefault();
+    logOut$.current.next();
+  };
+
+  useEffect(() => {
+    const destroy$ = new Subject<void>();
+    logOut$.current.pipe(
+      switchMap(() => loginService.logOut()),
+      catchError(() => EMPTY),
+      takeUntil(destroy$),
+    ).subscribe(() => {
+      authDispatch({ type: 'ADMINISTRATOR_LOG_OUT' });
+    });
+    return () => { destroy$.next(); destroy$.complete(); };
+  }, [ authState, loginService, router, authDispatch ]);
 
   // Loading the bootstrap javascript library on the server causes errors due
   // to missing window, etc., so we only load it on the client in _app.tsx. The
@@ -101,78 +127,80 @@ type OldNavItemsProps = {
   assignmentsEnabled?: boolean;
 };
 
-const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnabled = true }) => (
-  <>
-    <li className="nav-item">
-      <a href="/students/index.php" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a>
-    </li>
-    {(studentType === 'event' || studentType === 'design') && (
+const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnabled = true }) => {
+  return (
+    <>
+      <li className="nav-item">
+        <a href="/students/index.php" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a>
+      </li>
+      {(studentType === 'event' || studentType === 'design') && (
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" href="#" id="navbarAssignmentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            My Assignments{index === 1 && <div className="active-indicator" />}
+          </a>
+          <ul className="dropdown-menu" aria-labelledby="navbarAssignmentsDropdown">
+            <li><a className="dropdown-item" href="/students/materials/templates.php">Assignment {studentType === 'event' ? 'Worksheets' : 'Templates'}</a></li>
+            {assignmentsEnabled
+              ? <li><a className="dropdown-item" href="/students/units">Submit/Review Assignments</a></li>
+              : <li><a className="dropdown-item" href="/students/tutor-files">Tutor Uploads</a></li>
+            }
+          </ul>
+        </li>
+      )}
+      {studentType === 'writing' && (
+        <li className="nav-item dropdown">
+          <a className="nav-link dropdown-toggle" href="#" id="navbarAssignmentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            My Exercises{index === 1 && <div className="active-indicator" />}
+          </a>
+          <ul className="dropdown-menu" aria-labelledby="navbarAssignmentsDropdown">
+            {/* <li><a className="dropdown-item" href="/students/writing-profiles/submit.php">Submit Personal Profile</a></li> */}
+            {assignmentsEnabled
+              ? (
+                <>
+                  <li><a className="dropdown-item" href="/students/writing-assignments/submit.php">Submit Exercises</a></li>
+                  <li><a className="dropdown-item" href="/students/writing-assignments/review.php">Review Exercises</a></li>
+                </>
+              )
+              : <li><a className="dropdown-item" href="/students/tutor-files">Tutor Uploads</a></li>
+            }
+          </ul>
+        </li>
+      )}
       <li className="nav-item dropdown">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarAssignmentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          My Assignments{index === 1 && <div className="active-indicator" />}
+        <a className="nav-link dropdown-toggle" href="#" id="navbarResourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Course Resources{index === 2 && <div className="active-indicator" />}
         </a>
-        <ul className="dropdown-menu" aria-labelledby="navbarAssignmentsDropdown">
-          <li><a className="dropdown-item" href="/students/materials/templates.php">Assignment {studentType === 'event' ? 'Worksheets' : 'Templates'}</a></li>
-          {assignmentsEnabled
-            ? <li><a className="dropdown-item" href="/students/units">Submit/Review Assignments</a></li>
-            : <li><a className="dropdown-item" href="/students/tutor-files">Tutor Uploads</a></li>
-          }
+        <ul className="dropdown-menu" aria-labelledby="navbarResourcesDropdown">
+          {(studentType === 'event' || studentType === 'design') && (
+            <li><a className="dropdown-item" href="/students/how-to-videos.php">How-To Videos</a></li>
+          )}
+          <li><a className="dropdown-item" href="/students/materials">Course Materials and Updates</a></li>
+          {studentType === 'event' && (
+            <li><a className="dropdown-item" href="/students/materials/index.php?q=videos">Videos</a></li>
+          )}
+          {(studentType === 'event' || studentType === 'design') && (
+            <>
+              <li><a className="dropdown-item" href="/students/materials/career-center.php">Career Center</a></li>
+              <li><a className="dropdown-item" href="/students/business-resources">Business Resources</a></li>
+              <li><a className="dropdown-item" href="/students/student-resources/vendors.php">Preferred Partners</a></li>
+              <li><a className="dropdown-item" href="/students/certification-logos">Certification Logos</a></li>
+              <li><a className="dropdown-item" href="/students/showcases/new.php">Student Showcase</a></li>
+            </>
+          )}
+          <li><a className="dropdown-item" href="/students/badges.php">School Badges</a></li>
+          {(studentType === 'event' || studentType === 'design') && (
+            <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/virtual-classroom.php">Virtual Classroom</a></li>
+          )}
         </ul>
       </li>
-    )}
-    {studentType === 'writing' && (
-      <li className="nav-item dropdown">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarAssignmentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          My Exercises{index === 1 && <div className="active-indicator" />}
-        </a>
-        <ul className="dropdown-menu" aria-labelledby="navbarAssignmentsDropdown">
-          {/* <li><a className="dropdown-item" href="/students/writing-profiles/submit.php">Submit Personal Profile</a></li> */}
-          {assignmentsEnabled
-            ? (
-              <>
-                <li><a className="dropdown-item" href="/students/writing-assignments/submit.php">Submit Exercises</a></li>
-                <li><a className="dropdown-item" href="/students/writing-assignments/review.php">Review Exercises</a></li>
-              </>
-            )
-            : <li><a className="dropdown-item" href="/students/tutor-files">Tutor Uploads</a></li>
-          }
-        </ul>
+      {(studentType === 'event' || studentType === 'design') && (
+        <li className="nav-item d-md-none d-lg-inline">
+          <a href="/students/virtual-classroom.php" className="nav-link">Virtual Classroom</a>
+        </li>
+      )}
+      <li className="nav-item">
+        <a href="/students/logout.php" className="nav-link">Log Out</a>
       </li>
-    )}
-    <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href="#" id="navbarResourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Course Resources{index === 2 && <div className="active-indicator" />}
-      </a>
-      <ul className="dropdown-menu" aria-labelledby="navbarResourcesDropdown">
-        {(studentType === 'event' || studentType === 'design') && (
-          <li><a className="dropdown-item" href="/students/how-to-videos.php">How-To Videos</a></li>
-        )}
-        <li><a className="dropdown-item" href="/students/materials">Course Materials and Updates</a></li>
-        {studentType === 'event' && (
-          <li><a className="dropdown-item" href="/students/materials/index.php?q=videos">Videos</a></li>
-        )}
-        {(studentType === 'event' || studentType === 'design') && (
-          <>
-            <li><a className="dropdown-item" href="/students/materials/career-center.php">Career Center</a></li>
-            <li><a className="dropdown-item" href="/students/business-resources">Business Resources</a></li>
-            <li><a className="dropdown-item" href="/students/student-resources/vendors.php">Preferred Partners</a></li>
-            <li><a className="dropdown-item" href="/students/certification-logos">Certification Logos</a></li>
-            <li><a className="dropdown-item" href="/students/showcases/new.php">Student Showcase</a></li>
-          </>
-        )}
-        <li><a className="dropdown-item" href="/students/badges.php">School Badges</a></li>
-        {(studentType === 'event' || studentType === 'design') && (
-          <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/virtual-classroom.php">Virtual Classroom</a></li>
-        )}
-      </ul>
-    </li>
-    {(studentType === 'event' || studentType === 'design') && (
-      <li className="nav-item d-md-none d-lg-inline">
-        <a href="/students/virtual-classroom.php" className="nav-link">Virtual Classroom</a>
-      </li>
-    )}
-    <li className="nav-item">
-      <a href="/students/logout.php" className="nav-link">Log Out</a>
-    </li>
-  </>
-);
+    </>
+  );
+};

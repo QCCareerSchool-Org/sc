@@ -1,21 +1,47 @@
 import Link from 'next/link';
-import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import type { FC, MouseEventHandler } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
 
+import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';
+import { useServices } from '@/hooks/useServices';
 
 export type AdministratorNavProps = Record<string, never>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const AdministratorNav: FC<AdministratorNavProps> = props => {
+  const router = useRouter();
+  const { loginService } = useServices();
   const authState = useAuthState();
+  const authDispatch = useAuthDispatch();
   const navState = useNavState();
   const [ loaded, setLoaded ] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+  const logOut$ = useRef(new Subject<void>());
+
+  const handleLogoutClick: MouseEventHandler = e => {
+    e.preventDefault();
+    logOut$.current.next();
+  };
+
+  useEffect(() => {
+    const destroy$ = new Subject<void>();
+    logOut$.current.pipe(
+      switchMap(() => loginService.logOut()),
+      catchError(() => EMPTY),
+      takeUntil(destroy$),
+    ).subscribe(() => {
+      authDispatch({ type: 'ADMINISTRATOR_LOG_OUT' });
+    });
+    return () => { destroy$.next(); destroy$.complete(); };
+  }, [ authState, loginService, router, authDispatch ]);
 
   // Loading the bootstrap javascript library on the server causes errors due
   // to missing window, etc., so we only load it on the client in _app.tsx. The
@@ -33,11 +59,6 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
   const otherNavPresent = tutorLoggedIn || studentLoggedIn || auditorLoggedIn;
 
   const index = navState.type === 'administrator' ? navState.index : null;
-
-  const handleForumLinkClick = (): false => {
-    window.open('/administrators/forum/login.php');
-    return false;
-  };
 
   return (
     <>
@@ -128,7 +149,7 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
                   <li><a className="dropdown-item" href="/administrators/unit-prices/index.php">Unit Prices</a></li>
                   <li><a className="dropdown-item" href="/administrators/passwords/edit.php">Change Password</a></li>
                   <li><hr className="dropdown-divider" /></li>
-                  <li><a className="dropdown-item" href="/administrators/logout.php">Log Out</a></li>
+                  <li><a onClick={handleLogoutClick} className="dropdown-item" href="#">Log Out</a></li>
                 </ul>
               </li>
             </ul>

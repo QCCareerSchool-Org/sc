@@ -117,6 +117,7 @@ export class NewSubmissionService implements INewSubmissionService {
       enrollment: {
         ...newSubmission.enrollment,
         enrollmentDate: newSubmission.enrollment.enrollmentDate === null ? null : new Date(newSubmission.enrollment.enrollmentDate),
+        dueDate: newSubmission.enrollment.dueDate === null ? null : new Date(newSubmission.enrollment.dueDate),
       },
       newAssignments: newSubmission.newAssignments.map(a => ({
         ...a,

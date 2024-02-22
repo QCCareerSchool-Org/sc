@@ -68,6 +68,7 @@ export class EnrollmentService implements IEnrollmentService {
     return {
       ...enrollment,
       enrollmentDate: enrollment.enrollmentDate === null ? null : new Date(enrollment.enrollmentDate),
+      dueDate: enrollment.dueDate === null ? null : new Date(enrollment.dueDate),
       student: {
         ...enrollment.student,
         lastLogin: enrollment.student.lastLogin === null ? null : new Date(enrollment.student.lastLogin),

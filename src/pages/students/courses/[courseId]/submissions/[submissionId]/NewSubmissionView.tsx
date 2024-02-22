@@ -49,6 +49,8 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
 
   const virtualClassroomLink = getVirtualClassroomLink(state.newSubmission.enrollment.course.school.slug);
 
+  const expired = state.newSubmission.enrollment.dueDate !== null && state.newSubmission.enrollment.dueDate <= new Date();
+
   return (
     <>
       <Section>
@@ -59,6 +61,13 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
               <h1>Submission {state.newSubmission.unitLetter}{state.newSubmission.title && <>: {state.newSubmission.title}</>}</h1>
               <NewSubmissionInfoTable newSubmission={state.newSubmission} />
               <NewSubmissionStatus studentId={studentId} courseId={courseId} newSubmission={state.newSubmission} onProgress={handleAudioProgress} />
+              {state.newSubmission.submitted === null && expired && (
+                <div className="alert alert-danger mt-3" role="alert">
+                  <h5>Course Expired</h5>
+                  <p>Your course due date has passed. Please contact the School to extend your course.</p>
+                  <p className="mb-0">You will be unable to submit assignments or complete lessons until your course has been extended.</p>
+                </div>
+              )}
               {state.newSubmission.unitLetter === 'A' && state.newSubmission.enrollment.course.code === 'MZ' && state.newSubmission.responseProgress === 100 && (
                 <div className="alert alert-info" role="alert">
                   <h5>Please Complete the Course Experience Survey</h5>
@@ -85,6 +94,7 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
             courseId={courseId}
             submissionId={submissionId}
             processingState={state.processingState}
+            expired={expired}
             submit$={submit$}
             unitComplete={state.newSubmission.complete}
             optionalAssignmentsIncomplete={state.optionalAssignmentIncomplete}

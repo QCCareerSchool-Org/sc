@@ -78,6 +78,7 @@ export class StudentService implements IStudentService {
       enrollments: student.enrollments.map(e => ({
         ...e,
         enrollmentDate: e.enrollmentDate === null ? null : new Date(e.enrollmentDate),
+        dueDate: e.dueDate === null ? null : new Date(e.dueDate),
       })),
       surveyCompletions: student.surveyCompletions.map(s => ({
         ...s,

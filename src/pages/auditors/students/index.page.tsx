@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import ErrorPage from 'next/error';
 import { useEffect } from 'react';
 
 import { StudentList } from './StudentList';
@@ -14,7 +15,7 @@ const AuditorStudenListPage: NextPage = () => {
   }, [ navDispatch ]);
 
   if (typeof auditorId === 'undefined') {
-    return null;
+    return <ErrorPage statusCode={403} />;
   }
 
   return <StudentList auditorId={auditorId} />;

@@ -11,6 +11,7 @@ type Props = {
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
+  expired: boolean;
   submit$: Subject<SubmissionSubmitEvent>;
   unitComplete: boolean;
   optionalAssignmentsIncomplete: boolean;
@@ -31,7 +32,7 @@ export const SubmitSection: FC<Props> = props => {
     }
   };
 
-  const buttonDisabled = !unitComplete || processingState === 'submitting' || processingState === 'skipping';
+  const buttonDisabled = props.expired || !unitComplete || processingState === 'submitting' || processingState === 'skipping';
 
   return (
     <Section className="submitSection">
