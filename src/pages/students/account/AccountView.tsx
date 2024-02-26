@@ -39,6 +39,8 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
     });
   }, [ state.crmStudent?.enrollments ]);
 
+  const filteredEnrollments = useMemo(() => (state.student ? state.student.enrollments.filter(e => !e.paymentsDisabled) : []), [ state.student ]);
+
   if (state.error) {
     return (
       <Section>
@@ -148,38 +150,42 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
                 </div>
               </div>
             </Section>
-            <Section>
-              <div className="container">
-                <h2>Update Your Payment Method</h2>
-                <p>If your card has expired or you would like to use a new card, you can <Link href="/students/account/card"><a>update your payment method</a></Link> before making additional payments.</p>
-              </div>
-            </Section>
-            <Section>
-              <div className="container">
-                <h2>Payment Information</h2>
-                <p>Select a course below to review your payment history or to make payments.</p>
-                <table className="table table-bordered table-hover bg-white">
-                  <thead>
-                    <tr>
-                      <th>Course Name</th>
-                      <th>Student Number</th>
-                      <th>Status</th>
-                      <th className="text-end">Balance</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {state.crmStudent.enrollments.map(e => (
-                      <tr key={e.enrollmentId} onClick={ev => handleCourseClick(ev, e.enrollmentId)} style={{ cursor: 'pointer' }}>
-                        <td>{e.course.name}</td>
-                        <td>{e.course.prefix}&thinsp;{e.enrollmentId}</td>
-                        <td>{statusName(e.status)}</td>
-                        <td className="text-end">{e.currency.symbol}{getBalance(e).toFixed(2)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Section>
+            {filteredEnrollments.length > 0 && (
+              <>
+                <Section>
+                  <div className="container">
+                    <h2>Update Your Payment Method</h2>
+                    <p>If your card has expired or you would like to use a new card, you can <Link href="/students/account/card"><a>update your payment method</a></Link> before making additional payments.</p>
+                  </div>
+                </Section>
+                <Section>
+                  <div className="container">
+                    <h2>Payment Information</h2>
+                    <p>Select a course below to review your payment history or to make payments.</p>
+                    <table className="table table-bordered table-hover bg-white">
+                      <thead>
+                        <tr>
+                          <th>Course Name</th>
+                          <th>Student Number</th>
+                          <th>Status</th>
+                          <th className="text-end">Balance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {state.crmStudent.enrollments.filter(e => filteredEnrollments.some(f => f.course.code === e.course.code)).map(e => (
+                          <tr key={e.enrollmentId} onClick={ev => handleCourseClick(ev, e.enrollmentId)} style={{ cursor: 'pointer' }}>
+                            <td>{e.course.name}</td>
+                            <td>{e.course.prefix}&thinsp;{e.enrollmentId}</td>
+                            <td>{statusName(e.status)}</td>
+                            <td className="text-end">{e.currency.symbol}{getBalance(e).toFixed(2)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Section>
+              </>
+            )}
           </>
         )
         : ( // old account info
@@ -191,7 +197,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
                 <li><a href="/students/portraits/index.bs.php">Change Portrait</a></li>
               </ul>
 
-              {state.student.enrollments.map(e => (
+              {filteredEnrollments.length > 0 && filteredEnrollments.map(e => (
                 <Fragment key={e.enrollmentId}>
                   <h2>{e.course.name}</h2>
                   <div className="table-responsive">
