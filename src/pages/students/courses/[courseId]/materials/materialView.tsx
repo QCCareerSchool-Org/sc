@@ -19,6 +19,8 @@ type Props = {
   materialId: string;
 };
 
+type MaterialState = 'NOT_STARTED' | 'INCOMPLETE' | 'COMPLETE';
+
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const authState = useAuthState();
   const { loginService } = useServices();
@@ -111,6 +113,8 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     setChildWindow(window.open(href, materialId ?? '_blank'));
   };
 
+  const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.materialData['cmi.completion_status'] === 'completed' ? 'COMPLETE' : 'INCOMPLETE';
+
   return (
     <section>
       <div className="container">
@@ -122,12 +126,12 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
             <h1>{state.data.material.title}</h1>
             {state.data.material.description && <p>{state.data.material.description}</p>}
             {typeof totalTime !== 'undefined' && <p className="mb-0"><strong>Time in Lesson:</strong> <Duration seconds={totalTime} /></p>}
-            <p className="mb-0"><strong>Status:</strong> {state.data.material.materialData['cmi.completion_status'] === 'completed' ? 'Complete' : 'Incomplete'}</p>
+            <p className="mb-0"><strong>Status:</strong> {materialState === 'NOT_STARTED' ? 'Not Started' : materialState === 'COMPLETE' ? 'Complete' : 'Incomplete'}</p>
             {typeof state.data.material.materialData['cmi.score.scaled'] !== 'undefined' && (
               <p className="mb-0"><strong>Score:</strong> {Math.round(parseFloat(state.data.material.materialData['cmi.score.scaled']) * 100)}%</p>
             )}
 
-            <button onClick={handleClick} className="btn btn-primary mt-3">Open Lesson</button>
+            <button onClick={handleClick} className="btn btn-primary mt-3">{materialState === 'NOT_STARTED' ? 'Start Lesson' : materialState === 'COMPLETE' ? 'View Lesson' : 'Resume Lesson'}</button>
 
             {state.data.enrollment.dueDate && state.data.enrollment.dueDate <= new Date() && (
               <div className="alert alert-danger mt-4">

@@ -18,7 +18,7 @@ export class ScormAPI {
     initialData: Data,
   ) {
     this.data = { ...initialData };
-    this.interactionCount = Object.keys(initialData).filter(k => /^cmi\.interactions\.\d\.id/u.test(k)).length;
+    this.interactionCount = Object.keys(initialData).filter(k => /^cmi\.interactions\.\d+\.id/u.test(k)).length;
   }
 
   public Initialize(): void {
@@ -31,7 +31,7 @@ export class ScormAPI {
 
   public SetValue(element: string, value: string): void {
     console.log(`Function: SetValue (setting ${element} to "${value}" for ${this.lessonId})`);
-    const matches = /^cmi\.interactions\.(\d)/u.exec(element);
+    const matches = /^cmi\.interactions\.\d+/u.exec(element);
     if (matches) {
       if (parseInt(matches[1], 10) === this.interactionCount) {
         this.interactionCount++;
