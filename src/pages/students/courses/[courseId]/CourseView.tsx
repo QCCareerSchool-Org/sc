@@ -1,4 +1,5 @@
 import NextError from 'next/error';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
@@ -11,6 +12,7 @@ import { CertificationLogoSection } from './CertificationLogoSection';
 import { CourseHeaderImage } from './CourseHeaderImage';
 import { CourseProgress } from './CourseProgress';
 import { CourseVideo } from './CourseVideo';
+import EWLogo from './ew-logo-white.svg';
 import { initialState, reducer } from './state';
 import { SubmissionsTable } from './SubmissionsTable';
 import { UnitAccordion } from './UnitAccordion';
@@ -72,6 +74,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               <div className="col-12 col-lg-6">
                 <h2 className="h4 placeholder-glow"><span className="placeholder col-6" /></h2>
                 <div className="placeholder-glow mb-4" style={{ height: 80 }}><span className="placeholder col-12 h-100" /></div>
+                {courseId === 118 && <Image src={EWLogo} alt="Earthwise" />}
               </div>
             </div>
           </div>
@@ -147,6 +150,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
                 </>
               )}
+              {courseId === 118 && <div className="d-flex justify-content-center"><Image src={EWLogo} alt="Earthwise" /></div>}
               {enrollment.onHold && (
                 <div className="alert alert-danger mt-4">
                   This course is on hold. Please contact the School for more information.
