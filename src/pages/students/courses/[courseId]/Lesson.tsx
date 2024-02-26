@@ -63,7 +63,7 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material,
                 </div>
                 <div className={md ? 'd-flex justify-content-between' : ''}>
                   <div className={md ? '' : 'mb-3'}>
-                    <LesssonLink studentId={studentId} courseId={courseId} material={material} className="lessonButtonLink"><MaterialButton>View Lesson</MaterialButton></LesssonLink>
+                    <LesssonLink studentId={studentId} courseId={courseId} material={material} className="lessonButtonLink"><MaterialButton>{material.type === 'scorm2004' ? 'View Lesson' : 'Open Lesson'}</MaterialButton></LesssonLink>
                   </div>
                   {material.type !== 'scorm2004' && (
                     <div className={`form-check round ${md ? 'right' : ''}`}>
