@@ -172,7 +172,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {state.crmStudent.enrollments.filter(e => filteredEnrollments.some(f => f.course.code === e.course.code)).map(e => (
+                        {state.crmStudent.enrollments.filter(e => filteredEnrollments.some(f => f.course.code === e.course.prefix)).map(e => (
                           <tr key={e.enrollmentId} onClick={ev => handleCourseClick(ev, e.enrollmentId)} style={{ cursor: 'pointer' }}>
                             <td>{e.course.name}</td>
                             <td>{e.course.prefix}&thinsp;{e.enrollmentId}</td>
