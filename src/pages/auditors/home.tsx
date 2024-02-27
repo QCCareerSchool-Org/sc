@@ -14,10 +14,6 @@ export const AuditorHome: FC<Props> = ({ auditorId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
   useInitialData(dispatch, auditorId);
 
-  if (!state.auditor) {
-    return;
-  }
-
   return (
     <Section>
       <div className="container">
