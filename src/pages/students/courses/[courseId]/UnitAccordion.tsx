@@ -66,7 +66,7 @@ export const UnitAccordion: FC<Props> = props => {
   return (
     <>
       <div onClick={handleClick} className="d-flex justify-content-between" style={{ cursor: 'pointer' }}>
-        <h3 className="h5 mb-0">{unit.title ?? <>Unit {unit.unitLetter}</>}</h3>
+        <h3 className="h5 mb-0">{unit.title ? <><strong>Unit {unit.unitLetter}: {unit.title}</strong></> : <><strong>Unit {unit.unitLetter}</strong></>}</h3>
         {open ? <AiOutlineMinusCircle size={iconSize} /> : <AiOutlinePlusCircle size={iconSize} />}
       </div>
       <Separator />
