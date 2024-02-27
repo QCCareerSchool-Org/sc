@@ -11,6 +11,7 @@ import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmis
 import type { RawStudent, Student } from '@/domain/student/student';
 import type { Tutor } from '@/domain/student/tutor';
 import type { RawUnit, Unit } from '@/domain/unit';
+import type { Variant } from '@/domain/variant';
 import type { Video } from '@/domain/video';
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
@@ -19,6 +20,7 @@ export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
   student: Student;
   course: Course & {
     school: School;
+    variant: Variant | null;
     newSubmissionTemplates: NewSubmissionTemplate[];
     units: Array<Unit & {
       materials: Array<Material & { materialData: Record<string, string> }>;
@@ -34,6 +36,7 @@ type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
   student: RawStudent;
   course: Course & {
     school: School;
+    variant: Variant | null;
     newSubmissionTemplates: RawNewSubmissionTemplate[];
     units: Array<RawUnit & {
       materials: Array<RawMaterial & { materialData: Record<string, string> }>;

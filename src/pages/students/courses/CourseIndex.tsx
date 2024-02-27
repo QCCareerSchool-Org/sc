@@ -25,11 +25,18 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
 
   useInitialData(dispatch, studentId);
 
+  // // get an array of the unique school slugs
+  // const schoolSlugs = useMemo(() => {
+  //   return state.data?.student.enrollments
+  //     .map(e => e.course.school.slug)
+  //     .filter((item, pos, self) => self.indexOf(item) === pos);
+  // }, [ state.data?.student.enrollments ]);
+
   // get an array of the unique school slugs
   const schoolSlugs = useMemo(() => {
     return state.data?.student.enrollments
-      .map(e => e.course.school.slug)
-      .filter((item, pos, self) => self.indexOf(item) === pos);
+      .map(e => ({ slug: e.course.school.slug, variant: e.course.variant?.name ?? null }))
+      .filter((item, pos, self) => self.findIndex(i => i.slug === item.slug && (i.variant === item.variant || (i.variant === null && item.variant === null))) === pos);
   }, [ state.data?.student.enrollments ]);
 
   // get an array of all the courses the student is enrolled in
@@ -41,7 +48,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
     return null;
   }
 
-  const showVirtualClassroomAlert = schoolSlugs?.some(c => c === 'makeup' || c === 'event' || c === 'design' || c === 'pet');
+  const showVirtualClassroomAlert = schoolSlugs?.some(c => c.slug === 'makeup' || c.slug === 'event' || c.slug === 'design' || (c.slug === 'pet' && c.variant === null));
 
   const crmStudent = state.data.crmStudent;
 
@@ -50,7 +57,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
 
   const now = new Date();
   const halloweenMessageEndDate = new Date(Date.UTC(2023, 9, 16, 15)); // October 16, 11:00 (15:00 UTC)
-  const showHalloweenMessage = now < halloweenMessageEndDate && schoolSlugs?.includes('makeup');
+  const showHalloweenMessage = now < halloweenMessageEndDate && schoolSlugs?.some(s => s.slug === 'makeup');
 
   const blackFridayMessage = now >= new Date(Date.UTC(2023, 10, 16, 14, 30)) && now < new Date(Date.UTC(2023, 10, 27, 5))
     ? <><strong>Special Black Friday Offer:</strong> Take your career to the next level by expanding your skillset. Until November 26th, get <strong style={{ color: '#ca0000' }}>60% off</strong> all continued education makeup, event, and design courses.</>
@@ -83,10 +90,10 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
             <div className="alert alert-primary">
               <h2 className="h5">Bonus: Join our Virtual Classroom!</h2>
               <p>Our QC community is leveling up! In addition to completing your course here on the Online Student Center, you can join our Virtual Classroom on Facebook! Engage with mentors, get exclusive content from industry experts, and network with peers in this dynamic space. Excited? We are too! See you there&mdash;request to join now!</p>
-              {schoolSlugs?.includes('design') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('design')} className="alert-link">QC Design School Virtual Classroom</a></p>}
-              {schoolSlugs?.includes('event') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('event')} className="alert-link">QC Event School Virtual Classroom</a></p>}
-              {schoolSlugs?.includes('makeup') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('makeup')} className="alert-link">QC Makeup Academy Virtual Classroom</a></p>}
-              {schoolSlugs?.includes('pet') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('pet')} className="alert-link">QC Pet Studies Virtual Classroom</a></p>}
+              {schoolSlugs?.some(s => s.slug === 'design') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('design')} className="alert-link">QC Design School Virtual Classroom</a></p>}
+              {schoolSlugs?.some(s => s.slug === 'event') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('event')} className="alert-link">QC Event School Virtual Classroom</a></p>}
+              {schoolSlugs?.some(s => s.slug === 'makeup') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('makeup')} className="alert-link">QC Makeup Academy Virtual Classroom</a></p>}
+              {schoolSlugs?.some(s => s.slug === 'pet' && s.variant === null) && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('pet')} className="alert-link">QC Pet Studies Virtual Classroom</a></p>}
             </div>
           )}
         </div>
@@ -103,7 +110,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
               }
             </p>
             {showTaxCreditMessage && <TaxCreditMessage />}
-            {schoolSlugs?.map(s => courseSuggestionGroups[s].map(group => {
+            {schoolSlugs?.filter(s => s.variant === null).map(s => s.slug).map(s => courseSuggestionGroups[s].map(group => {
               return <ContinuingEducationGroup
                 key={group.id}
                 shippingDetails={{
