@@ -74,7 +74,6 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               <div className="col-12 col-lg-6">
                 <h2 className="h4 placeholder-glow"><span className="placeholder col-6" /></h2>
                 <div className="placeholder-glow mb-4" style={{ height: 80 }}><span className="placeholder col-12 h-100" /></div>
-                {courseId === 118 && <Image src={EWLogo} alt="Earthwise" />}
               </div>
             </div>
           </div>
@@ -119,6 +118,9 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
       <Section>
         <CourseHeaderImage courseId={courseId} />
         <div className="container text-white" style={{ minHeight: 240 }}>
+          {courseId === 118 && (
+            <div className="d-lg-none mb-4"><Image src={EWLogo} alt="Earthwise" width="40" height="59" /></div>
+          )}
           <div className="row">
             <div className="col-12 col-lg-6 mb-4 mb-lg-0">
               <h1 className="mb-0 mb-2 text-shadow">{enrollment.course.name}</h1>
@@ -150,7 +152,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
                 </>
               )}
-              {courseId === 118 && <div className="d-flex justify-content-center"><Image src={EWLogo} alt="Earthwise" /></div>}
+              {courseId === 118 && <div className="d-none d-lg-flex justify-content-center"><Image src={EWLogo} alt="Earthwise" /></div>}
               {enrollment.onHold && (
                 <div className="alert alert-danger mt-4">
                   This course is on hold. Please contact the School for more information.
