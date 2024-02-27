@@ -31,8 +31,9 @@ export class ScormAPI {
 
   public SetValue(element: string, value: string): void {
     console.log(`Function: SetValue (setting ${element} to "${value}" for ${this.lessonId})`);
-    const matches = /^cmi\.interactions\.\d+/u.exec(element);
+    const matches = /^cmi\.interactions\.(\d+)/u.exec(element);
     if (matches) {
+      console.log('interactions match');
       if (parseInt(matches[1], 10) === this.interactionCount) {
         this.interactionCount++;
       }
