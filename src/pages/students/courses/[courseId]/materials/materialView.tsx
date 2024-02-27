@@ -135,7 +135,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
             {state.data.enrollment.dueDate && state.data.enrollment.dueDate <= new Date() && (
               <div className="alert alert-danger mt-4">
-                <p>Your course due date has passed. Please contact the School to extend your course.</p>
+                <p>Your course due date has passed. Please contact the School to extend your course and pay your extension fee.</p>
                 <p className="mb-0">You will be unable to submit assignments or complete lessons until your course has been extended.</p>
               </div>
             )}
