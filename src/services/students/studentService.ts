@@ -9,13 +9,14 @@ import type { School } from '@/domain/school';
 import type { RawStudent, Student } from '@/domain/student/student';
 import type { Survey } from '@/domain/survey';
 import type { RawSurveyCompletion, SurveyCompletion } from '@/domain/surveyCompletion';
+import type { Variant } from '@/domain/variant';
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export type StudentWithCountryProvinceAndEnrollments = Student & {
   country: Country;
   province: Province | null;
-  enrollments: Array<Enrollment & { course: Course & { school: School } }>;
+  enrollments: Array<Enrollment & { course: Course & { school: School; variant: Variant | null } }>;
   surveyCompletions: Array<SurveyCompletion & {
     survey: Survey;
   }>;
@@ -24,7 +25,7 @@ export type StudentWithCountryProvinceAndEnrollments = Student & {
 export type RawStudentWithCountryProvinceAndEnrollments = RawStudent & {
   country: Country;
   province: Province | null;
-  enrollments: Array<RawEnrollment & { course: Course & { school: School } }>;
+  enrollments: Array<RawEnrollment & { course: Course & { school: School; variant: Variant | null } }>;
   surveyCompletions: Array<RawSurveyCompletion & {
     survey: Survey;
   }>;
