@@ -25,7 +25,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
 
   useInitialData(dispatch, studentId, crmId);
 
-  const filteredReceipts = useMemo(() => state.t2202Receipts?.filter(t => t.startYear <= 2022), [ state.t2202Receipts ]);
+  const filteredReceipts = useMemo(() => state.t2202Receipts?.filter(t => t.startYear <= 2023), [ state.t2202Receipts ]);
 
   const unshippedDeluxeKitWithoutBrushes = useMemo(() => {
     return state.crmStudent?.enrollments.some(e => e.bonusItemShipments.some(s => s.bonusItemId === '1f5fce32-f58a-11ed-b7ac-0050568e14ec' && !s.shipped));
