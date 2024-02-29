@@ -39,6 +39,8 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
       .filter((item, pos, self) => self.findIndex(i => i.slug === item.slug && (i.variant === item.variant || (i.variant === null && item.variant === null))) === pos);
   }, [ state.data?.student.enrollments ]);
 
+  const nonVariantSchoolSlugs = useMemo(() => schoolSlugs?.filter(s => s.variant === null), [ schoolSlugs ]);
+
   // get an array of all the courses the student is enrolled in
   const courses = useMemo(() => {
     return state.data?.student.enrollments.map(e => e.course);
@@ -99,7 +101,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
         </div>
       </Section>
 
-      {crmStudent && (
+      {crmStudent && nonVariantSchoolSlugs && nonVariantSchoolSlugs.length > 0 && (
         <Section className="bg-f1">
           <div className="container">
             <h2 className="h4">Continued Education</h2>
@@ -110,7 +112,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
               }
             </p>
             {showTaxCreditMessage && <TaxCreditMessage />}
-            {schoolSlugs?.filter(s => s.variant === null).map(s => s.slug).map(s => courseSuggestionGroups[s].map(group => {
+            {nonVariantSchoolSlugs?.map(s => s.slug).map(s => courseSuggestionGroups[s].map(group => {
               return <ContinuingEducationGroup
                 key={group.id}
                 shippingDetails={{
