@@ -32,7 +32,7 @@ export const Banner: FC = () => {
     return (
       <div style={{ backgroundColor, textAlign: 'center', position: 'relative', flexGrow: 0 }}>
         <div className="container p-0">
-          <a href="https://event.webinarjam.com/register/2/kznpvbz">
+          <a href="https://event.webinarjam.com/replay/2/p8904fmiqiriky" target="_blank" rel="noreferrer">
             <div className="d-none d-sm-block">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={DesktopImage.src} alt="" className="img-fluid" style={{ width: '100%' }} />
