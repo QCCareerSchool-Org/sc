@@ -10,7 +10,7 @@ import { useInitialData } from './useInitialData';
 import { useAuthState } from '@/hooks/useAuthState';
 
 const startDate = Date.UTC(2024, 2, 5, 5); // March 5 at 00:00 (05:00 GMT)
-const endDate = Date.UTC(2024, 2, 6, 12); // March 6 at 07:00 (12:00 GMT)
+const endDate = Date.UTC(2024, 2, 27, 12); // March 27 at 07:00 (12:00 GMT)
 
 const backgroundColor = '#3e3c6e';
 
