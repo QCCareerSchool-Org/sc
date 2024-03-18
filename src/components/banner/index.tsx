@@ -35,7 +35,7 @@ export const Banner: FC = () => {
     return [ event, pet ];
   }, [ state.data ]);
 
-  if (typeof studentId === 'undefined' || !state.data || !hasEventCourses) {
+  if (typeof studentId === 'undefined' || !state.data) {
     return null;
   }
 
