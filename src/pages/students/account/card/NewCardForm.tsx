@@ -43,7 +43,7 @@ export const NewCardForm: FC<Props> = props => {
 
   const options = useMemo(() => {
     return crmStudent.enrollments.map(e => {
-      const amountPaid = e.transactions.filter(t => !t.extraCharge).reduce((prev, cur) => prev.plus(cur.amount), Big(0));
+      const amountPaid = e.transactions.reduce((prev, cur) => prev.plus(cur.extraCharge ? 0 : cur.amount), Big(0));
       const remainingBalance = parseFloat(Big(e.cost).minus(e.discount).minus(amountPaid).toFixed(2));
       return {
         enrollmentId: e.enrollmentId,
