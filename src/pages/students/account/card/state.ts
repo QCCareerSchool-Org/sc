@@ -37,6 +37,8 @@ export const reducer = (state: State, action: Action): State => {
           error: true,
         };
       }
+
+      const allSameCurrency = action.payload.enrollments.every(e => e.currencyId === action.payload.enrollments[0].currencyId);
       return {
         ...initialState,
         crmStudent: action.payload,
@@ -45,11 +47,12 @@ export const reducer = (state: State, action: Action): State => {
           data: {
             ...initialState.form.data,
             enrollmentId: action.payload.enrollments[0].enrollmentId.toString(), // pick first-available enrollmentId
+            updateAll: allSameCurrency,
           },
         },
         currencyCode: action.payload.enrollments[0].currency.code,
         currencyName: action.payload.enrollments[0].currency.name,
-        allSameCurrency: action.payload.enrollments.every(e => e.currencyId === action.payload.enrollments[0].currencyId),
+        allSameCurrency,
       };
     }
     case 'LOAD_DATA_FAILED':

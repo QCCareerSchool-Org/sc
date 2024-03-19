@@ -1,5 +1,6 @@
+import Big from 'big.js';
 import type { ChangeEventHandler, FC } from 'react';
-import { useId } from 'react';
+import { useId, useMemo } from 'react';
 import type { Subject } from 'rxjs';
 
 import type { State } from './state';
@@ -40,13 +41,28 @@ export const NewCardForm: FC<Props> = props => {
 
   const enrollmentCount = crmStudent.enrollments.length;
 
+  const options = useMemo(() => {
+    return crmStudent.enrollments.map(e => {
+      const amountPaid = e.transactions.filter(t => !t.extraCharge).reduce((prev, cur) => prev.plus(cur.amount), Big(0));
+      const remainingBalance = parseFloat(Big(e.cost).minus(e.discount).minus(amountPaid).toFixed(2));
+      return {
+        enrollmentId: e.enrollmentId,
+        courseName: e.course.name,
+        coursePrefix: e.course.prefix,
+        remainingBalance,
+      };
+    });
+  }, [ crmStudent.enrollments ]);
+
   return (
     <form>
       {crmStudent.enrollments.length && (
         <div className="mb-4">
           <label htmlFor={id + '_newCardEnrollmentId'}>Course to Update</label>
           <select onChange={props.onEnrollmentIdChange} value={form.data.enrollmentId} id={id + '_newCardEnrollmentId'} className="form-select" disabled={form.data.updateAll} aria-describedby={id + '_newCardEnrollmentIdHelp'}>
-            {crmStudent.enrollments.map(e => (<option key={e.enrollmentId} value={e.enrollmentId}>{e.course.name} ({e.course.prefix}{e.enrollmentId})</option>))}
+            {options.map(o => {
+              return <option key={o.enrollmentId} value={o.enrollmentId}>Balance: {o.remainingBalance} - {o.courseName} ({o.coursePrefix}{o.enrollmentId})</option>;
+            })}
           </select>
           <div id={id + '_newCardEnrollmentIdHelp'} className="form-text">Charged in {currencyName}</div>
         </div>
