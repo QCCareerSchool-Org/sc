@@ -44,12 +44,11 @@ export const NewCardForm: FC<Props> = props => {
   const options = useMemo(() => {
     return crmStudent.enrollments.map(e => {
       const amountPaid = e.transactions.reduce((prev, cur) => prev.plus(cur.extraCharge ? 0 : cur.amount), Big(0));
-      const remainingBalance = parseFloat(Big(e.cost).minus(e.discount).minus(amountPaid).toFixed(2));
+      const remainingBalance = Big(e.cost).minus(e.discount).minus(amountPaid).toFixed(2);
       return {
         enrollmentId: e.enrollmentId,
         courseName: e.course.name,
-        coursePrefix: e.course.prefix,
-        remainingBalance,
+        remainingBalance: `${e.currency.symbol}${remainingBalance}`,
       };
     });
   }, [ crmStudent.enrollments ]);
@@ -61,7 +60,7 @@ export const NewCardForm: FC<Props> = props => {
           <label htmlFor={id + '_newCardEnrollmentId'}>Course to Update</label>
           <select onChange={props.onEnrollmentIdChange} value={form.data.enrollmentId} id={id + '_newCardEnrollmentId'} className="form-select" disabled={form.data.updateAll} aria-describedby={id + '_newCardEnrollmentIdHelp'}>
             {options.map(o => {
-              return <option key={o.enrollmentId} value={o.enrollmentId}>Balance: {o.remainingBalance} - {o.courseName} ({o.coursePrefix}{o.enrollmentId})</option>;
+              return <option key={o.enrollmentId} value={o.enrollmentId}>Balance: {o.remainingBalance} - {o.courseName}</option>;
             })}
           </select>
           <div id={id + '_newCardEnrollmentIdHelp'} className="form-text">Charged in {currencyName}</div>
