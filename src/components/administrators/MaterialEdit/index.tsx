@@ -99,7 +99,7 @@ export const MaterialEdit: FC<Props> = ({ administratorId, materialId }) => {
                 imageVersion={state.imageVersion}
               />
             </div>
-            {(state.material.type === 'lesson' || state.material.type === 'download') && (
+            {(state.material.type === 'lesson' || state.material.type === 'scorm2004' || state.material.type === 'download') && (
               <div className="mt-4">
                 <MaterialContentEditForm
                   administratorId={administratorId}

@@ -42,7 +42,7 @@ export const MaterialContentEditForm: FC<Props> = props => {
     });
   };
 
-  const accept = props.material.type === 'lesson'
+  const accept = props.material.type === 'lesson' || props.material.type === 'scorm2004'
     ? [ 'application/zip' ]
     : [
       'image/jpeg',
