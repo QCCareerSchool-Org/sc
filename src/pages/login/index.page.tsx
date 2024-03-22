@@ -94,7 +94,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    logIn$.current.next({ username, password, stayLoggedIn, returnUrl });
+    logIn$.current.next({ username, password, stayLoggedIn, returnUrl: returnUrl?.startsWith('/login') ? null : returnUrl });
   };
 
   const handleUsernameChange: ChangeEventHandler<HTMLInputElement> = e => {
