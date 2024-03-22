@@ -89,7 +89,7 @@ export const MaterialDetailsEditForm: FC<Props> = props => {
         <div id={id + '_newMaterialOrderHelp'} className="form-text">The order in which the material should appear within its unit</div>
         {props.formState.validationMessages.order && <div className="invalid-feedback">{props.formState.validationMessages.order}</div>}
       </div>
-      {props.material.type === 'lesson' && props.formState.data.lessonMeta && (
+      {(props.material.type === 'lesson' || props.material.type === 'scorm2004') && props.formState.data.lessonMeta && (
         <div className="row">
           <div className="col-6">
             <div className="formGroup">
