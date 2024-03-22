@@ -126,7 +126,7 @@ export const reducer = (state: State, action: Action): State => {
             title: action.payload.title,
             description: action.payload.description,
             order: action.payload.order.toString(),
-            lessonMeta: action.payload.type === 'lesson' ? {
+            lessonMeta: action.payload.type === 'lesson' || action.payload.type === 'scorm2004' ? {
               minutes: action.payload.minutes?.toString() ?? '',
               chapters: action.payload.chapters?.toString() ?? '',
               videos: action.payload.videos?.toString() ?? '',
@@ -229,7 +229,7 @@ export const reducer = (state: State, action: Action): State => {
             title: action.payload.title ?? '',
             description: action.payload.description ?? '',
             order: action.payload.order.toString(),
-            lessonMeta: action.payload.type === 'lesson' ? {
+            lessonMeta: action.payload.type === 'lesson' || action.payload.type === 'scorm2004' ? {
               minutes: action.payload.minutes?.toString() ?? '',
               chapters: action.payload.chapters?.toString() ?? '',
               videos: action.payload.videos?.toString() ?? '',
@@ -356,8 +356,8 @@ export const reducer = (state: State, action: Action): State => {
       }
       let validationMessage: string | undefined;
       if (action.payload) {
-        if (state.material.type === 'lesson') {
-          const maxSize = 67_108_864; // 64 MiB
+        if (state.material.type === 'lesson' || state.material.type === 'scorm2004') {
+          const maxSize = 268_435_456; // 256 MiB
           if (action.payload.size > maxSize) {
             validationMessage = 'File exceeds maximum size';
           }
