@@ -39,7 +39,7 @@ export const StudentNav: FC<StudentNavProps> = props => {
       catchError(() => EMPTY),
       takeUntil(destroy$),
     ).subscribe(() => {
-      authDispatch({ type: 'ADMINISTRATOR_LOG_OUT' });
+      authDispatch({ type: 'STUDENT_LOG_OUT' });
     });
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ authState, loginService, router, authDispatch ]);

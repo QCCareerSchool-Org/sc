@@ -12,7 +12,6 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
   const navigateToLogin = useNavigateToLogin();
 
   useEffect(() => {
-    console.log('initial data');
     const destroy$ = new Subject<void>();
 
     // load the initial data

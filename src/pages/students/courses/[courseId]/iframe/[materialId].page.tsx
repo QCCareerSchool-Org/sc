@@ -22,7 +22,6 @@ const LessonPage: NextPageWithLayout<Props> = ({ courseId, materialId }) => {
 
   const content = useMemo(() => {
     const size = randomInt(4, 8);
-    console.log('size', size);
     return new Array(size).fill(undefined).map((_, i) => <p key={i}>Lorem ipsum</p>) as JSX.Element[];
   }, []);
 

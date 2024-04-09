@@ -18,7 +18,6 @@ export const StudentList: FC<Props> = ({ auditorId }) => {
   const filter$ = useFilter(dispatch);
 
   const handleGroupClick = (e: MouseEvent, group: string): void => {
-    console.log('here');
     e.preventDefault();
     e.stopPropagation();
     dispatch({ type: 'GROUP_CHANGED', payload: group });

@@ -35,7 +35,6 @@ export const WelcomeSurveys: FC<Props> = ({ student }) => {
         pet: studentNumbers.pet && !welcomeSurveyCompletions.pet ? `https://ng295qu8zyk.typeform.com/to/BlZ88NCf#student_number=${studentNumbers.pet}&student_id=${student.studentId}` : undefined,
       };
     }
-    console.log('too old');
   }, [ student ]);
 
   return (
