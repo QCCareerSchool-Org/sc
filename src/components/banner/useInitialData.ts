@@ -25,9 +25,9 @@ export const useInitialData = (dispatch: Dispatch<Action>, studentId?: number): 
       error: err => {
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
-          if (err.login) {
-            return void navigateToLogin();
-          }
+          // if (err.login) {
+          //   return void navigateToLogin();
+          // }
           errorCode = err.code;
         }
         dispatch({ type: 'LOAD_DATA_FAILED', payload: errorCode });

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { FC, MouseEventHandler } from 'react';
-import { Fragment, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
 import type { Subject } from 'rxjs';
@@ -55,7 +55,6 @@ export const UnitAccordion: FC<Props> = props => {
   // on the first render, toggle the unit if we don't have any previous toggle data
   useEffect(() => {
     if (firstRender.current && typeof unitToggleState[courseId] === 'undefined' && firstUnit) {
-      console.log('calling dispatch automatically', unitToggleState);
       unitToggleDispatch({ type: 'TOGGLE', payload: { courseId, unitLetter: unit.unitLetter } });
     }
     firstRender.current = false;

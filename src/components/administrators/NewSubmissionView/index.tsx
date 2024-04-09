@@ -1,5 +1,4 @@
 import ErrorPage from 'next/error';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, MouseEvent } from 'react';
 import { useCallback, useId, useReducer } from 'react';
@@ -54,7 +53,6 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
   }
 
   const handleTransferFormSubmit: React.FormEventHandler<HTMLFormElement> = e => {
-    console.log('click');
     e.preventDefault();
     submissionTransfer$.next({ tutorId: state.form.data.tutorId, processingState: state.form.processingState });
   };

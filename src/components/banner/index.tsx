@@ -5,8 +5,7 @@ import { useMemo, useReducer } from 'react';
 
 import DesktopImage20240306Event from './2024-03-06-event/desktop.jpg';
 import MobileImage20240306Event from './2024-03-06-event/mobile.jpg';
-import DesktopImage20240318Pet from './2024-03-18-pet/desktop.png';
-import MobileImage20240318Pet from './2024-03-18-pet/mobile.png';
+import Pet202404100Image from './2024-04-10-pet/register.png';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useAuthState } from '@/hooks/useAuthState';
@@ -41,8 +40,17 @@ export const Banner: FC = () => {
 
   const now = new Date().getTime();
 
-  if (hasPetCourses && now >= Date.UTC(2024, 2, 8, 20) && now < Date.UTC(2024, 2, 18, 4)) { // March 8 at 15:00 (20:00 GMT) to March 18 at 00:00 (4:00 GMT)
-    return <Inner backgroundColor="#02013f" desktopSrc={DesktopImage20240318Pet.src} mobileSrc={MobileImage20240318Pet.src} url="https://event.webinarjam.com/register/7/6yr6wtx" />;
+  if (hasPetCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 10, 13)) { // April 9 at 99:00 (04:00 GMT) to April 10 at 09:00 (13:00 GMT)
+    return (
+      <div style={{ backgroundColor: '#02013f', textAlign: 'center', position: 'relative', flexGrow: 0 }}>
+        <div className="container p-0">
+          <a href="https://event.webinarjam.com/register/18/2yq68t9" target="_blank" rel="noreferrer">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={Pet202404100Image.src} alt="" className="img-fluid" style={{ maxWidth: 540, width: '100%' }} />
+          </a>
+        </div>
+      </div>
+    );
   }
 
   if (hasEventCourses && now >= Date.UTC(2024, 2, 5, 5) && now < Date.UTC(2024, 2, 27, 11)) { // March 5 at 00:00 (05:00 GMT) to March 27 at 07:00 (12:00 GMT)

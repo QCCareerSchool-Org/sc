@@ -94,7 +94,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    logIn$.current.next({ username, password, stayLoggedIn, returnUrl: returnUrl?.startsWith('/login') ? null : returnUrl });
+    logIn$.current.next({ username, password, stayLoggedIn, returnUrl });
   };
 
   const handleUsernameChange: ChangeEventHandler<HTMLInputElement> = e => {
@@ -159,10 +159,11 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   const returnUrl = Array.isArray(ctx.query.returnUrl)
     ? ctx.query.returnUrl[0]
-    : typeof ctx.query.returnUrl === 'string'
+    : typeof ctx.query.returnUrl === 'string' && !ctx.query.returnUrl.includes('login')
       ? ctx.query.returnUrl
       : null;
-  return { props: { returnUrl } };
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  return { props: { returnUrl: returnUrl } };
 };
 
 export default LoginPage;
