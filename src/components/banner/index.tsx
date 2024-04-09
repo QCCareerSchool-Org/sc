@@ -3,9 +3,11 @@
 import type { CSSProperties, FC } from 'react';
 import { useMemo, useReducer } from 'react';
 
-import DesktopImage20240306Event from './2024-03-06-event/desktop.jpg';
-import MobileImage20240306Event from './2024-03-06-event/mobile.jpg';
-import Pet202404100Image from './2024-04-10-pet/register.png';
+import Event20240410DesktopImage from './2024-04-10-event/register-desktop.png';
+import Event20240410MobileImage from './2024-04-10-event/register-mobile.png';
+import Pet20240410DesktopImage from './2024-04-10-pet/register-desktop.png';
+import Pet20240410MobileImage from './2024-04-10-pet/register-mobile.png';
+
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useAuthState } from '@/hooks/useAuthState';
@@ -40,21 +42,12 @@ export const Banner: FC = () => {
 
   const now = new Date().getTime();
 
-  if (hasPetCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 10, 13)) { // April 9 at 99:00 (04:00 GMT) to April 10 at 09:00 (13:00 GMT)
-    return (
-      <div style={{ backgroundColor: '#02013f', textAlign: 'center', position: 'relative', flexGrow: 0 }}>
-        <div className="container p-0">
-          <a href="https://event.webinarjam.com/register/18/2yq68t9" target="_blank" rel="noreferrer">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={Pet202404100Image.src} alt="" className="img-fluid" style={{ maxWidth: 540, width: '100%' }} />
-          </a>
-        </div>
-      </div>
-    );
+  if (hasPetCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 10, 13)) { // April 9 at 00:00 (04:00 GMT) to April 10 at 09:00 (13:00 GMT)
+    return <Inner backgroundColor="#02013f" desktopSrc={Pet20240410DesktopImage.src} mobileSrc={Pet20240410MobileImage.src} url="https://event.webinarjam.com/register/18/2yq68t9" />;
   }
 
-  if (hasEventCourses && now >= Date.UTC(2024, 2, 5, 5) && now < Date.UTC(2024, 2, 27, 11)) { // March 5 at 00:00 (05:00 GMT) to March 27 at 07:00 (12:00 GMT)
-    return <Inner backgroundColor="#3e3c6e" desktopSrc={DesktopImage20240306Event.src} mobileSrc={MobileImage20240306Event.src} url="https://event.webinarjam.com/replay/2/p8904fmiqiriky" />;
+  if (hasEventCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 10, 13)) { // April 9 at 00:00 (04:00 GMT) to April 10 at 09:00 (13:00 GMT)
+    return <Inner backgroundColor="#02013f" desktopSrc={Event20240410DesktopImage.src} mobileSrc={Event20240410MobileImage.src} url="https://event.webinarjam.com/register/21/0yo60to" />;
   }
 
   return null;
