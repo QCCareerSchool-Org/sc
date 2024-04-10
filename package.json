@@ -1,6 +1,6 @@
 {
   "name": "sc",
-  "version": "0.2.159",
+  "version": "0.2.160",
   "private": true,
   "scripts": {
     "dev": "next dev",
