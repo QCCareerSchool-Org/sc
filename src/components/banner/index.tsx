@@ -5,8 +5,8 @@ import { useMemo, useReducer } from 'react';
 
 import Event20240410DesktopImage from './2024-04-10-event/register-desktop.png';
 import Event20240410MobileImage from './2024-04-10-event/register-mobile.png';
-import Pet20240410DesktopImage from './2024-04-10-pet/register-desktop.png';
-import Pet20240410MobileImage from './2024-04-10-pet/register-mobile.png';
+import Pet20240410DesktopImage from './2024-04-10-pet/replay-desktop.png';
+import Pet20240410MobileImage from './2024-04-10-pet/replay-mobile.png';
 
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
@@ -42,11 +42,11 @@ export const Banner: FC = () => {
 
   const now = new Date().getTime();
 
-  if (hasPetCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 10, 13)) { // April 9 at 00:00 (04:00 GMT) to April 10 at 09:00 (13:00 GMT)
-    return <Inner backgroundColor="#02013f" desktopSrc={Pet20240410DesktopImage.src} mobileSrc={Pet20240410MobileImage.src} url="https://event.webinarjam.com/register/18/2yq68t9" />;
+  if (hasPetCourses && now >= Date.UTC(2024, 3, 11, 4) && now < Date.UTC(2024, 3, 25, 13)) { // April 11 at 00:00 (04:00 GMT) to April 25 at 09:00 (13:00 GMT)
+    return <Inner backgroundColor="#02013f" desktopSrc={Pet20240410DesktopImage.src} mobileSrc={Pet20240410MobileImage.src} url="https://event.webinarjam.com/go/replay/18/m9zpvhos3sgsg" />;
   }
 
-  if (hasEventCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 10, 13)) { // April 9 at 00:00 (04:00 GMT) to April 10 at 09:00 (13:00 GMT)
+  if (hasEventCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 11, 13)) { // April 9 at 00:00 (04:00 GMT) to April 11 at 09:00 (13:00 GMT)
     return <Inner backgroundColor="#02013f" desktopSrc={Event20240410DesktopImage.src} mobileSrc={Event20240410MobileImage.src} url="https://event.webinarjam.com/register/21/0yo60to" />;
   }
 
