@@ -42,7 +42,7 @@ export const Banner: FC = () => {
 
   const now = new Date().getTime();
 
-  if (hasPetCourses && now >= Date.UTC(2024, 3, 11, 4) && now < Date.UTC(2024, 3, 25, 13)) { // April 11 at 00:00 (04:00 GMT) to April 25 at 09:00 (13:00 GMT)
+  if (hasPetCourses && now >= Date.UTC(2024, 3, 10, 4) && now < Date.UTC(2024, 3, 25, 13)) { // April 11 at 00:00 (04:00 GMT) to April 25 at 09:00 (13:00 GMT)
     return <Inner backgroundColor="#02013f" desktopSrc={Pet20240410DesktopImage.src} mobileSrc={Pet20240410MobileImage.src} url="https://event.webinarjam.com/go/replay/18/m9zpvhos3sgsg" />;
   }
 
