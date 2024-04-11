@@ -3,8 +3,8 @@
 import type { CSSProperties, FC } from 'react';
 import { useMemo, useReducer } from 'react';
 
-import Event20240410DesktopImage from './2024-04-10-event/register-desktop.png';
-import Event20240410MobileImage from './2024-04-10-event/register-mobile.png';
+import Event20240410DesktopImage from './2024-04-10-event/replay-desktop.png';
+import Event20240410MobileImage from './2024-04-10-event/replay-mobile.png';
 import Pet20240410DesktopImage from './2024-04-10-pet/replay-desktop.png';
 import Pet20240410MobileImage from './2024-04-10-pet/replay-mobile.png';
 
@@ -46,8 +46,8 @@ export const Banner: FC = () => {
     return <Inner backgroundColor="#02013f" desktopSrc={Pet20240410DesktopImage.src} mobileSrc={Pet20240410MobileImage.src} url="https://event.webinarjam.com/go/replay/18/m9zpvhos3sgsg" />;
   }
 
-  if (hasEventCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 11, 13)) { // April 9 at 00:00 (04:00 GMT) to April 11 at 09:00 (13:00 GMT)
-    return <Inner backgroundColor="#02013f" desktopSrc={Event20240410DesktopImage.src} mobileSrc={Event20240410MobileImage.src} url="https://event.webinarjam.com/register/21/0yo60to" />;
+  if (hasEventCourses && now >= Date.UTC(2024, 3, 9, 4) && now < Date.UTC(2024, 3, 26, 13)) { // April 9 at 00:00 (04:00 GMT) to April 11 at 09:00 (13:00 GMT)
+    return <Inner backgroundColor="#02013f" desktopSrc={Event20240410DesktopImage.src} mobileSrc={Event20240410MobileImage.src} url="https://event.webinarjam.com/go/replay/21/yxp24h4foh2hr" />;
   }
 
   return null;
