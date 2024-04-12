@@ -5,6 +5,7 @@ import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { Material, RawMaterial } from '@/domain/material';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
+import type { Metadata } from '@/domain/metadata';
 import type { NewSubmissionTemplate, RawNewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { School } from '@/domain/school';
 import type { NewSubmission, RawNewSubmission } from '@/domain/student/newSubmission';
@@ -30,6 +31,7 @@ export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
   tutor: Tutor | null;
   newSubmissions: NewSubmission[];
   materialCompletions: MaterialCompletion[];
+  metadata: Metadata[];
 };
 
 type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
@@ -46,10 +48,12 @@ type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
   tutor: Tutor;
   newSubmissions: RawNewSubmission[];
   materialCompletions: MaterialCompletion[];
+  metadata: Metadata[];
 };
 
 export interface IEnrollmentService {
   getEnrollment: (studentId: number, courseId: number) => Observable<EnrollmentWithStudentCourseAndUnits>;
+  insertOrUpdateMetadata: (studentId: number, courseId: number, name: string, value: string | null) => Observable<void>;
 }
 
 export class EnrollmentService implements IEnrollmentService {
@@ -61,6 +65,12 @@ export class EnrollmentService implements IEnrollmentService {
     return this.httpService.get<RawEnrollmentWithStudentCourseAndUnits>(url).pipe(
       map(this.mapEnrollmentWithStudentCourseAndUnits),
     );
+  }
+
+  public insertOrUpdateMetadata(studentId: number, courseId: number, name: string, value: string | null): Observable<void> {
+    const url = `${this.getUrl(studentId)}/${courseId}/metadata`;
+    const body = { name, value };
+    return this.httpService.post<void>(url, body);
   }
 
   private getUrl(studentId: number): string {

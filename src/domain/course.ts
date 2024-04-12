@@ -2,7 +2,7 @@ export type Course = {
   courseId: number;
   schoolId: number;
   code: string;
-  version: string;
+  version: number;
   name: string;
   courseGuide: boolean;
   quizzesEnabled: boolean;

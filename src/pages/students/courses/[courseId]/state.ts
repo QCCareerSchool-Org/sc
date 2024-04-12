@@ -2,6 +2,7 @@ import type { Course } from '@/domain/course';
 import type { Enrollment } from '@/domain/enrollment';
 import type { Material } from '@/domain/material';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
+import type { Metadata } from '@/domain/metadata';
 import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { School } from '@/domain/school';
 import type { CRMEnrollment } from '@/domain/student/crm/crmEnrollment';
@@ -33,6 +34,7 @@ export type EnrollmentState = Enrollment & {
   tutor: Tutor | null;
   newSubmissions: NewSubmission[];
   materialCompletions: MaterialCompletion[];
+  metadata: Metadata[];
 };
 
 type Data = {
@@ -64,7 +66,8 @@ export type Action =
   | { type: 'MATERIAL_COMPLETION_STARTED'; payload: string }
   | { type: 'MATERIAL_COMPLETION_INSERTED'; payload: MaterialCompletion }
   | { type: 'MATERIAL_COMPLETION_DELETED'; payload: string }
-  | { type: 'MATERIAL_COMPLETION_FAILED'; payload: { materialId: string; errorMessage?: string } };
+  | { type: 'MATERIAL_COMPLETION_FAILED'; payload: { materialId: string; errorMessage?: string } }
+  | { type: 'METADATA_INSERTED_OR_UPDATED'; payload: { name: string; value: string | null } };
 
 export const initialState: State = {
   error: false,
@@ -238,6 +241,20 @@ export const reducer = (state: State, action: Action): State => {
           },
         },
       };
+    }
+    case 'METADATA_INSERTED_OR_UPDATED': {
+      if (typeof state.data === 'undefined') {
+        throw Error('data is undefined');
+      }
+      const newElement: Metadata = { name: action.payload.name, value: action.payload.value };
+      let metadata: Metadata[];
+      const index = state.data.enrollment.metadata.findIndex(m => m.name === action.payload.name);
+      if (index === -1) {
+        metadata = [ ...state.data.enrollment.metadata, newElement ];
+      } else {
+        metadata = [ ...state.data.enrollment.metadata.slice(0, index), newElement, ...state.data.enrollment.metadata.slice(index + 1) ];
+      }
+      return { ...state, data: { ...state.data, enrollment: { ...state.data.enrollment, metadata } } };
     }
   }
 };
