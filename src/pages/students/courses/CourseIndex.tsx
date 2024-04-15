@@ -12,7 +12,7 @@ import { useInitialData } from './useInitialData';
 import { WelcomeSurveys } from './WelcomeSurveys';
 import { ContinuingEducationGroup } from '@/components/continuedEducation/ContinuingEducationGroup';
 import { Section } from '@/components/Section';
-import { getVirtualClassroomLink } from 'src/lib/virtualClassroomLink';
+import { getVirtualCommunityLink } from 'src/lib/virtualCommunityLink';
 
 type Props = {
   administratorId?: number;
@@ -50,7 +50,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
     return null;
   }
 
-  const showVirtualClassroomAlert = schoolSlugs?.some(c => c.slug === 'makeup' || c.slug === 'event' || c.slug === 'design' || (c.slug === 'pet' && c.variant === null));
+  const showVirtualCommunityAlert = schoolSlugs?.some(c => c.slug === 'makeup' || c.slug === 'event' || c.slug === 'design' || (c.slug === 'pet' && c.variant === null));
 
   const crmStudent = state.data.crmStudent;
 
@@ -75,7 +75,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
           <WelcomeSurveys student={state.data.student} />
           {showHalloweenMessage && (
             <div className="alert alert-info">
-              Our Annual <a className="alert-link" href="https://forms.gle/sCu2QbQhbZj1wL6P8" target="_blank" rel="noreferrer">Halloween Contest</a> is back! Join the festivities with your peers in the <a className="alert-link" href="https://www.facebook.com/groups/qcmakeupacademyvc" target="_blank" rel="noreferrer">Virtual Classroom</a>!
+              Our Annual <a className="alert-link" href="https://forms.gle/sCu2QbQhbZj1wL6P8" target="_blank" rel="noreferrer">Halloween Contest</a> is back! Join the festivities with your peers in the <a className="alert-link" href="https://www.facebook.com/groups/qcmakeupacademyvc" target="_blank" rel="noreferrer">Virtual Community</a>!
             </div>
           )}
           {state.data.student.created >= new Date(Date.UTC(2023, 8, 22, 4)) && !state.data.student.passwordChanged && <UnchangedPasswordWarning />}
@@ -88,14 +88,14 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
               </>
             )
           }
-          {showVirtualClassroomAlert && (
+          {showVirtualCommunityAlert && (
             <div className="alert alert-primary">
-              <h2 className="h5">Bonus: Join our Virtual Classroom!</h2>
-              <p>Our QC community is leveling up! In addition to completing your course here on the Online Student Center, you can join our Virtual Classroom on Facebook! Engage with mentors, get exclusive content from industry experts, and network with peers in this dynamic space. Excited? We are too! See you there&mdash;request to join now!</p>
-              {schoolSlugs?.some(s => s.slug === 'design') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('design')} className="alert-link">QC Design School Virtual Classroom</a></p>}
-              {schoolSlugs?.some(s => s.slug === 'event') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('event')} className="alert-link">QC Event School Virtual Classroom</a></p>}
-              {schoolSlugs?.some(s => s.slug === 'makeup') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('makeup')} className="alert-link">QC Makeup Academy Virtual Classroom</a></p>}
-              {schoolSlugs?.some(s => s.slug === 'pet' && s.variant === null) && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualClassroomLink('pet')} className="alert-link">QC Pet Studies Virtual Classroom</a></p>}
+              <h2 className="h5">Bonus: Join our Virtual Community!</h2>
+              <p>Our QC community is leveling up! In addition to completing your course here on the Online Student Center, you can join our Virtual Community on Facebook! Engage with mentors, get exclusive content from industry experts, and network with peers in this dynamic space. Excited? We are too! See you there&mdash;request to join now!</p>
+              {schoolSlugs?.some(s => s.slug === 'design') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualCommunityLink('design')} className="alert-link">QC Design School Virtual Community</a></p>}
+              {schoolSlugs?.some(s => s.slug === 'event') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualCommunityLink('event')} className="alert-link">QC Event School Virtual Community</a></p>}
+              {schoolSlugs?.some(s => s.slug === 'makeup') && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualCommunityLink('makeup')} className="alert-link">QC Makeup Academy Virtual Community</a></p>}
+              {schoolSlugs?.some(s => s.slug === 'pet' && s.variant === null) && <p className="mt-2 mb-0"><a target="_blank" rel="noreferrer" href={getVirtualCommunityLink('pet')} className="alert-link">QC Pet Studies Virtual Community</a></p>}
             </div>
           )}
         </div>

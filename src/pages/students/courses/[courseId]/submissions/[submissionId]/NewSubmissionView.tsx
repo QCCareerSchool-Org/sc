@@ -13,7 +13,7 @@ import { useInitialData } from './useInitialData';
 import { useSubmissionSkip } from './useSubmissionSkip';
 import { useSubmissionSubmit } from './useSubmissionSubmit';
 import { Section } from '@/components/Section';
-import { getVirtualClassroomLink } from 'src/lib/virtualClassroomLink';
+import { getVirtualCommunityLink } from 'src/lib/virtualCommunityLink';
 
 type Props = {
   studentId: number;
@@ -47,7 +47,7 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
   const studentNumber = `${state.newSubmission.enrollment.course.code}${state.newSubmission.enrollment.studentNumber}`;
   const surveyLink = `https://ng295qu8zyk.typeform.com/to/LlPgGmJY#student_number=${encodeURIComponent(studentNumber)}`;
 
-  const virtualClassroomLink = getVirtualClassroomLink(state.newSubmission.enrollment.course.school.slug);
+  const virtualCommunityLink = getVirtualCommunityLink(state.newSubmission.enrollment.course.school.slug);
 
   const expired = state.newSubmission.enrollment.dueDate !== null && state.newSubmission.enrollment.dueDate <= new Date();
 
@@ -75,11 +75,11 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
                   <a target="_blank" rel="noreferrer" href={surveyLink} className="btn btn-info">Take the Survey</a>
                 </div>
               )}
-              {virtualClassroomLink !== null && (
+              {virtualCommunityLink !== null && (
                 <div className="alert alert-primary" role="alert">
-                  <h5>Virtual Classroom</h5>
-                  <p>Haven't joined yet? It's time to jump into our Facebook Virtual Classroom! You'll find mentors, get exclusive content from industry experts, and network with peers. Don't miss out&mdash;<a target="_blank" rel="noreferrer" href={virtualClassroomLink} className="alert-link">request to join today!</a></p>
-                  <a target="_blank" rel="noreferrer" href={virtualClassroomLink} className="btn btn-primary">Join the Virtual Classroom</a>
+                  <h5>Virtual Community</h5>
+                  <p>Haven't joined yet? It's time to jump into our Facebook Virtual Community! You'll find mentors, get exclusive content from industry experts, and network with peers. Don't miss out&mdash;<a target="_blank" rel="noreferrer" href={virtualCommunityLink} className="alert-link">request to join today!</a></p>
+                  <a target="_blank" rel="noreferrer" href={virtualCommunityLink} className="btn btn-primary">Join the Virtual Community</a>
                 </div>
               )}
             </div>

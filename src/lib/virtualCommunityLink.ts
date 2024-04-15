@@ -1,11 +1,11 @@
 import type { SchoolSlug } from '@/domain/school';
 
-export function getVirtualClassroomLink(schoolSlug: 'design'): string;
-export function getVirtualClassroomLink(schoolSlug: 'event'): string;
-export function getVirtualClassroomLink(schoolSlug: 'makeup'): string;
-export function getVirtualClassroomLink(schoolSlug: 'pet'): string;
-export function getVirtualClassroomLink(schoolSlug: SchoolSlug): string | null;
-export function getVirtualClassroomLink(schoolSlug: SchoolSlug): string | null {
+export function getVirtualCommunityLink(schoolSlug: 'design'): string;
+export function getVirtualCommunityLink(schoolSlug: 'event'): string;
+export function getVirtualCommunityLink(schoolSlug: 'makeup'): string;
+export function getVirtualCommunityLink(schoolSlug: 'pet'): string;
+export function getVirtualCommunityLink(schoolSlug: SchoolSlug): string | null;
+export function getVirtualCommunityLink(schoolSlug: SchoolSlug): string | null {
   if (schoolSlug === 'design') {
     return 'https://www.facebook.com/groups/QCDesignSchoolVirtualClassroom';
   } else if (schoolSlug === 'event') {
