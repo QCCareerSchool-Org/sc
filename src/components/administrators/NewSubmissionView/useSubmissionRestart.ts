@@ -7,31 +7,26 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-type SubmissionTransferEvent = {
-  tutorId: number | null;
-  processingState: State['transferForm']['processingState'];
+type SubmissionRestartEvent = {
+  processingState: State['restartForm']['processingState'];
 };
 
-export const useSubmissionTransfer = (dispatch: Dispatch<Action>, administratorId: number, submissionId: string): Subject<SubmissionTransferEvent> => {
+export const useSubmissionRestart = (dispatch: Dispatch<Action>, administratorId: number, submissionId: string): Subject<SubmissionRestartEvent> => {
   const { studentService, newSubmissionService } = useAdminServices();
   const navigateToLogin = useNavigateToLogin();
 
-  const transfer$ = useRef(new Subject<SubmissionTransferEvent>());
+  const transfer$ = useRef(new Subject<SubmissionRestartEvent>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
     transfer$.current.pipe(
       filter(({ processingState }) => processingState === 'idle' || processingState === 'save error'),
-      tap(() => dispatch({ type: 'SUBMISSION_TRANSFER_STARTED' })),
-      switchMap(({ tutorId }) => {
-        if (tutorId === null) {
-          dispatch({ type: 'SUBMISSION_TRANSFER_FAILED', payload: 'No tutor selected' });
-          return EMPTY;
-        }
-        return newSubmissionService.transferSubmission(administratorId, submissionId, tutorId).pipe(
+      tap(() => dispatch({ type: 'SUBMISSION_RESTART_STARTED' })),
+      switchMap(() => {
+        return newSubmissionService.restartSubmission(administratorId, submissionId).pipe(
           tap({
-            next: transfer => dispatch({ type: 'SUBMISSION_TRANSFER_SUCCEEDED', payload: transfer }),
+            next: restartedSubmission => dispatch({ type: 'SUBMISSION_RESTART_SUCCEEDED', payload: restartedSubmission }),
             error: err => {
               let message = 'Transfer failed';
               if (err instanceof HttpServiceError) {
@@ -42,7 +37,7 @@ export const useSubmissionTransfer = (dispatch: Dispatch<Action>, administratorI
                   message = err.message;
                 }
               }
-              dispatch({ type: 'SUBMISSION_TRANSFER_FAILED', payload: message });
+              dispatch({ type: 'SUBMISSION_RESTART_FAILED', payload: message });
             },
           }),
           catchError(() => EMPTY),

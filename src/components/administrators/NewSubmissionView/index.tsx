@@ -1,6 +1,6 @@
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, FC, MouseEvent } from 'react';
+import type { ChangeEventHandler, FC, FormEventHandler, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useId, useReducer } from 'react';
 
 import { NewAssignmentList } from './NewAssignmentList';
@@ -9,6 +9,7 @@ import { NewSubmissionStatus } from './NewSubmissionStatus';
 import { NewTransfersList } from './NewTransfersList';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
+import { useSubmissionRestart } from './useSubmissionRestart';
 import { useSubmissionTransfer } from './useSubmissionTransfer';
 import { Modal } from '@/components/Modal';
 import { ModalDialog } from '@/components/ModalDialog';
@@ -28,6 +29,7 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
   useInitialData(dispatch, administratorId, submissionId);
 
   const submissionTransfer$ = useSubmissionTransfer(dispatch, administratorId, submissionId);
+  const submissionRestart$ = useSubmissionRestart(dispatch, administratorId, submissionId);
 
   const handleClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
     void router.push(`/administrators/new-assignments/${assignmentId}`);
@@ -52,9 +54,26 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
     return null;
   }
 
-  const handleTransferFormSubmit: React.FormEventHandler<HTMLFormElement> = e => {
+  const handleTransferFormSubmit: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    submissionTransfer$.next({ tutorId: state.form.data.tutorId, processingState: state.form.processingState });
+    submissionTransfer$.next({ tutorId: state.transferForm.data.tutorId, processingState: state.transferForm.processingState });
+  };
+
+  const handleRestartButtonClick: MouseEventHandler<HTMLButtonElement> = e => {
+    e.preventDefault();
+    if (!state.data) {
+      return;
+    }
+    if (!state.data.newSubmission.closed) {
+      return;
+    }
+    if (!state.data.newSubmission.skipped && state.data.newSubmission.mark && state.data.newSubmission.mark > state.data.newSubmission.points / 2) {
+      if (!confirm('This submission already has a mark over 50%. Are you sure you want to restart it?')) {
+        return;
+      }
+    }
+
+    submissionRestart$.next({ processingState: state.restartForm.processingState });
   };
 
   const submission = state.data.newSubmission;
@@ -81,6 +100,7 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
             </div>
             <div className="col-12 col-lg-5">
               <NewSubmissionStatsTable administratorId={administratorId} submission={submission} onTutorChangeButtonClick={handleTutorChangeButtonClick} />
+              {submission.closed && submission.redoId === null && <div className="text-end"><button onClick={handleRestartButtonClick} className="btn btn-danger" disabled={state.restartForm.processingState === 'saving'}>Restart Submission</button></div>}
             </div>
           </div>
         </div>
@@ -95,16 +115,16 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
           <form onSubmit={handleTransferFormSubmit}>
             <div className="mb-3">
               <label htmlFor={`${id}tutorId`} className="form-label">New Tutor</label>
-              <select onChange={handleTutorIdChange} value={state.form.data.tutorId ?? undefined} id={`${id}tutorId`} name="tutorId" className="form-select">
+              <select onChange={handleTutorIdChange} value={state.transferForm.data.tutorId ?? undefined} id={`${id}tutorId`} name="tutorId" className="form-select">
                 <option />
                 {state.data.tutors.map(t => <option key={t.tutorId} value={t.tutorId}>{t.firstName} {t.lastName}</option>)}
               </select>
             </div>
             <div className="d-flex align-items-center">
               <button type="submit" className="btn btn-primary" style={{ width: 90 }}>
-                {state.form.processingState === 'saving' ? <Spinner size="sm" /> : 'Transfer'}
+                {state.transferForm.processingState === 'saving' ? <Spinner size="sm" /> : 'Transfer'}
               </button>
-              {state.form.processingState === 'save error' && <span className="text-danger ms-2">{state.form.errorMessage?.length ? state.form.errorMessage : 'Save Error'}</span>}
+              {state.transferForm.processingState === 'save error' && <span className="text-danger ms-2">{state.transferForm.errorMessage?.length ? state.transferForm.errorMessage : 'Save Error'}</span>}
             </div>
           </form>
         </ModalDialog>

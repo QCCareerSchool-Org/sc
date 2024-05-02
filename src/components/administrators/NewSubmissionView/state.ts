@@ -11,13 +11,17 @@ type Data = {
 
 export type State = {
   data?: Data;
-  form: {
+  transferForm: {
     data: {
       tutorId: number | null;
     };
     validationMessages: {
       tutorId?: string;
     };
+    processingState: 'idle' | 'saving' | 'save error';
+    errorMessage?: string;
+  };
+  restartForm: {
     processingState: 'idle' | 'saving' | 'save error';
     errorMessage?: string;
   };
@@ -33,7 +37,10 @@ export type Action =
   | { type: 'POPUP_TOGGLED' }
   | { type: 'SUBMISSION_TRANSFER_STARTED' }
   | { type: 'SUBMISSION_TRANSFER_SUCCEEDED'; payload: NewTransferWithSubmissionAndTutors }
-  | { type: 'SUBMISSION_TRANSFER_FAILED'; payload?: string };
+  | { type: 'SUBMISSION_TRANSFER_FAILED'; payload?: string }
+  | { type: 'SUBMISSION_RESTART_STARTED' }
+  | { type: 'SUBMISSION_RESTART_SUCCEEDED'; payload: NewSubmission }
+  | { type: 'SUBMISSION_RESTART_FAILED'; payload?: string };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -55,15 +62,15 @@ export const reducer = (state: State, action: Action): State => {
       }
       return {
         ...state,
-        form: {
-          ...state.form,
-          data: { ...state.form.data, tutorId: action.payload },
-          validationMessages: { ...state.form.validationMessages, tutorId: validationMessage },
+        transferForm: {
+          ...state.transferForm,
+          data: { ...state.transferForm.data, tutorId: action.payload },
+          validationMessages: { ...state.transferForm.validationMessages, tutorId: validationMessage },
         },
       };
     }
     case 'SUBMISSION_TRANSFER_STARTED':
-      return { ...state, form: { ...state.form, processingState: 'saving', errorMessage: undefined } };
+      return { ...state, transferForm: { ...state.transferForm, processingState: 'saving', errorMessage: undefined } };
     case 'SUBMISSION_TRANSFER_SUCCEEDED':
       if (!state.data) {
         throw Error('Data isn\'t loaded');
@@ -78,22 +85,34 @@ export const reducer = (state: State, action: Action): State => {
             newTransfers: [ ...state.data.newSubmission.newTransfers, action.payload ],
           },
         },
-        form: {
-          ...state.form,
+        transferForm: {
+          ...state.transferForm,
           processingState: 'idle',
         },
         popup: false, // close the popup
       };
     case 'SUBMISSION_TRANSFER_FAILED':
-      return { ...state, form: { ...state.form, processingState: 'save error', errorMessage: action.payload } };
+      return { ...state, transferForm: { ...state.transferForm, processingState: 'save error', errorMessage: action.payload } };
+    case 'SUBMISSION_RESTART_STARTED':
+      return { ...state, restartForm: { ...state.restartForm, processingState: 'saving', errorMessage: undefined } };
+    case 'SUBMISSION_RESTART_SUCCEEDED':
+      if (!state.data) {
+        throw Error('Data isn\'t loaded');
+      }
+      return { ...state, data: { ...state.data, newSubmission: { ...state.data.newSubmission, redoId: action.payload.submissionId } }, restartForm: { ...state.restartForm, processingState: 'idle' } };
+    case 'SUBMISSION_RESTART_FAILED':
+      return { ...state, restartForm: { ...state.restartForm, processingState: 'save error', errorMessage: action.payload } };
   }
 };
 
 export const initialState: State = {
   error: false,
-  form: {
+  transferForm: {
     data: { tutorId: null },
     validationMessages: {},
+    processingState: 'idle',
+  },
+  restartForm: {
     processingState: 'idle',
   },
   popup: false,
