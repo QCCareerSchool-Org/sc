@@ -19,6 +19,8 @@ export type NewSubmission = {
   responseFilesize: number | null;
   responseMimeTypeId: string | null;
   responseProgress: number | null;
+  /** uuid */
+  redoId: string | null;
   complete: boolean;
   points: number;
   mark: number | null;
@@ -49,6 +51,8 @@ export type RawNewSubmission = {
   responseFilesize: number | null;
   responseMimeTypeId: string | null;
   responseProgress: number | null;
+  /** uuid */
+  redoId: string | null;
   complete: boolean;
   points: number;
   mark: number | null;

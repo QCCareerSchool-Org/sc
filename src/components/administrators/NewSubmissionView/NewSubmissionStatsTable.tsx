@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { FC } from 'react';
 
 import { Audio } from '@/components/Audio';
@@ -40,6 +41,7 @@ export const NewSubmissionStatsTable: FC<Props> = props => {
             </>
           )}
           {submission.closed && submission.responseFilename !== null && <tr><th scope="row">Audio File</th><td style={{ padding: '0.3rem' }}><Audio controls src={`${endpoint}/administrators/${administratorId}/newSubmissions/${submission.submissionId}/feedback`} style={{ marginBottom: -6, maxHeight: 32, maxWidth: 240 }} /></td></tr>}
+          {submission.redoId && <tr><th scope="row">Redo</th><td><Link href={submission.redoId}>{submission.redoId}</Link></td></tr>}
         </tbody>
       </table>
       <style jsx>{`

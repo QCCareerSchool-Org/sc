@@ -61,8 +61,11 @@ type RawNewTransferWithSubmissionAndTutors = RawNewTransfer & {
 
 export interface INewSubmissionService {
   getSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmissionWithEnrollmentAndCourseAndAssignments>;
-  restartSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmission>;
   transferSubmission: (administratorId: number, submissionId: string, tutorId: number) => Observable<NewTransferWithSubmissionAndTutors>;
+  /** create a new submission, copying all the answers from an existing submission */
+  restartSubmission: (administratorId: number, submissionId: string) => Observable<NewSubmission>;
+  unskip: (administratorId: number, submissionId: string) => Observable<void>;
+  deleteAll: (administratorId: number, enrollmentId: number) => Observable<void>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
@@ -76,6 +79,14 @@ export class NewSubmissionService implements INewSubmissionService {
     );
   }
 
+  public transferSubmission(administratorId: number, submissionId: string, tutorId: number): Observable<NewTransferWithSubmissionAndTutors> {
+    const url = `${this.getUrl(administratorId)}/${submissionId}/newTransfers`;
+    const body = { tutorId };
+    return this.httpService.post<RawNewTransferWithSubmissionAndTutors>(url, body).pipe(
+      map(this.mapNewTransferWithSubmissionAndTutors),
+    );
+  }
+
   public restartSubmission(administratorId: number, submissionId: string): Observable<NewSubmission> {
     const url = `${this.getUrl(administratorId)}/${submissionId}/restarts`;
     return this.httpService.post<RawNewSubmission>(url).pipe(
@@ -83,12 +94,14 @@ export class NewSubmissionService implements INewSubmissionService {
     );
   }
 
-  public transferSubmission(administratorId: number, submissionId: string, tutorId: number): Observable<NewTransferWithSubmissionAndTutors> {
-    const url = `${this.getUrl(administratorId)}/${submissionId}/newTransfers`;
-    const body = { tutorId };
-    return this.httpService.post<RawNewTransferWithSubmissionAndTutors>(url, body).pipe(
-      map(this.mapNewTransferWithSubmissionAndTutors),
-    );
+  public unskip(administratorId: number, submissionId: string): Observable<void> {
+    const url = `${this.getUrl(administratorId)}/${submissionId}/unskips`;
+    return this.httpService.post(url);
+  }
+
+  public deleteAll(administratorId: number, enrollmentId: number): Observable<void> {
+    const url = `${endpoint}/administrators/${administratorId}/enrollments/${enrollmentId}/newSubmissions`;
+    return this.httpService.delete(url);
   }
 
   private getUrl(administratorId: number): string {
