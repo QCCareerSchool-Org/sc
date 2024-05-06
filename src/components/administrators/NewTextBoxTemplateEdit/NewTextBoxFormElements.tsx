@@ -34,7 +34,7 @@ export const NewTextBoxFormElements: FC<Props> = props => {
       <div className="formGroup">
         <label htmlFor={id + '_newTextBoxTemplateLines'} className="form-label">Lines</label>
         <input onChange={props.onLinesChange} value={formData.lines} type="number" id={id + '_newTextBoxTemplateLines'} min={1} max={127} className={`form-control ${formValidationMessages.lines ? 'is-invalid' : ''}`} placeholder="(default)" aria-describedby={id + '_newTextBoxTemplateLinesHelp'} />
-        <div id={id + '_newTextBoxTemplateLinesHelp'} className="form-text">The size of the text box (for display purposes only)</div>
+        <div id={id + '_newTextBoxTemplateLinesHelp'} className="form-text">The display size of the text box (default is 3 lines)</div>
         {formValidationMessages.lines && <div className="invalid-feedback">{formValidationMessages.lines}</div>}
       </div>
       <div className="formGroup">
