@@ -25,7 +25,7 @@ export const TextBox: FC<Props> = ({ newTextBox, modified, submissionIsRedo }) =
           }
           return <Fragment key={i}><br /><br />{p}</Fragment>;
         })}</div>
-        {submissionIsRedo && modified && <p className="fw-bold text-danger">(CHANGED)</p>}
+        {submissionIsRedo && modified && <div className="fw-bold text-danger">(CHANGED)</div>}
       </div>
     </div>
   );
