@@ -14,7 +14,7 @@ const lineHeight = 24;
 const padding = 14;
 
 export const TextBox: FC<Props> = ({ newTextBox, modified, submissionIsRedo }) => {
-  const minHeight = (lineHeight * (newTextBox.lines ?? 4)) + padding;
+  const minHeight = (lineHeight * (newTextBox.lines ?? 3)) + padding;
   return (
     <div className="row" id={newTextBox.textBoxId}>
       {submissionIsRedo && modified && <p className="fw-bold text-danger">CHANGED</p>}
