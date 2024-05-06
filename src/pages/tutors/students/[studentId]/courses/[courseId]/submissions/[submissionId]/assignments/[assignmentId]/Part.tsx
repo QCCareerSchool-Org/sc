@@ -19,7 +19,7 @@ type Props = {
 };
 
 export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionClosed, submissionIsRedo }) => {
-  const partModified = newPart.newTextBoxes.some(t => t.modified !== null && t.modified.getDate() !== t.created.getDate()) || newPart.newUploadSlots.some(u => u.modified !== null && u.modified.getDate() !== u.created.getDate());
+  const partModified = newPart.newTextBoxes.some(t => t.modified !== null && t.modified.getTime() !== t.created.getTime()) || newPart.newUploadSlots.some(u => u.modified !== null && u.modified.getTime() !== u.created.getTime());
 
   const saveTextBox = useCallback((partId: string, id: string, mark: number | null, notes: string | null): void => {
     if (!partModified) {
@@ -48,14 +48,13 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionCl
           </figure>
         );
       })}
-      {newPart.markingCriteria && (
-        <div className="alert alert-info">
-          <h3 className="h6">Part Marking Criteria</h3>
-          {newPart.markingCriteria.replace(/\r\n/gu, '\n').split('\n\n').map((m, i) => <p key={i}>{m}</p>)}
-        </div>
-      )}
+      <div className="alert alert-info">
+        <h3 className="h6">Part Marking Criteria</h3>
+        {newPart.markingCriteria !== null && <>{newPart.markingCriteria.replace(/\r\n/gu, '\n').split('\n\n').map((m, i) => <p key={i}>{m}</p>)}</>}
+        <strong>Score:</strong> /{newPart.newTextBoxes.reduce((total, t) => total + t.points, 0) + newPart.newUploadSlots.reduce((total, u) => total + u.points, 0)}
+      </div>
       {newPart.newTextBoxes.map(t => {
-        const modified = t.modified !== null && t.modified.getDate() !== t.created.getDate();
+        const modified = t.modified !== null && t.modified.getTime() !== t.created.getTime();
         return (
           <div key={t.textBoxId} className="input">
             <TextBox newTextBox={t} modified={modified} submissionIsRedo={submissionIsRedo} />
@@ -64,7 +63,7 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionCl
         );
       })}
       {newPart.newUploadSlots.map(u => {
-        const modified = u.modified !== null && u.modified.getDate() !== u.created.getDate();
+        const modified = u.modified !== null && u.modified.getTime() !== u.created.getTime();
         return (
           <div key={u.uploadSlotId} className="input">
             <UploadSlot tutorId={tutorId} newUploadSlot={u} modified={modified} submissionIsRedo={submissionIsRedo} />

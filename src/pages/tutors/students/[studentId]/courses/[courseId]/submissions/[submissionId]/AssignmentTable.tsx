@@ -25,7 +25,7 @@ export const AssignmentTable: FC<Props> = memo(props => {
       </thead>
       <tbody>
         {props.newSubmission.newAssignments.filter(a => a.complete).map(a => {
-          // const modified = props.newSubmission.hasParent && a.parts.some(p => p.textBoxes.some(t => t.modified.getDate() !== t.created.getDate()) || p.uploadSlots.some(u => u.modified.getDate() !== u.created.getDate())));
+          // const modified = props.newSubmission.hasParent && a.parts.some(p => p.textBoxes.some(t => t.modified.getTime() !== t.created.getTime()) || p.uploadSlots.some(u => u.modified.getTime() !== u.created.getTime())));
           return (
             <tr onClick={e => props.onClick(e, a.assignmentId)} key={a.assignmentId}>
               <td className="text-center">{a.assignmentNumber}</td>

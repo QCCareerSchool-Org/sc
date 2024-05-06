@@ -61,7 +61,7 @@ export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId
               {state.newSubmission.optional && <span className="text-danger">OPTIONAL</span>}
               <h1>Submission {state.newSubmission.unitLetter}{state.newSubmission.title && <>: {state.newSubmission.title}</>}</h1>
               <NewSubmissionInfoTable newSubmission={state.newSubmission} />
-              {state.newSubmission.parent !== null && (
+              {state.newSubmission.submitted === null && state.newSubmission.parent !== null && (
                 <div className="alert alert-danger mt-3" role="alert">
                   This submission is a redo. Be sure to carefully review the audio feedback your tutor provided for your <Link href={`/students/courses/${courseId}/submissions/${state.newSubmission.parent.submissionId}`}><a className="alert-link">previous submission</a></Link>, and make the necessary changes to your assignments before resubmitting this unit to your tutor.
                 </div>
