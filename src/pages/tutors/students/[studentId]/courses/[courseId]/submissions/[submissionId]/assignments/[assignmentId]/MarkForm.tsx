@@ -14,10 +14,11 @@ type Props = {
   form: InputForm;
   save: (partId: string, id: string, mark: number | null, notes: string | null) => void;
   submissionClosed: boolean;
+  submissionIsRedo: boolean;
   modified: boolean;
 };
 
-export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form, save, submissionClosed, modified }) => {
+export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form, save, submissionClosed, submissionIsRedo, modified }) => {
   const [ markFormValue, setMarkFormValue ] = useState(mark); // for the html input
   const [ notesFormValue, setNotesFormValue ] = useState(notes); // for the html input
 
@@ -92,7 +93,12 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form
       <div className="col-12 col-lg-8">
         {submissionClosed || !modified
           ? <div className="form-control" style={{ minHeight: 120 }}>{notesFormValue}</div>
-          : <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
+          : (
+            <>
+              <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
+              {submissionIsRedo && modified && <p className="fw-bold text-danger">(REGRADE)</p>}
+            </>
+          )
         }
       </div>
       {(points > 0 || form.state === 'saving') && (
