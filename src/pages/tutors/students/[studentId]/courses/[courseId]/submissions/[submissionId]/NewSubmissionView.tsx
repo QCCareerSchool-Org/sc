@@ -94,10 +94,10 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
           {state.newSubmission.tutorId !== tutorId && (
             <div className="alert alert-info mt-4">This submission was marked by another tutor</div>
           )}
+          {state.newSubmission.hasParent && (
+            <div className="alert alert-primary mt-4">This submission is a redo. Changed answers are highlighted.</div>
+          )}
         </div>
-        {state.newSubmission.hasParent && (
-          <div className="alert alert-primary mt-4">This is a resubmission</div>
-        )}
       </Section>
       <Section>
         <div className="container">
