@@ -19,7 +19,7 @@ type Props = {
 };
 
 export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionClosed, submissionIsRedo }) => {
-  const partModified = newPart.newTextBoxes.some(t => t.modified !== null && t.modified !== t.created) || newPart.newUploadSlots.some(u => u.modified !== null && u.modified !== u.created);
+  const partModified = newPart.newTextBoxes.some(t => t.modified !== null && t.modified.getDate() !== t.created.getDate()) || newPart.newUploadSlots.some(u => u.modified !== null && u.modified.getDate() !== u.created.getDate());
 
   const saveTextBox = useCallback((partId: string, id: string, mark: number | null, notes: string | null): void => {
     if (!partModified) {
@@ -55,7 +55,7 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionCl
         </div>
       )}
       {newPart.newTextBoxes.map(t => {
-        const modified = t.modified !== null && t.modified !== t.created;
+        const modified = t.modified !== null && t.modified.getDate() !== t.created.getDate();
         return (
           <div key={t.textBoxId} className="input">
             <TextBox newTextBox={t} modified={modified} submissionIsRedo={submissionIsRedo} />
@@ -64,7 +64,7 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionCl
         );
       })}
       {newPart.newUploadSlots.map(u => {
-        const modified = u.modified !== null && u.modified !== u.created;
+        const modified = u.modified !== null && u.modified.getDate() !== u.created.getDate();
         return (
           <div key={u.uploadSlotId} className="input">
             <UploadSlot tutorId={tutorId} newUploadSlot={u} modified={modified} submissionIsRedo={submissionIsRedo} />
