@@ -82,7 +82,7 @@ export const NewAssignmentView: FC<Props> = ({ tutorId, studentId, courseId, sub
       {newAssignment.newParts.map(n => (
         <Section key={n.partId}>
           <div className="container">
-            <Part tutorId={tutorId} newPart={n} saveInput={saveInput} submissionClosed={newAssignment.newSubmission.closed !== null} />
+            <Part tutorId={tutorId} newPart={n} saveInput={saveInput} submissionClosed={newAssignment.newSubmission.closed !== null} submissionIsRedo={newAssignment.newSubmission.hasParent} />
           </div>
         </Section>
       ))}

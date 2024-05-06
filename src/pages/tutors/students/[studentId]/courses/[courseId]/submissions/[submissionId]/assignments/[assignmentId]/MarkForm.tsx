@@ -14,9 +14,10 @@ type Props = {
   form: InputForm;
   save: (partId: string, id: string, mark: number | null, notes: string | null) => void;
   submissionClosed: boolean;
+  modified: boolean;
 };
 
-export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form, save, submissionClosed }) => {
+export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form, save, submissionClosed, modified }) => {
   const [ markFormValue, setMarkFormValue ] = useState(mark); // for the html input
   const [ notesFormValue, setNotesFormValue ] = useState(notes); // for the html input
 
@@ -89,7 +90,7 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form
   return (
     <div className="row markForm">
       <div className="col-12 col-lg-8">
-        {submissionClosed
+        {submissionClosed || !modified
           ? <div className="form-control" style={{ minHeight: 120 }}>{notesFormValue}</div>
           : <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
         }
@@ -98,7 +99,7 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form
         <div className="col-lg-4 mt-3 mt-lg-0">
           {points > 0 && (
             <div className="fw-bold text-nowrap">
-              {submissionClosed
+              {submissionClosed || !modified
                 ? <div className="form-control mark">{markFormValue}</div>
                 : <input onChange={handleMarkChange} value={markFormValue ?? ''} type="number" min={0} max={points} step={1} className="form-control mark tutorFillable" />
               } / {points}

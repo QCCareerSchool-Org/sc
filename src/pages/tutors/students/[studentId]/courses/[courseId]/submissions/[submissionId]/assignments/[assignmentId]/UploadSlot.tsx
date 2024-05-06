@@ -9,9 +9,11 @@ import { endpoint } from 'src/basePath';
 type Props = {
   tutorId: number;
   newUploadSlot: WithInputForm<NewUploadSlot>;
+  modified: boolean;
+  submissionIsRedo: boolean;
 };
 
-export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot }) => {
+export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot, modified, submissionIsRedo }) => {
   const id = useId();
   const useableId = id.replaceAll(':', '_');
 
@@ -19,6 +21,7 @@ export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot }) => {
 
   return (
     <div className="row" id={newUploadSlot.uploadSlotId}>
+      {submissionIsRedo && modified && <p className="fw-bold text-danger">CHANGED</p>}
       <label className="form-label">{newUploadSlot.label}:</label>
       <div className="col-12 col-lg-8 uploadSlotColumn">
         {newUploadSlot.mimeTypeId?.startsWith('image/')

@@ -15,16 +15,25 @@ type Props = {
   newPart: PartWithForms;
   saveInput: (type: InputType, partId: string, id: string, mark: number | null, notes: string | null) => void;
   submissionClosed: boolean;
+  submissionIsRedo: boolean;
 };
 
-export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionClosed }) => {
+export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionClosed, submissionIsRedo }) => {
+  const partModified = newPart.newTextBoxes.some(t => t.modified !== null && t.modified !== t.created) || newPart.newUploadSlots.some(u => u.modified !== null && u.modified !== u.created);
+
   const saveTextBox = useCallback((partId: string, id: string, mark: number | null, notes: string | null): void => {
+    if (!partModified) {
+      return;
+    }
     saveInput('text box', partId, id, mark, notes);
-  }, [ saveInput ]);
+  }, [ partModified, saveInput ]);
 
   const saveUploadSlot = useCallback((partId: string, id: string, mark: number | null, notes: string | null): void => {
+    if (!partModified) {
+      return;
+    }
     saveInput('upload slot', partId, id, mark, notes);
-  }, [ saveInput ]);
+  }, [ partModified, saveInput ]);
 
   return (
     <>
@@ -45,18 +54,24 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionCl
           {newPart.markingCriteria.replace(/\r\n/gu, '\n').split('\n\n').map((m, i) => <p key={i}>{m}</p>)}
         </div>
       )}
-      {newPart.newTextBoxes.map(t => (
-        <div key={t.textBoxId} className="input">
-          <TextBox newTextBox={t} />
-          <MarkForm id={t.textBoxId} partId={t.partId} points={t.points} mark={t.mark} notes={t.notes} form={t.form} save={saveTextBox} submissionClosed={submissionClosed} />
-        </div>
-      ))}
-      {newPart.newUploadSlots.map(u => (
-        <div key={u.uploadSlotId} className="input">
-          <UploadSlot tutorId={tutorId} newUploadSlot={u} />
-          <MarkForm id={u.uploadSlotId} partId={u.partId} points={u.points} mark={u.mark} notes={u.notes} form={u.form} save={saveUploadSlot} submissionClosed={submissionClosed} />
-        </div>
-      ))}
+      {newPart.newTextBoxes.map(t => {
+        const modified = t.modified !== null && t.modified !== t.created;
+        return (
+          <div key={t.textBoxId} className="input">
+            <TextBox newTextBox={t} modified={modified} submissionIsRedo={submissionIsRedo} />
+            <MarkForm id={t.textBoxId} partId={t.partId} points={t.points} mark={t.mark} notes={t.notes} form={t.form} save={saveTextBox} submissionClosed={submissionClosed} modified={modified} />
+          </div>
+        );
+      })}
+      {newPart.newUploadSlots.map(u => {
+        const modified = u.modified !== null && u.modified !== u.created;
+        return (
+          <div key={u.uploadSlotId} className="input">
+            <UploadSlot tutorId={tutorId} newUploadSlot={u} modified={modified} submissionIsRedo={submissionIsRedo} />
+            <MarkForm id={u.uploadSlotId} partId={u.partId} points={u.points} mark={u.mark} notes={u.notes} form={u.form} save={saveUploadSlot} submissionClosed={submissionClosed} modified={modified} />
+          </div>
+        );
+      })}
       <style jsx>{`
       .alert p:last-of-type { margin-bottom: 0; }
       .input { margin-bottom: 2.5rem; border-bottom: 1px solid rgba(0, 0, 0, 0.25); padding-bottom: 2.5rem; }
