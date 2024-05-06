@@ -46,7 +46,7 @@ export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot, modified, submis
           )
           : <div><a href={src} download>{newUploadSlot.filename}</a></div>
         }
-        {submissionIsRedo && modified && <p className="fw-bold text-danger">(CHANGED)</p>}
+        {submissionIsRedo && modified && <div className="fw-bold text-danger">(CHANGED)</div>}
       </div>
       <style jsx>{`
       .uploadSlotThumbnail { max-width: 180px; }

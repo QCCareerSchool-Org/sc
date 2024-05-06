@@ -96,7 +96,7 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form
           : (
             <>
               <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
-              {submissionIsRedo && modified && <p className="fw-bold text-danger">(REGRADE)</p>}
+              {submissionIsRedo && modified && <div className="fw-bold text-danger">(REGRADE)</div>}
             </>
           )
         }
