@@ -17,7 +17,6 @@ export const TextBox: FC<Props> = ({ newTextBox, modified, submissionIsRedo }) =
   const minHeight = (lineHeight * (newTextBox.lines ?? 3)) + padding;
   return (
     <div className="row" id={newTextBox.textBoxId}>
-      {submissionIsRedo && modified && <p className="fw-bold text-danger">CHANGED</p>}
       {newTextBox.description && <label className="form-label">{newTextBox.description}</label>}
       <div className="col-12 col-lg-8 textBoxColumn">
         <div className="form-control" style={{ minHeight }}>{newTextBox.text.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => {
@@ -26,6 +25,7 @@ export const TextBox: FC<Props> = ({ newTextBox, modified, submissionIsRedo }) =
           }
           return <Fragment key={i}><br /><br />{p}</Fragment>;
         })}</div>
+        {submissionIsRedo && modified && <p className="fw-bold text-danger">(CHANGED)</p>}
       </div>
     </div>
   );
