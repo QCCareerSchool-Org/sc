@@ -11,7 +11,7 @@ export const NewTextBoxTemplatePreview: FC<Props> = ({ newTextBoxTemplate }) => 
     <>
       <div className="formGroup">
         {newTextBoxTemplate.description && <label htmlFor={newTextBoxTemplate.textBoxTemplateId} className="form-label fw-bold">{newTextBoxTemplate.description}</label>}
-        <textarea id={newTextBoxTemplate.textBoxTemplateId} className="form-control" rows={newTextBoxTemplate.lines ?? 7} />
+        <textarea id={newTextBoxTemplate.textBoxTemplateId} className="form-control" rows={newTextBoxTemplate.lines ?? 3} />
       </div>
 
       <style jsx>{`
