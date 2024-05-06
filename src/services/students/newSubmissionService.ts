@@ -24,6 +24,7 @@ export type NewSubmissionWithCourseAndChildren = NewSubmission & {
       newUploadSlots: NewUploadSlot[];
     }>;
   }>;
+  parent: NewSubmission | null;
 };
 
 type RawNewSubmissionWithCourseAndChildren = RawNewSubmission & {
@@ -38,6 +39,7 @@ type RawNewSubmissionWithCourseAndChildren = RawNewSubmission & {
       newUploadSlots: RawNewUploadSlot[];
     }>;
   }>;
+  parent: RawNewSubmission | null;
 };
 
 export interface INewSubmissionService {
@@ -135,6 +137,14 @@ export class NewSubmissionService implements INewSubmissionService {
           })),
         })),
       })),
+      parent: newUnit.parent === null ? null : {
+        ...newUnit.parent,
+        submitted: newUnit.parent.submitted === null ? null : new Date(newUnit.parent.submitted),
+        transferred: newUnit.parent.transferred === null ? null : new Date(newUnit.parent.transferred),
+        closed: newUnit.parent.closed === null ? null : new Date(newUnit.parent.closed),
+        created: new Date(newUnit.parent.created),
+        modified: newUnit.parent.modified === null ? null : new Date(newUnit.parent.modified),
+      },
     };
   };
 }

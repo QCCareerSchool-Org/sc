@@ -37,7 +37,7 @@ export const SubmissionsTable: FC<Props> = memo(props => {
                       ? <td>Marked {formatDate(s.closed)}</td>
                       : s.submitted
                         ? <td>{s.skipped ? 'Skipped' : 'Submitted'} {formatDate(s.submitted)}</td>
-                        : <td>In Progress</td>
+                        : <td>In Progress{s.hasParent && <span className="badge bg-danger">Redo</span>}</td>
                     }
                     {s.closed && grade !== null
                       ? <td className="text-center">{grade.length === 1 ? <>{grade}&nbsp;&nbsp;</> : grade}</td>
