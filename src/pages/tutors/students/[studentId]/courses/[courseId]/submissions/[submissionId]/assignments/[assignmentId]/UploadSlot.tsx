@@ -21,7 +21,6 @@ export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot, modified, submis
 
   return (
     <div className="row" id={newUploadSlot.uploadSlotId}>
-      {submissionIsRedo && modified && <p className="fw-bold text-danger">CHANGED</p>}
       <label className="form-label">{newUploadSlot.label}:</label>
       <div className="col-12 col-lg-8 uploadSlotColumn">
         {newUploadSlot.mimeTypeId?.startsWith('image/')
@@ -47,6 +46,7 @@ export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot, modified, submis
           )
           : <div><a href={src} download>{newUploadSlot.filename}</a></div>
         }
+        {submissionIsRedo && modified && <p className="fw-bold text-danger">(CHANGED)</p>}
       </div>
       <style jsx>{`
       .uploadSlotThumbnail { max-width: 180px; }
