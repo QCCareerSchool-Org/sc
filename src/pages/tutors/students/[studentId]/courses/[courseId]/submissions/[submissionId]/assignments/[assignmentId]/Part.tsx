@@ -58,7 +58,7 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionCl
         return (
           <div key={t.textBoxId} className="input">
             <TextBox newTextBox={t} modified={modified} submissionIsRedo={submissionIsRedo} />
-            <MarkForm id={t.textBoxId} partId={t.partId} points={t.points} mark={t.mark} notes={t.notes} form={t.form} save={saveTextBox} submissionClosed={submissionClosed} modified={modified} />
+            <MarkForm id={t.textBoxId} partId={t.partId} points={t.points} mark={t.mark} notes={t.notes} form={t.form} save={saveTextBox} submissionClosed={submissionClosed} submissionIsRedo={submissionIsRedo} modified={modified} />
           </div>
         );
       })}
@@ -67,7 +67,7 @@ export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionCl
         return (
           <div key={u.uploadSlotId} className="input">
             <UploadSlot tutorId={tutorId} newUploadSlot={u} modified={modified} submissionIsRedo={submissionIsRedo} />
-            <MarkForm id={u.uploadSlotId} partId={u.partId} points={u.points} mark={u.mark} notes={u.notes} form={u.form} save={saveUploadSlot} submissionClosed={submissionClosed} modified={modified} />
+            <MarkForm id={u.uploadSlotId} partId={u.partId} points={u.points} mark={u.mark} notes={u.notes} form={u.form} save={saveUploadSlot} submissionClosed={submissionClosed} submissionIsRedo={submissionIsRedo} modified={modified} />
           </div>
         );
       })}
