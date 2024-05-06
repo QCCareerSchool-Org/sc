@@ -24,22 +24,25 @@ export const AssignmentTable: FC<Props> = memo(props => {
         </tr>
       </thead>
       <tbody>
-        {props.newSubmission.newAssignments.filter(a => a.complete).map(a => (
-          <tr onClick={e => props.onClick(e, a.assignmentId)} key={a.assignmentId}>
-            <td className="text-center">{a.assignmentNumber}</td>
-            <td>{a.title ?? '(none)'}</td>
-            {a.points === 0
-              ? <td colSpan={props.newSubmission.mark === null ? 2 : 3} className="text-center">n/a</td>
-              : (
-                <>
-                  <td className="text-center">{a.mark === null ? '---' : a.mark}</td>
-                  <td className="text-center">{a.points}</td>
-                  {a.mark !== null && <td className="text-center">{gradeService.calculate(a.mark, a.points, props.newSubmission.created)}</td>}
-                </>
-              )
-            }
-          </tr>
-        ))}
+        {props.newSubmission.newAssignments.filter(a => a.complete).map(a => {
+          // const modified = props.newSubmission.hasParent && a.parts.some(p => p.textBoxes.some(t => t.modified !== t.created) || p.uploadSlots.some(u => u.modified !== u.created)));
+          return (
+            <tr onClick={e => props.onClick(e, a.assignmentId)} key={a.assignmentId}>
+              <td className="text-center">{a.assignmentNumber}</td>
+              <td>{a.title ?? '(none)'}</td>
+              {a.points === 0
+                ? <td colSpan={props.newSubmission.mark === null ? 2 : 3} className="text-center">n/a</td>
+                : (
+                  <>
+                    <td className="text-center">{a.mark === null ? '---' : a.mark}</td>
+                    <td className="text-center">{a.points}</td>
+                    {a.mark !== null && <td className="text-center">{gradeService.calculate(a.mark, a.points, props.newSubmission.created)}</td>}
+                  </>
+                )
+              }
+            </tr>
+          );
+        })}
       </tbody>
       {props.newSubmission.mark !== null && (
         <tfoot>

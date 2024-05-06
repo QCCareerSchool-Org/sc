@@ -21,6 +21,7 @@ export type NewSubmission = {
   responseProgress: number | null;
   /** uuid */
   redoId: string | null;
+  hasParent: boolean;
   complete: boolean;
   points: number;
   mark: number | null;
@@ -53,6 +54,7 @@ export type RawNewSubmission = {
   responseProgress: number | null;
   /** uuid */
   redoId: string | null;
+  hasParent: boolean;
   complete: boolean;
   points: number;
   mark: number | null;
