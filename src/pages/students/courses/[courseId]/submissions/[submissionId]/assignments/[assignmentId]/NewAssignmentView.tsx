@@ -1,4 +1,5 @@
 import NextError from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useEffect, useReducer } from 'react';
@@ -179,6 +180,11 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
         <div className="container">
           {assignment.optional && <span className="text-danger">OPTIONAL</span>}
           <h1>Assignment {assignment.assignmentNumber}{assignment.title && <>: {assignment.title}</>}</h1>
+          {assignment.newSubmission.submitted === null && assignment.newSubmission.hasParent && (
+            <div className="alert alert-danger mt-3" role="alert">
+              This submission is a redo. Be sure to carefully review the audio feedback your tutor provided for your previous submission, and make the necessary changes to your assignments before resubmitting this unit to your tutor.
+            </div>
+          )}
           {assignment.description && <Description description={assignment.description} descriptionType={assignment.descriptionType} />}
           <div className="row">
             <div className="col-12 col-lg-10 col-xl-8">

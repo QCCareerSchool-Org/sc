@@ -100,7 +100,16 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
             </div>
             <div className="col-12 col-lg-5">
               <NewSubmissionStatsTable administratorId={administratorId} submission={submission} onTutorChangeButtonClick={handleTutorChangeButtonClick} />
-              {submission.closed && submission.redoId === null && <div className="text-end"><button onClick={handleRestartButtonClick} className="btn btn-danger" disabled={state.restartForm.processingState === 'saving'}>Restart Submission</button></div>}
+              {submission.closed && submission.redoId === null && (
+                <div>
+                  <div className="alert alert-danger">
+                    Has the student paid the resubmission fee?
+                  </div>
+                  <div className="text-end">
+                    <button onClick={handleRestartButtonClick} className="btn btn-danger" disabled={state.restartForm.processingState === 'saving'}>Restart Submission</button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
