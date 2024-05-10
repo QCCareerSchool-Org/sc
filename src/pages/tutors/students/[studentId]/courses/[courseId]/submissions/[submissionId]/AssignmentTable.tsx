@@ -25,7 +25,7 @@ export const AssignmentTable: FC<Props> = memo(props => {
       </thead>
       <tbody>
         {props.newSubmission.newAssignments.filter(a => a.complete).map(a => {
-          // const modified = props.newSubmission.hasParent && a.parts.some(p => p.textBoxes.some(t => t.modified.getTime() !== t.created.getTime()) || p.uploadSlots.some(u => u.modified.getTime() !== u.created.getTime())));
+          const modified = props.newSubmission.hasParent && a.newParts.some(p => p.newTextBoxes.some(t => t.modified !== null && t.modified.getTime() !== t.created.getTime()) || p.newUploadSlots.some(u => u.modified !== null && u.modified.getTime() !== u.created.getTime()));
           return (
             <tr onClick={e => props.onClick(e, a.assignmentId)} key={a.assignmentId}>
               <td className="text-center">{a.assignmentNumber}</td>
@@ -34,7 +34,7 @@ export const AssignmentTable: FC<Props> = memo(props => {
                 ? <td colSpan={props.newSubmission.mark === null ? 2 : 3} className="text-center">n/a</td>
                 : (
                   <>
-                    <td className="text-center">{a.mark === null ? '---' : a.mark}</td>
+                    <td className="text-center">{a.mark === null ? '---' : a.mark}{modified && <> <span className="text-danger">*</span></>}</td>
                     <td className="text-center">{a.points}</td>
                     {a.mark !== null && <td className="text-center">{gradeService.calculate(a.mark, a.points, props.newSubmission.created)}</td>}
                   </>
