@@ -14,7 +14,7 @@ export const useInitialData = (dispatch: Dispatch<Action>, tutorId: number, stud
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    newSubmissionService.getUnit(tutorId, studentId, submissionId).pipe(
+    newSubmissionService.getSubmission(tutorId, studentId, submissionId).pipe(
       takeUntil(destroy$),
     ).subscribe({
       next: newSubmission => {

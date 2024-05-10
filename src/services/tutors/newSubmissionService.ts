@@ -4,7 +4,10 @@ import { map } from 'rxjs';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
 import type { NewAssignment, RawNewAssignment } from '@/domain/tutor/newAssignment';
+import type { NewPart, RawNewPart } from '@/domain/tutor/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/tutor/newSubmission';
+import type { NewTextBox, RawNewTextBox } from '@/domain/tutor/newTextBox';
+import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/tutor/newUploadSlot';
 import type { RawStudent, Student } from '@/domain/tutor/student';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
@@ -14,7 +17,12 @@ export type NewSubmissionWithEnrollmentAndAssignments = NewSubmission & {
     course: Course;
     student: Student;
   };
-  newAssignments: NewAssignment[];
+  newAssignments: Array<NewAssignment & {
+    newParts: Array<NewPart & {
+      newTextBoxes: NewTextBox[];
+      newUploadSlots: NewUploadSlot[];
+    }>;
+  }>;
 };
 
 type RawNewSubmissionWithEnrollmentAndAssignments = RawNewSubmission & {
@@ -22,22 +30,27 @@ type RawNewSubmissionWithEnrollmentAndAssignments = RawNewSubmission & {
     course: Course;
     student: RawStudent;
   };
-  newAssignments: RawNewAssignment[];
+  newAssignments: Array<RawNewAssignment & {
+    newParts: Array<RawNewPart & {
+      newTextBoxes: RawNewTextBox[];
+      newUploadSlots: RawNewUploadSlot[];
+    }>;
+  }>;
 };
 
 export interface INewSubmissionService {
-  getUnit: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmissionWithEnrollmentAndAssignments>;
+  getSubmission: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmissionWithEnrollmentAndAssignments>;
   uploadFeedback: (tutorId: number, studentId: number, submissionId: string, file: File) => Observable<ProgressResponse<NewSubmission>>;
   deleteFeedback: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmission>;
-  closeUnit: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmission>;
-  returnUnit: (tutorId: number, studentId: number, submissionId: string, comment: string) => Observable<NewSubmission>;
+  closeSubmission: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmission>;
+  returnSubmission: (tutorId: number, studentId: number, submissionId: string, comment: string) => Observable<NewSubmission>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public getUnit(tutorId: number, studentId: number, submissionId: string): Observable<NewSubmissionWithEnrollmentAndAssignments> {
+  public getSubmission(tutorId: number, studentId: number, submissionId: string): Observable<NewSubmissionWithEnrollmentAndAssignments> {
     const url = `${this.getUrl(tutorId, studentId)}/${submissionId}`;
     return this.httpService.get<RawNewSubmissionWithEnrollmentAndAssignments>(url).pipe(
       map(this.mapNewSubmissionWithStudentAndAssignments),
@@ -66,14 +79,14 @@ export class NewSubmissionService implements INewSubmissionService {
     );
   }
 
-  public closeUnit(tutorId: number, studentId: number, submissionId: string): Observable<NewSubmission> {
+  public closeSubmission(tutorId: number, studentId: number, submissionId: string): Observable<NewSubmission> {
     const url = `${this.getUrl(tutorId, studentId)}/${submissionId}/closes`;
     return this.httpService.post<RawNewSubmission>(url).pipe(
       map(this.mapNewSubmission),
     );
   }
 
-  public returnUnit(tutorId: number, studentId: number, submissionId: string, comment: string): Observable<NewSubmission> {
+  public returnSubmission(tutorId: number, studentId: number, submissionId: string, comment: string): Observable<NewSubmission> {
     const url = `${this.getUrl(tutorId, studentId)}/${submissionId}/returns`;
     return this.httpService.post<RawNewSubmission>(url, { comment }).pipe(
       map(this.mapNewSubmission),
@@ -116,6 +129,21 @@ export class NewSubmissionService implements INewSubmissionService {
         ...a,
         created: new Date(a.created),
         modified: a.modified === null ? null : new Date(a.modified),
+        newParts: a.newParts.map(p => ({
+          ...p,
+          created: new Date(p.created),
+          modified: p.modified === null ? null : new Date(p.modified),
+          newTextBoxes: p.newTextBoxes.map(t => ({
+            ...t,
+            created: new Date(t.created),
+            modified: t.modified === null ? null : new Date(t.modified),
+          })),
+          newUploadSlots: p.newUploadSlots.map(u => ({
+            ...u,
+            created: new Date(u.created),
+            modified: u.modified === null ? null : new Date(u.modified),
+          })),
+        })),
       })),
     };
   };

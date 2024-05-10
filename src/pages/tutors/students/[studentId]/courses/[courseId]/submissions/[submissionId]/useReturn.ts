@@ -29,7 +29,7 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
       filter(({ processingState }) => processingState === 'idle' || processingState === 'upload error' || processingState === 'delete error' || processingState === 'close error' || processingState === 'return error'),
       tap(() => dispatch({ type: 'RETURN_UNIT_STARTED' })),
       exhaustMap(({ tutorId, studentId, submissionId, comment }) => {
-        return newSubmissionService.returnUnit(tutorId, studentId, submissionId, comment).pipe(
+        return newSubmissionService.returnSubmission(tutorId, studentId, submissionId, comment).pipe(
           tap({
             next: newUnit => {
               dispatch({ type: 'RETURN_UNIT_SUCCEEDED', payload: newUnit });
