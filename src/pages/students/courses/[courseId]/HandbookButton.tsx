@@ -36,5 +36,9 @@ const getLink = (schoolName: SchoolName, variantName?: VariantName): string | nu
     return '/student-handbooks/qc-makeup-academy/content/index.html';
   }
 
+  if (schoolName === 'QC Wellness Studies') {
+    return '/student-handbooks/qc-wellness-studies/content/index.html';
+  }
+
   return null;
 };
