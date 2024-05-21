@@ -2,6 +2,7 @@ import type { FC, MouseEventHandler } from 'react';
 import { memo, useEffect, useId, useState } from 'react';
 
 import { Spinner } from '@/components/Spinner';
+import type { PaysafeCompany } from '@/domain/student/crm/crmPaymentMethod';
 import type { PaysafeInstance, TokenizeOptions } from 'src/paysafe';
 import { createInstance, tokenize } from 'src/paysafe';
 
@@ -47,12 +48,12 @@ const apiKeys = process.env.NODE_ENV === 'production'
 
 const accounts = process.env.NODE_ENV === 'production'
   ? {
-    CA: { CAD: 1002521124 },
+    CA: { CAD: 1002521124, NZD: 1002567684, AUD: 1002567744, GBP: 1002567754 },
     US: { USD: 1002704564 },
     GB: { GBP: 1002659124, AUD: 1002649432, NZD: 1002818994 },
   }
   : {
-    CA: { CAD: 1001091500 },
+    CA: { CAD: 1001091500, NZD: 1001091500, AUD: 1001091500, GBP: 1001091500 },
     US: { USD: 1001091500 },
     GB: { GBP: 1001091500, AUD: 1001091500, NZD: 1001091500 },
   };
@@ -73,16 +74,7 @@ export const PaysafeForm: FC<Props> = memo(props => {
 
   const [ client, setClient ] = useState(false);
 
-  let company: 'CA' | 'US' | 'GB';
-  if (currencyCode === 'USD') {
-    company = 'US';
-  } else if (currencyCode === 'CAD') {
-    company = 'CA';
-  } else if ([ 'GBP', 'AUD', 'NZD' ].includes(currencyCode)) {
-    company = 'GB';
-  } else {
-    throw Error('Invalid currency');
-  }
+  const company = getCompany(currencyCode);
 
   const [ state, setState ] = useState<State>({
     instanceState: 'uninitialized',
@@ -248,3 +240,17 @@ export const PaysafeForm: FC<Props> = memo(props => {
 });
 
 PaysafeForm.displayName = 'PaysafeForm';
+
+const getCompany = (currencyCode: string): PaysafeCompany => {
+  switch (currencyCode) {
+    case 'USD':
+      return 'US';
+    case 'CAD':
+    case 'NDZ':
+    case 'AUD':
+    case 'GBP':
+      return 'CA';
+    default:
+      throw Error('Invalid currency');
+  }
+};
