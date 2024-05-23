@@ -5,6 +5,7 @@ export type CRMPaymentMethod = {
   enrollmentId: number | null;
   paymentTypeId: number;
   primary: boolean;
+  thirdParty: boolean;
   paysafeProfileId: string | null;
   paysafeCardId: string | null;
   paysafePaymentToken: string | null;
@@ -25,6 +26,7 @@ export type RawCRMPaymentMethod = {
   enrollmentId: number | null;
   paymentTypeId: number;
   primary: boolean;
+  thirdParty: boolean;
   paysafeProfileId: string | null;
   paysafeCardId: string | null;
   paysafePaymentToken: string | null;

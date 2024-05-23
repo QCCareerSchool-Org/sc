@@ -141,7 +141,7 @@ export const CourseAccountDetailsView: FC<Props> = ({ crmId, crmEnrollmentId }) 
                     <tbody>
                       {state.crmEnrollment.paymentMethods.map(p => {
                         const expired = p.expiryYear === null || p.expiryMonth === null || p.expiryYear < thisYear || (p.expiryYear === thisYear && p.expiryMonth <= thisMonth);
-                        const disabled = expired || p.disabled;
+                        const disabled = expired || p.disabled || p.thirdParty;
                         return (
                           <tr key={p.paymentMethodId}>
                             <td className={`text-center${disabled ? ' text-muted' : ''}`}>
