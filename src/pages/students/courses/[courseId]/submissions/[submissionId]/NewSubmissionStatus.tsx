@@ -54,7 +54,7 @@ export const NewSubmissionStatus: FC<Props> = memo(({ studentId, courseId, newSu
     return (
       <div className="alert alert-success">
         <h5>Assignments Submitted</h5>
-        <p className="mb-0">Your assignments have been submitted to your tutor. Please check back in a few days to review your tutor's audio feeback.</p>
+        <p className="mb-0">Your assignments have been submitted to your tutor. Please check back in a few days to review your tutor's audio feedback.</p>
       </div>
     );
   }
