@@ -273,9 +273,9 @@ export const certificationDataDictionary: Record<string, CertificationData> = {
   },
   // Wellness
   SL: {
-    code: 'ISCP',
-    name: 'International Sleep Consultant Professional',
-    filename: '2019/standard/iscp',
+    code: 'PSCP',
+    name: 'Pediatric Sleep Consultant Professional',
+    filename: '2019/standard/pscp',
     url: 'https://www.qcwellnessstudies.com/',
   },
 };
