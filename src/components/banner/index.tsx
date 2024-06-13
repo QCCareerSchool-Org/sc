@@ -3,10 +3,10 @@
 import type { CSSProperties, FC } from 'react';
 import { useMemo, useReducer } from 'react';
 
-import Event20240606DesktopImage from './2024-06-06-event/register-desktop.png';
-import Event20240606MobileImage from './2024-06-06-event/register-mobile.png';
-import Pet20240606DesktopImage from './2024-06-06-pet/register-desktop.png';
-import Pet20240606MobileImage from './2024-06-06-pet/register-mobile.png';
+import Event20240606DesktopImage from './2024-06-06-event/replay-desktop.png';
+import Event20240606MobileImage from './2024-06-06-event/replay-mobile.png';
+import Pet20240606DesktopImage from './2024-06-06-pet/replay-desktop.png';
+import Pet20240606MobileImage from './2024-06-06-pet/replay-mobile.png';
 
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
@@ -42,12 +42,12 @@ export const Banner: FC = () => {
 
   const now = new Date().getTime();
 
-  if (hasPetCourses && now >= Date.UTC(2024, 5, 6, 4) && now < Date.UTC(2024, 5, 13, 4)) { // June 6 at 00:00 (04:00 GMT) to June 13 at 00:00 (04:00 GMT)
-    return <Inner backgroundColor="#02013f" desktopSrc={Pet20240606DesktopImage.src} mobileSrc={Pet20240606MobileImage.src} url="https://event.webinarjam.com/register/34/7yp6rt7r" />;
+  if (hasPetCourses && now >= Date.UTC(2024, 5, 12, 4) && now < Date.UTC(2024, 5, 26, 4)) { // June 6 at 00:00 (04:00 GMT) to June 13 at 00:00 (04:00 GMT)
+    return <Inner backgroundColor="#02013f" desktopSrc={Pet20240606DesktopImage.src} mobileSrc={Pet20240606MobileImage.src} url="https://event.webinarjam.com/go/replay/34/5yw6kt39ay1f5ltv" />;
   }
 
-  if (hasEventCourses && now >= Date.UTC(2024, 5, 6, 4) && now < Date.UTC(2024, 5, 12, 4)) { // June 6 at 00:00 (04:00 GMT) to June 12 at 00:00 (04:00 GMT)
-    return <Inner backgroundColor="#02013f" desktopSrc={Event20240606DesktopImage.src} mobileSrc={Event20240606MobileImage.src} url="https://event.webinarjam.com/register/35/4yk21tx6" />;
+  if (hasEventCourses && now >= Date.UTC(2024, 5, 13, 4) && now < Date.UTC(2024, 5, 27, 4)) { // June 6 at 00:00 (04:00 GMT) to June 12 at 00:00 (04:00 GMT)
+    return <Inner backgroundColor="#02013f" desktopSrc={Event20240606DesktopImage.src} mobileSrc={Event20240606MobileImage.src} url="https://event.webinarjam.com/go/replay/35/3y16qtl3b2quzkf5" />;
   }
 
   return null;
