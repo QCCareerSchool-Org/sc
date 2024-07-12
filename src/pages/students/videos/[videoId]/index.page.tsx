@@ -48,7 +48,7 @@ const VideoPage: NextPageWithLayout<Props> = ({ videoId }) => {
   return (
     <>
       <Meta title={video.title} description={video.description} />
-      <VideoComponent controls src={video.src} poster={video.posterSrc} captionSrc={video.captionSrc ?? undefined} style={{ display: 'block', width: '100%' }} />
+      <VideoComponent controls src={video.src} poster={video.posterSrc ?? undefined} captionSrc={video.captionSrc ?? undefined} style={{ display: 'block', width: '100%' }} />
     </>
   );
 };
