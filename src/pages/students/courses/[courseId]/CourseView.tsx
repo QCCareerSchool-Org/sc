@@ -1,10 +1,8 @@
 import NextError from 'next/error';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
 import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
-import { FaDownload } from 'react-icons/fa';
 import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
 
 import { certificationDataDictionary } from './certificationData';
@@ -217,7 +215,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   <div className="row mb-2">
                     {u.videos.map(v => (
                       <div key={v.videoId} className="col-12 col-md-6 col-lg-4 col-xxl-3 mb-4">
-                        <CourseVideo videoId={v.videoId} src={v.src} posterSrc={v.posterSrc} captionSrc={v.captionSrc} playingVideoId={playingVideoId} onPlay={handleVideoPlay} />
+                        <CourseVideo videoId={v.videoId} src={v.src} posterSrc={v.posterSrc ?? undefined} captionSrc={v.captionSrc} playingVideoId={playingVideoId} onPlay={handleVideoPlay} />
                         {/* <VideoComponent controls src={v.src} poster={v.posterSrc} captionSrc={v.captionSrc ?? undefined} style={{ width: '100%' }} /> */}
                         {v.title}
                       </div>
