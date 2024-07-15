@@ -8,7 +8,7 @@ type OnPlayFunction = (e: SyntheticEvent<HTMLVideoElement, Event>, videoId: stri
 type Props = {
   videoId: string;
   src: string;
-  posterSrc: string;
+  posterSrc?: string;
   captionSrc: string | null;
   playingVideoId?: string;
   onPlay: OnPlayFunction;
