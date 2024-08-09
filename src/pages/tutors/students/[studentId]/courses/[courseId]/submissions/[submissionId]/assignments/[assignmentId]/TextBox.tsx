@@ -22,7 +22,7 @@ export const TextBox: FC<Props> = ({ newTextBox, modified, submissionIsRedo }) =
 
   const malformedYouTubeLink = possibleYouTubeLink.test(newTextBox.text) && !goodYouTubeLink.test(newTextBox.text);
   const parts = youtubeShortLink.exec(newTextBox.text);
-  const videoId = parts ? parts[0] : null;
+  const videoId = parts ? parts[1] : null;
 
   return (
     <div className="row" id={newTextBox.textBoxId}>
