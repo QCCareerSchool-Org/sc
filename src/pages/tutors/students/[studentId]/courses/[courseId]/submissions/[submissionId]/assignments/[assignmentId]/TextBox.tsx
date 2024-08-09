@@ -15,7 +15,7 @@ const padding = 14;
 
 const possibleYouTubeLink = /https:\/\/(?:.*\.)?youtube\.com/ui;
 const goodYouTubeLink = /^https:\/\/www\.youtube\.com\/watch\?v=(?:[a-zA-Z0-9_-]){11,}/u;
-const youtubeShortLink = /https:\/\/youtube.com\/shorts\/([a-zA-Z0-9_-]){11,}/ui;
+const youtubeShortLink = /https:\/\/youtube.com\/shorts\/([a-zA-Z0-9_-]{11,})/ui;
 
 export const TextBox: FC<Props> = ({ newTextBox, modified, submissionIsRedo }) => {
   const minHeight = (lineHeight * (newTextBox.lines ?? 3)) + padding;
