@@ -38,7 +38,7 @@ export const TextBox: FC<Props> = ({ newTextBox, modified, submissionIsRedo }) =
         {malformedYouTubeLink && (
           <div>({videoId
             ? <>This appears to be a link to a YouTube Short. You can use the video ID specified and instead visit <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v={videoId}</a></>
-            : <>This appears to be a non-standard YouTube link. You can examine the link to find the 8-digit video ID and instead visit https://www.youtube.com/watch?v=&lt;videoId&gt;</>
+            : <>This appears to be a non-standard YouTube link. You can examine the link to find the 11-digit video ID and instead visit <strong>https://www.youtube.com/watch?v=&lt;videoId&gt;</strong></>
           })</div>
         )}
       </div>
