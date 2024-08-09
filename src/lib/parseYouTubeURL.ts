@@ -28,7 +28,7 @@ export const parseYouTubeURL = (url: string): YouTubeURLParseResult => {
 
   const shortenerParts = youTubeShortenerLink.exec(url);
   if (shortenerParts) {
-    return { isYouTube: true, isCorrect: true, videoId: shortenerParts[1] };
+    return { isYouTube: true, isCorrect: false, videoId: shortenerParts[1] };
   }
 
   const shortParts = youTubeShortLink.exec(url);
