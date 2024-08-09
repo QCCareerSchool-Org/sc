@@ -42,13 +42,13 @@ const YouTubeMessage: FC<{ text: string }> = ({ text }) => {
   }
 
   if (stats.isCorrect) {
-    return <>This is a YouTube link. You can watch it at <a href={text} target="_blank" rel="noopener noreferrer">{text}</a></>;
+    return <strong>This is a YouTube link. You can watch it at <a href={text} target="_blank" rel="noopener noreferrer">{text}</a></strong>;
   }
 
   if (stats.videoId) {
     const url = `https://www.youtube.com/watch?v=${stats.videoId}`;
-    return <>This is a YouTube link, but not in the expected format. You can use the video ID <span className="fw-bold text-monospace">{stats.videoId}</span> specified in the link to visit <a href={url} target="_blank" rel="noopener noreferrer">{url}</a></>;
+    return <strong>This is a YouTube link, but not in the expected format. You can use the video ID <span className="fst-italic text-monospace">{stats.videoId}</span> specified in the link to visit <a href={url} target="_blank" rel="noopener noreferrer">{url}</a></strong>;
   }
 
-  return <>This appears to be a non-standard YouTube link. You can examine the link to find the 11-digit video ID and instead visit <strong>https://www.youtube.com/watch?v=&lt;videoId&gt;</strong></>;
+  return <strong>This appears to be a non-standard YouTube link. You can examine the link to find the 11-digit video ID and instead visit <span className="fst-italic">https://www.youtube.com/watch?v=&lt;videoId&gt;</span></strong>;
 };
