@@ -11,7 +11,7 @@ export type YouTubeURLParseResult = {
 };
 
 export const parseYouTubeURL = (url: string): YouTubeURLParseResult => {
-  const possibleYouTubeLink = /https:\/\/(?:.*\.)?youtube\.com/ui;
+  const possibleYouTubeLink = /https:\/\/(?:.*\.)?(youtube\.com|youtu\.be)/ui;
   const youTubeStandardLink = /^https:\/\/www\.youtube\.com\/watch\?v=([0-9A-Za-z_-]{10}[048AEIMQUYcgkosw])/u;
   const youTubeShortenerLink = /https:\/\/youtu\.be\/([0-9A-Za-z_-]{10}[048AEIMQUYcgkosw])/ui;
   const youTubeShortLink = /https:\/\/(?:.*\.)?youtube\.com\/shorts\/([0-9A-Za-z_-]{10}[048AEIMQUYcgkosw])/ui;
