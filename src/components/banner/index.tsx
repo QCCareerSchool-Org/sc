@@ -3,14 +3,14 @@
 import type { CSSProperties, FC } from 'react';
 import { useMemo, useReducer } from 'react';
 
-import EventDesktopImage from './2024-08-15-event/desktop-register.jpg';
-import EventMobileImage from './2024-08-15-event/mobile-register.jpg';
-import DesignDesktopImage from './2024-08-20-design/desktop-register.jpg';
-import DesignMobileImage from './2024-08-20-design/mobile-register.jpg';
-import MakeupDesktopImage from './2024-08-21-makeup/desktop-register.jpg';
-import MakeupMobileImage from './2024-08-21-makeup/mobile-register.jpg';
-import PetDesktopImage from './2024-08-22-pet/desktop-register.jpg';
-import PetMobileImage from './2024-08-22-pet/mobile-register.jpg';
+import EventDesktopImage from './2024-09-18-event/desktop-register.jpg';
+import EventMobileImage from './2024-09-18-event/mobile-register.jpg';
+import MakeupDesktopImage from './2024-09-24-makeup/desktop-register.jpg';
+import MakeupMobileImage from './2024-09-24-makeup/mobile-register.jpg';
+import PetDesktopImage from './2024-09-25-pet/desktop-register.jpg';
+import PetMobileImage from './2024-09-25-pet/mobile-register.jpg';
+import DesignDesktopImage from './2024-09-26-design/desktop-register.jpg';
+import DesignMobileImage from './2024-09-26-design/mobile-register.jpg';
 
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
@@ -54,20 +54,20 @@ export const Banner: FC = () => {
 
   const now = new Date().getTime();
 
-  if (hasPetCourses && now < Date.UTC(2024, 7, 22, 22, 30)) { // 2024-07-22T18:30 (22:30 UTC)
-    return <Inner backgroundColor="#02013f" desktopSrc={PetDesktopImage.src} mobileSrc={PetMobileImage.src} url="https://event.webinarjam.com/register/48/qq0o4bm5" />;
+  if (hasPetCourses && now < Date.UTC(2024, 8, 25, 22, 30)) { // 2024-09-25T18:30 (22:30 UTC)
+    return <Inner backgroundColor="#02013f" desktopSrc={PetDesktopImage.src} mobileSrc={PetMobileImage.src} url="https://event.webinarjam.com/register/55/6yr6wt0x" />;
   }
 
-  if (hasEventCourses && now < Date.UTC(2024, 7, 15, 22, 30)) { // 2024-07-15T18:30 (22:30 UTC)
-    return <Inner backgroundColor="#02013f" desktopSrc={EventDesktopImage.src} mobileSrc={EventMobileImage.src} url="https://event.webinarjam.com/register/45/0yo60t8o" />;
+  if (hasEventCourses && now < Date.UTC(2024, 8, 18, 22, 30)) { // 2024-09-18T18:30 (22:30 UTC)
+    return <Inner backgroundColor="#02013f" desktopSrc={EventDesktopImage.src} mobileSrc={EventMobileImage.src} url="https://event.webinarjam.com/register/52/r1o8vc8n" />;
   }
 
-  if (hasMakeupCourses && now < Date.UTC(2024, 7, 22, 22, 30)) { // 2024-07-22T18:30 (22:30 UTC)
-    return <Inner backgroundColor="#02013f" desktopSrc={MakeupDesktopImage.src} mobileSrc={MakeupMobileImage.src} url="https://event.webinarjam.com/register/47/8ym3ptno" />;
+  if (hasMakeupCourses && now < Date.UTC(2024, 8, 24, 22, 30)) { // 2024-09-24T18:30 (22:30 UTC)
+    return <Inner backgroundColor="#02013f" desktopSrc={MakeupDesktopImage.src} mobileSrc={MakeupMobileImage.src} url="https://event.webinarjam.com/register/53/p8904fm5" />;
   }
 
-  if (hasDesignCourses && now < Date.UTC(2024, 7, 20, 22, 30)) { // 2024-07-20T18:30 (22:30 UTC)
-    return <Inner backgroundColor="#02013f" desktopSrc={DesignDesktopImage.src} mobileSrc={DesignMobileImage.src} url="https://event.webinarjam.com/register/46/oo394twz" />;
+  if (hasDesignCourses && now < Date.UTC(2024, 8, 26, 22, 30)) { // 2024-09-26T18:30 (22:30 UTC)
+    return <Inner backgroundColor="#02013f" desktopSrc={DesignDesktopImage.src} mobileSrc={DesignMobileImage.src} url="https://event.webinarjam.com/register/54/m9zpvhzk" />;
   }
 
   return null;
