@@ -25,15 +25,23 @@ export const HandbookButton: FC<Props> = ({ course }) => {
 };
 
 const getLink = (schoolName: SchoolName, variantName?: VariantName): string | null => {
+  if (schoolName === 'QC Design School') {
+    return '/student-handbooks/qc-design-school/content/index.html';
+  }
+
+  if (schoolName === 'QC Event School') {
+    return '/student-handbooks/qc-event-school/content/index.html';
+  }
+
+  if (schoolName === 'QC Makeup Academy') {
+    return '/student-handbooks/qc-makeup-academy/content/index.html';
+  }
+
   if (schoolName === 'QC Pet Studies') {
     if (variantName === 'EarthWise Pet') {
       return '/student-handbooks/earthwise-pet/content/index.html';
     }
     return '/student-handbooks/qc-pet-studies/content/index.html';
-  }
-
-  if (schoolName === 'QC Makeup Academy') {
-    return '/student-handbooks/qc-makeup-academy/content/index.html';
   }
 
   if (schoolName === 'QC Wellness Studies') {
