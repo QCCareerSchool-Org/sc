@@ -9,7 +9,7 @@ export const CourseWarnings: FC<Props> = ({ courses }) => {
   const courseExists = (courseCode: string): boolean => courses.findIndex(c => c.code === courseCode) !== -1;
 
   const i2 = courseExists('A');
-  const st = courseExists('T');
+  const ms = courseExists('MS');
   const ap = courseExists('AP');
 
   const mz = courseExists('MZ');
@@ -18,19 +18,19 @@ export const CourseWarnings: FC<Props> = ({ courses }) => {
 
   return (
     <>
-      {i2 && (st || ap) && (
+      {i2 && (ms || ap) && (
         <div className="alert alert-info" role="alert">
           <><strong>Important note:</strong> </>
           {!ap ?
             <><em>Staging for Designers</em> builds </>
-            : !st
+            : !ms
               ? <><em>Aging in Place</em> builds </>
               : <>both <em>Staging for Designers</em> and <em>Aging in Place</em> build </>
           }
           <>on the concepts covered in <em>Interior Decorating</em>. Please complete your <em>Interior Decorating</em> course before starting </>
           {!ap ?
             <em>Staging for Designers</em>
-            : !st
+            : !ms
               ? <em>Aging in Place</em>
               : <>your advanced courses</>
           }
