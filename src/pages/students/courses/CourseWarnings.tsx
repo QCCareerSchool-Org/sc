@@ -9,7 +9,7 @@ export const CourseWarnings: FC<Props> = ({ courses }) => {
   const courseExists = (courseCode: string): boolean => courses.findIndex(c => c.code === courseCode) !== -1;
 
   const i2 = courseExists('A');
-  const ms = courseExists('MS');
+  const ms = courseExists('M');
   const ap = courseExists('AP');
 
   const mz = courseExists('MZ');
