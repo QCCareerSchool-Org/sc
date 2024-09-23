@@ -246,7 +246,7 @@ const getCompany = (currencyCode: string): PaysafeCompany => {
     case 'USD':
       return 'US';
     case 'CAD':
-    case 'NDZ':
+    case 'NZD':
     case 'AUD':
     case 'GBP':
       return 'CA';
