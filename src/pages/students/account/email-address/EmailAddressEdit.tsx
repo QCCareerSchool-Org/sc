@@ -52,7 +52,7 @@ export const EmailAddressEdit: FC<Props> = ({ studentId, crmId }) => {
           <div className="col-12 col-md-8 col-lg-6">
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor={id + '_emailAddress'} className="form-label">New Telephone Number</label>
+                <label htmlFor={id + '_emailAddress'} className="form-label">New Email Address</label>
                 <input onChange={handleEmailAddressChange} value={state.form.data.emailAddress} type="email" id={id + '_emailAddress'} className="form-control" autoComplete="email" />
               </div>
               <div className="d-flex align-items-center">
