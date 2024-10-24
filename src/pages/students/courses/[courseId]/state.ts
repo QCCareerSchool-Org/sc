@@ -15,6 +15,7 @@ import type { Video } from '@/domain/video';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
 
 export type MaterialWithCompletionForm = Material & {
+  complete: boolean;
   materialData: Record<string, string>;
   processingState: 'idle' | 'processing';
   errorMessage?: string;
@@ -163,7 +164,7 @@ export const reducer = (state: State, action: Action): State => {
                     ...u,
                     materials: u.materials.map(m => {
                       if (m === material) { // this is the material in question
-                        return { ...m, processingState: 'idle' };
+                        return { ...m, complete: true, processingState: 'idle' };
                       }
                       return m; // return the original material
                     }),
@@ -196,7 +197,7 @@ export const reducer = (state: State, action: Action): State => {
                     ...u,
                     materials: u.materials.map(m => {
                       if (m === material) { // this is the material in question
-                        return { ...m, processingState: 'idle' };
+                        return { ...m, complete: m.materialData['cmi.completion_status'] === 'complete', processingState: 'idle' };
                       }
                       return m; // return the original material
                     }),

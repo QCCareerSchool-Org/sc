@@ -24,7 +24,7 @@ export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
     variant: Variant | null;
     newSubmissionTemplates: NewSubmissionTemplate[];
     units: Array<Unit & {
-      materials: Array<Material & { materialData: Record<string, string> }>;
+      materials: Array<Material & { complete: boolean; materialData: Record<string, string> }>;
       videos: Video[];
     }>;
   };
@@ -41,7 +41,7 @@ type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
     variant: Variant | null;
     newSubmissionTemplates: RawNewSubmissionTemplate[];
     units: Array<RawUnit & {
-      materials: Array<RawMaterial & { materialData: Record<string, string> }>;
+      materials: Array<RawMaterial & { complete: boolean; materialData: Record<string, string> }>;
       videos: Video[];
     }>;
   };

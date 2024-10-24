@@ -113,7 +113,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     setChildWindow(window.open(href, materialId ?? '_blank'));
   };
 
-  const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.materialData['cmi.completion_status'] === 'completed' ? 'COMPLETE' : 'INCOMPLETE';
+  const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.complete ? 'COMPLETE' : 'INCOMPLETE';
 
   return (
     <section>
