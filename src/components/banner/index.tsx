@@ -54,19 +54,19 @@ export const Banner: FC = () => {
 
   const now = new Date().getTime();
 
-  if (hasPetCourses && now < Date.UTC(2024, 11, 21, 22, 30)) { // 2024-09-25T18:30 (22:30 UTC)
+  if (hasPetCourses && now < Date.UTC(2024, 9, 21, 22, 30)) { // 2024-10-21T18:30 (22:30 UTC)
     return <Inner backgroundColor="#02013f" desktopSrc={PetDesktopImage.src} mobileSrc={PetMobileImage.src} url="https://qccareerschool-2.wistia.com/live/events/seeij48wmm" />;
   }
 
-  if (hasEventCourses && now < Date.UTC(2024, 11, 23, 22, 30)) { // 2024-10-23T18:30 (22:30 UTC)
+  if (hasEventCourses && now < Date.UTC(2024, 9, 23, 22, 30)) { // 2024-10-23T18:30 (22:30 UTC)
     return <Inner backgroundColor="#02013f" desktopSrc={EventDesktopImage.src} mobileSrc={EventMobileImage.src} url="https://event.webinarjam.com/register/59/4yk21tg6" />;
   }
 
-  if (hasMakeupCourses && now < Date.UTC(2024, 11, 22, 22, 30)) { // 2024-10-22T18:30 (22:30 UTC)
+  if (hasMakeupCourses && now < Date.UTC(2024, 9, 22, 22, 30)) { // 2024-10-22T18:30 (22:30 UTC)
     return <Inner backgroundColor="#02013f" desktopSrc={MakeupDesktopImage.src} mobileSrc={MakeupMobileImage.src} url="https://qccareerschool-2.wistia.com/live/events/rqauy0orfe" />;
   }
 
-  if (hasDesignCourses && now < Date.UTC(2024, 11, 24, 22, 30)) { // 2024-10-24T18:30 (22:30 UTC)
+  if (hasDesignCourses && now < Date.UTC(2024, 9, 24, 22, 30)) { // 2024-10-24T18:30 (22:30 UTC)
     return <Inner backgroundColor="#02013f" desktopSrc={DesignDesktopImage.src} mobileSrc={DesignMobileImage.src} url="https://event.webinarjam.com/register/58/7yp6rtmr" />;
   }
 
