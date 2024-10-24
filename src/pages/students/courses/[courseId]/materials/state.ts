@@ -2,7 +2,7 @@ import type { Enrollment } from '@/domain/enrollment';
 import type { Material } from '@/domain/material';
 
 type Data = {
-  material: Material & { materialData: Record<string, string> };
+  material: Material & { complete: boolean; materialData: Record<string, string> };
   enrollment: Enrollment;
 };
 

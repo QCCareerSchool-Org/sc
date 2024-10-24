@@ -19,12 +19,11 @@ type Props = {
   enrollmentId: number;
   courseId: number;
   material: MaterialWithCompletionForm;
-  complete: boolean;
   materialCompletion$: Subject<MaterialCompleteEvent>;
   last: boolean;
 };
 
-export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material, complete, materialCompletion$, last }) => {
+export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material, materialCompletion$, last }) => {
   const id = useId();
   const screenwidth = useScreenWidth();
   const md = screenwidth >= 768;
@@ -39,12 +38,11 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material,
     });
   };
 
-  const scormComplete = material.materialData['cmi.completion_status'] === 'completed';
-
   const imageSrc = `${endpoint}/students/${studentId}/materials/${material.materialId}/image`;
+
   return (
     <>
-      <LessonBorder complete={scormComplete || complete} last={last}>
+      <LessonBorder complete={material.complete} last={last}>
         <UnitAccordionSectionPadding>
           <div className="row">
             <div className="col-12 col-lg-4 col-xxl-3 mb-3 mb-lg-0">
@@ -67,7 +65,7 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material,
                   </div>
                   {material.type !== 'scorm2004' && (
                     <div className={`form-check round ${md ? 'right' : ''}`}>
-                      <input onChange={handleCompleteChange} checked={complete} className="form-check-input" type="checkbox" id={id} disabled={material.processingState === 'processing'} />
+                      <input onChange={handleCompleteChange} checked={material.complete} className="form-check-input" type="checkbox" id={id} disabled={material.processingState === 'processing'} />
                       <label className="form-check-label small fw-bold" htmlFor={id}>
                         Click here when you have completed your lesson
                       </label>

@@ -6,10 +6,12 @@ import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 type MaterialWithData = Material & {
+  complete: boolean;
   materialData: Record<string, string>;
 };
 
 type RawMaterialWithData = RawMaterial & {
+  complete: boolean;
   materialData: Record<string, string>;
 };
 
