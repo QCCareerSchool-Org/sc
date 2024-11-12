@@ -1,17 +1,18 @@
 'use client';
 
-import type { CSSProperties, FC } from 'react';
+import type { FC } from 'react';
 import { useMemo, useReducer } from 'react';
 
-import PetDesktopImage from './2024-10-21-pet/desktop-register.png';
-import PetMobileImage from './2024-10-21-pet/mobile-register.png';
-import MakeupDesktopImage from './2024-10-22-makeup/desktop-register.jpg';
-import MakeupMobileImage from './2024-10-22-makeup/mobile-register.jpg';
-import EventDesktopImage from './2024-10-23-event/desktop-register.jpg';
-import EventMobileImage from './2024-10-23-event/mobile-register.jpg';
-import DesignDesktopImage from './2024-10-24-design/desktop-register.png';
-import DesignMobileImage from './2024-10-24-design/mobile-register.jpg';
+import DesignDesktopImage from './2024/11/design/desktop-register.jpg';
+import DesignMobileImage from './2024/11/design/mobile-register.jpg';
+import EventDesktopImage from './2024/11/event/desktop-register.jpg';
+import EventMobileImage from './2024/11/event/mobile-register.jpg';
+import MakeupDesktopImage from './2024/11/makeup/desktop-register.jpg';
+import MakeupMobileImage from './2024/11/makeup/mobile-register.jpg';
+import PetDesktopImage from './2024/11/pet/desktop-register.jpg';
+import PetMobileImage from './2024/11/pet/mobile-register.jpg';
 
+import { Inner } from './inner';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useAuthState } from '@/hooks/useAuthState';
@@ -32,14 +33,11 @@ export const Banner: FC = () => {
       for (const e of state.data.enrollments) {
         if (e.course.school.slug === 'event') {
           event = true;
-        }
-        if (e.course.school.slug === 'pet') {
+        } else if (e.course.school.slug === 'pet') {
           pet = true;
-        }
-        if (e.course.school.slug === 'design') {
+        } else if (e.course.school.slug === 'design') {
           design = true;
-        }
-        if (e.course.school.slug === 'makeup') {
+        } else if (e.course.school.slug === 'makeup') {
           makeup = true;
         }
       }
@@ -54,45 +52,21 @@ export const Banner: FC = () => {
 
   const now = new Date().getTime();
 
-  if (hasPetCourses && now < Date.UTC(2024, 9, 21, 22, 30)) { // 2024-10-21T18:30 (22:30 UTC)
-    return <Inner backgroundColor="#02013f" desktopSrc={PetDesktopImage.src} mobileSrc={PetMobileImage.src} url="https://qccareerschool-2.wistia.com/live/events/seeij48wmm" />;
+  if (hasPetCourses && now < Date.UTC(2024, 10, 18, 23, 30)) { // 2024-11-18T18:30 (23:30 UTC)
+    return <Inner backgroundColor="#02013f" desktopSrc={PetDesktopImage.src} mobileSrc={PetMobileImage.src} url="https://event.webinarjam.com/register/62/5yw6ktn4" />;
   }
 
-  if (hasEventCourses && now < Date.UTC(2024, 9, 23, 22, 30)) { // 2024-10-23T18:30 (22:30 UTC)
-    return <Inner backgroundColor="#02013f" desktopSrc={EventDesktopImage.src} mobileSrc={EventMobileImage.src} url="https://event.webinarjam.com/register/59/4yk21tg6" />;
+  if (hasEventCourses && now < Date.UTC(2024, 10, 20, 23, 30)) { // 2024-11-20T18:30 (23:30 UTC)
+    return <Inner backgroundColor="#02013f" desktopSrc={EventDesktopImage.src} mobileSrc={EventMobileImage.src} url="https://event.webinarjam.com/register/63/z2m64u73" />;
   }
 
-  if (hasMakeupCourses && now < Date.UTC(2024, 9, 22, 22, 30)) { // 2024-10-22T18:30 (22:30 UTC)
-    return <Inner backgroundColor="#02013f" desktopSrc={MakeupDesktopImage.src} mobileSrc={MakeupMobileImage.src} url="https://qccareerschool-2.wistia.com/live/events/rqauy0orfe" />;
+  if (hasMakeupCourses && now < Date.UTC(2024, 10, 14, 23, 30)) { // 2024-11-14T18:30 (23:30 UTC)
+    return <Inner backgroundColor="#02013f" desktopSrc={MakeupDesktopImage.src} mobileSrc={MakeupMobileImage.src} url="https://event.webinarjam.com/register/61/n0g3zt5v" />;
   }
 
-  if (hasDesignCourses && now < Date.UTC(2024, 9, 24, 22, 30)) { // 2024-10-24T18:30 (22:30 UTC)
-    return <Inner backgroundColor="#02013f" desktopSrc={DesignDesktopImage.src} mobileSrc={DesignMobileImage.src} url="https://event.webinarjam.com/register/58/7yp6rtmr" />;
+  if (hasDesignCourses && now < Date.UTC(2024, 10, 14, 23, 30)) { // 2024-11-14T18:30 (23:30 UTC)
+    return <Inner backgroundColor="#02013f" desktopSrc={DesignDesktopImage.src} mobileSrc={DesignMobileImage.src} url="https://event.webinarjam.com/register/64/g4lzns69" />;
   }
 
   return null;
 };
-
-type Props = {
-  backgroundColor: CSSProperties['backgroundColor'];
-  desktopSrc: string;
-  mobileSrc: string;
-  url: string;
-};
-
-const Inner: FC<Props> = props => (
-  <div style={{ backgroundColor: props.backgroundColor, textAlign: 'center', position: 'relative', flexGrow: 0 }}>
-    <div className="container p-0">
-      <a href={props.url} target="_blank" rel="noreferrer">
-        <div className="d-none d-sm-block">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={props.desktopSrc} alt="" className="img-fluid" style={{ width: '100%' }} />
-        </div>
-        <div className="d-sm-none">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={props.mobileSrc} alt="" className="img-fluid" style={{ width: '100%' }} />
-        </div>
-      </a>
-    </div>
-  </div>
-);
