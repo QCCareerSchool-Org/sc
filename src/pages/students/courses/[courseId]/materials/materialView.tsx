@@ -110,7 +110,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const imageSrc = `${endpoint}/students/${studentId}/materials/${state.data.material.materialId}/image`;
 
   const handleClick: MouseEventHandler = () => {
-    setChildWindow(window.open(href, materialId ?? '_blank'));
+    setChildWindow(window.open(href, materialId ?? '_blank', 'menubar=no,status=no'));
   };
 
   const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.complete ? 'COMPLETE' : 'INCOMPLETE';
