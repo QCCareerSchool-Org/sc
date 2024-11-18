@@ -11,7 +11,7 @@ type Props = {
 export const CourseLink: FC<Props> = ({ course, children }) => {
   if (course.submissionType === 1) {
     const href = `/students/courses/${course.courseId}`;
-    return <Link href={href}><a>{children}</a></Link>;
+    return <Link href={href}>{children}</Link>;
   }
   const href = `/students/course-materials/new.bs.php?course_id=${course.courseId}`;
   return <a href={href}>{children}</a>;

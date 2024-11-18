@@ -1,5 +1,4 @@
 import NextError from 'next/error';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler } from 'react';
 import { useCallback, useEffect, useReducer } from 'react';

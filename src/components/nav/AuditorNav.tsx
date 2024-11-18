@@ -71,18 +71,18 @@ export const AuditorNav: FC<AuditorNavProps> = props => {
             {otherNavPresent && <span className="d-none d-md-inline me-3" style={{ minWidth: 64 }}><span className="badge text-bg-warning">Auditor</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
-                <Link href="/auditors"><a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <ActiveIndicator />}</a></Link>
+                <Link href="/auditors" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <ActiveIndicator />}</Link>
               </li>
               <li className="nav-item">
-                <Link href="/auditors/students"><a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Students{index === 1 && <ActiveIndicator />}</a></Link>
+                <Link href="/auditors/students" className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Students{index === 1 && <ActiveIndicator />}</Link>
               </li>
               <li className="nav-item dropdown">
                 <a className={`nav-link dropdown-toggle ${index === 2 ? 'active' : ''}`} href="#" id="auditorNavAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Account{index === 2 && <ActiveIndicator />}
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="auditorNavAccountDropdown">
-                  <li><Link href="/auditors/account/change-password"><a className="dropdown-item">Change Password</a></Link></li>
-                  <li><Link href="/auditors/account/change-email-address"><a className="dropdown-item">Change Email Address</a></Link></li>
+                  <li><Link href="/auditors/account/change-password" className="dropdown-item">Change Password</Link></li>
+                  <li><Link href="/auditors/account/change-email-address" className="dropdown-item">Change Email Address</Link></li>
                   <li><hr className="dropdown-divider" /></li>
                   <li><a href="#" onClick={handleLogoutClick} className="dropdown-item">Log Out</a></li>
                 </ul>

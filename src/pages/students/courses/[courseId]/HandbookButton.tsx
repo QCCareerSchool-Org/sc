@@ -16,7 +16,7 @@ export const HandbookButton: FC<Props> = ({ course }) => {
   if (link) {
     return (
       <div className="mt-4">
-        <Link href={link}><a target="_blank" rel="noreferrer"><button className="btn btn-lg btn-red">Student Handbook <FaDownload /></button></a></Link>
+        <Link href={link} target="_blank" rel="noreferrer"><button className="btn btn-lg btn-red">Student Handbook <FaDownload /></button></Link>
       </div>
     );
   }

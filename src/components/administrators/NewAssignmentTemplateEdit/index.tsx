@@ -146,7 +146,7 @@ export const NewAssignmentTemplateEdit: FC<Props> = ({ administratorId, assignme
         <div className="container">
           <h1>Edit Assignment Template</h1>
 
-          <p><Link href={router.asPath + '/preview'}><a>Preview</a></Link></p>
+          <p><Link href={router.asPath + '/preview'}>Preview</Link></p>
           <div className="row">
             <div className="col-12 col-md-10 col-lg-7 col-xl-6 order-1 order-lg-0">
               <NewAssignmentTemplateEditForm

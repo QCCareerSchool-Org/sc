@@ -1,4 +1,4 @@
-import Big from 'big.js';
+import { Big } from 'big.js';
 
 import type { CRMEnrollment } from '@/domain/student/crm/crmEnrollment';
 import type { CRMPaymentMethod } from '@/domain/student/crm/crmPaymentMethod';

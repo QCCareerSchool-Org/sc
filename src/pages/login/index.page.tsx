@@ -142,7 +142,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
             <div className="col-12 col-md-6">
               <h2>Missing your username or password?</h2>
               <p>You'll find your username and password in your welcome email from the School or call us at 1-833-600-3751 and one of our student support specialists will be happy to help.</p>
-              <Link href="/password-resets"><a><button className="btn btn-primary">Forgot Your Password?</button></a></Link>
+              <Link href="/password-resets"><button className="btn btn-primary">Forgot Your Password?</button></Link>
             </div>
           </div>
         </div>

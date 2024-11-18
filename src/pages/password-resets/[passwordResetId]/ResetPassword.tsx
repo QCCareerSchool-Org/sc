@@ -80,7 +80,7 @@ export const ResetPassword: FC<Props> = memo(({ passwordResetId, code }) => {
           ? (
             <>
               <h1>Password Updated</h1>
-              <p className="lead">Your password has been updated. You can now <Link href="/login"><a>log in</a></Link>.</p>
+              <p className="lead">Your password has been updated. You can now <Link href="/login">log in</Link>.</p>
             </>
           )
           : (

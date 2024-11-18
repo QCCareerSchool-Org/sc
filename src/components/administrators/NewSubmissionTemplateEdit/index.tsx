@@ -157,11 +157,11 @@ export const NewSubmissionTemplateEdit: FC<Props> = ({ administratorId, submissi
                       <td>
                         {state.newSubmissionTemplate.prices.sort(priceSort).map(p => {
                           if (p.country === null) {
-                            return <div key={p.unitTemplatePriceId}>Default: {p.currency.symbol}{p.price.toFixed(2)} ({p.currency.code}) <Link href={priceHref}><a>Edit</a></Link></div>;
+                            return <div key={p.unitTemplatePriceId}>Default: {p.currency.symbol}{p.price.toFixed(2)} ({p.currency.code}) <Link href={priceHref}>Edit</Link></div>;
                           }
-                          return <div key={p.unitTemplatePriceId}>{p.country.code}: {p.currency.symbol}{p.price.toFixed(2)} ({p.currency.code}) <Link href={priceHref + '&countryId=' + encodeURIComponent(p.country.countryId)}><a>Edit</a></Link></div>;
+                          return <div key={p.unitTemplatePriceId}>{p.country.code}: {p.currency.symbol}{p.price.toFixed(2)} ({p.currency.code}) <Link href={priceHref + '&countryId=' + encodeURIComponent(p.country.countryId)}>Edit</Link></div>;
                         })}
-                        {!state.newSubmissionTemplate.prices.some(p => p.country === null) && <div className="text-danger">No default price set <Link href={priceHref}><a>Set Now</a></Link></div>}
+                        {!state.newSubmissionTemplate.prices.some(p => p.country === null) && <div className="text-danger">No default price set <Link href={priceHref}>Set Now</Link></div>}
                       </td>
                     </tr>
                   </tbody>

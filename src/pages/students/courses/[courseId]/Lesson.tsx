@@ -148,7 +148,7 @@ type LessonLinkProps = {
 
 const LesssonLink: FC<PropsWithChildren<LessonLinkProps>> = ({ studentId, courseId, material, className, children }) => {
   if (material.type === 'scorm2004') {
-    return <Link href={`${courseId}/materials/${material.materialId}`}><a className={className}>{children}</a></Link>;
+    return <Link href={`${courseId}/materials/${material.materialId}`} className={className}>{children}</Link>;
   }
 
   return <a className={className} href={`${endpoint}/students/${studentId}/static/lessons/${material.materialId}${material.entryPoint}`} target={material.materialId} rel="noreferrer">{children}</a>;

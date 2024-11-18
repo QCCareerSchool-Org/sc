@@ -141,7 +141,7 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
                   <li><a className="dropdown-item d-none d-md-block d-xl-none" href="/administrators/units/list-unmarked.php">Unmarked Submissions</a></li>
                   <li><a className="dropdown-item d-none d-md-block d-xxl-none" href="/administrators/returned-units/index.php">Returned Submissions</a></li>
                   <li><a className="dropdown-item" href="/administrators/final-submissions/">Final Submissions</a></li>
-                  <li><Link href="/administrators/course-development"><a className="dropdown-item">Course Development</a></Link></li>
+                  <li><Link href="/administrators/course-development" className="dropdown-item">Course Development</Link></li>
                   <li><a className="dropdown-item" href="/administrators/materials/">Course Materials</a></li>
                   <li><a className="dropdown-item" href="/administrators/paths/">Course Material Paths</a></li>
                   <li><a className="dropdown-item" href="/administrators/showcases/index.php">Student Showcase</a></li>

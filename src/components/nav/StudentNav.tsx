@@ -103,7 +103,7 @@ type GeneralNavItemsProps = {
 const GeneralNavItems: FC<GeneralNavItemsProps> = ({ index }) => (
   <>
     <li className="nav-item">
-      <Link href="/students/courses"><a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</a></Link>
+      <Link href="/students/courses" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</Link>
     </li>
     <li className="nav-item">
       <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/students/student-resources/vendors.bs.php"><span className="d-none d-xl-inline">Preferred </span>Partners{index === 1 && <div className="active-indicator" />}</a>
@@ -115,7 +115,7 @@ const GeneralNavItems: FC<GeneralNavItemsProps> = ({ index }) => (
       <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/virtual-community.php">Virtual Community</a>
     </li>
     <li className="nav-item">
-      <Link href="/students/account"><a className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined}><span className="d-none d-xl-inline">My </span>Account</a></Link>
+      <Link href="/students/account" className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined}><span className="d-none d-xl-inline">My </span>Account</Link>
     </li>
   </>
 );

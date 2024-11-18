@@ -23,7 +23,7 @@ export const Invalid: FC<Props> = memo(({ type }) => (
           <p className="lead">This password reset request is expired.</p>
         </>
       )}
-      <p>If you still need to reset your password, please <Link href="/password-resets"><a>make another request</a></Link>.</p>
+      <p>If you still need to reset your password, please <Link href="/password-resets">make another request</Link>.</p>
     </div>
   </Section>
 ));
