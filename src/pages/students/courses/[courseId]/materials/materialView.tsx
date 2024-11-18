@@ -44,7 +44,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   // refresh the access token periodically
   useEffect(() => {
-    const delay = 1000 * 60 * 29; // 29 minutes
+    const delay = 1_200_000; // 20 minutes
     const destroy$ = new Subject<void>();
     const intervalId = setInterval(() => {
       loginService.refresh().pipe(
@@ -81,6 +81,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       childWindow.close();
     };
     window.addEventListener('beforeunload', listener);
+    window.addEventListener('popstate', listener);
 
     const intervalId = setInterval(() => {
       if (childWindow.closed) {
@@ -90,6 +91,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     }, 300);
 
     return () => {
+      window.removeEventListener('popstate', listener);
       window.removeEventListener('beforeunload', listener);
       clearInterval(intervalId);
     };
@@ -110,7 +112,8 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const imageSrc = `${endpoint}/students/${studentId}/materials/${state.data.material.materialId}/image`;
 
   const handleClick: MouseEventHandler = () => {
-    setChildWindow(window.open(href, materialId ?? '_blank', 'menubar=no,status=no'));
+    const features = 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no';
+    setChildWindow(window.open(href, materialId ?? '_blank', features));
   };
 
   const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.complete ? 'COMPLETE' : 'INCOMPLETE';
