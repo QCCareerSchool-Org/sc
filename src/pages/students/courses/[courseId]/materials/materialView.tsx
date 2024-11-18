@@ -21,6 +21,9 @@ type Props = {
 
 type MaterialState = 'NOT_STARTED' | 'INCOMPLETE' | 'COMPLETE';
 
+const REFRESH_MS = 300_000; // 5 minutes
+const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
+
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const authState = useAuthState();
   const { loginService } = useServices();
@@ -35,6 +38,8 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   const [ childWindow, setChildWindow ] = useState<Window | null>(null);
 
+  const lastRefreshTime = useRef<number | null>(null);
+
   const commit = useRef((data: Record<string, string>): boolean => {
     if (typeof authState.administratorId === 'undefined') { // don't save if logged in as an admin
       materialDataUpdate$.next({ studentId, materialId, data });
@@ -42,15 +47,16 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     return true;
   });
 
-  // refresh the access token periodically
+  // refresh the access token periodically and keep track of the time of the last refresh
   useEffect(() => {
-    const delay = 1_200_000; // 20 minutes
     const destroy$ = new Subject<void>();
+
     const intervalId = setInterval(() => {
       loginService.refresh().pipe(
         takeUntil(destroy$),
       ).subscribe();
-    }, delay);
+      lastRefreshTime.current = new Date().getTime();
+    }, REFRESH_MS);
 
     return () => {
       clearInterval(intervalId);
@@ -85,17 +91,26 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     window.addEventListener('beforeunload', listener);
     window.addEventListener('popstate', listener);
 
-    const intervalId = setInterval(() => {
+    const refreshIntervalId = setInterval(() => {
       if (childWindow.closed) {
         refresh$.next();
         setChildWindow(null);
       }
     }, 300);
 
+    // check periodically how long it's been since the last refresh
+    const suspendIntervalId = setInterval(() => {
+      // close the child window if it's been too long
+      if (lastRefreshTime.current !== null && lastRefreshTime.current < new Date().getTime() - MAX_UNREFRESHED_MS) {
+        childWindow.close();
+      }
+    }, 300);
+
     return () => {
+      clearInterval(suspendIntervalId);
+      clearInterval(refreshIntervalId);
       window.removeEventListener('popstate', listener);
       window.removeEventListener('beforeunload', listener);
-      clearInterval(intervalId);
     };
   }, [ refresh$, childWindow ]);
 
@@ -116,6 +131,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const handleClick: MouseEventHandler = () => {
     const features = 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no';
     setChildWindow(window.open(href, materialId ?? '_blank', features));
+    lastRefreshTime.current = new Date().getTime();
   };
 
   const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.complete ? 'COMPLETE' : 'INCOMPLETE';
