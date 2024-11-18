@@ -77,9 +77,11 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     if (!childWindow) {
       return;
     }
+
     const listener = (): void => {
       childWindow.close();
     };
+
     window.addEventListener('beforeunload', listener);
     window.addEventListener('popstate', listener);
 
