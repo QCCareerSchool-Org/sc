@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { FC } from 'react';
-import { FaFacebookF, FaGooglePlusG, FaPinterest, FaRss, FaTwitter } from 'react-icons/fa';
+import { FaFacebookF, FaPinterest, FaTwitter } from 'react-icons/fa';
 
 import BBBLogo from '@/images/black-seal-250-52-whitetxt-qccareerschool-4175.png';
 
@@ -14,15 +14,13 @@ export const SiteFooter: FC = () => {
 
             <div className="col-12 col-xl-6 mb-4 text-center text-xl-start">
               <h3 className="mb-3">Get Social with QC</h3>
-              <a target="_blank" href="http://www.facebook.com/QCCareerSchool" rel="noopener noreferrer"><FaFacebookF className="me-1" /></a>
-              <a target="_blank" href="http://twitter.com/QCCareerSchool" rel="noopener noreferrer"><FaTwitter className="me-1" /></a>
-              <a target="_blank" href="http://www.pinterest.com/qccareerschool" rel="noopener noreferrer"><FaPinterest className="me-1" /></a>
-              <a target="_blank" href="https://plus.google.com/105385015884839432539/" rel="publisher noopener noreferrer"><FaGooglePlusG className="me-1" /></a>
-              <a target="_blank" href="http://theblog.qccareerschool.com/" rel="noreferrer"><FaRss /></a>
+              <a target="_blank" href="http://www.facebook.com/QCCareerSchool" rel="noopener noreferrer"><FaFacebookF size={20} className="me-2" /></a>
+              <a target="_blank" href="http://twitter.com/QCCareerSchool" rel="noopener noreferrer"><FaTwitter size={20} className="me-2" /></a>
+              <a target="_blank" href="http://www.pinterest.com/qccareerschool" rel="noopener noreferrer"><FaPinterest size={20} /></a>
               <div className="d-none d-xl-block">
                 <div style={{ marginTop: '1.25rem', height: 52 }}>
                   <a target="_blank" title="Click for the Business Review of QC Career School, a Correspondence Schools in Ottawa ON" href="http://www.bbb.org/ottawa/business-reviews/correspondence-schools/qc-career-school-in-ottawa-on-4175#sealclick" rel="noreferrer">
-                    <Image src={BBBLogo} width={250} height={52} layout="fixed" alt="Click for the BBB Business Review of this Correspondence Schools in Ottawa ON" />
+                    <Image src={BBBLogo} width={250} height={52} alt="Click for the BBB Business Review of this Correspondence Schools in Ottawa ON" />
                   </a>
                 </div>
               </div>
