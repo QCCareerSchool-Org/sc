@@ -1,4 +1,4 @@
-import Big from 'big.js';
+import { Big } from 'big.js';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent } from 'react';
@@ -116,17 +116,17 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
                             {state.crmStudent.city}{state.crmStudent.province && <>&nbsp;{state.crmStudent.province.code}</>}{state.crmStudent.postalCode && <>&nbsp;&nbsp;{state.crmStudent.postalCode}</>}<br />
                             {state.crmStudent.country.name}
                           </td>
-                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/billing-address"><a>Change</a></Link></td>
+                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/billing-address">Change</Link></td>
                         </tr>
                         <tr>
                           <th scope="col">Email Address</th>
                           <td>{state.crmStudent.emailAddress}</td>
-                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/email-address"><a>Change</a></Link></td>
+                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/email-address">Change</Link></td>
                         </tr>
                         <tr>
                           <th scope="col">Telephone Number</th>
                           <td>{state.crmStudent.telephoneNumber}</td>
-                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/telephone-number"><a>Change</a></Link></td>
+                          <td style={{ verticalAlign: 'bottom' }}><Link href="/students/account/telephone-number">Change</Link></td>
                         </tr>
                         <tr>
                           <th scope="col">Password</th>
@@ -155,7 +155,7 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
                 <Section>
                   <div className="container">
                     <h2>Update Your Payment Method</h2>
-                    <p>If your card has expired or you would like to use a new card, you can <Link href="/students/account/card"><a>update your payment method</a></Link> before making additional payments.</p>
+                    <p>If your card has expired or you would like to use a new card, you can <Link href="/students/account/card">update your payment method</Link> before making additional payments.</p>
                   </div>
                 </Section>
                 <Section>

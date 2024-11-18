@@ -24,6 +24,7 @@ const AuditorStudentViewPage: NextPage<Props> = ({ studentId }) => {
   return <StudentView auditorId={auditorId} studentId={studentId} />;
 };
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
   const studentIdParam = ctx.params?.studentId;
   const studentId = typeof studentIdParam === 'string' ? parseInt(studentIdParam, 10) : null;

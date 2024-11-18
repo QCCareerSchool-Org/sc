@@ -80,7 +80,7 @@ export const NewSubmissionReturnView: FC<Props> = ({ administratorId, submission
                 </tr>
                 <tr>
                   <th scope="row">Unit</th>
-                  <td><Link href={`/administrators/new-units/${state.newSubmissionReturn.submissionId}`}><a>{state.newSubmissionReturn.newSubmission.unitLetter}</a></Link></td>
+                  <td><Link href={`/administrators/new-units/${state.newSubmissionReturn.submissionId}`}>{state.newSubmissionReturn.newSubmission.unitLetter}</Link></td>
                 </tr>
               </tbody>
             </table>

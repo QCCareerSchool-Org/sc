@@ -1,4 +1,4 @@
-import Big from 'big.js';
+import { Big } from 'big.js';
 import type { ChangeEventHandler, FC } from 'react';
 import { useId, useMemo } from 'react';
 import type { Subject } from 'rxjs';

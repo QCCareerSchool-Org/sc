@@ -118,7 +118,7 @@ export const CourseAccountDetailsView: FC<Props> = ({ crmId, crmEnrollmentId }) 
         <div className="container">
           <h2>Make a Payment</h2>
           {state.crmEnrollment.paymentMethods.length === 0
-            ? <p>No payment methods on file. Please <Link href="/students/account/card"><a>add a payment method</a></Link> first.</p>
+            ? <p>No payment methods on file. Please <Link href="/students/account/card">add a payment method</Link> first.</p>
             : (
               <>
                 <p>If you have missed a payment and would like to pay it now, you can do so below. You can also pay your balance off earlier by making advanced payments. To process a payment, simply indicate which card you would like to use, enter the amount, and click the &ldquo;Pay Now&rdquo; button.</p>

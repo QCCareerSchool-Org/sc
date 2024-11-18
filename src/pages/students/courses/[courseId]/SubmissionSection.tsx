@@ -50,13 +50,13 @@ export const SubmissionSection: FC<Props> = props => {
           </p>
           {!lg && (
             <div className="mt-4">
-              <Link href={`${courseId}/submissions/${submission.submissionId}`}><a><MaterialButton color="blue">View Assignments</MaterialButton></a></Link>
+              <Link href={`${courseId}/submissions/${submission.submissionId}`}><MaterialButton color="blue">View Assignments</MaterialButton></Link>
             </div>
           )}
         </div>
         {lg && (
           <div className="assignmentsRight">
-            <Link href={`${courseId}/submissions/${submission.submissionId}`}><a><MaterialButton color="blue">View Assignments</MaterialButton></a></Link>
+            <Link href={`${courseId}/submissions/${submission.submissionId}`}><MaterialButton color="blue">View Assignments</MaterialButton></Link>
           </div>
         )}
       </div>
