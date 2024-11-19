@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ChangeEventHandler, FC, PropsWithChildren } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, PropsWithChildren } from 'react';
 import { useId } from 'react';
 import { FaClock } from 'react-icons/fa';
 import type { Subject } from 'rxjs';
@@ -147,8 +147,22 @@ type LessonLinkProps = {
 };
 
 const LesssonLink: FC<PropsWithChildren<LessonLinkProps>> = ({ studentId, courseId, material, className, children }) => {
+  const handleClick: MouseEventHandler<HTMLElement> = e => {
+    // if right mouse button or middle mouse buton or normal click with ctrl
+    if (e.nativeEvent.button === 2 || e.nativeEvent.button === 1 || (e.nativeEvent.button === 0 && e.ctrlKey)) {
+      e.preventDefault();
+      if (confirm('Please don\'t open links in new tabs. Click "OK" to open the link in this window.')) {
+        const target = e.target as HTMLLinkElement;
+        if (target.href) {
+          window.location.href = target.href;
+        }
+      }
+    }
+    return false;
+  };
+
   if (material.type === 'scorm2004') {
-    return <Link href={`${courseId}/materials/${material.materialId}`} className={className}>{children}</Link>;
+    return <Link onClick={handleClick} onAuxClick={handleClick} href={`${courseId}/materials/${material.materialId}`} className={className}>{children}</Link>;
   }
 
   return <a className={className} href={`${endpoint}/students/${studentId}/static/lessons/${material.materialId}${material.entryPoint}`} target={material.materialId} rel="noreferrer">{children}</a>;

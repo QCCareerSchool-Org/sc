@@ -3,6 +3,7 @@ import type { FC, PropsWithChildren } from 'react';
 import { AdminServicesProvider } from './AdminServicesProvider';
 import { AuditorServicesProvider } from './AuditorServicesProvider';
 import { AuthStateProvider } from './AuthStateProvider';
+import { LessonStateProvider } from './LessonProvider';
 import { ModalProvider } from './ModalProvider';
 import { NavStateProvider } from './NavStateProvider';
 import { ScreenWidthProvider } from './ScreenWidthProvider';
@@ -24,7 +25,9 @@ export const StateProvider: FC<PropsWithChildren> = ({ children }) => (
                   <StudentServicesProvider>
                     <ModalProvider>
                       <ScrollbarWidthProvider>
-                        {children}
+                        <LessonStateProvider>
+                          {children}
+                        </LessonStateProvider>
                       </ScrollbarWidthProvider>
                     </ModalProvider>
                   </StudentServicesProvider>
