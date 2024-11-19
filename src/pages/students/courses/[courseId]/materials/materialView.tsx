@@ -40,11 +40,8 @@ type Props = {
 
 type MaterialState = 'NOT_STARTED' | 'INCOMPLETE' | 'COMPLETE';
 
-// const REFRESH_MS = 300_000; // 5 minutes
-// const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
-
-const REFRESH_INTERVAL_MS = 5_000; // 5 seconds
-const MAX_UNREFRESHED_MS = 30_000; // 30 seconds
+const REFRESH_INTERVAL_MS = 300_000; // 5 minutes
+const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
 
 const WINDOW_NAME = 'qcLesson';
 
