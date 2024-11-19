@@ -44,14 +44,12 @@ const getTime = (): number => new Date().getTime();
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const authState = useAuthState();
   const lessonState = useLessonState();
-  const lessonDispatch = useLessonDispatch();
   const { loginService } = useServices();
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
   useInitialData(dispatch, studentId, courseId, materialId);
-  const refresh$ = useRefresh(dispatch, studentId, courseId, materialId);
   const materialDataUpdate$ = useMaterialDataUpdate();
 
   const scormAPI = useRef<ScormAPI>();
@@ -138,14 +136,14 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
     const contentWindow = iframe.contentWindow;
 
-    const handleResize = (): void => {
+    iframe.style.height = 'auto';
+    iframe.style.height = `${contentWindow.document.documentElement.scrollHeight}px`;
+
+    contentWindow.addEventListener('resize', () => {
+      iframe.style.height = 'auto';
       iframe.style.height = `${contentWindow.document.documentElement.scrollHeight}px`;
-    };
-
-    handleResize();
-
-    contentWindow.addEventListener('resize', handleResize);
+    });
   };
 
-  return <iframe ref={iframeRef} src={href} onLoad={handleIframeLoad} width="100%" />;
+  return <iframe ref={iframeRef} src={href} width="100%" onLoad={handleIframeLoad} />;
 };
