@@ -1,3 +1,20 @@
+/**
+ * When the user clicks to view the lesson, we open it in a new tab. This is
+ * required because we need to keep a SCORM object running on this parent page.
+ * The child window will expect a particularly named global variable
+ * `window.API_1484_11` in this page to be present. This object will make
+ * various API requests to our back end.
+ *
+ * We periodically refresh the token on this page because actions taken in the
+ * child window won't refresh the token themselves. Those actions are beyond our
+ * control.
+ *
+ * On mobile devices in particular, when the screen is closed the refresh timer
+ * won't run. So we keep track of the time of each refresh and, when the user
+ * unlocks the screen again, if it has been too long since the last refresh,
+ * we'll close the child window.
+ */
+
 import { parse as parseInterval, toSeconds } from 'iso8601-duration';
 import type { FC, MouseEventHandler } from 'react';
 import { useEffect, useReducer, useRef, useState } from 'react';
@@ -47,23 +64,48 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     return true;
   });
 
-  // refresh the access token periodically and keep track of the time of the last refresh
+  // refresh the access token periodically
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    const intervalId = setInterval(() => {
+    /**
+     * Refreshes the access token and records the time of the refresh.
+     * Closes the child window if the refresh fails
+     */
+    const refreshAccessToken = (): void => {
       loginService.refresh().pipe(
         takeUntil(destroy$),
-      ).subscribe();
-      lastRefreshTime.current = new Date().getTime();
-    }, REFRESH_MS);
+      ).subscribe({
+        next: () => { lastRefreshTime.current = new Date().getTime(); },
+        error: () => { childWindow?.close(); },
+      });
+    };
+
+    // refresh periodically
+    const refreshIntervalId = setInterval(refreshAccessToken, REFRESH_MS);
+
+    // refresh right away too
+    refreshAccessToken();
+
+    const verifyIntervalId = setInterval(() => {
+      const currentTime = new Date().getTime();
+      console.log(`last refresh: ${lastRefreshTime.current}`);
+      console.log(`current time: ${currentTime}`);
+      if (lastRefreshTime.current !== null && lastRefreshTime.current < currentTime - MAX_UNREFRESHED_MS) {
+        // it's been too long since the last refresh
+        childWindow?.close();
+        clearInterval(verifyIntervalId);
+        clearInterval(refreshIntervalId);
+      }
+    }, 1000);
 
     return () => {
-      clearInterval(intervalId);
+      clearInterval(verifyIntervalId);
+      clearInterval(refreshIntervalId);
       destroy$.next();
       destroy$.complete();
     };
-  }, [ loginService ]);
+  }, [ childWindow, loginService ]);
 
   // create the SCORM 2004 API
   useEffect(() => {
@@ -84,13 +126,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       return;
     }
 
-    const listener = (): void => {
-      childWindow.close();
-    };
-
-    window.addEventListener('beforeunload', listener);
-    window.addEventListener('popstate', listener);
-
+    // refresh the state and set childWindow to null if the child window closes
     const refreshIntervalId = setInterval(() => {
       if (childWindow.closed) {
         refresh$.next();
@@ -98,19 +134,17 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       }
     }, 300);
 
-    // check periodically how long it's been since the last refresh
-    const suspendIntervalId = setInterval(() => {
-      // close the child window if it's been too long
-      if (lastRefreshTime.current !== null && lastRefreshTime.current < new Date().getTime() - MAX_UNREFRESHED_MS) {
-        childWindow.close();
-      }
-    }, 300);
+    // close the child window if this window closes or its location changes
+    const listener = (): void => {
+      childWindow.close();
+    };
+    window.addEventListener('beforeunload', listener);
+    window.addEventListener('popstate', listener);
 
     return () => {
-      clearInterval(suspendIntervalId);
-      clearInterval(refreshIntervalId);
       window.removeEventListener('popstate', listener);
       window.removeEventListener('beforeunload', listener);
+      clearInterval(refreshIntervalId);
     };
   }, [ refresh$, childWindow ]);
 
@@ -131,7 +165,6 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const handleClick: MouseEventHandler = () => {
     const features = 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no';
     setChildWindow(window.open(href, materialId ?? '_blank', features));
-    lastRefreshTime.current = new Date().getTime();
   };
 
   const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.complete ? 'COMPLETE' : 'INCOMPLETE';
