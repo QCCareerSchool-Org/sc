@@ -55,8 +55,6 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   const [ childWindow, setChildWindow ] = useState<Window | null>(null);
 
-  const lastRefreshTime = useRef<number | null>(null);
-
   const commit = useRef((data: Record<string, string>): boolean => {
     if (typeof authState.administratorId === 'undefined') { // don't save if logged in as an admin
       materialDataUpdate$.next({ studentId, materialId, data });
@@ -68,6 +66,8 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
+    let lastRefreshTime: number | null = null;
+
     /**
      * Refreshes the access token and records the time of the refresh.
      * Closes the child window if the refresh fails
@@ -76,7 +76,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       loginService.refresh().pipe(
         takeUntil(destroy$),
       ).subscribe({
-        next: () => { lastRefreshTime.current = new Date().getTime(); },
+        next: () => { lastRefreshTime = new Date().getTime(); },
         error: () => { childWindow?.close(); },
       });
     };
@@ -89,9 +89,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
     const verifyIntervalId = setInterval(() => {
       const currentTime = new Date().getTime();
-      console.log(`last refresh: ${lastRefreshTime.current}`);
-      console.log(`current time: ${currentTime}`);
-      if (lastRefreshTime.current !== null && lastRefreshTime.current < currentTime - MAX_UNREFRESHED_MS) {
+      if (lastRefreshTime !== null && lastRefreshTime < currentTime - MAX_UNREFRESHED_MS) {
         // it's been too long since the last refresh
         childWindow?.close();
         clearInterval(verifyIntervalId);
@@ -163,8 +161,8 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const imageSrc = `${endpoint}/students/${studentId}/materials/${state.data.material.materialId}/image`;
 
   const handleClick: MouseEventHandler = () => {
-    const features = 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no';
-    setChildWindow(window.open(href, materialId ?? '_blank', features));
+    // const features = 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no';
+    setChildWindow(window.open(href, materialId));
   };
 
   const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.complete ? 'COMPLETE' : 'INCOMPLETE';
