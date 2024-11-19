@@ -151,14 +151,8 @@ const LesssonLink: FC<PropsWithChildren<LessonLinkProps>> = ({ studentId, course
     // if right mouse button or middle mouse buton or normal click with ctrl
     if (e.nativeEvent.button === 2 || e.nativeEvent.button === 1 || (e.nativeEvent.button === 0 && e.ctrlKey)) {
       e.preventDefault();
-      if (confirm('Please don\'t open links in new tabs. Click "OK" to open the link in this window.')) {
-        const target = e.target as HTMLLinkElement;
-        if (target.href) {
-          window.location.href = target.href;
-        }
-      }
+      return false;
     }
-    return false;
   };
 
   if (material.type === 'scorm2004') {

@@ -17,7 +17,7 @@
 
 import { parse as parseInterval, toSeconds } from 'iso8601-duration';
 import type { FC, MouseEventHandler } from 'react';
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 
 import { Subject, takeUntil } from 'rxjs';
 import { initialState, reducer } from './state';
@@ -40,11 +40,8 @@ type Props = {
 
 type MaterialState = 'NOT_STARTED' | 'INCOMPLETE' | 'COMPLETE';
 
-// const REFRESH_MS = 300_000; // 5 minutes
-// const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
-
-const REFRESH_MS = 5_000; // 5 seconds
-const MAX_UNREFRESHED_MS = 30_000; // 30 seconds
+const REFRESH_MS = 300_000; // 5 minutes
+const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
 
 const WINDOW_NAME = 'qcLesson';
 
@@ -198,6 +195,10 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
             {typeof state.data.material.materialData['cmi.score.scaled'] !== 'undefined' && (
               <p className="mb-0"><strong>Score:</strong> {Math.round(parseFloat(state.data.material.materialData['cmi.score.scaled']) * 100)}%</p>
             )}
+
+            <div className="alert alert-info mt-4">
+              Your lesson will open in a new tab. To ensure that your work is saved, please avoid closing this tab.
+            </div>
 
             <button onClick={handleClick} className="btn btn-primary mt-3">{materialState === 'NOT_STARTED' ? 'Start Lesson' : materialState === 'COMPLETE' ? 'View Lesson' : 'Resume Lesson'}</button>
 
