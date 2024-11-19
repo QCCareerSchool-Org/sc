@@ -26,6 +26,8 @@ import { useMaterialDataUpdate } from './useMaterialDataUpdate';
 import { useRefresh } from './useRefresh';
 import { Img } from '@/components/Img';
 import { useAuthState } from '@/hooks/useAuthState';
+import { useLessonDispatch } from '@/hooks/useLessonDispatch';
+import { useLessonState } from '@/hooks/useLessonState';
 import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { ScormAPI } from 'src/lib/scorm';
@@ -38,11 +40,18 @@ type Props = {
 
 type MaterialState = 'NOT_STARTED' | 'INCOMPLETE' | 'COMPLETE';
 
-const REFRESH_MS = 300_000; // 5 minutes
-const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
+// const REFRESH_MS = 300_000; // 5 minutes
+// const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
+
+const REFRESH_MS = 5_000; // 5 seconds
+const MAX_UNREFRESHED_MS = 30_000; // 30 seconds
+
+const WINDOW_NAME = 'qcLesson';
 
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const authState = useAuthState();
+  const lessonState = useLessonState();
+  const lessonDispatch = useLessonDispatch();
   const { loginService } = useServices();
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -52,8 +61,6 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const materialDataUpdate$ = useMaterialDataUpdate();
 
   const scormAPI = useRef<ScormAPI>();
-
-  const [ childWindow, setChildWindow ] = useState<Window | null>(null);
 
   const commit = useRef((data: Record<string, string>): boolean => {
     if (typeof authState.administratorId === 'undefined') { // don't save if logged in as an admin
@@ -77,7 +84,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
         takeUntil(destroy$),
       ).subscribe({
         next: () => { lastRefreshTime = new Date().getTime(); },
-        error: () => { childWindow?.close(); },
+        error: () => { lessonState.currentLesson?.window.close(); },
       });
     };
 
@@ -91,7 +98,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       const currentTime = new Date().getTime();
       if (lastRefreshTime !== null && lastRefreshTime < currentTime - MAX_UNREFRESHED_MS) {
         // it's been too long since the last refresh
-        childWindow?.close();
+        lessonState.currentLesson?.window.close();
         clearInterval(verifyIntervalId);
         clearInterval(refreshIntervalId);
       }
@@ -103,7 +110,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       destroy$.next();
       destroy$.complete();
     };
-  }, [ childWindow, loginService ]);
+  }, [ lessonState.currentLesson, loginService ]);
 
   // create the SCORM 2004 API
   useEffect(() => {
@@ -120,21 +127,23 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   }, [ state.data ]);
 
   useEffect(() => {
-    if (!childWindow) {
+    const currentLesson = lessonState.currentLesson;
+
+    if (!currentLesson) {
       return;
     }
 
     // refresh the state and set childWindow to null if the child window closes
     const refreshIntervalId = setInterval(() => {
-      if (childWindow.closed) {
+      if (currentLesson.window.closed) {
         refresh$.next();
-        setChildWindow(null);
+        lessonDispatch({ type: 'CLEAR_LESSON' });
       }
     }, 300);
 
     // close the child window if this window closes or its location changes
     const listener = (): void => {
-      childWindow.close();
+      currentLesson.window.close();
     };
     window.addEventListener('beforeunload', listener);
     window.addEventListener('popstate', listener);
@@ -144,7 +153,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       window.removeEventListener('beforeunload', listener);
       clearInterval(refreshIntervalId);
     };
-  }, [ refresh$, childWindow ]);
+  }, [ refresh$, lessonDispatch, lessonState.currentLesson ]);
 
   if (!state.data) {
     return null;
@@ -161,8 +170,15 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const imageSrc = `${endpoint}/students/${studentId}/materials/${state.data.material.materialId}/image`;
 
   const handleClick: MouseEventHandler = () => {
+    if (lessonState.currentLesson) {
+      lessonState.currentLesson.window.close();
+    }
+
     // const features = 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no';
-    setChildWindow(window.open(href, materialId));
+    const w = window.open(href, WINDOW_NAME);
+    if (w) {
+      lessonDispatch({ type: 'SET_LESSON', payload: { window: w, materialId } });
+    }
   };
 
   const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.complete ? 'COMPLETE' : 'INCOMPLETE';

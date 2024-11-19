@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import type { ReactElement, ReactNode } from 'react';
 import { useEffect } from 'react';
 
+import { LessonCloser } from './LessonCloser';
 import { AppErrorBoundary } from '@/components/AppErrorBoundary';
 import { ErrorFallback } from '@/components/ErrorFallback';
 import { DefaultLayout } from '@/components/layouts/DefaultLayout';
@@ -72,6 +73,7 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
       <ScrollPreventer />
       <StateProvider>
         <SessionRefresh />
+        <LessonCloser />
         {getLayout(
           <RouteGuard>
             <PageErrorBoundary fallback={<ErrorFallback />}>
