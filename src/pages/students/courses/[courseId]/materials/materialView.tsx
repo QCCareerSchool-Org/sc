@@ -19,7 +19,7 @@ import { parse as parseInterval, toSeconds } from 'iso8601-duration';
 import type { FC, MouseEventHandler } from 'react';
 import { useEffect, useReducer, useRef } from 'react';
 
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useMaterialDataUpdate } from './useMaterialDataUpdate';
@@ -80,19 +80,16 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
      */
     const refreshAccessToken = (): void => {
       loginService.refresh().pipe(
-        tap(() => console.log('refreshing')),
         takeUntil(destroy$),
       ).subscribe({
-        next: () => { console.log(`successfully refreshed access token. Time set to ${new Date(getTime()).toISOString()}`); lastRefreshTime = getTime(); },
-        error: () => { console.log('failed to refresh access token'); lessonState.currentLesson?.window.close(); },
+        next: () => { lastRefreshTime = getTime(); },
+        error: () => { lessonState.currentLesson?.window.close(); },
       });
     };
 
     const listener = (): void => {
       const currentTime = getTime();
-      console.log(`current time is ${new Date(currentTime).toISOString()}. Last refresh was ${lastRefreshTime === null ? 'null' : new Date(lastRefreshTime).toISOString()}.`);
       if (lastRefreshTime !== null && lastRefreshTime < currentTime - MAX_UNREFRESHED_MS) {
-        console.log('failed to refresh in time');
         lessonState.currentLesson?.window.close();
       }
       if (lastRefreshTime === null || lastRefreshTime < currentTime - REFRESH_INTERVAL_MS) {
