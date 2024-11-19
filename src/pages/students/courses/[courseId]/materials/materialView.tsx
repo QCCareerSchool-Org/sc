@@ -162,7 +162,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   const handleClick: MouseEventHandler = () => {
     // const features = 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no';
-    setChildWindow(window.open(href, materialId ?? '_blank'));
+    setChildWindow(window.open(href, materialId));
   };
 
   const materialState: MaterialState = Object.keys(state.data.material.materialData).length === 0 ? 'NOT_STARTED' : state.data.material.complete ? 'COMPLETE' : 'INCOMPLETE';
