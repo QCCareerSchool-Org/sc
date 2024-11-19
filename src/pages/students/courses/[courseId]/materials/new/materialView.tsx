@@ -22,9 +22,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { initialState, reducer } from '../state';
 import { useInitialData } from '../useInitialData';
 import { useMaterialDataUpdate } from '../useMaterialDataUpdate';
-import { useRefresh } from '../useRefresh';
 import { useAuthState } from '@/hooks/useAuthState';
-import { useLessonDispatch } from '@/hooks/useLessonDispatch';
 import { useLessonState } from '@/hooks/useLessonState';
 import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
@@ -40,6 +38,13 @@ const REFRESH_INTERVAL_MS = 300_000; // 5 minutes
 const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
 
 const getTime = (): number => new Date().getTime();
+
+// const setHeight = (iframe: HTMLIFrameElement): void => {
+//   iframe.style.height = 'auto';
+//   if (iframe.contentWindow) {
+//     iframe.style.height = `${iframe.contentWindow.document.documentElement.scrollHeight}px`;
+//   }
+// };
 
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const authState = useAuthState();
@@ -123,27 +128,29 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   const href = `${endpoint}/students/${studentId}/static/lessons/${state.data.material.materialId}${state.data.material.entryPoint}`;
 
-  const handleIframeLoad: ReactEventHandler<HTMLIFrameElement> = e => {
-    if (!iframeRef.current) {
-      return;
-    }
+  // const handleIframeLoad: ReactEventHandler<HTMLIFrameElement> = e => {
+  //   if (!iframeRef.current) {
+  //     return;
+  //   }
 
-    const iframe = iframeRef.current;
+  //   const iframe = iframeRef.current;
 
-    if (!iframe.contentWindow) {
-      return;
-    }
+  //   const innerIframes = iframe.contentWindow?.document.getElementsByTagName('iframe');
+  //   if (innerIframes) {
+  //     for (const innerIframe of innerIframes) {
+  //       if (innerIframe.contentWindow) {
+  //         innerIframe.style.height = 'auto';
+  //         innerIframe.style.height = `${innerIframe.contentWindow.document.documentElement.scrollHeight}px`;
+  //       }
+  //     }
+  //   }
 
-    const contentWindow = iframe.contentWindow;
+  //   setHeight(iframe);
 
-    iframe.style.height = 'auto';
-    iframe.style.height = `${contentWindow.document.documentElement.scrollHeight}px`;
+  //   iframe.contentWindow?.addEventListener('resize', () => {
+  //     setHeight(iframe);
+  //   });
+  // };
 
-    contentWindow.addEventListener('resize', () => {
-      iframe.style.height = 'auto';
-      iframe.style.height = `${contentWindow.document.documentElement.scrollHeight}px`;
-    });
-  };
-
-  return <iframe ref={iframeRef} src={href} width="100%" onLoad={handleIframeLoad} />;
+  return <iframe ref={iframeRef} src={href} width="100%" height="700" />;
 };
