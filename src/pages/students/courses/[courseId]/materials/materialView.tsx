@@ -17,9 +17,9 @@
 
 import { parse as parseInterval, toSeconds } from 'iso8601-duration';
 import type { FC, MouseEventHandler } from 'react';
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useMaterialDataUpdate } from './useMaterialDataUpdate';
@@ -43,10 +43,12 @@ type MaterialState = 'NOT_STARTED' | 'INCOMPLETE' | 'COMPLETE';
 // const REFRESH_MS = 300_000; // 5 minutes
 // const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
 
-const REFRESH_MS = 5_000; // 5 seconds
+const REFRESH_INTERVAL_MS = 5_000; // 5 seconds
 const MAX_UNREFRESHED_MS = 30_000; // 30 seconds
 
 const WINDOW_NAME = 'qcLesson';
+
+const getTime = (): number => new Date().getTime();
 
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const authState = useAuthState();
@@ -81,31 +83,33 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
      */
     const refreshAccessToken = (): void => {
       loginService.refresh().pipe(
+        tap(() => console.log('refreshing')),
         takeUntil(destroy$),
       ).subscribe({
-        next: () => { lastRefreshTime = new Date().getTime(); },
-        error: () => { lessonState.currentLesson?.window.close(); },
+        next: () => { console.log(`successfully refreshed access token. Time set to ${new Date(getTime()).toISOString()}`); lastRefreshTime = getTime(); },
+        error: () => { console.log('failed to refresh access token'); lessonState.currentLesson?.window.close(); },
       });
     };
 
+    const listener = (): void => {
+      const currentTime = getTime();
+      console.log(`current time is ${new Date(currentTime).toISOString()}. Last refresh was ${lastRefreshTime === null ? 'null' : new Date(lastRefreshTime).toISOString()}.`);
+      if (lastRefreshTime !== null && lastRefreshTime < currentTime - MAX_UNREFRESHED_MS) {
+        console.log('failed to refresh in time');
+        lessonState.currentLesson?.window.close();
+      }
+      if (lastRefreshTime === null || lastRefreshTime < currentTime - REFRESH_INTERVAL_MS) {
+        refreshAccessToken();
+      }
+    };
+
     // refresh periodically
-    const refreshIntervalId = setInterval(refreshAccessToken, REFRESH_MS);
+    const refreshIntervalId = setInterval(listener, 300);
 
     // refresh right away too
     refreshAccessToken();
 
-    const verifyIntervalId = setInterval(() => {
-      const currentTime = new Date().getTime();
-      if (lastRefreshTime !== null && lastRefreshTime < currentTime - MAX_UNREFRESHED_MS) {
-        // it's been too long since the last refresh
-        lessonState.currentLesson?.window.close();
-        clearInterval(verifyIntervalId);
-        clearInterval(refreshIntervalId);
-      }
-    }, 1000);
-
     return () => {
-      clearInterval(verifyIntervalId);
       clearInterval(refreshIntervalId);
       destroy$.next();
       destroy$.complete();
@@ -198,6 +202,10 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
             {typeof state.data.material.materialData['cmi.score.scaled'] !== 'undefined' && (
               <p className="mb-0"><strong>Score:</strong> {Math.round(parseFloat(state.data.material.materialData['cmi.score.scaled']) * 100)}%</p>
             )}
+
+            <div className="alert alert-info mt-4">
+              Your lesson will open in a new tab. To ensure that your work is saved, please avoid closing this tab.
+            </div>
 
             <button onClick={handleClick} className="btn btn-primary mt-3">{materialState === 'NOT_STARTED' ? 'Start Lesson' : materialState === 'COMPLETE' ? 'View Lesson' : 'Resume Lesson'}</button>
 
