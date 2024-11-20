@@ -15,6 +15,7 @@
  * we'll close the child window.
  */
 
+import Link from 'next/link';
 import type { FC } from 'react';
 import { useEffect, useReducer, useRef } from 'react';
 
@@ -23,7 +24,6 @@ import { initialState, reducer } from '../state';
 import { useInitialData } from '../useInitialData';
 import { useMaterialDataUpdate } from '../useMaterialDataUpdate';
 import { useAuthState } from '@/hooks/useAuthState';
-import { useLessonState } from '@/hooks/useLessonState';
 import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { ScormAPI } from 'src/lib/scorm';
@@ -35,20 +35,11 @@ type Props = {
 };
 
 const REFRESH_INTERVAL_MS = 300_000; // 5 minutes
-const MAX_UNREFRESHED_MS = 900_000; // 15 minutes
 
 const getTime = (): number => new Date().getTime();
 
-// const setHeight = (iframe: HTMLIFrameElement): void => {
-//   iframe.style.height = 'auto';
-//   if (iframe.contentWindow) {
-//     iframe.style.height = `${iframe.contentWindow.document.documentElement.scrollHeight}px`;
-//   }
-// };
-
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const authState = useAuthState();
-  const lessonState = useLessonState();
   const { loginService } = useServices();
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -68,7 +59,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     return true;
   });
 
-  // refresh the access token periodically
+  // refresh the access token periodically and when the tab become visible
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
@@ -76,39 +67,43 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
     /**
      * Refreshes the access token and records the time of the refresh.
-     * Closes the child window if the refresh fails
      */
-    const refreshAccessToken = (): void => {
+    const refresh = (): void => {
       loginService.refresh().pipe(
         takeUntil(destroy$),
       ).subscribe({
         next: () => { lastRefreshTime = getTime(); },
-        error: () => { console.error('couldn\'t refresh token'); },
+        error: () => { loginService.logOut(); },
       });
     };
 
-    const listener = (): void => {
+    const refreshIfTimeElapsed = (): void => {
       const currentTime = getTime();
-      if (lastRefreshTime !== null && lastRefreshTime < currentTime - MAX_UNREFRESHED_MS) {
-        lessonState.currentLesson?.window.close();
-      }
       if (lastRefreshTime === null || lastRefreshTime < currentTime - REFRESH_INTERVAL_MS) {
-        refreshAccessToken();
+        refresh();
+      }
+    };
+
+    const listener = (): void => {
+      if (window.document.visibilityState === 'visible') {
+        refresh();
       }
     };
 
     // refresh periodically
-    const refreshIntervalId = setInterval(listener, 300);
+    const refreshIntervalId = setInterval(refreshIfTimeElapsed, 300);
+    window.addEventListener('visibilitychange', listener);
 
     // refresh right away too
-    refreshAccessToken();
+    refresh();
 
     return () => {
+      window.removeEventListener('visibilitychange', listener);
       clearInterval(refreshIntervalId);
       destroy$.next();
       destroy$.complete();
     };
-  }, [ lessonState.currentLesson, loginService ]);
+  }, [ loginService ]);
 
   // create the SCORM 2004 API
   useEffect(() => {
@@ -124,28 +119,21 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     window.API_1484_11 = scormAPI.current;
   }, [ state.data ]);
 
-  // close the lesson window if we encounter a commit error
-  useEffect(() => {
-    const destroy$ = new Subject<void>();
-
-    const subscription = commitFailure$.current.pipe(
-      takeUntil(destroy$),
-    ).subscribe(() => {
-      lessonState.currentLesson?.window.close();
-    });
-
-    return () => {
-      destroy$.next();
-      destroy$.complete();
-      subscription.unsubscribe();
-    };
-  }, [ lessonState.currentLesson ]);
-
   if (!state.data) {
     return null;
   }
 
   const href = `${endpoint}/students/${studentId}/static/lessons/${state.data.material.materialId}${state.data.material.entryPoint}`;
 
-  return <iframe ref={iframeRef} src={href} width="100%" style={{ display: 'flex', flexGrow: 1 }} />;
+  return (
+    <>
+      <div className="bg-dark text-light py-2 py-lg-3">
+        <div className="container">
+          <Link href={`/students/courses/${courseId}`} className="btn btn-outline-light">Back to Course</Link>
+        </div>
+      </div>
+      <iframe ref={iframeRef} src={href} width="100%" style={{ display: 'flex', flexGrow: 1 }} />
+    </>
+  );
+
 };
