@@ -55,9 +55,11 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
+  const commitFailure$ = useRef(new Subject<void>());
+
   useInitialData(dispatch, studentId, courseId, materialId);
   const refresh$ = useRefresh(dispatch, studentId, courseId, materialId);
-  const materialDataUpdate$ = useMaterialDataUpdate();
+  const materialDataUpdate$ = useMaterialDataUpdate(commitFailure$.current);
 
   const scormAPI = useRef<ScormAPI>();
 
@@ -152,6 +154,23 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       clearInterval(refreshIntervalId);
     };
   }, [ refresh$, lessonDispatch, lessonState.currentLesson ]);
+
+  // close the lesson window if we encounter a commit error
+  useEffect(() => {
+    const destroy$ = new Subject<void>();
+
+    const subscription = commitFailure$.current.pipe(
+      takeUntil(destroy$),
+    ).subscribe(() => {
+      lessonState.currentLesson?.window.close();
+    });
+
+    return () => {
+      destroy$.next();
+      destroy$.complete();
+      subscription.unsubscribe();
+    };
+  }, [ lessonState.currentLesson ]);
 
   if (!state.data) {
     return null;
