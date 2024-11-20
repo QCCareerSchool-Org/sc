@@ -38,14 +38,22 @@ export const EmptySubmissionSection: FC<Props> = props => {
         font-size: 1.25rem;
       }
       .assignmentsLeft {
-        width: 150px;
-        display: flex;
-        justify-content: center;
-        margin-right: 0.5rem;
+        display: none;
       }
       .assignmentsCenter {
-        width: calc(100% - 150px - 1rem);
-        margin-left: 0.5rem;
+        width: 100%;
+      }
+      @media only screen and (min-width: 992px) {
+        .assignmentsLeft {
+          width: 150px;
+          display: flex;
+          justify-content: center;
+          margin-right: 0.5rem;
+        }
+        .assignmentsCenter {
+          width: calc(100% - 150px - 1rem);
+          margin-left: 0.5rem;
+        }
       }
       `}</style>
     </div>
