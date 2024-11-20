@@ -17,7 +17,7 @@
 
 import { parse as parseInterval, toSeconds } from 'iso8601-duration';
 import type { FC, MouseEventHandler } from 'react';
-import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 
 import { Subject, takeUntil } from 'rxjs';
 import { initialState, reducer } from './state';
