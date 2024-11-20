@@ -15,7 +15,7 @@
  * we'll close the child window.
  */
 
-import type { FC, ReactEventHandler } from 'react';
+import type { FC } from 'react';
 import { useEffect, useReducer, useRef } from 'react';
 
 import { Subject, takeUntil } from 'rxjs';
@@ -54,8 +54,10 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
+  const commitFailure$ = useRef(new Subject<void>());
+
   useInitialData(dispatch, studentId, courseId, materialId);
-  const materialDataUpdate$ = useMaterialDataUpdate();
+  const materialDataUpdate$ = useMaterialDataUpdate(commitFailure$.current);
 
   const scormAPI = useRef<ScormAPI>();
 
@@ -121,6 +123,23 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
     scormAPI.current = new ScormAPI(state.data.material.materialId, commit.current, state.data.material.materialData);
     window.API_1484_11 = scormAPI.current;
   }, [ state.data ]);
+
+  // close the lesson window if we encounter a commit error
+  useEffect(() => {
+    const destroy$ = new Subject<void>();
+
+    const subscription = commitFailure$.current.pipe(
+      takeUntil(destroy$),
+    ).subscribe(() => {
+      lessonState.currentLesson?.window.close();
+    });
+
+    return () => {
+      destroy$.next();
+      destroy$.complete();
+      subscription.unsubscribe();
+    };
+  }, [ lessonState.currentLesson ]);
 
   if (!state.data) {
     return null;
