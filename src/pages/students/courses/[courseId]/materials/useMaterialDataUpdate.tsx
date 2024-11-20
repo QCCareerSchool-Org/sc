@@ -12,7 +12,7 @@ type MaterialDataUpdateEvent = {
   data: Record<string, string>;
 };
 
-export const useMaterialDataUpdate = (): Subject<MaterialDataUpdateEvent> => {
+export const useMaterialDataUpdate = (commitFailure$: Subject<void>): Subject<MaterialDataUpdateEvent> => {
   const router = useRouter();
   const navigateToLogin = useNavigateToLogin();
   const { materialService } = useStudentServices();
@@ -26,6 +26,7 @@ export const useMaterialDataUpdate = (): Subject<MaterialDataUpdateEvent> => {
       concatMap(({ studentId, materialId, data }) => materialService.updateMaterialData(studentId, materialId, data).pipe(
         tap({
           error: err => {
+            commitFailure$.next();
             if (err instanceof HttpServiceError) {
               if (err.login) {
                 return void navigateToLogin();
@@ -39,7 +40,7 @@ export const useMaterialDataUpdate = (): Subject<MaterialDataUpdateEvent> => {
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ materialService, router, navigateToLogin ]);
+  }, [ materialService, router, navigateToLogin, commitFailure$ ]);
 
   return materialDataUpdate$.current;
 };
