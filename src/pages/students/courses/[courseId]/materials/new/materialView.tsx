@@ -147,29 +147,5 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   const href = `${endpoint}/students/${studentId}/static/lessons/${state.data.material.materialId}${state.data.material.entryPoint}`;
 
-  // const handleIframeLoad: ReactEventHandler<HTMLIFrameElement> = e => {
-  //   if (!iframeRef.current) {
-  //     return;
-  //   }
-
-  //   const iframe = iframeRef.current;
-
-  //   const innerIframes = iframe.contentWindow?.document.getElementsByTagName('iframe');
-  //   if (innerIframes) {
-  //     for (const innerIframe of innerIframes) {
-  //       if (innerIframe.contentWindow) {
-  //         innerIframe.style.height = 'auto';
-  //         innerIframe.style.height = `${innerIframe.contentWindow.document.documentElement.scrollHeight}px`;
-  //       }
-  //     }
-  //   }
-
-  //   setHeight(iframe);
-
-  //   iframe.contentWindow?.addEventListener('resize', () => {
-  //     setHeight(iframe);
-  //   });
-  // };
-
-  return <iframe ref={iframeRef} src={href} width="100%" height="700" />;
+  return <iframe ref={iframeRef} src={href} width="100%" style={{ display: 'flex', flexGrow: 1 }} />;
 };

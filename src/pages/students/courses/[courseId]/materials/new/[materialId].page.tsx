@@ -1,15 +1,17 @@
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps } from 'next';
 import ErrorPage from 'next/error';
 
 import { MaterialView } from './materialView';
+import { LessonLayout } from '@/components/layouts/LessonLayout';
 import { useAuthState } from '@/hooks/useAuthState';
+import type { NextPageWithLayout } from 'src/pages/_app.page';
 
 type Props = {
   courseId: number | null;
   materialId: string | null;
 };
 
-const MaterialPage: NextPage<Props> = ({ courseId, materialId }) => {
+const MaterialPage: NextPageWithLayout<Props> = ({ courseId, materialId }) => {
   const { studentId } = useAuthState();
 
   if (typeof studentId === 'undefined') {
@@ -22,6 +24,8 @@ const MaterialPage: NextPage<Props> = ({ courseId, materialId }) => {
 
   return <MaterialView studentId={studentId} courseId={courseId} materialId={materialId} />;
 };
+
+MaterialPage.getLayout = page => <LessonLayout>{page}</LessonLayout>;
 
 export default MaterialPage;
 
