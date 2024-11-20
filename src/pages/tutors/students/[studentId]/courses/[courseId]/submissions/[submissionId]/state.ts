@@ -55,7 +55,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'LOAD_UNIT_FAILED':
       return { ...state, newSubmission: undefined, error: true, errorCode: action.payload };
     case 'FILE_CHANGED':
-      if (action.payload.size > 33_554_432) {
+      if (action.payload.size > 33_554_432) { // 32 MiB
         return {
           ...state,
           feedbackForm: { ...state.feedbackForm, file: null, errorMessage: 'File is too large' },
