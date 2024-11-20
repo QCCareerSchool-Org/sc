@@ -16,13 +16,15 @@
  */
 
 import Link from 'next/link';
-import type { FC } from 'react';
-import { useEffect, useReducer, useRef } from 'react';
-
+import { useRouter } from 'next/router';
+import type { FC, MouseEventHandler } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { Subject, takeUntil } from 'rxjs';
+
 import { initialState, reducer } from '../state';
 import { useInitialData } from '../useInitialData';
 import { useMaterialDataUpdate } from '../useMaterialDataUpdate';
+import { Overlay } from './overlay';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
@@ -39,9 +41,10 @@ const REFRESH_INTERVAL_MS = 300_000; // 5 minutes
 const getTime = (): number => new Date().getTime();
 
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
+  const router = useRouter();
   const authState = useAuthState();
   const { loginService } = useServices();
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [ showOverlay, setShowOverlay ] = useState(false);
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
@@ -125,14 +128,25 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   const href = `${endpoint}/students/${studentId}/static/lessons/${state.data.material.materialId}${state.data.material.entryPoint}`;
 
+  const handleExitClick: MouseEventHandler = e => {
+    e.preventDefault();
+    setShowOverlay(true);
+    scormAPI.current?.Commit();
+    setTimeout(() => {
+      setShowOverlay(false);
+      void router.push(`/students/courses/${courseId}`);
+    }, 5000);
+  };
+
   return (
     <>
+      {showOverlay && <Overlay />}
       <div className="bg-dark text-light py-2 py-lg-3">
         <div className="container">
-          <Link href={`/students/courses/${courseId}`} className="btn btn-outline-light">Back to Course</Link>
+          <Link href={`/students/courses/${courseId}`} className="btn btn-outline-light" onClick={handleExitClick}>Back to Course</Link>
         </div>
       </div>
-      <iframe ref={iframeRef} src={href} width="100%" style={{ display: 'flex', flexGrow: 1 }} />
+      <iframe src={href} width="100%" style={{ display: 'flex', flexGrow: 1 }} />
     </>
   );
 
