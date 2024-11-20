@@ -1,7 +1,3 @@
-import type { FC, ReactNode } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 
-type Props = {
-  children: ReactNode;
-};
-
-export const BlankLayout: FC<Props> = ({ children }) => <div>{children}</div>;
+export const BlankLayout: FC<PropsWithChildren> = ({ children }) => <div>{children}</div>;
