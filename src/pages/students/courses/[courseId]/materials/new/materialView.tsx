@@ -26,6 +26,7 @@ import { useInitialData } from '../useInitialData';
 import { useMaterialDataUpdate } from '../useMaterialDataUpdate';
 import { Overlay } from './overlay';
 import { useAuthState } from '@/hooks/useAuthState';
+import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { ScormAPI } from 'src/lib/scorm';
@@ -43,6 +44,7 @@ const getTime = (): number => new Date().getTime();
 export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => {
   const router = useRouter();
   const authState = useAuthState();
+  const navigateToLogin = useNavigateToLogin();
   const { loginService } = useServices();
   const [ showOverlay, setShowOverlay ] = useState(false);
 
@@ -76,7 +78,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
         takeUntil(destroy$),
       ).subscribe({
         next: () => { lastRefreshTime = getTime(); },
-        error: () => { loginService.logOut(); },
+        error: () => { void navigateToLogin(); },
       });
     };
 
