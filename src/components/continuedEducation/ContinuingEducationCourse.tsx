@@ -187,7 +187,7 @@ const fetchPrice = async (countryCode: string, provinceCode: string | undefined,
   const designCourses = [ 'I2', 'ST', 'PO', 'FS', 'CC', 'AP', 'DB', 'MS', 'VD', 'FD', 'LD', 'ED' ];
   const eventCourses = [ 'EP', 'CP', 'CE', 'WP', 'FD', 'ED', 'EB', 'LW', 'DW', 'FL', 'PE', 'TT', 'TG', 'VE' ];
 
-  const promoCode = (makeupCourses.includes(courseCode) || designCourses.includes(courseCode) || eventCourses.includes(courseCode)) && now >= Date.UTC(2023, 10, 16, 14, 30) && now < Date.UTC(2023, 11, 1, 5)
+  const promoCode = (makeupCourses.includes(courseCode) || designCourses.includes(courseCode) || eventCourses.includes(courseCode)) && now >= Date.UTC(2024, 10, 16, 14, 30) && now < Date.UTC(2024, 11, 7, 5)
     ? 'SAVE60'
     : '';
 
