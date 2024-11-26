@@ -108,7 +108,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
       destroy$.next();
       destroy$.complete();
     };
-  }, [ loginService ]);
+  }, [ navigateToLogin, loginService ]);
 
   // create the SCORM 2004 API
   useEffect(() => {
