@@ -156,9 +156,7 @@ const LesssonLink: FC<PropsWithChildren<LessonLinkProps>> = ({ studentId, course
   };
 
   if (material.type === 'scorm2004') {
-    const href = studentId % 2 === 0
-      ? `${courseId}/materials/new/${material.materialId}`
-      : `${courseId}/materials/${material.materialId}`;
+    const href = `${courseId}/materials/new/${material.materialId}`;
     return <Link onClick={handleClick} onAuxClick={handleClick} href={href} className={className}>{children}</Link>;
   }
 
