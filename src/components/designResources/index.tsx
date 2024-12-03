@@ -17,7 +17,7 @@ export const DesignResources: FC = () => (
       <p>In QC's Career Essentials Collection, you'll find a bonus lesson to teach you how to work with design software. You'll also find 6 fully customizable templates specially designed to help you build a thriving business.</p>
       <h3>Bonus Lesson</h3>
       <p>In this lesson, you'll learn how to apply your knowledge of scale and design drawings to effectively work with design software. You'll study the different types of software available to you and get tips to help you choose the best option for your business. You'll watch a series of video tutorials with DesignFiles, an all-in-one software that allows you to create digital floorplans, mood boards and more.</p>
-      <p><a className="btn btn-primary" href="/sc/resources/working-with-design-software/content">Open Lesson</a></p>
+      <p><a className="btn btn-primary" href="/sc/resources/working-with-design-software/content/index.html">Open Lesson</a></p>
       <h3>Business Kit Templates</h3>
       <p>All you need to access your business kit templates is a free Canva account. If you don't have an account, you can <a href="https://www.canva.com" target="_blank" rel="noreferrer">sign up here</a>. Once you've signed up for your account, you'll be all set to begin customizing your templates. Simply click on the links below to get started.</p>
       <p className="fw-bold">Once you have your free Canva account, you can access your templates below. Happy customizing!</p>
