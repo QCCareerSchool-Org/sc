@@ -18,6 +18,7 @@ import { UnitAccordion } from './UnitAccordion';
 import { useInitialData } from './useInitialData';
 import { useInitializeNextUnit } from './useInitializeNextUnit';
 import { useMaterialCompletion } from './useMaterialCompletion';
+import { DesignResources } from '@/components/designResources';
 import { Section } from '@/components/Section';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
 import { useStudentServices } from '@/hooks/useStudentServices';
@@ -55,6 +56,8 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, submissionId: string): void => {
     void router.push(`/students/courses/${courseId}/submissions/${submissionId}`);
   }, [ router, courseId ]);
+
+  const isDesignCourse = state.data?.enrollment.course.school.slug === 'design';
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -227,6 +230,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
           </div>
         </Section>
       )}
+      {isDesignCourse && <DesignResources />}
       {certificationData && (
         <CertificationLogoSection
           certificationData={certificationData}
