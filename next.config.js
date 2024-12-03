@@ -4,7 +4,10 @@ const nextConfig = {
   reactStrictMode: true,
   pageExtensions: [ 'page.tsx', 'page.ts', 'page.jsx', 'page.js' ],
   images: {
-    domains: [ 'localhost', 'studentcenter.qccareerschool.com' ],
+    remotePatterns: [
+      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'https', hostname: 'studentcenter.qccareerschool.com' },
+    ],
   },
 };
 
