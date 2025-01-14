@@ -157,10 +157,17 @@ const getMeta = (crmEnrollment: CRMEnrollmentWithCourse): { discountedCost: numb
         const lastDayOfThisMonth = new Date(thisYear, thisMonth + 1, 0).getDate();
         const thisMonthPaymentDay = Math.min(paymentDay, lastDayOfThisMonth);
         nextInstallment = new Date(thisYear, thisMonth, thisMonthPaymentDay, paymentHour, paymentMinute);
+        let month = thisMonth;
+        let year = thisYear;
         while ((nextInstallment.getTime() < now.getTime()) || (crmEnrollment.paymentStart !== null && nextInstallment.getTime() < crmEnrollment.paymentStart.getTime())) {
-          const lastDayOfNextMonth = new Date(thisYear, thisMonth + 2, 0).getDate();
+          month++;
+          if (month === 12) {
+            month = 0;
+            year++;
+          }
+          const lastDayOfNextMonth = new Date(year, month + 1, 0).getDate();
           const nextMonthPaymentDay = Math.min(paymentDay, lastDayOfNextMonth);
-          nextInstallment = new Date(thisYear, thisMonth + 1, nextMonthPaymentDay, paymentHour, paymentMinute);
+          nextInstallment = new Date(year, month, nextMonthPaymentDay, paymentHour, paymentMinute);
         }
       }
     } else if (crmEnrollment.paymentFrequency === 'weekly') {
