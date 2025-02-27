@@ -5,12 +5,12 @@ import { useMemo, useReducer } from 'react';
 
 import DesignDesktopImage from './2025/01/design/desktop-register.jpg';
 import DesignMobileImage from './2025/01/design/mobile-register.jpg';
-import EventDesktopImage from './2025/01/event/desktop-register.jpg';
-import EventMobileImage from './2025/01/event/mobile-register.jpg';
-import MakeupDesktopImage from './2025/01/makeup/desktop-register.png';
-import MakeupMobileImage from './2025/01/makeup/mobile-register.jpg';
 import PetDesktopImage from './2025/01/pet/desktop-register.jpg';
 import PetMobileImage from './2025/01/pet/mobile-register.jpg';
+import EventDesktopImage from './2025/02/event/desktop-register.jpg';
+import EventMobileImage from './2025/02/event/mobile-register.jpg';
+import MakeupDesktopImage from './2025/02/makeup/desktop-register.jpg';
+import MakeupMobileImage from './2025/02/makeup/mobile-register.jpg';
 
 import { Inner } from './inner';
 import { initialState, reducer } from './state';
@@ -56,11 +56,11 @@ export const Banner: FC = () => {
     return <Inner backgroundColor="#02013f" desktopSrc={PetDesktopImage.src} mobileSrc={PetMobileImage.src} url="https://event.webinarjam.com/register/74/kznpvb9z" />;
   }
 
-  if (hasEventCourses && now < Date.UTC(2025, 0, 15, 23, 30)) { // 2025-01-15T18:30 (23:30 UTC)
+  if (hasEventCourses && now < Date.UTC(2025, 1, 19, 23, 30)) { // 2025-01-15T18:30 (23:30 UTC)
     return <Inner backgroundColor="#02013f" desktopSrc={EventDesktopImage.src} mobileSrc={EventMobileImage.src} url="https://event.webinarjam.com/register/72/qq0o4b85" />;
   }
 
-  if (hasMakeupCourses && now < Date.UTC(2025, 0, 14, 23, 30)) { // 2025-01-14T18:30 (23:30 UTC)
+  if (hasMakeupCourses && now < Date.UTC(2025, 1, 18, 23, 30)) { // 2025-01-14T18:30 (23:30 UTC)
     return <Inner backgroundColor="#02013f" desktopSrc={MakeupDesktopImage.src} mobileSrc={MakeupMobileImage.src} url="https://event.webinarjam.com/register/71/8ym3ptyo" />;
   }
 
