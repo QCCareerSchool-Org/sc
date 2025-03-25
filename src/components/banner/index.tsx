@@ -79,7 +79,7 @@ export const Banner: FC = () => {
     />;
   }
 
-  if (hasDesignCourses && now < Date.UTC(2025, 2, 25, 24)) { // 2025-03-25T18:00 (22:00 UTC)
+  if (hasDesignCourses && now < Date.UTC(2025, 2, 25, 22)) { // 2025-03-25T18:00 (22:00 UTC)
     return <Inner
       backgroundColor="#02013f"
       desktopSrc={DesignDesktopImage.src}
