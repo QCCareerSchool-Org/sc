@@ -112,7 +112,7 @@ const GeneralNavItems: FC<GeneralNavItemsProps> = ({ index }) => (
       <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/students/badges.bs.php">{index === 2 && <div className="active-indicator" />}<span className="d-none d-xl-inline">School </span>Badges</a>
     </li>
     <li className="nav-item">
-      <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/virtual-community.php">Virtual Community</a>
+      <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/virtual-community.php">Community Resources</a>
     </li>
     <li className="nav-item">
       <Link href="/students/account" className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined}><span className="d-none d-xl-inline">My </span>Account</Link>
@@ -189,13 +189,13 @@ const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnab
           )}
           <li><a className="dropdown-item" href="/students/badges.php">School Badges</a></li>
           {(studentType === 'event' || studentType === 'design') && (
-            <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/virtual-community.php">Virtual Community</a></li>
+            <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/virtual-community.php">Community Resources</a></li>
           )}
         </ul>
       </li>
       {(studentType === 'event' || studentType === 'design') && (
         <li className="nav-item d-md-none d-lg-inline">
-          <a href="/students/virtual-community.php" className="nav-link">Virtual Community</a>
+          <a href="/students/virtual-community.php" className="nav-link">Community Resources</a>
         </li>
       )}
       <li className="nav-item">
