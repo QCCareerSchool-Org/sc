@@ -18,11 +18,13 @@ import { UnitAccordion } from './UnitAccordion';
 import { useInitialData } from './useInitialData';
 import { useInitializeNextUnit } from './useInitializeNextUnit';
 import { useMaterialCompletion } from './useMaterialCompletion';
+import { Audio } from '@/components/Audio';
 import { DesignResources } from '@/components/designResources';
 import { Section } from '@/components/Section';
 import { useStayLoggedIn } from '@/hooks/useStayLoggedIn';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/enrollmentService';
+import { endpoint } from 'src/basePath';
 import { formatDate } from 'src/formatDate';
 
 type Props = {
@@ -144,6 +146,11 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 {hasVideos && <p className="lead mb-0 text-shadow"><MdMovie /> <a href="#videos" style={{ textDecoration: 'none' }} className="text-white">Videos</a></p>}
                 {certificationData && <p className="lead mb-0 text-shadow"><MdPolicy /> <a href="#certification" style={{ textDecoration: 'none' }} className="text-white">Certification Logo</a></p>}
               </div>
+              {enrollment.tutor?.introduction && (
+                <div className="mt-5">
+                  <Audio src={`${endpoint}/students/${studentId}/courses/${courseId}/tutorIntro`} preload="metadata" controls />
+                </div>
+              )}
               <CourseProgress enrollment={enrollment} onProgressResetDismissed={handleProgressResetDismissed} />
             </div>
             <div className="col-12 col-lg-6">
