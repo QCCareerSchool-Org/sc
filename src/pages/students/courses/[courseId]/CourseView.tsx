@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
 import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
-import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdPolicy } from 'react-icons/md';
+import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdMusicNote, MdPolicy } from 'react-icons/md';
 
 import { certificationDataDictionary } from './certificationData';
 import { CertificationLogoSection } from './CertificationLogoSection';
@@ -145,12 +145,13 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 {hasResources && <p className="lead mb-0 text-shadow"><MdListAlt /> <a href="#resources" style={{ textDecoration: 'none' }} className="text-white">Resources</a></p>}
                 {hasVideos && <p className="lead mb-0 text-shadow"><MdMovie /> <a href="#videos" style={{ textDecoration: 'none' }} className="text-white">Videos</a></p>}
                 {certificationData && <p className="lead mb-0 text-shadow"><MdPolicy /> <a href="#certification" style={{ textDecoration: 'none' }} className="text-white">Certification Logo</a></p>}
+                {enrollment.tutor?.introduction && (
+                  <>
+                    <p className="lead mb-2 text-shadow"><MdMusicNote /> Tutor Introduction</p>
+                    <Audio src={`${endpoint}/students/${studentId}/courses/${courseId}/tutorIntro`} preload="metadata" controls />
+                  </>
+                )}
               </div>
-              {enrollment.tutor?.introduction && (
-                <div className="mt-5">
-                  <Audio src={`${endpoint}/students/${studentId}/courses/${courseId}/tutorIntro`} preload="metadata" controls />
-                </div>
-              )}
               <CourseProgress enrollment={enrollment} onProgressResetDismissed={handleProgressResetDismissed} />
             </div>
             <div className="col-12 col-lg-6">
