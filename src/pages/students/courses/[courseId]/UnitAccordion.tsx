@@ -1,5 +1,5 @@
 import type { FC, MouseEventHandler } from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import type { Subject } from 'rxjs';
 
@@ -57,6 +57,8 @@ export const UnitAccordion: FC<Props> = props => {
 
   const open = !!unitToggleState[courseId]?.[unit.unitLetter];
 
+  const assignments = useMemo(() => unit.materials.filter(m => m.type !== 'assignment'), [ unit.materials ]);
+
   return (
     <>
       <div onClick={handleClick} className="d-flex justify-content-between" style={{ cursor: 'pointer' }}>
@@ -67,9 +69,16 @@ export const UnitAccordion: FC<Props> = props => {
       {open
         ? (
           <div className="mb-4">
-            {unit.materials.filter(m => m.type !== 'assignment').map((m, i, a) => (
-              <Lesson key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} courseId={courseId} material={m} materialCompletion$={materialCompletion$} last={i === a.length - 1} />
-            ))}
+            {assignments.length === 0
+              ? (
+                <div className="my-3">
+                  <h4 className="h6">There are no lessons for this unit.</h4>
+                </div>
+              )
+              : assignments.map((m, i, a) => (
+                <Lesson key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} courseId={courseId} material={m} materialCompletion$={materialCompletion$} last={i === a.length - 1} />
+              ))
+            }
             {(submission || (!assignmentsDisabled && nextUnit.success && nextUnit.unitLetter === unit.unitLetter)) && (
               <div className="container assignmentContainer">
                 <UnitAccordionSectionPadding>
