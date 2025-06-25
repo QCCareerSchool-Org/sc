@@ -35,7 +35,8 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
     return state.crmStudent?.enrollments.some(e => {
       const amountPaid = e.transactions.filter(t => !t.extraCharge).map(t => t.amount).reduce((prev, cur) => prev.plus(cur), Big(0));
       const twoInstallmentsWorth = Big(e.installment).times(2);
-      return Big(e.cost).minus(e.discount).minus(amountPaid).gte(twoInstallmentsWorth);
+      const balance = Big(e.cost).minus(e.discount).minus(amountPaid);
+      return balance.gte(twoInstallmentsWorth) && balance.gte(200);
     });
   }, [ state.crmStudent?.enrollments ]);
 
