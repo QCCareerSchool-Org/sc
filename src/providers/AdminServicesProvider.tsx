@@ -2,6 +2,7 @@ import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
 import { useServices } from '@/hooks/useServices';
+import { AwardService, type IAwardService } from '@/services/administrators/awardService';
 import type { ICountryService } from '@/services/administrators/countryService';
 import { CountryService } from '@/services/administrators/countryService';
 import type { ICourseService } from '@/services/administrators/courseService';
@@ -61,6 +62,7 @@ export type AdminServices = Readonly<{
   readonly materialService: Readonly<IMaterialService>;
   readonly unitService: Readonly<IUnitService>;
   readonly tutorService: Readonly<ITutorService>;
+  readonly awardService: Readonly<IAwardService>;
 }>;
 
 export const AdminServicesContext = createContext<AdminServices | undefined>(undefined);
@@ -91,6 +93,7 @@ export const AdminServicesProvider: FC<Props> = ({ children }) => {
     materialService: new MaterialService(httpService),
     unitService: new UnitService(httpService),
     tutorService: new TutorService(httpService),
+    awardService: new AwardService(httpService),
   } as const);
 
   return (

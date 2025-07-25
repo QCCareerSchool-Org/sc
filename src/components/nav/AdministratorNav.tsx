@@ -147,6 +147,7 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
                   <li><a className="dropdown-item" href="/administrators/showcases/index.php">Student Showcase</a></li>
                   <li><a className="dropdown-item" href="/administrators/questionnaires/index.php">Questionnaires</a></li>
                   <li><a className="dropdown-item" href="/administrators/unit-prices/index.php">Unit Prices</a></li>
+                  <li><Link href="/administrators/awards-of-excellence" className="dropdown-item">Awards of Excellence</Link></li>
                   <li><a className="dropdown-item" href="/administrators/passwords/edit.php">Change Password</a></li>
                   <li><hr className="dropdown-divider" /></li>
                   <li><a onClick={handleLogoutClick} className="dropdown-item" href="#">Log Out</a></li>
