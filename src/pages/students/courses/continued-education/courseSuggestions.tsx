@@ -86,7 +86,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
         },
         {
           code: 'TT',
-          name: 'Travel and Toursim Course',
+          name: 'Travel and Tourism Course',
           certification: 'International Travel and Tourism Consultant',
           shortDescription: 'Expand your destination wedding planning business by offering full travel services.',
           description: 'With QC\'s Travel and Tourism Course, you\'ll learn all about the history of travel, geography, cruise and tour booking, accommodations, transportation and more. You\'ll develop the skills you need to plan unforgettable vacations that your clients will talk about for years to come. Take your destination wedding planning skills to the next level by becoming a travel consultant.',
