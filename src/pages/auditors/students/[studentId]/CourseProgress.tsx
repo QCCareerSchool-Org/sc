@@ -30,6 +30,8 @@ const submissionWeight = 3;
 const onlyLessons = (m: Material): boolean => m.type === 'lesson' || m.type === 'scorm2004';
 
 export const CourseProgress: FC<Props> = memo(({ enrollment }) => {
+  console.log(enrollment);
+
   const [ progress, max ] = useMemo(() => {
     let p = 0;
     for (const unit of enrollment.course.units) {
