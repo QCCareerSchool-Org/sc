@@ -139,7 +139,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               <p className="lead mb-0 text-shadow">Student Number: <strong>{enrollment.course.code}&thinsp;{enrollment.studentNumber}</strong></p>
               {enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{enrollment.tutor.firstName} {enrollment.tutor.lastName}</strong></p>}
               {enrollment.dueDate && <p className="lead mb-0 text-shadow">Complete By: <strong>{formatDate(enrollment.dueDate)}</strong></p>}
-              <HandbookButton course={enrollment.course} />
+              {enrollment.course.courseGuide && <HandbookButton course={enrollment.course} />}
               <div className="mt-5">
                 <p className="lead mb-0 text-shadow"><MdCollectionsBookmark /> <a href="#materials" style={{ textDecoration: 'none' }} className="text-white">Course Materials</a></p>
                 {hasResources && <p className="lead mb-0 text-shadow"><MdListAlt /> <a href="#resources" style={{ textDecoration: 'none' }} className="text-white">Resources</a></p>}
