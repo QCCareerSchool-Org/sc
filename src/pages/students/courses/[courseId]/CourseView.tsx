@@ -259,29 +259,29 @@ export type NextUnitResult = {
   error: 'loading' | 'arrears' | 'on hold' | 'incomplete' | 'disabled' | 'complete';
 };
 
-type NextUnitMessageProps = {
-  nextUnit: NextUnitResult;
-};
-
-const NextUnitMessage: FC<NextUnitMessageProps> = ({ nextUnit }) => {
-  if (nextUnit.success) {
-    return null;
-  }
-  switch (nextUnit.error) {
-    case 'loading':
-      return null;
-    case 'arrears':
-      return <p>Account is in arrears. Please contact the school.</p>;
-    case 'on hold':
-      return <p>Account is on hold. Please contact the school.</p>;
-    case 'incomplete':
-      return null;
-    case 'disabled':
-      return <div className="alert alert-warning">This course is undergoing maintenance. Please check back in a few minutes.</div>;
-    case 'complete':
-      return <p>Assignments complete!</p>;
-  }
-};
+// type NextUnitMessageProps = {
+//   nextUnit: NextUnitResult;
+// };
+//
+// const NextUnitMessage: FC<NextUnitMessageProps> = ({ nextUnit }) => {
+//   if (nextUnit.success) {
+//     return null;
+//   }
+//   switch (nextUnit.error) {
+//     case 'loading':
+//       return null;
+//     case 'arrears':
+//       return <p>Account is in arrears. Please contact the school.</p>;
+//     case 'on hold':
+//       return <p>Account is on hold. Please contact the school.</p>;
+//     case 'incomplete':
+//       return null;
+//     case 'disabled':
+//       return <div className="alert alert-warning">This course is undergoing maintenance. Please check back in a few minutes.</div>;
+//     case 'complete':
+//       return <p>Assignments complete!</p>;
+//   }
+// };
 
 const getNextUnit = (enrollment?: EnrollmentWithStudentCourseAndUnits): NextUnitResult => {
   if (!enrollment) {

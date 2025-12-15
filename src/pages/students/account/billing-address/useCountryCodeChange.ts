@@ -5,7 +5,6 @@ import { catchError, EMPTY, iif, of, Subject, switchMap, takeUntil, tap } from '
 import type { Action, State } from './state';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useServices } from '@/hooks/useServices';
-import { HttpServiceError } from '@/services/httpService';
 
 type EmailAddressChangeEvent = {
   countryCode: string;
@@ -30,18 +29,18 @@ export const useCountryCodeChange = (dispatch: Dispatch<Action>): Subject<EmailA
         ).pipe(
           tap({
             next: p => dispatch({ type: 'COUNTRY_CODE_UPDATED', payload: { countryCode, crmProvinces: p } }),
-            error: err => {
-              let message = 'Update failed';
-              if (err instanceof HttpServiceError) {
-                if (err.login) {
-                  return void navigateToLogin();
-                }
-                if (err.message) {
-                  message = err.message;
-                }
-              }
-              // dispatch({ type: 'UPDATE_BILLING_ADDRESS_FAILED', payload: message });
-            },
+            // error: err => {
+            //   let message = 'Update failed';
+            //   if (err instanceof HttpServiceError) {
+            //     if (err.login) {
+            //       return void navigateToLogin();
+            //     }
+            //     if (err.message) {
+            //       message = err.message;
+            //     }
+            //   }
+            //   dispatch({ type: 'UPDATE_BILLING_ADDRESS_FAILED', payload: message });
+            // },
           }),
           catchError(() => EMPTY),
         );

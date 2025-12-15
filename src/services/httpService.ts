@@ -1,4 +1,4 @@
-import type { AxiosResponse } from 'axios';
+import type { AxiosHeaderValue, AxiosProgressEvent, AxiosResponse } from 'axios';
 import type axios from 'axios-observable';
 import { saveAs } from 'file-saver';
 import type { Observable } from 'rxjs';
@@ -55,8 +55,8 @@ export class AxiosHttpService implements IHttpService {
     const progress$ = new Subject<number>();
 
     // callback to update the progress tracker
-    const onUploadProgress = (progressEvent: ProgressEvent): void => {
-      const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+    const onUploadProgress = (progressEvent: AxiosProgressEvent): void => {
+      const completed = typeof progressEvent.total === 'undefined' ? 0 : Math.round(progressEvent.loaded * 100 / progressEvent.total);
       if (completed >= 100) {
         progress$.next(100);
         progress$.complete();
@@ -87,8 +87,8 @@ export class AxiosHttpService implements IHttpService {
 
   public putFile<T>(url: string, body: unknown, config?: HttpServiceConfig): Observable<ProgressResponse<T>> {
     const progress$ = new Subject<number>();
-    const onUploadProgress = (progressEvent: ProgressEvent): void => {
-      const completed = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+    const onUploadProgress = (progressEvent: AxiosProgressEvent): void => {
+      const completed = typeof progressEvent.total === 'undefined' ? 0 : Math.round(progressEvent.loaded * 100 / progressEvent.total);
       if (completed >= 100) {
         progress$.next(100);
         progress$.complete();
@@ -133,7 +133,9 @@ export class AxiosHttpService implements IHttpService {
   public download(url: string, config?: HttpServiceConfig): Observable<void> {
     return this.instance.get(url, { ...config, responseType: 'blob' }).pipe(
       tap(response => {
-        const filename = /filename="(.*)"/u.exec(response.headers['content-disposition'])?.[1];
+        const header = response.headers['content-disposition'] as AxiosHeaderValue | undefined;
+        const value = header?.toString();
+        const filename = value ? /filename="(.*)"/u.exec(value)?.[1] : 'unknown';
         if (response.data instanceof Blob) {
           saveAs(response.data, filename ? decodeURIComponent(filename) : undefined);
         }

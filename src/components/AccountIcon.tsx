@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { FC, MouseEventHandler } from 'react';
+import type { FC } from 'react';
 import { useEffect, useRef } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 
@@ -17,10 +17,10 @@ export const AccountIcon: FC = () => {
 
   const logOut$ = useRef(new Subject<void>());
 
-  const handleLogoutClick: MouseEventHandler = e => {
-    e.preventDefault();
-    logOut$.current.next();
-  };
+  // const handleLogoutClick: MouseEventHandler = e => {
+  //   e.preventDefault();
+  //   logOut$.current.next();
+  // };
 
   useEffect(() => {
     const destroy$ = new Subject<void>();

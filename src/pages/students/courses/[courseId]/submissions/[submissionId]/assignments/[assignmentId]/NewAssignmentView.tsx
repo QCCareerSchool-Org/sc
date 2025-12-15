@@ -147,7 +147,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
   }, [ studentId, courseId, submissionId, assignmentId, newAssignmentService, navigateToLogin ]);
 
   const updateText: TextBoxFunction = useCallback((partId, textBoxId, text) => {
-    return new Observable(obs => {
+    return new Observable<void>(obs => {
       dispatch({ type: 'TEXT_CHANGED', payload: { partId, textBoxId, text } });
       obs.next();
       obs.complete();
