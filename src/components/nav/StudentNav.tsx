@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { FC, MouseEventHandler } from 'react';
+import type { FC } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
@@ -27,10 +27,10 @@ export const StudentNav: FC<StudentNavProps> = props => {
 
   const logOut$ = useRef(new Subject<void>());
 
-  const handleLogoutClick: MouseEventHandler = e => {
-    e.preventDefault();
-    logOut$.current.next();
-  };
+  // const handleLogoutClick: MouseEventHandler = e => {
+  //   e.preventDefault();
+  //   logOut$.current.next();
+  // };
 
   useEffect(() => {
     const destroy$ = new Subject<void>();

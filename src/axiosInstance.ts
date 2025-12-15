@@ -1,5 +1,5 @@
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { isAxiosError } from 'axios';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import axiosObservable from 'axios-observable';
 import { firstValueFrom, switchMap } from 'rxjs';
 
@@ -17,7 +17,7 @@ instance.interceptors.request.use(config => {
 });
 
 instance.interceptors.response.use(undefined, async error => {
-  if (axios.isAxiosError(error)) {
+  if (isAxiosError(error)) {
     const originalRequest = error.config as AxiosRequestConfig<unknown> & { _retry?: boolean };
 
     // handle unauthorized errors
@@ -65,7 +65,7 @@ export abstract class AbstractAxiosError extends Error implements AxiosError {
   public get message(): string { return this.originalError.message; }
   public get stack(): string | undefined { return this.originalError.stack; }
 
-  public get config(): AxiosRequestConfig { return this.originalError.config; }
+  public get config(): InternalAxiosRequestConfig | undefined { return this.originalError.config; }
   public get code(): string | undefined { return this.originalError.code; }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   public get request(): unknown { return this.originalError.request; }
