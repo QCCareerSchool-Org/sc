@@ -1,4 +1,4 @@
-"use strict";(self.wpRiseJsonp=self.wpRiseJsonp||[]).push([["node_modules_pnpm_react_19_2_0_node_modules_react_jsx-runtime_js"],{66925:(u,_,r)=>{u.exports=r(86701)},86701:(u,_)=>{/**
+"use strict";(self.wpRiseJsonp=self.wpRiseJsonp||[]).push([["node_modules_pnpm_react_19_2_3_node_modules_react_jsx-runtime_js"],{6534:(u,_,r)=>{u.exports=r(96212)},96212:(u,_)=>{/**
  * @license React
  * react-jsx-runtime.production.js
  *
