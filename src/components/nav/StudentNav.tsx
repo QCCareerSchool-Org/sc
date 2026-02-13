@@ -5,10 +5,12 @@ import { useEffect, useRef, useState } from 'react';
 
 import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
 import type { StudentType } from '@/domain/authenticationPayload';
+import { ppaCourseCodes } from '@/domain/course';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';
 import { useServices } from '@/hooks/useServices';
+import { useStudentServices } from '@/hooks/useStudentServices';
 
 export type StudentNavProps = Record<string, never>;
 
@@ -100,25 +102,48 @@ type GeneralNavItemsProps = {
   index?: number;
 };
 
-const GeneralNavItems: FC<GeneralNavItemsProps> = ({ index }) => (
-  <>
-    <li className="nav-item">
-      <Link href="/students/courses" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</Link>
-    </li>
-    <li className="nav-item">
-      <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/students/student-resources/vendors.bs.php"><span className="d-none d-xl-inline">Preferred </span>Partners{index === 1 && <div className="active-indicator" />}</a>
-    </li>
-    <li className="nav-item">
-      <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/students/badges.bs.php">{index === 2 && <div className="active-indicator" />}<span className="d-none d-xl-inline">School </span>Badges</a>
-    </li>
-    <li className="nav-item">
-      <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/virtual-community.php">Community Resources</a>
-    </li>
-    <li className="nav-item">
-      <Link href="/students/account" className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined}><span className="d-none d-xl-inline">My </span>Account</Link>
-    </li>
-  </>
-);
+const GeneralNavItems: FC<GeneralNavItemsProps> = ({ studentId, index }) => {
+  const { studentService } = useStudentServices();
+  const [ nonPPAEnrollments, setNonPPAEnrollments ] = useState(false);
+
+  useEffect(() => {
+    const destroy$ = new Subject<void>();
+    studentService.getStudent(studentId).pipe(
+      takeUntil(destroy$),
+    ).subscribe(student => {
+      const enrollments = student.enrollments.filter(e => !ppaCourseCodes.includes(e.course.code));
+      if (enrollments.length) {
+        setNonPPAEnrollments(true);
+      }
+    });
+
+    return () => { destroy$.next(); };
+  });
+
+  return (
+    <>
+      <li className="nav-item">
+        <Link href="/students/courses" className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined}>Home{index === 0 && <div className="active-indicator" />}</Link>
+      </li>
+      {nonPPAEnrollments && (
+        <li className="nav-item">
+          <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/students/student-resources/vendors.bs.php"><span className="d-none d-xl-inline">Preferred </span>Partners{index === 1 && <div className="active-indicator" />}</a>
+        </li>
+      )}
+      <li className="nav-item">
+        <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/students/badges.bs.php">{index === 2 && <div className="active-indicator" />}<span className="d-none d-xl-inline">School </span>Badges</a>
+      </li>
+      {nonPPAEnrollments && (
+        <li className="nav-item">
+          <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/virtual-community.php">Community Resources</a>
+        </li>
+      )}
+      <li className="nav-item">
+        <Link href="/students/account" className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined}><span className="d-none d-xl-inline">My </span>Account</Link>
+      </li>
+    </>
+  );
+};
 
 type OldNavItemsProps = {
   studentId: number;

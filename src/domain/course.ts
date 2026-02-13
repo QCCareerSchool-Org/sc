@@ -12,3 +12,5 @@ export type Course = {
   enabled: boolean;
   submissionsEnabled: boolean;
 };
+
+export const ppaCourseCodes = [ 'PG', 'DM', 'NT', 'TR', 'YK', 'PU', 'TB', 'GR', 'GD', 'PA', 'EG', 'DE' ];

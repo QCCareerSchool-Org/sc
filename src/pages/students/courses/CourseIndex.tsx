@@ -12,6 +12,7 @@ import { useInitialData } from './useInitialData';
 import { WelcomeSurveys } from './WelcomeSurveys';
 import { ContinuingEducationGroup } from '@/components/continuedEducation/ContinuingEducationGroup';
 import { Section } from '@/components/Section';
+import { ppaCourseCodes } from '@/domain/course';
 import { getVirtualCommunityLink } from 'src/lib/virtualCommunityLink';
 
 type Props = {
@@ -40,6 +41,13 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
   }, [ state.data?.student.enrollments ]);
 
   const nonVariantSchoolSlugs = useMemo(() => schoolSlugs?.filter(s => s.variant === null), [ schoolSlugs ]);
+
+  const nonPPACourses = useMemo(() => {
+    if (!state.data?.student.enrollments) {
+      return false;
+    }
+    return state.data.student.enrollments.filter(e => !ppaCourseCodes.includes(e.course.code)).length > 0;
+  }, [ state.data?.student.enrollments ]);
 
   // get an array of all the courses the student is enrolled in
   const courses = useMemo(() => {
@@ -88,7 +96,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
               </>
             )
           }
-          {showVirtualCommunityAlert && (
+          {nonPPACourses && showVirtualCommunityAlert && (
             <div className="alert alert-primary">
               <h2 className="h5">Bonus: Join our Virtual Community!</h2>
               <p>Our QC community is leveling up! In addition to completing your course here on the Online Student Center, you can join our Virtual Community on Facebook! Engage with mentors, get exclusive content from industry experts, and network with peers in this dynamic space. Excited? We are too! See you there&mdash;request to join now!</p>
