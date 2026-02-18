@@ -45,7 +45,7 @@ export const reducer = (state: State, action: Action): State => {
         student: action.payload.student,
         t2202Receipts: action.payload.t2202Receipts,
         crmStudent: action.payload.crmStudent,
-        enrollmentsWithForms: action.payload.student.enrollments.filter(e => !e.onHold && e.enrollmentDate !== null),
+        enrollmentsWithForms: action.payload.student.enrollments.filter(e => e.enrollmentDate !== null),
         recentEnrollment,
       };
     }
