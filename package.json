@@ -10,10 +10,6 @@
     "test": "jest src/*"
   },
   "dependencies": {
-    "@types/big.js": "^6.2.2",
-    "@types/file-saver": "^2.0.7",
-    "@types/react-dom": "^18.3.7",
-    "@types/ua-parser-js": "^0.7.39",
     "axios": "^1.13.6",
     "axios-observable": "^2.1.0",
     "big.js": "^6.2.2",
@@ -32,22 +28,16 @@
   },
   "devDependencies": {
     "@ngneat/falso": "^2.27.0",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
+    "@types/big.js": "^6.2.2",
     "@types/bootstrap": "^5.2.10",
+    "@types/file-saver": "^2.0.7",
     "@types/jest": "^27.5.2",
     "@types/jest-axe": "^3.5.9",
     "@types/node": "^24.12.0",
     "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
     "@types/sanitize-html": "^2.16.1",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "^12.3.7",
-    "eslint-plugin-jest": "^26.9.0",
-    "eslint-plugin-testing-library": "^5.11.1",
-    "jest": "^27.5.1",
-    "jest-axe": "^7.0.1",
+    "@types/ua-parser-js": "^0.7.39",
     "sass": "^1.97.3",
     "typescript": "^4.9.5"
   }
