@@ -1,11 +1,11 @@
 import type { CSSProperties, FC } from 'react';
 
-type Props = {
+interface Props {
   backgroundColor: CSSProperties['backgroundColor'];
   desktopSrc: string;
   mobileSrc: string;
   url: string;
-};
+}
 
 export const Inner: FC<Props> = props => (
   <div style={{ backgroundColor: props.backgroundColor, textAlign: 'center', position: 'relative', flexGrow: 0 }}>

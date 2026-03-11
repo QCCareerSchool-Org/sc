@@ -4,12 +4,12 @@ import type { FC } from 'react';
 import type { CertificationData } from './certificationData';
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   certificationData: CertificationData;
   graduated: boolean;
   graduatedDate: Date | null;
   amountPaidRate: number;
-};
+}
 
 export const CertificationLogoSection: FC<Props> = ({ certificationData, graduated, graduatedDate, amountPaidRate }) => (
   <Section id="certification">

@@ -1,6 +1,6 @@
 import type { StudentType } from '@/domain/authenticationPayload';
 
-export type AuthState = {
+export interface AuthState {
   studentId?: number;
   tutorId?: number;
   auditorId?: number;
@@ -78,7 +78,7 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
 
 const storeState = (state: AuthState): void => {
   if (typeof window !== 'undefined' && 'localStorage' in window && navigator.cookieEnabled) {
-    window.localStorage?.setItem('authState', JSON.stringify(state));
+    window.localStorage.setItem('authState', JSON.stringify(state));
   }
 };
 
@@ -116,7 +116,7 @@ export const authInitializer = (): AuthState => {
         } else {
           window.localStorage.removeItem('authState'); // it was invalid
         }
-      } catch (err) { // json parse error
+      } catch { // json parse error
         window.localStorage.removeItem('authState'); // it was invalid
       }
     }

@@ -5,9 +5,9 @@ import { NewSubmissionView } from '@/components/administrators/NewSubmissionView
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   submissionId: string | null;
-};
+}
 
 const NewSubmissionViewPage: NextPage<Props> = ({ submissionId }) => {
   const authState = useAuthState();

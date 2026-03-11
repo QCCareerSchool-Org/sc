@@ -18,57 +18,57 @@ import type { RawUnit, Unit } from '@/domain/unit';
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
-type RawAuditorStudentList = Array<RawStudent & {
+type RawAuditorStudentList = (RawStudent & {
   country: Country;
   province: Province | null;
-  enrollments: Array<RawEnrollment & { course: Course }>;
+  enrollments: (RawEnrollment & { course: Course })[];
   groups: string[];
-}>;
+})[];
 
-export type AuditorStudentList = Array<Student & {
+export type AuditorStudentList = (Student & {
   country: Country;
   province: Province | null;
-  enrollments: Array<Enrollment & { course: Course }>;
+  enrollments: (Enrollment & { course: Course })[];
   groups: string[];
-}>;
+})[];
 
 type RawAuditorStudent = RawStudent & {
   country: Country;
   province: Province | null;
-  enrollments: Array<RawEnrollment & {
+  enrollments: (RawEnrollment & {
     course: Course & {
       school: School;
       oldSubmissionTemplates: unknown[];
       newSubmissionTemplates: RawNewSubmissionTemplate[];
-      units: Array<RawUnit & {
-        materials: Array<RawMaterial & { materialData: Record<string, string> }>;
-      }>;
+      units: (RawUnit & {
+        materials: (RawMaterial & { materialData: Record<string, string> })[];
+      })[];
     };
     tutor: Tutor | null;
     oldSubmissions: unknown[];
     newSubmissions: RawNewSubmission[];
     materialCompletions: MaterialCompletion[];
-  }>;
+  })[];
   groups: string[];
 };
 
 export type AuditorStudent = Student & {
   country: Country;
   province: Province | null;
-  enrollments: Array<Enrollment & {
+  enrollments: (Enrollment & {
     course: Course & {
       school: School;
       oldSubmissionTemplates: unknown[];
       newSubmissionTemplates: NewSubmissionTemplate[];
-      units: Array<Unit & {
-        materials: Array<Material & { materialData: Record<string, string> }>;
-      }>;
+      units: (Unit & {
+        materials: (Material & { materialData: Record<string, string> })[];
+      })[];
     };
     tutor: Tutor | null;
     oldSubmissions: unknown[];
     newSubmissions: NewSubmission[];
     materialCompletions: MaterialCompletion[];
-  }>;
+  })[];
   groups: string[];
 };
 
@@ -77,16 +77,16 @@ type RawAuditorEnrollment = RawEnrollment & {
     school: School;
     oldSubmissionTemplates: unknown[];
     newSubmissionTemplates: RawNewSubmissionTemplate[];
-    units: Array<Unit & {
-      materials: Array<RawMaterial & { materialData: Record<string, string> }>;
-    }>;
+    units: (Unit & {
+      materials: (RawMaterial & { materialData: Record<string, string> })[];
+    })[];
   };
   tutor: Tutor | null;
   oldSubmissions: unknown[];
-  newSubmissions: Array<RawNewSubmission & {
+  newSubmissions: (RawNewSubmission & {
     newAssignments: NewAssignment[];
     tutor: Tutor | null;
-  }>;
+  })[];
   materialCompletions: MaterialCompletion[];
 };
 
@@ -95,24 +95,24 @@ export type AuditorEnrollment = Enrollment & {
     school: School;
     oldSubmissionTemplates: unknown[];
     newSubmissionTemplates: NewSubmissionTemplate[];
-    units: Array<Unit & {
-      materials: Array<Material & { materialData: Record<string, string> }>;
-    }>;
+    units: (Unit & {
+      materials: (Material & { materialData: Record<string, string> })[];
+    })[];
   };
   tutor: Tutor | null;
   oldSubmissions: unknown[];
-  newSubmissions: Array<NewSubmission & {
+  newSubmissions: (NewSubmission & {
     newAssignments: NewAssignment[];
     tutor: Tutor | null;
-  }>;
+  })[];
   materialCompletions: MaterialCompletion[];
 };
 
-type FilterConditions = {
+interface FilterConditions {
   name?: string;
   group?: string;
   location?: string;
-};
+}
 
 export interface IStudentService {
   getAllStudents: (auditorId: number, filter?: FilterConditions) => Observable<AuditorStudentList>;
@@ -128,7 +128,7 @@ export class StudentService implements IStudentService {
     if (filter) {
       const entries = Object.entries(filter);
       if (entries.length) {
-        url += '?' + entries.map(([ key, value ]) => `filter[${key}]=${encodeURIComponent(value)}`).join('&');
+        url += '?' + entries.map(([ key, value ]) => `filter[${key}]=${encodeURIComponent(value as string)}`).join('&');
       }
     }
     return this.httpService.get<RawAuditorStudentList>(url).pipe(

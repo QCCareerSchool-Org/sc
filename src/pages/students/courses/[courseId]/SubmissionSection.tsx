@@ -6,21 +6,21 @@ import { GreenCircleCheck } from './GreenCircleCheck';
 import { MaterialButton } from './MaterialButton';
 import PagesIcon from './pages.svg';
 import type { NewSubmission } from '@/domain/student/newSubmission';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
+import { useScreenWidthContext } from '@/hooks/useScreenWidthContext';
 import { useServices } from '@/hooks/useServices';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   courseId: number;
   unitLetter: string;
   submission: NewSubmission;
-};
+}
 
 export const SubmissionSection: FC<Props> = props => {
   const { courseId, submission } = props;
   const { gradeService } = useServices();
-  const screenWidth = useScreenWidth();
-  const lg = screenWidth >= 992;
+  const screenWidth = useScreenWidthContext();
+  const lg = screenWidth !== null && screenWidth >= 992;
 
   const grade = submission.mark === null ? null : gradeService.calculate(submission.mark, submission.points, submission.created);
 
@@ -37,7 +37,7 @@ export const SubmissionSection: FC<Props> = props => {
           <h4 className="title h6 mb-2">Assignments Unit {props.unitLetter}{lg && submission.title && <span className="fw-normal">: {submission.title}</span>}</h4>
           {submission.description && (
             <div className="mb-2">
-              {submission.description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="small mb-0">{p}</p>)}
+              {submission.description.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="small mb-0">{p}</p>)}
             </div>
           )}
           <p className="mb-0">

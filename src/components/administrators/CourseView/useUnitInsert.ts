@@ -8,11 +8,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { UnitInsertPayload } from '@/services/administrators/unitService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type UnitInsertEvent = {
+export interface UnitInsertEvent {
   processingState: State['unitForm']['processingState'];
   administratorId: number;
   payload: UnitInsertPayload;
-};
+}
 
 export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<UnitInsertEvent> => {
   const { unitService } = useAdminServices();
@@ -33,7 +33,7 @@ export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<UnitInsertEve
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -50,5 +50,6 @@ export const useUnitInsert = (dispatch: Dispatch<Action>): Subject<UnitInsertEve
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, unitService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return insert$.current;
 };

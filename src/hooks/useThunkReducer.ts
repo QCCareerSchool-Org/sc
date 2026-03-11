@@ -24,9 +24,11 @@ export const useThunkReducer = <State, Action extends Record<string, unknown>>(r
 
   // augmented dispatcher
   const dispatch = useCallback((action: Action | ThunkFunction<State, Action>): void => {
-    return typeof action === 'function'
-      ? action(dispatch, getState)
-      : setState(reduce(action));
+    if (typeof action === 'function') {
+      action(dispatch, getState);
+    } else {
+      setState(reduce(action));
+    }
   }, [ getState, setState, reduce ]);
 
   return [ hookState, dispatch ];

@@ -22,10 +22,10 @@ import { useServices } from '@/hooks/useServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   assignmentId: string;
-};
+}
 
 const changesPresent = (assignmentTemplate: NewAssignmentTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!assignmentTemplate) {

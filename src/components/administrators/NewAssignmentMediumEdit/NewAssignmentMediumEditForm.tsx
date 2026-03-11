@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -8,7 +8,7 @@ import type { AssignmentMediumDeleteEvent } from './useMediumDelete';
 import type { AssignmentMediumSaveEvent } from './useMediumSave';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   mediumId: string;
   formState: State['form'];
@@ -16,7 +16,7 @@ type Props = {
   delete$: Subject<AssignmentMediumDeleteEvent>;
   onCaptionChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewAssignmentMediumEditForm: FC<Props> = memo(props => {
   const { administratorId, mediumId, formState, save$, delete$ } = props;
@@ -32,7 +32,7 @@ export const NewAssignmentMediumEditForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;

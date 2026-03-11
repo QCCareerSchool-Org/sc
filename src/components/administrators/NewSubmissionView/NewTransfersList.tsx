@@ -1,14 +1,15 @@
 import type { FC } from 'react';
+
 import type { Tutor } from '@/domain/administrator/tutor';
 import type { NewTransfer } from '@/domain/newTransfer';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
-  transfers: Array<NewTransfer & {
+interface Props {
+  transfers: (NewTransfer & {
     preTutor: Tutor;
     postTutor: Tutor;
-  }>;
-};
+  })[];
+}
 
 export const NewTransfersList: FC<Props> = ({ transfers }) => (
   <table className="table table-bordered bg-white">

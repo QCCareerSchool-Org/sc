@@ -4,9 +4,9 @@ import { Fragment } from 'react';
 import type { WithInputForm } from './state';
 import type { NewTextBox } from '@/domain/administrator/newTextBox';
 
-type Props = {
+interface Props {
   textBox: WithInputForm<NewTextBox>;
-};
+}
 
 const lineHeight = 24;
 const padding = 14;

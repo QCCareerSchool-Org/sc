@@ -12,21 +12,21 @@ import { endpoint } from 'src/basePath';
 
 type RawCourseWithSchoolAndSubmissionTemplatesAndPrices = Course & {
   school: School;
-  newSubmissionTemplates: Array<RawNewSubmissionTemplate & {
-    prices: Array<RawNewSubmissionTemplatePrice & {
+  newSubmissionTemplates: (RawNewSubmissionTemplate & {
+    prices: (RawNewSubmissionTemplatePrice & {
       currency: Currency;
-    }>;
-  }>;
+    })[];
+  })[];
   units: RawUnit[];
 };
 
 export type CourseWithSchoolAndSubmissionTemplatesAndPrices = Course & {
   school: School;
-  newSubmissionTemplates: Array<NewSubmissionTemplate & {
-    prices: Array<NewSubmissionTemplatePrice & {
+  newSubmissionTemplates: (NewSubmissionTemplate & {
+    prices: (NewSubmissionTemplatePrice & {
       currency: Currency;
-    }>;
-  }>;
+    })[];
+  })[];
   units: Unit[];
 };
 

@@ -8,12 +8,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewPartMediumSavePayload } from '@/services/administrators/newPartMediumService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewPartMediumSaveEvent = {
+export interface NewPartMediumSaveEvent {
   administratorId: number;
   mediumId: string;
   payload: NewPartMediumSavePayload;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useMediumSave = (dispatch: Dispatch<Action>): Subject<NewPartMediumSaveEvent> => {
   const { newPartMediumService } = useAdminServices();
@@ -37,7 +37,7 @@ export const useMediumSave = (dispatch: Dispatch<Action>): Subject<NewPartMedium
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -55,5 +55,6 @@ export const useMediumSave = (dispatch: Dispatch<Action>): Subject<NewPartMedium
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newPartMediumService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return mediumSave$.current;
 };

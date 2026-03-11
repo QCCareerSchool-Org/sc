@@ -1,13 +1,13 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
-import { NewPartTemplateFormElements } from '../NewPartTemplateEdit/NewPartTemplateFormElements';
 import type { State } from './state';
 import type { NewPartTemplateInsertEvent } from './usePartInsert';
+import { NewPartTemplateFormElements } from '../NewPartTemplateEdit/NewPartTemplateFormElements';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   assignmentId: string;
   formState: State['newPartTemplateForm'];
@@ -17,7 +17,7 @@ type Props = {
   onDescriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
   onMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   onPartNumberChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewPartTemplateAddForm: FC<Props> = memo(props => {
   const { administratorId, assignmentId, formState, insert$ } = props;
@@ -33,7 +33,7 @@ export const NewPartTemplateAddForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -73,7 +73,7 @@ export const NewPartTemplateAddForm: FC<Props> = memo(props => {
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
               {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
             </button>
-            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'Error'}</span>}
           </div>
         </form>
       </div>

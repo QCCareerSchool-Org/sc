@@ -6,9 +6,9 @@ import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
-type Props = {
+interface Props {
   medium: NewAssignmentMedium | NewPartMedium;
-};
+}
 
 export const DownloadMedium: FC<Props> = ({ medium }) => (
   <div className="downloadMedium">

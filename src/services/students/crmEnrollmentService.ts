@@ -14,21 +14,21 @@ import { crmEndpoint } from 'src/basePath';
 export type CRMEnrollmentWithCourse = CRMEnrollment & {
   course: CRMCourse;
   currency: CRMCurrency;
-  transactions: Array<CRMTransaction & {
+  transactions: (CRMTransaction & {
     paymentMethod: CRMPaymentMethod | null;
-  }>;
+  })[];
   paymentMethods: CRMPaymentMethod[];
-  bonusItemShipments: Array<CRMBonusItemShipment & { bonusItem: CRMBonusItem }>;
+  bonusItemShipments: (CRMBonusItemShipment & { bonusItem: CRMBonusItem })[];
 };
 
 type RawCRMEnrollmentWithCourse = RawCRMEnrollment & {
   course: RawCRMCourse;
   currency: CRMCurrency;
-  transactions: Array<RawCRMTransaction & {
+  transactions: (RawCRMTransaction & {
     paymentMethod: RawCRMPaymentMethod | null;
-  }>;
+  })[];
   paymentMethods: RawCRMPaymentMethod[];
-  bonusItemShipments: Array<RawCRMBonusItemShipment & { bonusItem: RawCRMBonusItem }>;
+  bonusItemShipments: (RawCRMBonusItemShipment & { bonusItem: RawCRMBonusItem })[];
 };
 
 export interface ICRMEnrollmentService {

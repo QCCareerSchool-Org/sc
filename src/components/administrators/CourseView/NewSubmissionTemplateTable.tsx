@@ -3,10 +3,10 @@ import { memo } from 'react';
 
 import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 
-type Props = {
+interface Props {
   submissions: NewSubmissionTemplate[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, unitId: string) => void;
-};
+}
 
 export const NewSubmissionTemplateTable: FC<Props> = memo(props => (
   <>

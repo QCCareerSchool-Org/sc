@@ -5,7 +5,7 @@ import { UAParser } from 'ua-parser-js';
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
 import { mergeRefs } from 'src/mergeRefs';
 
-type Props = {
+interface Props {
   controls?: boolean;
   src: string;
   poster?: string;
@@ -17,7 +17,7 @@ type Props = {
   onPlay?: ReactEventHandler<HTMLVideoElement>;
   onTimeUpdate?: ReactEventHandler<HTMLVideoElement>;
   onEnded?: ReactEventHandler<HTMLVideoElement>;
-};
+}
 
 export const Video = memo(forwardRef<HTMLVideoElement, Props>((props, ref) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -26,6 +26,7 @@ export const Video = memo(forwardRef<HTMLVideoElement, Props>((props, ref) => {
   const [ userAgent, setUserAgent ] = useState<UAParser.IResult | undefined>(undefined);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUserAgent(UAParser());
   }, []);
 

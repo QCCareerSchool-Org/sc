@@ -6,7 +6,7 @@ import type { PaysafeCompany } from '@/domain/student/crm/crmPaymentMethod';
 import type { PaysafeInstance, TokenizeOptions } from 'src/paysafe';
 import { createInstance, tokenize } from 'src/paysafe';
 
-type Props = {
+interface Props {
   currencyCode: string;
   firstName: string;
   lastName: string;
@@ -20,9 +20,9 @@ type Props = {
   submitting: boolean;
   onTokenize: (company: string, singleUseToken: string) => void;
   onChange?: () => void;
-};
+}
 
-type State = {
+interface State {
   instanceState: 'uninitialized' | 'initialized' | 'error';
   instance?: PaysafeInstance;
   panValid: boolean;
@@ -32,7 +32,7 @@ type State = {
   expFilled: boolean;
   cvvFilled: boolean;
   errors?: { displayMessage?: string };
-};
+}
 
 const apiKeys = process.env.NODE_ENV === 'production'
   ? {
@@ -88,6 +88,7 @@ export const PaysafeForm: FC<Props> = memo(props => {
 
   useEffect(() => {
     if (!client) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setClient(true);
       return;
     }
@@ -197,7 +198,7 @@ export const PaysafeForm: FC<Props> = memo(props => {
     }
     tokenize(state.instance, options).then(singleUseToken => {
       onTokenize(company, singleUseToken);
-    }).catch(err => {
+    }).catch((err: unknown) => {
       if (err !== null && typeof err === 'object') {
         setState(s => ({ ...s, errors: err as Record<string, unknown> }));
       }

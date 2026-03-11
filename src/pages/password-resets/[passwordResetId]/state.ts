@@ -1,6 +1,7 @@
 import type { PasswordResetRequest } from '@/domain/passwordResetRequest';
+import { getLength } from 'src/lib/segmenter';
 
-export type State = {
+export interface State {
   passwordResetRequest?: PasswordResetRequest;
   complete: boolean;
   form: {
@@ -18,7 +19,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_STARTED' }
@@ -54,7 +55,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'PASSWORD_CHANGED': {
       let validationMessage: string | undefined;
       const maxLength = 255;
-      if ([ ...action.payload ].length > maxLength) {
+      if (getLength(action.payload) > maxLength) {
         validationMessage = 'Exceeds maximum length';
       } else if (action.payload === 'T4^pB4%6SYNNI+m') {
         validationMessage = 'Don\'t use the actual example password';
@@ -75,7 +76,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'PASSWORD_REPEAT_CHANGED': {
       let validationMessage: string | undefined;
       const maxLength = 255;
-      if ([ ...action.payload ].length > maxLength) {
+      if (getLength(action.payload) > maxLength) {
         validationMessage = 'Exceeds maximum length';
       }
       let formValidationMessage: string | undefined;

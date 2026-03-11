@@ -1,4 +1,4 @@
-export type NewSubmission = {
+export interface NewSubmission {
   /** uuid */
   submissionId: string;
   enrollmentId: number;
@@ -28,10 +28,10 @@ export type NewSubmission = {
   markOverride: number | null;
   created: Date;
   modified: Date | null;
-};
+}
 
 // what we get from the back end
-export type RawNewSubmission = {
+export interface RawNewSubmission {
   /** uuid */
   submissionId: string;
   enrollmentId: number;
@@ -63,4 +63,4 @@ export type RawNewSubmission = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

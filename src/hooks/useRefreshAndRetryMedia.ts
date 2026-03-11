@@ -7,7 +7,7 @@ import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useServices } from '@/hooks/useServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | HTMLVideoElement | HTMLImageElement>): Subject<void> => {
+export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | HTMLVideoElement | HTMLImageElement | null>): Subject<void> => {
   const { loginService } = useServices();
   const authDispatch = useAuthDispatch();
   const navigateToLogin = useNavigateToLogin();
@@ -40,13 +40,13 @@ export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | H
               mediaRef.current.src = mediaRef.current.src;
               if ('load' in mediaRef.current) {
                 mediaRef.current.load();
-                void mediaRef.current?.play();
+                void mediaRef.current.play();
               }
             }
           },
           error: err => {
             if (err instanceof HttpServiceError && err.login) {
-              return void navigateToLogin();
+              navigateToLogin();
             }
           },
         }),
@@ -58,5 +58,6 @@ export const useRefreshAndRetryMedia = (mediaRef: RefObject<HTMLAudioElement | H
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ authDispatch, loginService, navigateToLogin, mediaRef ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return refresh$.current;
 };

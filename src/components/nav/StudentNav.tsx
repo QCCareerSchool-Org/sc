@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC } from 'react';
 import { useEffect, useRef, useState } from 'react';
-
 import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
+
 import type { StudentType } from '@/domain/authenticationPayload';
 import { ppaCourseCodes } from '@/domain/course';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
@@ -24,6 +24,7 @@ export const StudentNav: FC<StudentNavProps> = props => {
   const [ loaded, setLoaded ] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoaded(true);
   }, []);
 
@@ -97,10 +98,10 @@ export const StudentNav: FC<StudentNavProps> = props => {
   );
 };
 
-type GeneralNavItemsProps = {
+interface GeneralNavItemsProps {
   studentId: number;
   index?: number;
-};
+}
 
 const GeneralNavItems: FC<GeneralNavItemsProps> = ({ studentId, index }) => {
   const { studentService } = useStudentServices();
@@ -145,12 +146,12 @@ const GeneralNavItems: FC<GeneralNavItemsProps> = ({ studentId, index }) => {
   );
 };
 
-type OldNavItemsProps = {
+interface OldNavItemsProps {
   studentId: number;
   index?: number;
   studentType?: StudentType;
   assignmentsEnabled?: boolean;
-};
+}
 
 const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnabled = true }) => {
   return (

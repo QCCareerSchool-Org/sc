@@ -5,10 +5,10 @@ import { UnitPriceEdit } from '@/components/administrators/UnitPriceEdit';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   courseId: number | null;
   countryId: number | null;
-};
+}
 
 const SubmissionTemplatePriceEditPage: NextPage<Props> = ({ courseId, countryId }) => {
   const authState = useAuthState();
@@ -31,8 +31,8 @@ const SubmissionTemplatePriceEditPage: NextPage<Props> = ({ courseId, countryId 
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
-  const courseIdParam = ctx.query?.courseId;
-  const countryIdParam = ctx.query?.countryId;
+  const courseIdParam = ctx.query.courseId;
+  const countryIdParam = ctx.query.countryId;
   const courseId = typeof courseIdParam === 'string' ? parseInt(courseIdParam, 10) : null;
   const countryId = typeof countryIdParam === 'string' && countryIdParam.length ? parseInt(countryIdParam, 10) : null;
   return { props: { courseId, countryId } };

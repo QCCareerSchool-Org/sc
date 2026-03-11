@@ -1,6 +1,6 @@
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { memo, useId, useReducer } from 'react';
 
 import { Invalid } from './Invalid';
@@ -11,10 +11,10 @@ import { useInitialData } from './useInitialData';
 import { usePasswordChange } from './usePasswordChange';
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   passwordResetId: number;
   code: string;
-};
+}
 
 export const ResetPassword: FC<Props> = memo(({ passwordResetId, code }) => {
   const id = useId();
@@ -50,7 +50,7 @@ export const ResetPassword: FC<Props> = memo(({ passwordResetId, code }) => {
     dispatch({ type: 'PASSWORD_REPEAT_CHANGED', payload: e.target.value });
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     passwordChange$.next({
       processingState: state.form.processingState,

@@ -5,9 +5,9 @@ import { NewUploadSlotTemplateEdit } from '@/components/administrators/NewUpload
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   uploadSlotId: string | null;
-};
+}
 
 const NewTextBoxTemplateEditPage: NextPage<Props> = ({ uploadSlotId }) => {
   const authState = useAuthState();

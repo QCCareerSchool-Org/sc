@@ -6,10 +6,10 @@ import { LessonLayout } from '@/components/layouts/LessonLayout';
 import { useAuthState } from '@/hooks/useAuthState';
 import type { NextPageWithLayout } from 'src/pages/_app.page';
 
-type Props = {
+interface Props {
   courseId: number | null;
   materialId: string | null;
-};
+}
 
 const MaterialPage: NextPageWithLayout<Props> = ({ courseId, materialId }) => {
   const { studentId } = useAuthState();

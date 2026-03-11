@@ -9,13 +9,13 @@ import { HttpServiceError } from '@/services/httpService';
 
 export type InputType = 'text box' | 'upload slot';
 
-export type MarkSavePayload = {
+export interface MarkSavePayload {
   inputType: InputType;
   administratorId: number;
   partId: string;
   id: string;
   markOverride: number | null;
-};
+}
 
 export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayload> => {
   const navigateToLogin = useNavigateToLogin();
@@ -44,7 +44,7 @@ export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayloa
                 let message = 'Save failed';
                 if (err instanceof HttpServiceError) {
                   if (err.login) {
-                    return void navigateToLogin();
+                    navigateToLogin(); return;
                   }
                   if (err.message) {
                     message = err.message;
@@ -63,7 +63,7 @@ export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayloa
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -81,5 +81,6 @@ export const useInputSave = (dispatch: Dispatch<Action>): Subject<MarkSavePayloa
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newAssignmentService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return save$.current;
 };

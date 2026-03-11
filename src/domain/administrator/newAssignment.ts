@@ -1,6 +1,6 @@
 import type { NewDescriptionType } from '../newDescriptionType';
 
-export type NewAssignment = {
+export interface NewAssignment {
   /** uuid */
   assignmentId: string;
   /** uuid */
@@ -17,10 +17,10 @@ export type NewAssignment = {
   markOverride: number | null;
   created: Date;
   modified: Date | null;
-};
+}
 
 // what we get from the back end
-export type RawNewAssignment = {
+export interface RawNewAssignment {
   /** uuid */
   assignmentId: string;
   /** uuid */
@@ -39,4 +39,4 @@ export type RawNewAssignment = {
   created: string;
   /** date string */
   modified: string | null;
-};
+}

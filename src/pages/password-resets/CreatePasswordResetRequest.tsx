@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { memo, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -15,7 +15,7 @@ export const CreatePasswordResetRequest: FC = memo(() => {
     dispatch({ type: 'USERNAME_CHANGED', payload: e.target.value });
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     passwordResetRequest$.next({
       processingState: state.form.processingState,

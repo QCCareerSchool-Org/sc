@@ -17,10 +17,10 @@ export type NewAssignmentMediumAddPayload = {
   order: number;
 } & FileUploadOrURL;
 
-export type NewAssignmentMediumSavePayload = {
+export interface NewAssignmentMediumSavePayload {
   caption: string;
   order: number;
-};
+}
 
 type RawNewAssignmentMediumWithAssignnment = RawNewAssignmentMedium & {
   newAssignmentTemplate: RawNewAssignmentTemplate;
@@ -55,6 +55,7 @@ export class NewAssignmentMediumService implements INewAssignmentMediumService {
       body.append('order', payload.order.toString());
       body.append('file', payload.file);
       headers = { 'Content-Type': 'multipart/form-data' };
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (payload.sourceData === 'url') {
       body = payload;
       headers = {};
@@ -87,7 +88,7 @@ export class NewAssignmentMediumService implements INewAssignmentMediumService {
 
   public deleteAssignmentMedium(administratorId: number, mediumId: string): Observable<void> {
     const url = `${this.getBaseUrl(administratorId)}/${mediumId}`;
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   public downloadAssignmentMediumFile(administratorId: number, mediumId: string): Observable<void> {

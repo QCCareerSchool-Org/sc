@@ -5,13 +5,13 @@ import { Audio } from '@/components/Audio';
 import type { NewSubmission } from '@/domain/student/newSubmission';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
   newSubmission: NewSubmission;
   progressStepSize?: number;
   onProgress: (progress: number) => void;
-};
+}
 
 export const NewSubmissionStatus: FC<Props> = memo(({ studentId, courseId, newSubmission, progressStepSize = 5, onProgress }) => {
   const progress = useRef(0);

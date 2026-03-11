@@ -1,4 +1,4 @@
-export type CRMBonusItem = {
+export interface CRMBonusItem {
   /** UUID string */
   bonusItemId: string;
   name: string;
@@ -9,9 +9,9 @@ export type CRMBonusItem = {
   threshold: number | null;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawCRMBonusItem = {
+export interface RawCRMBonusItem {
   /** UUID string */
   bonusItemId: string;
   name: string;
@@ -24,4 +24,4 @@ export type RawCRMBonusItem = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

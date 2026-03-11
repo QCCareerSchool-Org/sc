@@ -10,7 +10,7 @@ import type { NewSubmissionTemplatePrice, RawNewSubmissionTemplatePrice } from '
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
-export type NewSubmissionTemplateAddPayload = {
+export interface NewSubmissionTemplateAddPayload {
   courseId: number;
   unitLetter: string;
   title: string | null;
@@ -18,27 +18,27 @@ export type NewSubmissionTemplateAddPayload = {
   markingCriteria: string | null;
   order: number;
   optional: boolean;
-};
+}
 
-export type NewSubmissionTemplateSavePayload = {
+export interface NewSubmissionTemplateSavePayload {
   unitLetter: string;
   title: string | null;
   description: string | null;
   markingCriteria: string | null;
   order: number;
   optional: boolean;
-};
+}
 
 type RawNewSubmissionTemplateWithCourseAndAssignments = RawNewSubmissionTemplate & {
   course: Course;
   newAssignmentTemplates: RawNewAssignmentTemplate[];
-  prices: Array<RawNewSubmissionTemplatePrice & { country: Country | null; currency: Currency }>;
+  prices: (RawNewSubmissionTemplatePrice & { country: Country | null; currency: Currency })[];
 };
 
 export type NewSubmissionTemplateWithCourseAndAssignments = NewSubmissionTemplate & {
   course: Course;
   newAssignmentTemplates: NewAssignmentTemplate[];
-  prices: Array<NewSubmissionTemplatePrice & { country: Country | null; currency: Currency }>;
+  prices: (NewSubmissionTemplatePrice & { country: Country | null; currency: Currency })[];
 };
 
 export interface INewSubmissionTemplateService {
@@ -75,7 +75,7 @@ export class NewSubmissionTemplateService implements INewSubmissionTemplateServi
 
   public deleteSubmission(administratorId: number, submissionId: string): Observable<void> {
     const url = `${this.getBaseUrl(administratorId)}/${submissionId}`;
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   private getBaseUrl(administratorId: number): string {

@@ -5,11 +5,11 @@ import type { WithInputForm } from './state';
 import type { NewTextBox } from '@/domain/tutor/newTextBox';
 import { parseYouTubeURL } from 'src/lib/parseYouTubeURL';
 
-type Props = {
+interface Props {
   newTextBox: WithInputForm<NewTextBox>;
   modified: boolean;
   submissionIsRedo: boolean;
-};
+}
 
 const lineHeight = 24;
 const padding = 14;

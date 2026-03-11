@@ -11,7 +11,6 @@ import DesignDesktopImage from './2025/03/design/desktop-register.jpg';
 import DesignMobileImage from './2025/03/design/mobile-register.jpg';
 import PetDesktopImage from './2025/03/pet/desktop-register.jpg';
 import PetMobileImage from './2025/03/pet/mobile-register.jpg';
-
 import { Inner } from './inner';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';

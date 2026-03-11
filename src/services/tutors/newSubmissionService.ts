@@ -17,12 +17,12 @@ export type NewSubmissionWithEnrollmentAndAssignments = NewSubmission & {
     course: Course;
     student: Student;
   };
-  newAssignments: Array<NewAssignment & {
-    newParts: Array<NewPart & {
+  newAssignments: (NewAssignment & {
+    newParts: (NewPart & {
       newTextBoxes: NewTextBox[];
       newUploadSlots: NewUploadSlot[];
-    }>;
-  }>;
+    })[];
+  })[];
 };
 
 type RawNewSubmissionWithEnrollmentAndAssignments = RawNewSubmission & {
@@ -30,12 +30,12 @@ type RawNewSubmissionWithEnrollmentAndAssignments = RawNewSubmission & {
     course: Course;
     student: RawStudent;
   };
-  newAssignments: Array<RawNewAssignment & {
-    newParts: Array<RawNewPart & {
+  newAssignments: (RawNewAssignment & {
+    newParts: (RawNewPart & {
       newTextBoxes: RawNewTextBox[];
       newUploadSlots: RawNewUploadSlot[];
-    }>;
-  }>;
+    })[];
+  })[];
 };
 
 export interface INewSubmissionService {

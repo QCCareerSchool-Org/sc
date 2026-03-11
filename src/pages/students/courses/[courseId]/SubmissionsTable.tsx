@@ -5,10 +5,10 @@ import type { NewSubmission } from '@/domain/student/newSubmission';
 import { useServices } from '@/hooks/useServices';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   newSubmissions: NewSubmission[];
   onNewUnitClick: (e: MouseEvent<HTMLTableRowElement>, submissionId: string) => void;
-};
+}
 
 export const SubmissionsTable: FC<Props> = memo(props => {
   const { newSubmissions } = props;

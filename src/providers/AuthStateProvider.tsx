@@ -7,9 +7,9 @@ import { authInitializer, authInitialState, authReducer } from '@/state/auth';
 export const AuthStateContext = createContext<AuthState | undefined>(undefined);
 export const AuthDispatchContext = createContext<Dispatch<AuthAction> | undefined>(undefined);
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export const AuthStateProvider: FC<Props> = ({ children }) => {
   // can't use authInitializer here, because it's output on the server is different from the client

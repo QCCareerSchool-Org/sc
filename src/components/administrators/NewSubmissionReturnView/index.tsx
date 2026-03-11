@@ -11,10 +11,10 @@ import { Spinner } from '@/components/Spinner';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   submissionReturnId: string;
-};
+}
 
 export const NewSubmissionReturnView: FC<Props> = ({ administratorId, submissionReturnId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

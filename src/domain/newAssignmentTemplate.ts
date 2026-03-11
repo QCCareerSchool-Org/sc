@@ -1,6 +1,6 @@
 import type { NewDescriptionType } from './newDescriptionType';
 
-export type NewAssignmentTemplate = {
+export interface NewAssignmentTemplate {
   /** uuid */
   assignmentTemplateId: string;
   /** uuid */
@@ -13,9 +13,9 @@ export type NewAssignmentTemplate = {
   optional: boolean;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewAssignmentTemplate = {
+export interface RawNewAssignmentTemplate {
   /** uuid */
   assignmentTemplateId: string;
   /** uuid */
@@ -30,4 +30,4 @@ export type RawNewAssignmentTemplate = {
   created: string;
   /** date string */
   modified: string | null;
-};
+}

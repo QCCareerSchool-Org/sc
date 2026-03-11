@@ -5,9 +5,9 @@ import type { CRMPaymentMethod } from '@/domain/student/crm/crmPaymentMethod';
 import type { CRMTransaction } from '@/domain/student/crm/crmTransaction';
 import type { CRMEnrollmentWithCourse } from '@/services/students/crmEnrollmentService';
 
-type MetaData = { discountedCost: number; balance: number; nextInstallment: Date | null };
+interface MetaData { discountedCost: number; balance: number; nextInstallment: Date | null }
 
-export type State = {
+export interface State {
   crmEnrollment?: CRMEnrollmentWithCourse & { meta: MetaData };
   form: {
     data: {
@@ -23,7 +23,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: CRMEnrollmentWithCourse }
@@ -177,6 +177,7 @@ const getMeta = (crmEnrollment: CRMEnrollmentWithCourse): { discountedCost: numb
           nextInstallment.setDate(nextInstallment.getDate() + 7);
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (crmEnrollment.paymentFrequency === 'biWeekly') {
       if (crmEnrollment.paymentStart) {
         nextInstallment = new Date(crmEnrollment.paymentStart.getFullYear(), crmEnrollment.paymentStart.getMonth(), crmEnrollment.paymentStart.getDate(), paymentHour, paymentMinute);

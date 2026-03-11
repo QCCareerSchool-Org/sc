@@ -5,9 +5,9 @@ import { CourseProgress } from './CourseProgress';
 import type { StudentData } from './state';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   enrollment: StudentData['enrollments'][0];
-};
+}
 
 export const EnrollmentsTableRow: FC<Props> = ({ enrollment }) => {
   const router = useRouter();

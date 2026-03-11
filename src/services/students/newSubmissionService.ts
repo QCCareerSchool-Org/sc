@@ -18,12 +18,12 @@ export type NewSubmissionWithCourseAndChildren = NewSubmission & {
       school: School;
     };
   };
-  newAssignments: Array<NewAssignment & {
-    newParts: Array<NewPart & {
+  newAssignments: (NewAssignment & {
+    newParts: (NewPart & {
       newTextBoxes: NewTextBox[];
       newUploadSlots: NewUploadSlot[];
-    }>;
-  }>;
+    })[];
+  })[];
   parent: NewSubmission | null;
 };
 
@@ -33,12 +33,12 @@ type RawNewSubmissionWithCourseAndChildren = RawNewSubmission & {
       school: School;
     };
   };
-  newAssignments: Array<RawNewAssignment & {
-    newParts: Array<RawNewPart & {
+  newAssignments: (RawNewAssignment & {
+    newParts: (RawNewPart & {
       newTextBoxes: RawNewTextBox[];
       newUploadSlots: RawNewUploadSlot[];
-    }>;
-  }>;
+    })[];
+  })[];
   parent: RawNewSubmission | null;
 };
 

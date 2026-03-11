@@ -23,17 +23,16 @@ interface NextHistoryState {
 export const useWarnIfUnsavedChanges = (notSaved?: boolean, message = 'Changes you made may not be saved.'): void => {
   const router = useRouter();
   const popStateAlreadyChecked = useRef(false);
-  const lastHistory = useRef<History>();
+  const lastHistory = useRef<History>(undefined);
 
   useEffect(() => {
     // make a copy of the history so we can restore the url in beforePopStateCallback
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-misused-spread
     lastHistory.current = { ...window.history, state: { ...window.history.state, options: { ...window.history.state.options } } };
 
     if (notSaved) {
       // For reloading the page or leaving the site
-      const beforeUnloadHandler = (e: BeforeUnloadEvent): string => {
-        (e || window.event).returnValue = message; // Gecko + IE
+      const beforeUnloadHandler = (): string => {
         return message; // Safari, Chrome, and other WebKit-derived browsers
       };
 
@@ -57,7 +56,7 @@ export const useWarnIfUnsavedChanges = (notSaved?: boolean, message = 'Changes y
           if (router.pathname !== url && !confirm(message)) {
             router.events.emit('routeChangeError');
 
-            // eslint-disable-next-line @typescript-eslint/no-throw-literal
+            // eslint-disable-next-line @typescript-eslint/only-throw-error
             throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
           }
         }

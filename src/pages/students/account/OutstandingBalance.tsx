@@ -3,9 +3,9 @@ import type { FC } from 'react';
 import styles from './MZKitNotice.module.css';
 import { getTelephoneNumber } from 'src/lib/helper-functions';
 
-type Props = {
+interface Props {
   countryCode: string;
-};
+}
 
 export const OutstandingBalance: FC<Props> = ({ countryCode }) => {
   const mailtoHref = 'mailto:accounts@qccareerschool.com?subject=Paying Off My Balance&body=Please send me more information on any discounts and promotions that I qualify for if I pay off my balance.';

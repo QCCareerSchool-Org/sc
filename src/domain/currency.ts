@@ -1,6 +1,6 @@
-export type Currency = {
+export interface Currency {
   currencyId: number;
   code: string;
   name: string;
   symbol: string;
-};
+}

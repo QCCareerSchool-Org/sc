@@ -1,11 +1,12 @@
 import type { FC, MouseEvent } from 'react';
 import { memo } from 'react';
+
 import type { School } from '@/domain/school';
 
-type Props = {
+interface Props {
   schools: School[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, schoolId: number) => void;
-};
+}
 
 export const SchoolList: FC<Props> = memo(props => (
   <>

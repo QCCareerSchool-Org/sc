@@ -3,9 +3,9 @@ import type { FC, MouseEvent } from 'react';
 
 import type { Unit } from '@/domain/unit';
 
-type Props = {
+interface Props {
   units: Unit[];
-};
+}
 
 export const UnitsTable: FC<Props> = ({ units }) => {
   const router = useRouter();
@@ -28,7 +28,7 @@ export const UnitsTable: FC<Props> = ({ units }) => {
         {units.map(u => (
           <tr key={u.unitId} onClick={e => handleClick(e, u.unitId)}>
             <td className="text-center">{u.unitLetter}</td>
-            <td>{u.title === null ? '(none)' : u.title}</td>
+            <td>{u.title ?? '(none)'}</td>
             <td className="text-center">{u.order}</td>
           </tr>
         ))}

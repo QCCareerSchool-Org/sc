@@ -1,9 +1,10 @@
 import type { FC } from 'react';
+
 import type { NewSubmission } from '@/domain/administrator/newSubmission';
 
-type Props = {
+interface Props {
   submission: NewSubmission;
-};
+}
 
 export const NewSubmissionStatus: FC<Props> = ({ submission }) => {
   if (!submission.submitted) {

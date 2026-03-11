@@ -5,9 +5,9 @@ import { NewPartTemplateEdit } from '@/components/administrators/NewPartTemplate
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   partId: string | null;
-};
+}
 
 const NewPartTemplateEditPage: NextPage<Props> = ({ partId }) => {
   const authState = useAuthState();

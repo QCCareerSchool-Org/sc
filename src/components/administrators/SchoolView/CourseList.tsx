@@ -3,10 +3,10 @@ import { memo } from 'react';
 
 import type { Course } from '@/domain/course';
 
-type Props = {
+interface Props {
   courses: Course[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, courseId: number) => void;
-};
+}
 
 export const CourseList: FC<Props> = memo(props => {
   const { courses } = props;

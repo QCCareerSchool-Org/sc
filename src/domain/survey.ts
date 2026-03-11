@@ -1,5 +1,5 @@
-export type Survey = {
+export interface Survey {
   /** uuid */
   surveyId: string;
   name: string;
-};
+}

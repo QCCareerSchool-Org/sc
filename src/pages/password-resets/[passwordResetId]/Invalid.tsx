@@ -4,9 +4,9 @@ import { memo } from 'react';
 
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   type: 'already used' | 'expired';
-};
+}
 
 export const Invalid: FC<Props> = memo(({ type }) => (
   <Section>

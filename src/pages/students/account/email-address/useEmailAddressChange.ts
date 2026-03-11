@@ -7,12 +7,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-type EmailAddressChangeEvent = {
+interface EmailAddressChangeEvent {
   studentId: number;
   crmId?: number;
   emailAddress: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useEmailAddressChange = (dispatch: Dispatch<Action>): Subject<EmailAddressChangeEvent> => {
   const { studentService, crmStudentService } = useStudentServices();
@@ -37,7 +37,7 @@ export const useEmailAddressChange = (dispatch: Dispatch<Action>): Subject<Email
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -55,5 +55,6 @@ export const useEmailAddressChange = (dispatch: Dispatch<Action>): Subject<Email
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, studentService, crmStudentService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return change$.current;
 };

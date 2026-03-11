@@ -1,13 +1,13 @@
-export type Auditor = {
+export interface Auditor {
   auditorId: number;
   emailAddress: string;
   firstName: string;
   lastName: string;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawAuditor = {
+export interface RawAuditor {
   auditorId: number;
   emailAddress: string;
   firstName: string;
@@ -16,4 +16,4 @@ export type RawAuditor = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

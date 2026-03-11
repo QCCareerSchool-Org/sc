@@ -1,4 +1,4 @@
-export type CRMCurrency = {
+export interface CRMCurrency {
   currencyId: number;
   code: string;
   name: string;
@@ -6,9 +6,9 @@ export type CRMCurrency = {
   exchangeRate: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawCRMCurrency = {
+export interface RawCRMCurrency {
   currencyId: number;
   code: string;
   name: string;
@@ -18,4 +18,4 @@ export type RawCRMCurrency = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

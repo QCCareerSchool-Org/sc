@@ -1,10 +1,10 @@
 import type { School } from '@/domain/school';
 
-export type State = {
+export interface State {
   schools?: School[];
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'SCHOOLS_LOAD_SUCCEEDED'; payload: School[] }

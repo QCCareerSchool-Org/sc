@@ -8,12 +8,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { MaterialEditPayload } from '@/services/administrators/materialService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type MaterialDetailsSaveEvent = {
+export interface MaterialDetailsSaveEvent {
   processingState: State['detailsForm']['processingState'];
   administratorId: number;
   materialId: string;
   payload: MaterialEditPayload;
-};
+}
 
 export const useMaterialDetailsSave = (dispatch: Dispatch<Action>): Subject<MaterialDetailsSaveEvent> => {
   const { materialService } = useAdminServices();
@@ -35,7 +35,7 @@ export const useMaterialDetailsSave = (dispatch: Dispatch<Action>): Subject<Mate
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -53,5 +53,6 @@ export const useMaterialDetailsSave = (dispatch: Dispatch<Action>): Subject<Mate
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, materialService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return save$.current;
 };

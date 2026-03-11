@@ -6,21 +6,21 @@ import { Medium } from './Medium';
 import { Part } from './Part';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
-import { useInputSave } from './useInputSave';
 import type { InputType } from './useInputSave';
+import { useInputSave } from './useInputSave';
 import { Description } from '@/components/Description';
 import { InaccessibleUnit } from '@/components/InaccessibleUnit';
 import { Section } from '@/components/Section';
 import { endpoint } from 'src/basePath';
 import { scrollToId } from 'src/scrollToId';
 
-type Props = {
+interface Props {
   tutorId: number;
   studentId: number;
   courseId: number;
   submissionId: string;
   assignmentId: string;
-};
+}
 
 export const NewAssignmentView: FC<Props> = ({ tutorId, studentId, courseId, submissionId, assignmentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

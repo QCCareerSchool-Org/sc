@@ -3,7 +3,7 @@ import { memo, useRef } from 'react';
 
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
 
-type Props = {
+interface Props {
   controls?: boolean;
   src: string;
   type?: string;
@@ -13,7 +13,7 @@ type Props = {
   onPlay?: ReactEventHandler<HTMLAudioElement>;
   onTimeUpdate?: ReactEventHandler<HTMLAudioElement>;
   onEnded?: ReactEventHandler<HTMLAudioElement>;
-};
+}
 
 export const Audio: FC<Props> = memo(props => {
   const audioRef = useRef<HTMLAudioElement>(null);

@@ -3,16 +3,16 @@ import { useEffect, useRef } from 'react';
 
 import { Video } from '@/components/Video';
 
-type OnPlayFunction = (e: SyntheticEvent<HTMLVideoElement, Event>, videoId: string) => void;
+type OnPlayFunction = (e: SyntheticEvent<HTMLVideoElement>, videoId: string) => void;
 
-type Props = {
+interface Props {
   videoId: string;
   src: string;
   posterSrc?: string;
   captionSrc: string | null;
   playingVideoId?: string;
   onPlay: OnPlayFunction;
-};
+}
 
 export const CourseVideo: FC<Props> = ({ videoId, src, posterSrc, captionSrc, playingVideoId, onPlay }) => {
   const videoRef = useRef<HTMLVideoElement>(null);

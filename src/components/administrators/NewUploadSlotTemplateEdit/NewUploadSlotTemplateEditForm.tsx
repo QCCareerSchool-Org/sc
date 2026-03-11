@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -9,7 +9,7 @@ import type { NewUploadSlotTemplateSaveEvent } from './useUploadSlotSave';
 import { Spinner } from '@/components/Spinner';
 import type { NewUploadSlotAllowedType } from '@/services/administrators/newUploadSlotTemplateService';
 
-type Props = {
+interface Props {
   administratorId: number;
   uploadSlotId: string;
   formState: State['form'];
@@ -23,7 +23,7 @@ type Props = {
   onPointsChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewUploadSlotTemplateEditForm: FC<Props> = memo(props => {
   const { administratorId, uploadSlotId, formState, save$, delete$ } = props;
@@ -38,7 +38,7 @@ export const NewUploadSlotTemplateEditForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;

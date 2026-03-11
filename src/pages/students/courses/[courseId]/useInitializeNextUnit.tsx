@@ -8,11 +8,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-type InitializeNextUnitEvent = {
+interface InitializeNextUnitEvent {
   processingState: State['form']['processingState'];
   studentId: number;
   courseId: number;
-};
+}
 
 export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<InitializeNextUnitEvent> => {
   const router = useRouter();
@@ -37,7 +37,7 @@ export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<Initi
             let message = 'Initialize failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -54,5 +54,6 @@ export const useInitializeNextUnit = (dispatch: Dispatch<Action>): Subject<Initi
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionService, router, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return initializeNextUnit$.current;
 };

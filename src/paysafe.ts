@@ -81,11 +81,11 @@ export interface PaysafeInstance {
 export async function createInstance(apiKey: string, options: unknown): Promise<PaysafeInstance> {
   return new Promise<PaysafeInstance>((resolve, reject) => {
     if (!window.paysafe) {
-      return reject(Error('Paysafe is undefined'));
+      reject(Error('Paysafe is undefined')); return;
     }
     window.paysafe.fields.setup(apiKey, options, (instance, err) => {
       if (err) {
-        return reject(err);
+        reject(err); return;
       }
       resolve(instance);
     });
@@ -101,14 +101,16 @@ export async function tokenize(instance: PaysafeInstance, options?: TokenizeOpti
     if (typeof options === 'undefined') {
       instance.tokenize((tokenInstance, err, result) => {
         if (err) {
-          return reject(err);
+          reject(err instanceof Error ? err : Error('Failed to tokenize'));
+          return;
         }
         resolve(result.token);
       });
     } else {
       instance.tokenize(options, (tokenInstance, err, result) => {
         if (err) {
-          return reject(err);
+          reject(err instanceof Error ? err : Error('Failed to tokenize'));
+          return;
         }
         resolve(result.token);
       });

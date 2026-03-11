@@ -1,10 +1,11 @@
 import type { FC } from 'react';
+
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   courseId: number;
   courseName: string;
-};
+}
 
 export const CourseButton: FC<Props> = ({ courseId, courseName }) => {
   const src = `${endpoint}/courseIconImages/${courseId}`;

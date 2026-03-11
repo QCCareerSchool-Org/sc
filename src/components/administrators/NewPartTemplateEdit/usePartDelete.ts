@@ -8,11 +8,11 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type PartDeletePayload = {
+export interface PartDeletePayload {
   administratorId: number;
   partId: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const usePartDelete = (dispatch: Dispatch<Action>): Subject<PartDeletePayload> => {
   const { newPartTemplateService } = useAdminServices();
@@ -38,7 +38,7 @@ export const usePartDelete = (dispatch: Dispatch<Action>): Subject<PartDeletePay
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,5 +56,6 @@ export const usePartDelete = (dispatch: Dispatch<Action>): Subject<PartDeletePay
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newPartTemplateService, navigateToLogin, router ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return partDelete$.current;
 };

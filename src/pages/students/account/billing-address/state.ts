@@ -1,8 +1,9 @@
 import type { CRMCountry } from '@/domain/crm/crmCountry';
 import type { CRMProvince } from '@/domain/crm/crmProvince';
 import type { CRMStudentWithCountryAndProvince, CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
+import { getLength } from 'src/lib/segmenter';
 
-export type State = {
+export interface State {
   crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
   crmCountries?: CRMCountry[];
   crmProvinces: Record<string, CRMProvince[]>;
@@ -29,7 +30,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: { crmStudent: CRMStudentWithCountryProvinceAndEnrollments; crmCountries: CRMCountry[]; crmProvinces: CRMProvince[] } }
@@ -76,7 +77,7 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = `Required`;
       } else {
         const maxLength = 40;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -93,7 +94,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'ADDRESS2_UPDATED': {
       let validationMessage: string | undefined;
       const maxLength = 40;
-      const newLength = [ ...action.payload ].length;
+      const newLength = getLength(action.payload);
       if (newLength > maxLength) {
         validationMessage = `Exceeds maximum length of ${maxLength}`;
       }
@@ -112,7 +113,7 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = `Required`;
       } else {
         const maxLength = 31;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -141,7 +142,7 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = `Required`;
       } else {
         const maxLength = 10;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

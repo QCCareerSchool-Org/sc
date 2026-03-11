@@ -1,13 +1,14 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { useId, useState } from 'react';
+
 import { AwardsTable } from './awardsTable';
 import { Spinner } from '@/components/Spinner';
 import type { Award } from '@/domain/award';
 import { useAdminServices } from '@/hooks/useAdminServices';
 
-type Props = {
+interface Props {
   administratorId: number;
-};
+}
 
 export const AwardsOfExcellence: FC<Props> = ({ administratorId }) => {
   const previousSunday = getPreviousSundayMidnight();
@@ -32,7 +33,7 @@ export const AwardsOfExcellence: FC<Props> = ({ administratorId }) => {
     setEndDate(new Date(target.value));
   };
 
-  const handleSubmit: FormEventHandler = e => {
+  const handleSubmit: SubmitEventHandler = e => {
     e.preventDefault();
     setState('fetching');
     awardService.getAllAwards(administratorId, startDate, endDate).subscribe({

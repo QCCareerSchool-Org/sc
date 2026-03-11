@@ -1,4 +1,4 @@
-export type LessonState = {
+export interface LessonState {
   currentLesson?: {
     window: Window;
     materialId: string;

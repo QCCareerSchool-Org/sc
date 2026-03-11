@@ -7,7 +7,7 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-type BillingAddressChangeEvent = {
+interface BillingAddressChangeEvent {
   crmId: number;
   address1: string;
   address2: string;
@@ -16,7 +16,7 @@ type BillingAddressChangeEvent = {
   postalCode: string;
   countryCode: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useBillingAddressChange = (dispatch: Dispatch<Action>): Subject<BillingAddressChangeEvent> => {
   const { studentService, crmStudentService } = useStudentServices();
@@ -38,7 +38,7 @@ export const useBillingAddressChange = (dispatch: Dispatch<Action>): Subject<Bil
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,5 +56,6 @@ export const useBillingAddressChange = (dispatch: Dispatch<Action>): Subject<Bil
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, studentService, crmStudentService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return change$.current;
 };

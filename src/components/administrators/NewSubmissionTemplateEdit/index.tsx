@@ -20,10 +20,10 @@ import type { NewSubmissionTemplatePrice } from '@/domain/newSubmissionTemplateP
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   submissionId: string;
-};
+}
 
 const changesPresent = (submissionTemplate: NewSubmissionTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!submissionTemplate) {

@@ -27,10 +27,10 @@ import type { EnrollmentWithStudentCourseAndUnits } from '@/services/students/en
 import { endpoint } from 'src/basePath';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
-};
+}
 
 export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   const { enrollmentService } = useStudentServices();
@@ -53,7 +53,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
   // const hasResources = useMemo(() => enrollment.course.units.some(u => u.videos.length > 0), [ enrollment.course.units ]);
   const hasResources = false;
 
-  const certificationData = useMemo(() => (state.data?.enrollment.course.code ? certificationDataDictionary[state.data?.enrollment.course.code] : undefined), [ state.data?.enrollment.course.code ]);
+  const certificationData = useMemo(() => (state.data?.enrollment.course.code ? certificationDataDictionary[state.data.enrollment.course.code] : undefined), [ state.data?.enrollment.course.code ]);
 
   const handleNewUnitClick = useCallback((e: MouseEvent<HTMLTableRowElement>, submissionId: string): void => {
     void router.push(`/students/courses/${courseId}/submissions/${submissionId}`);
@@ -101,6 +101,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
 
   if (enrollment.course.submissionType !== 1) {
     // courses with the old system should use the old page
+    // eslint-disable-next-line react-hooks/immutability
     window.location.href = `/students/course-materials/new.bs.php?course_id=${courseId}`;
     return null;
   }
@@ -113,7 +114,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
     });
   };
 
-  const handleVideoPlay = (e: SyntheticEvent<HTMLVideoElement, Event>, videoId: string): void => {
+  const handleVideoPlay = (e: SyntheticEvent<HTMLVideoElement>, videoId: string): void => {
     setPlayingVideoId(videoId);
   };
 
@@ -142,6 +143,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
               {enrollment.course.courseGuide && <HandbookButton course={enrollment.course} />}
               <div className="mt-5">
                 <p className="lead mb-0 text-shadow"><MdCollectionsBookmark /> <a href="#materials" style={{ textDecoration: 'none' }} className="text-white">Course Materials</a></p>
+                {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
                 {hasResources && <p className="lead mb-0 text-shadow"><MdListAlt /> <a href="#resources" style={{ textDecoration: 'none' }} className="text-white">Resources</a></p>}
                 {hasVideos && <p className="lead mb-0 text-shadow"><MdMovie /> <a href="#videos" style={{ textDecoration: 'none' }} className="text-white">Videos</a></p>}
                 {certificationData && <p className="lead mb-0 text-shadow"><MdPolicy /> <a href="#certification" style={{ textDecoration: 'none' }} className="text-white">Certification Logo</a></p>}
@@ -204,6 +206,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
           )}
         </div>
       </Section>
+      {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
       {hasResources && (
         <Section id="resources">
           <div className="container">

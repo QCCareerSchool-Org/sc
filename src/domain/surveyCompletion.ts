@@ -1,4 +1,4 @@
-export type SurveyCompletion = {
+export interface SurveyCompletion {
   /** uuid */
   surveyCompletionId: string;
   /** uuid */
@@ -6,9 +6,9 @@ export type SurveyCompletion = {
   enrollmentId: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawSurveyCompletion = {
+export interface RawSurveyCompletion {
   /** uuid */
   surveyCompletionId: string;
   /** uuid */
@@ -18,4 +18,4 @@ export type RawSurveyCompletion = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

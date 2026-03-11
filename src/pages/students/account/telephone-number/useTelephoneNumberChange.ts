@@ -7,12 +7,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-type TelephoneNumberChangeEvent = {
+interface TelephoneNumberChangeEvent {
   crmId: number;
   telephoneCountryCode: number;
   telephoneNumber: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useTelephoneNumberChange = (dispatch: Dispatch<Action>): Subject<TelephoneNumberChangeEvent> => {
   const { crmStudentService } = useStudentServices();
@@ -34,7 +34,7 @@ export const useTelephoneNumberChange = (dispatch: Dispatch<Action>): Subject<Te
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -52,5 +52,6 @@ export const useTelephoneNumberChange = (dispatch: Dispatch<Action>): Subject<Te
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, crmStudentService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return change$.current;
 };

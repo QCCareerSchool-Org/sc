@@ -1,15 +1,16 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { useCallback, useReducer } from 'react';
+
 import { CourseCountryForm } from './CourseCountryForm';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   administratorId: number;
-};
+}
 
 export const UnitPrice: FC<Props> = ({ administratorId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -17,7 +18,7 @@ export const UnitPrice: FC<Props> = ({ administratorId }) => {
 
   useInitialData(dispatch, administratorId);
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     const course = state.courses?.find(c => c.courseId === state.courseId);
     if (course?.submissionType === 0) {

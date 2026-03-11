@@ -23,7 +23,7 @@ export const useAudioProgress = (dispatch: Dispatch<Action>, studentId: number, 
           error: err => {
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin();
               }
             }
           },
@@ -36,5 +36,6 @@ export const useAudioProgress = (dispatch: Dispatch<Action>, studentId: number, 
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, studentId, courseId, submissionId, newSubmissionService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return skip$.current;
 };

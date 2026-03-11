@@ -1,4 +1,5 @@
-import { map, type Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 
 import type { Material, RawMaterial } from '@/domain/material';
 import type { MaterialCompletion } from '@/domain/materialCompletion';
@@ -33,7 +34,7 @@ export class MaterialService implements IMaterialService {
 
   public deleteMaterialCompletion(studentId: number, enrollmentId: number, materialId: string): Observable<void> {
     const url = `${this.getBaseUrl(studentId, enrollmentId)}/${materialId}/materialCompletions`;
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   public getMaterial(studentId: number, materialId: string): Observable<MaterialWithData> {
@@ -43,7 +44,7 @@ export class MaterialService implements IMaterialService {
 
   public updateMaterialData(studentId: number, materialId: string, data: Record<string, string>): Observable<void> {
     const url = `${endpoint}/students/${studentId}/materials/${materialId}/data`;
-    return this.httpService.post<void>(url, data);
+    return this.httpService.post(url, data);
   }
 
   private getBaseUrl(studentId: number, enrollmentId: number): string {

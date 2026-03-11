@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, tap } from 'rxjs';
@@ -7,11 +8,11 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type MaterialImageDeleteEvent = {
+export interface MaterialImageDeleteEvent {
   processingState: State['imageForm']['processingState'];
   administratorId: number;
   materialId: string;
-};
+}
 
 export const useMaterialImageDelete = (dispatch: Dispatch<Action>): Subject<MaterialImageDeleteEvent> => {
   const { materialService } = useAdminServices();
@@ -33,7 +34,7 @@ export const useMaterialImageDelete = (dispatch: Dispatch<Action>): Subject<Mate
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;

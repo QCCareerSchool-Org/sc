@@ -8,9 +8,9 @@ import { ContinuingEducationGroup } from '@/components/continuedEducation/Contin
 import { Section } from '@/components/Section';
 import type { SchoolSlug } from '@/domain/school';
 
-type Props = {
+interface Props {
   studentId: number;
-};
+}
 
 const schoolSlugs: SchoolSlug[] = [
   'design',
@@ -39,7 +39,7 @@ export const ContinuedEducation: FC<Props> = ({ studentId }) => {
       <div className="container">
         <h1>Continued Education</h1>
         <p className="lead">Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses  from any of QC's faculties including QC Makeup Academy, QC Event Planning, QC Design School, QC Pet Studies and QC Wellness Studies.</p>
-        {crmStudent && schoolSlugs?.map((s, i) => courseSuggestionGroups[s].map(group => {
+        {crmStudent && schoolSlugs.map((s, i) => courseSuggestionGroups[s].map(group => {
           return <ContinuingEducationGroup
             key={group.id}
             shippingDetails={{

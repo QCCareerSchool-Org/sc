@@ -8,12 +8,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewAssignmentTemplateSavePayload } from '@/services/administrators/newAssignmentTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewAssignmentTemplateSaveEvent = {
+export interface NewAssignmentTemplateSaveEvent {
   administratorId: number;
   assignmentId: string;
   payload: NewAssignmentTemplateSavePayload;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<NewAssignmentTemplateSaveEvent> => {
   const { newAssignmentTemplateService } = useAdminServices();
@@ -37,7 +37,7 @@ export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<NewAssign
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -55,5 +55,6 @@ export const useAssignmentSave = (dispatch: Dispatch<Action>): Subject<NewAssign
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newAssignmentTemplateService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return assignmentSave$.current;
 };

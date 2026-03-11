@@ -5,9 +5,9 @@ import { StudentView } from './StudentView';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 
-type Props = {
+interface Props {
   studentId: number | null;
-};
+}
 
 const AuditorStudentViewPage: NextPage<Props> = ({ studentId }) => {
   const { auditorId } = useAuthState();

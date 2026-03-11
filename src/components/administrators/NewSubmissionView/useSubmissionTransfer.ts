@@ -7,10 +7,10 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-type SubmissionTransferEvent = {
+interface SubmissionTransferEvent {
   tutorId: number | null;
   processingState: State['transferForm']['processingState'];
-};
+}
 
 export const useSubmissionTransfer = (dispatch: Dispatch<Action>, administratorId: number, submissionId: string): Subject<SubmissionTransferEvent> => {
   const { studentService, newSubmissionService } = useAdminServices();
@@ -36,7 +36,7 @@ export const useSubmissionTransfer = (dispatch: Dispatch<Action>, administratorI
               let message = 'Transfer failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,5 +54,6 @@ export const useSubmissionTransfer = (dispatch: Dispatch<Action>, administratorI
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, administratorId, submissionId, studentService, newSubmissionService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return transfer$.current;
 };

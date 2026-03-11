@@ -3,10 +3,10 @@ import { memo } from 'react';
 
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 
-type Props = {
+interface Props {
   parts: NewPartTemplate[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, partId: string) => void;
-};
+}
 
 export const NewPartTemplateList: FC<Props> = memo(props => {
   const { parts } = props;

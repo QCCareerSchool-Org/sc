@@ -3,10 +3,10 @@ import { memo } from 'react';
 
 import type { Material, MaterialType } from '@/domain/material';
 
-type Props = {
+interface Props {
   materials: Material[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, materialId: string) => void;
-};
+}
 
 export const MaterialTable: FC<Props> = memo(props => (
   <table className="table table-bordered table-hover w-auto bg-white">
@@ -21,7 +21,7 @@ export const MaterialTable: FC<Props> = memo(props => (
     <tbody>
       {props.materials.map(m => (
         <tr key={m.materialId} onClick={e => props.onClick(e, m.materialId)}>
-          <td>{m.title ?? '(none)'}</td>
+          <td>{m.title}</td>
           <td>{materialTypeName(m.type)}</td>
           <td className="text-center">{m.imageMimeTypeId ? <span className="text-success">yes</span> : <span>no</span>}</td>
           <td className="text-center">{m.order}</td>

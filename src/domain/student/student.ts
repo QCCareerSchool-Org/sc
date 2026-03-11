@@ -1,4 +1,4 @@
-export type Student = {
+export interface Student {
   studentId: number;
   countryId: number;
   provinceId: number | null;
@@ -24,9 +24,9 @@ export type Student = {
   created: Date;
   modified: Date;
   hasCASocialInsuranceNumber: boolean;
-};
+}
 
-export type RawStudent = {
+export interface RawStudent {
   studentId: number;
   countryId: number;
   provinceId: number | null;
@@ -56,4 +56,4 @@ export type RawStudent = {
   /** string date */
   modified: string;
   hasCASocialInsuranceNumber: boolean;
-};
+}

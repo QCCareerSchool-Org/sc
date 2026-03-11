@@ -5,7 +5,7 @@ import { debounceTime, Subject, takeUntil } from 'rxjs';
 import type { InputForm } from './state';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 
-type Props = {
+interface Props {
   id: string;
   partId: string;
   points: number;
@@ -14,7 +14,7 @@ type Props = {
   notes: string | null;
   form: InputForm;
   save: (partId: string, id: string, markOverride: number | null) => void;
-};
+}
 
 export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, markOverride, notes, form, save }) => {
   const [ markFormValue, setMarkFormValue ] = useState(markOverride); // for the html input
@@ -23,6 +23,7 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, markOverrid
 
   const valueChange$ = useRef(new Subject<{ markOverride: number | null }>());
 
+  // eslint-disable-next-line react-hooks/refs
   useWarnIfUnsavedChanges(markOverride !== immediateMarkOverride.current);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-export type State = {
+export interface State {
   emailAddress?: string;
   error: boolean;
   errorCode?: number;
@@ -10,7 +10,7 @@ export type State = {
     processingState: 'idle' | 'submitting' | 'success' | 'error';
     errorMessage?: string;
   };
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: string }

@@ -7,13 +7,13 @@ import type { UploadSlotState } from './state';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   uploadSlot: UploadSlotState;
   locked: boolean;
   uploadFile: UploadSlotFunction;
   deleteFile: UploadSlotFunction;
   downloadFile: UploadSlotFunction;
-};
+}
 
 export const NewUploadSlotForm: FC<Props> = memo(({ uploadSlot, locked, uploadFile, deleteFile, downloadFile }) => {
   const upload$ = useRef(new Subject<{ state: UploadSlotState; file: File }>());
@@ -51,8 +51,11 @@ export const NewUploadSlotForm: FC<Props> = memo(({ uploadSlot, locked, uploadFi
         {uploadSlot.saveState === 'saving'
           ? <ProgressBar progress={uploadSlot.progress}>{uploadSlot.progress}%</ProgressBar>
           : uploadSlot.saveState === 'save error' || uploadSlot.saveState === 'empty'
+            // eslint-disable-next-line react-hooks/refs
             ? <EmptySlot uploadSlot={uploadSlot} locked={locked} upload$={upload$.current} />
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             : uploadSlot.saveState === 'deleting' || uploadSlot.saveState === 'delete error' || uploadSlot.saveState === 'saved'
+              // eslint-disable-next-line react-hooks/refs
               ? <FullSlot uploadSlot={uploadSlot} locked={locked} delete$={delete$.current} download$={download$.current} />
               : <div />
         }
@@ -78,11 +81,11 @@ export const NewUploadSlotForm: FC<Props> = memo(({ uploadSlot, locked, uploadFi
 
 NewUploadSlotForm.displayName = 'NewUploadSlotForm';
 
-type EmptySlotProps = {
+interface EmptySlotProps {
   uploadSlot: UploadSlotState;
   locked: boolean;
   upload$: Subject<{ state: UploadSlotState; file: File }>;
-};
+}
 
 const EmptySlot: FC<EmptySlotProps> = ({ uploadSlot, locked, upload$ }) => {
   const handleFileInputChange: ChangeEventHandler<HTMLInputElement> = e => {
@@ -108,12 +111,12 @@ const EmptySlot: FC<EmptySlotProps> = ({ uploadSlot, locked, upload$ }) => {
   );
 };
 
-type FullSlotProps = {
+interface FullSlotProps {
   uploadSlot: UploadSlotState;
   locked: boolean;
   delete$: Subject<UploadSlotState>;
   download$: Subject<UploadSlotState>;
-};
+}
 
 const FullSlot: FC<FullSlotProps> = ({ uploadSlot, locked, delete$, download$ }) => {
   const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = e => {

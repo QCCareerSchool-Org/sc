@@ -1,6 +1,6 @@
-export type Tutor = {
+export interface Tutor {
   tutorId: number;
   firstName: string;
   lastName: string;
   introduction: boolean;
-};
+}

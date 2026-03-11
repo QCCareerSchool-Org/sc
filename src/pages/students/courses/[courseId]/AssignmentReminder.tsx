@@ -1,11 +1,12 @@
 import type { FC, MouseEventHandler } from 'react';
+
 import { MaterialButton } from './MaterialButton';
 import { scrollToId } from 'src/scrollToId';
 
-type Props = {
+interface Props {
   title: string;
   description: string;
-};
+}
 
 export const AssignmentReminder: FC<Props> = ({ title, description }) => {
   const handleClick: MouseEventHandler<HTMLAnchorElement> = e => {

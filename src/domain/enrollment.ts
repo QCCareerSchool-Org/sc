@@ -1,4 +1,4 @@
-export type Enrollment = {
+export interface Enrollment {
   enrollmentId: number;
   courseId: number;
   studentId: number;
@@ -18,9 +18,9 @@ export type Enrollment = {
   dueDate: Date | null;
   fastTrack: boolean;
   paymentsDisabled: boolean;
-};
+}
 
-export type RawEnrollment = {
+export interface RawEnrollment {
   enrollmentId: number;
   courseId: number;
   studentId: number;
@@ -40,4 +40,4 @@ export type RawEnrollment = {
   dueDate: string | null;
   fastTrack: boolean;
   paymentsDisabled: boolean;
-};
+}

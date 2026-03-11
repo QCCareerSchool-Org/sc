@@ -1,10 +1,10 @@
 import type { FC } from 'react';
 import { FaFile, FaFileExcel, FaFilePdf, FaFileWord } from 'react-icons/fa';
 
-type Props = {
+interface Props {
   mimeType: string;
   size: number;
-};
+}
 
 export const FileIcon: FC<Props> = ({ mimeType, size }) => {
   if (mimeType === 'application/pdf') {

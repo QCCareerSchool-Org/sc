@@ -7,12 +7,12 @@ import { useAuditorServices } from '@/hooks/useAuditorServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type EmailChangeEvent = {
+export interface EmailChangeEvent {
   auditorId: number;
   newEmailAddress: string;
   password: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useSubmit = (dispatch: Dispatch<Action>): Subject<EmailChangeEvent> => {
   const navigateToLogin = useNavigateToLogin();
@@ -32,7 +32,7 @@ export const useSubmit = (dispatch: Dispatch<Action>): Subject<EmailChangeEvent>
             let message = 'Update failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -49,5 +49,6 @@ export const useSubmit = (dispatch: Dispatch<Action>): Subject<EmailChangeEvent>
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, auditorService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return filter$.current;
 };

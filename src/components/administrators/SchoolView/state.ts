@@ -1,10 +1,10 @@
 import type { SchoolWithCourses } from '@/services/administrators/schoolService';
 
-export type State = {
+export interface State {
   school?: SchoolWithCourses;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_SCHOOL_SUCCEEDED'; payload: SchoolWithCourses }

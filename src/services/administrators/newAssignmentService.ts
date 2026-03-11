@@ -13,21 +13,21 @@ import { endpoint } from 'src/basePath';
 
 export type NewAssignmentWithChildren = NewAssignment & {
   newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark' | 'markOverride'>;
-  newParts: Array<NewPart & {
+  newParts: (NewPart & {
     newTextBoxes: NewTextBox[];
     newUploadSlots: NewUploadSlot[];
     newPartMedia: NewPartMedium[];
-  }>;
+  })[];
   newAssignmentMedia: NewAssignmentMedium[];
 };
 
 type RawNewAssignmentWithChildren = RawNewAssignment & {
   newSubmission: Omit<RawNewSubmission, 'complete' | 'points' | 'mark' | 'markOverride'>;
-  newParts: Array<RawNewPart & {
+  newParts: (RawNewPart & {
     newTextBoxes: RawNewTextBox[];
     newUploadSlots: RawNewUploadSlot[];
     newPartMedia: NewPartMedium[];
-  }>;
+  })[];
   newAssignmentMedia: NewAssignmentMedium[];
 };
 

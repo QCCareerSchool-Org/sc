@@ -1,9 +1,6 @@
 import type { SchoolSlug } from '@/domain/school';
 
-export function getVirtualCommunityLink(schoolSlug: 'design'): string;
-export function getVirtualCommunityLink(schoolSlug: 'event'): string;
-export function getVirtualCommunityLink(schoolSlug: 'makeup'): string;
-export function getVirtualCommunityLink(schoolSlug: 'pet'): string;
+export function getVirtualCommunityLink(schoolSlug: 'design' | 'event' | 'makeup' | 'pet'): string;
 export function getVirtualCommunityLink(schoolSlug: SchoolSlug): string | null;
 export function getVirtualCommunityLink(schoolSlug: SchoolSlug): string | null {
   if (schoolSlug === 'design') {

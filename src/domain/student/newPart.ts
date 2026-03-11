@@ -1,6 +1,6 @@
 import type { NewDescriptionType } from '../newDescriptionType';
 
-export type NewPart = {
+export interface NewPart {
   /** uuid */
   partId: string;
   /** uuid */
@@ -16,9 +16,9 @@ export type NewPart = {
   mark: number | null;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewPart = {
+export interface RawNewPart {
   /** uuid */
   partId: string;
   /** uuid */
@@ -37,4 +37,4 @@ export type RawNewPart = {
   created: string;
   /** date string */
   modified: string | null;
-};
+}

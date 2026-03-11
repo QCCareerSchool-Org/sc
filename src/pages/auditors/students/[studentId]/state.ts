@@ -14,27 +14,27 @@ import type { Unit } from '@/domain/unit';
 export type StudentData = Student & {
   country: Country;
   province: Province | null;
-  enrollments: Array<Enrollment & {
+  enrollments: (Enrollment & {
     course: Course & {
       school: School;
       oldSubmissionTemplates: unknown[];
       newSubmissionTemplates: NewSubmissionTemplate[];
-      units: Array<Unit & {
-        materials: Array<Material & { materialData: Record<string, string> }>;
-      }>;
+      units: (Unit & {
+        materials: (Material & { materialData: Record<string, string> })[];
+      })[];
     };
     tutor: Tutor | null;
     oldSubmissions: unknown[];
     newSubmissions: NewSubmission[];
     materialCompletions: MaterialCompletion[];
-  }>;
+  })[];
 };
 
-export type State = {
+export interface State {
   student?: StudentData;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: StudentData }

@@ -6,6 +6,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import { toHaveNoViolations } from 'jest-axe';
 
+// eslint-disable-next-line no-undef
 expect.extend(toHaveNoViolations);
 
 // // See https://github.com/facebook/react/pull/20087

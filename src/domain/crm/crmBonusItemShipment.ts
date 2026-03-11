@@ -1,4 +1,4 @@
-export type CRMBonusItemShipment = {
+export interface CRMBonusItemShipment {
   /** UUID string */
   bonusItemShipmentId: string;
   enrollmentId: number;
@@ -9,9 +9,9 @@ export type CRMBonusItemShipment = {
   prepared: Date | null;
   shipped: Date | null;
   created: Date;
-};
+}
 
-export type RawCRMBonusItemShipment = {
+export interface RawCRMBonusItemShipment {
   /** UUID string */
   bonusItemShipmentId: string;
   enrollmentId: number;
@@ -26,4 +26,4 @@ export type RawCRMBonusItemShipment = {
   shipped: string | null;
   /** string date */
   created: string;
-};
+}

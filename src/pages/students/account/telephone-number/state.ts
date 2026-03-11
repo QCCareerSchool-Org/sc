@@ -2,7 +2,7 @@ import type { CRMTelephoneCountryCode } from '@/domain/crm/crmTelephoneCountryCo
 import type { CRMStudent } from '@/domain/student/crm/crmStudent';
 import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 
-export type State = {
+export interface State {
   crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
   crmTelephoneCountryCodes?: CRMTelephoneCountryCode[];
   form: {
@@ -16,7 +16,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: { crmStudent: CRMStudentWithCountryProvinceAndEnrollments; crmTelephoneCountryCodes: CRMTelephoneCountryCode[] } }

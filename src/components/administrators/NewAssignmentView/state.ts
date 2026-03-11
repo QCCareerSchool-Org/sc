@@ -7,10 +7,10 @@ import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewAssignmentWithChildren } from '@/services/administrators/newAssignmentService';
 
-export type InputForm = {
+export interface InputForm {
   state: 'idle' | 'saving' | 'save error';
   errorMessage?: string;
-};
+}
 
 export type WithInputForm<Input> = Input & {
   form: InputForm;
@@ -22,7 +22,7 @@ export type PartWithForms = NewPart & {
   newPartMedia: NewPartMedium[];
 };
 
-export type State = {
+export interface State {
   newAssignment?: NewAssignment & {
     newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark' | 'markOverride'>;
     newParts: PartWithForms[];
@@ -30,7 +30,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: NewAssignmentWithChildren }
@@ -137,14 +137,18 @@ export const reducer = (state: State, action: Action): State => {
                 partMarkOverride += u.markOverride ?? u.mark ?? 0;
                 return u;
               }),
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               markOverride: partOverridden ? partMarkOverride : null,
             };
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (partOverridden) {
               assignmentOverridden = true;
             }
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             assignmentMarkOverride += partMarkOverride ?? part.mark ?? 0;
             return part;
           }),
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           markOverride: assignmentOverridden ? assignmentMarkOverride : null,
         },
       };
@@ -250,14 +254,18 @@ export const reducer = (state: State, action: Action): State => {
                   form: { ...u.form, state: 'idle' },
                 };
               }),
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               markOverride: partOverridden ? partMarkOverride : null,
             };
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (partOverridden) {
               assignmentOverridden = true;
             }
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             assignmentMarkOverride += partMarkOverride ?? part.mark ?? 0;
             return part;
           }),
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           markOverride: assignmentOverridden ? assignmentMarkOverride : null,
         },
       };

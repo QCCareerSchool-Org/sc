@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { useId, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -7,10 +7,10 @@ import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   studentId: number;
   crmId?: number;
-};
+}
 
 export const EmailAddressEdit: FC<Props> = ({ studentId, crmId }) => {
   const id = useId();
@@ -24,7 +24,7 @@ export const EmailAddressEdit: FC<Props> = ({ studentId, crmId }) => {
     return null;
   }
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     emailAddressChange$.next({
       studentId,
@@ -59,7 +59,7 @@ export const EmailAddressEdit: FC<Props> = ({ studentId, crmId }) => {
                 <button className="btn btn-primary" style={{ width: 80 }} disabled={disabled}>
                   {state.form.processingState === 'saving' ? <Spinner size="sm" /> : 'Update'}
                 </button>
-                {state.form.processingState === 'save error' && <span className="text-danger ms-2">{state.form.errorMessage ? state.form.errorMessage : 'Error'}</span>}
+                {state.form.processingState === 'save error' && <span className="text-danger ms-2">{state.form.errorMessage ?? 'Error'}</span>}
               </div>
             </form>
             {state.form.processingState === 'success' && <div className="alert alert-success mt-4">Email address updated</div>}

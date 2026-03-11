@@ -1,4 +1,4 @@
-export type NewUploadSlot = {
+export interface NewUploadSlot {
   /** uuid */
   uploadSlotId: string;
   /** uuid */
@@ -16,9 +16,9 @@ export type NewUploadSlot = {
   complete: boolean;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewUploadSlot = {
+export interface RawNewUploadSlot {
   /** uuid */
   uploadSlotId: string;
   /** uuid */
@@ -38,4 +38,4 @@ export type RawNewUploadSlot = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

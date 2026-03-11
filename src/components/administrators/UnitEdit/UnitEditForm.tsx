@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { memo, useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -7,7 +7,7 @@ import type { UnitDeleteEvent } from './useUnitDelete';
 import type { UnitSaveEvent } from './useUnitSave';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   unitId: string;
   formState: State['form'];
@@ -16,7 +16,7 @@ type Props = {
   onUnitLetterChange: ChangeEventHandler<HTMLInputElement>;
   onTitleChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const UnitEditForm: FC<Props> = memo(props => {
   const { administratorId, unitId, formState, save$, delete$ } = props;
@@ -34,7 +34,7 @@ export const UnitEditForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -88,7 +88,7 @@ export const UnitEditForm: FC<Props> = memo(props => {
         <button type="button" onClick={handleDeleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={formState.processingState === 'saving' || formState.processingState === 'deleting'}>
           {formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
-        {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+        {formState.processingState === 'save error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'Error'}</span>}
         {formState.processingState === 'delete error' && <span className="text-danger ms-2">{formState.errorMessage?.length ? formState.errorMessage : 'Delete Error'}</span>}
       </div>
       <style jsx>{`

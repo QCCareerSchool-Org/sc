@@ -9,20 +9,20 @@ import type { CourseSuggestion } from '@/domain/courseSuggestion';
 import type { PriceResult } from '@/domain/price';
 import { isPrice } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
+import { useScreenWidthContext } from '@/hooks/useScreenWidthContext';
 
-type Props = {
+interface Props {
   selected: boolean;
   disabled: boolean;
   onToggle: (selected: boolean, courseCode: string, price?: PriceResult) => void;
   schoolSlug: SchoolSlug;
   shippingDetails: ShippingDetails;
   course: CourseSuggestion;
-};
+}
 
 export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onToggle, schoolSlug, shippingDetails, course }) => {
   const [ price, setPrice ] = useState<PriceResult>();
-  const screenWidth = useScreenWidth();
+  const screenWidth = useScreenWidthContext();
   const [ popup, setPopup ] = useState(false);
 
   useEffect(() => {
@@ -45,10 +45,10 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
     setPopup(false);
   };
 
-  const sm = screenWidth >= 576;
-  const md = screenWidth >= 768;
-  const lg = screenWidth >= 992;
-  const xl = screenWidth >= 1200;
+  const sm = screenWidth !== null && screenWidth >= 576;
+  const md = screenWidth !== null && screenWidth >= 768;
+  const lg = screenWidth !== null && screenWidth >= 992;
+  const xl = screenWidth !== null && screenWidth >= 1200;
 
   const imageSize = xl ? 160 : lg ? 120 : md ? 90 : 120;
 
@@ -56,7 +56,7 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
     <>
       <div className={`wrapper ${disabled ? 'disabled' : ''} mt-3`}>
         <div className="d-flex align-items-stretch">
-          {screenWidth >= 440 && (
+          {screenWidth !== null && screenWidth >= 440 && (
             <div>
               <CourseThumbnailImage course={course} size={imageSize} />
             </div>
@@ -71,7 +71,7 @@ export const ContinuingEducationCourse: FC<Props> = ({ selected, disabled, onTog
               <div className="d-flex align-items-center me-4 flex-grow-1 w-100">
                 <div className="w-100">
                   <h4 className="h5 mb-1">{course.name}</h4>
-                  <p className={`mb-0 ${!lg ? 'small' : ''} description`}><span className="muted">{course.shortDescription}</span> <a onClick={handleClick} href="#" className="learnMore">Learn More</a></p>
+                  <p className={`mb-0 description`}><span className="muted">{course.shortDescription}</span> <a onClick={handleClick} href="#" className="learnMore">Learn More</a></p>
                 </div>
               </div>
             )}

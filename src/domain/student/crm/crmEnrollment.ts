@@ -4,7 +4,7 @@ export type PaymentPlan = 'full' | 'accelerated' | 'extended';
 
 export type PaymentFrequency = 'monthly' | 'weekly' | 'biWeekly';
 
-export type CRMEnrollment = {
+export interface CRMEnrollment {
   enrollmentId: number;
   studentId: number;
   courseId: number;
@@ -36,9 +36,9 @@ export type CRMEnrollment = {
   noStudentCenter: boolean;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawCRMEnrollment = {
+export interface RawCRMEnrollment {
   enrollmentId: number;
   studentId: number;
   courseId: number;
@@ -80,4 +80,4 @@ export type RawCRMEnrollment = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

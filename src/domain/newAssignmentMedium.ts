@@ -1,6 +1,6 @@
 export type NewMediumType = 'image' | 'video' | 'audio' | 'download';
 
-export type NewAssignmentMedium = {
+export interface NewAssignmentMedium {
   /** uuid */
   assignmentMediumId: string;
   /** uuid */
@@ -14,9 +14,9 @@ export type NewAssignmentMedium = {
   order: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewAssignmentMedium = {
+export interface RawNewAssignmentMedium {
   /** uuid */
   assignmentMediumId: string;
   /** uuid */
@@ -32,4 +32,4 @@ export type RawNewAssignmentMedium = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

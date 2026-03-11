@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { memo, useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -6,7 +6,7 @@ import type { State } from './state';
 import type { UnitInsertEvent } from './useUnitInsert';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   courseId: number;
   formState: State['unitForm'];
@@ -14,7 +14,7 @@ type Props = {
   onTitleChange: ChangeEventHandler<HTMLInputElement>;
   onUnitLetterChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const UnitAddForm: FC<Props> = memo(props => {
   const { administratorId, courseId, formState, insert$ } = props;
@@ -32,7 +32,7 @@ export const UnitAddForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -76,7 +76,7 @@ export const UnitAddForm: FC<Props> = memo(props => {
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
               {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
             </button>
-            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'Error'}</span>}
           </div>
         </form>
       </div>

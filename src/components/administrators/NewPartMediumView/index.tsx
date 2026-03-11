@@ -6,11 +6,11 @@ import { Video } from '@/components/Video';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   className: string;
   administratorId: number;
   newPartMedium: NewPartMedium;
-};
+}
 
 export const NewPartMediumView: FC<Props> = memo(({ className, administratorId, newPartMedium }) => {
   const src = `${endpoint}/administrators/${administratorId}/newPartMedia/${newPartMedium.partMediumId}/file`;

@@ -1,7 +1,8 @@
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartMediumWithPart } from '@/services/administrators/newPartMediumService';
+import { getLength } from 'src/lib/segmenter';
 
-export type State = {
+export interface State {
   newPartMedium?: NewPartMediumWithPart;
   form: {
     data: {
@@ -23,7 +24,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_PART_MEDIUM_SUCCEEDED'; payload: NewPartMediumWithPart }
@@ -78,7 +79,7 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

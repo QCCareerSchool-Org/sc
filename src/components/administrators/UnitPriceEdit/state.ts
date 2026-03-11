@@ -2,14 +2,14 @@ import type { Country } from '@/domain/country';
 import type { Currency } from '@/domain/currency';
 import type { CourseWithSchoolAndSubmissionTemplatesAndPrices } from '@/services/administrators/courseService';
 
-type FormData = Array<{
+type FormData = {
   submissionTemplateId: string;
   unitLetter: string;
   price: string;
   currencyId: string;
-}>;
+}[];
 
-export type State = {
+export interface State {
   currencies?: Currency[];
   course?: CourseWithSchoolAndSubmissionTemplatesAndPrices;
   country?: Country | null;
@@ -22,7 +22,7 @@ export type State = {
   errorCode?: number;
   inconsistentCurrencies: boolean;
   nonStandardCurrencies: boolean;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_STARTED' }

@@ -8,11 +8,11 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewUploadSlotTemplateDeleteEvent = {
+export interface NewUploadSlotTemplateDeleteEvent {
   administratorId: number;
   uploadSlotId: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useUploadSlotDelete = (dispatch: Dispatch<Action>): Subject<NewUploadSlotTemplateDeleteEvent> => {
   const { newUploadSlotTemplateService } = useAdminServices();
@@ -38,7 +38,7 @@ export const useUploadSlotDelete = (dispatch: Dispatch<Action>): Subject<NewUplo
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,5 +56,6 @@ export const useUploadSlotDelete = (dispatch: Dispatch<Action>): Subject<NewUplo
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newUploadSlotTemplateService, navigateToLogin, router ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return uploadSlotDelete$.current;
 };

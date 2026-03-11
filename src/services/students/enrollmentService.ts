@@ -23,10 +23,10 @@ export type EnrollmentWithStudentCourseAndUnits = Enrollment & {
     school: School;
     variant: Variant | null;
     newSubmissionTemplates: NewSubmissionTemplate[];
-    units: Array<Unit & {
-      materials: Array<Material & { complete: boolean; materialData: Record<string, string> }>;
+    units: (Unit & {
+      materials: (Material & { complete: boolean; materialData: Record<string, string> })[];
       videos: Video[];
-    }>;
+    })[];
   };
   tutor: Tutor | null;
   newSubmissions: NewSubmission[];
@@ -40,10 +40,10 @@ type RawEnrollmentWithStudentCourseAndUnits = RawEnrollment & {
     school: School;
     variant: Variant | null;
     newSubmissionTemplates: RawNewSubmissionTemplate[];
-    units: Array<RawUnit & {
-      materials: Array<RawMaterial & { complete: boolean; materialData: Record<string, string> }>;
+    units: (RawUnit & {
+      materials: (RawMaterial & { complete: boolean; materialData: Record<string, string> })[];
       videos: Video[];
-    }>;
+    })[];
   };
   tutor: Tutor;
   newSubmissions: RawNewSubmission[];
@@ -70,7 +70,7 @@ export class EnrollmentService implements IEnrollmentService {
   public insertOrUpdateMetadata(studentId: number, courseId: number, name: string, value: string | null): Observable<void> {
     const url = `${this.getUrl(studentId)}/${courseId}/metadata`;
     const body = { name, value };
-    return this.httpService.post<void>(url, body);
+    return this.httpService.post(url, body);
   }
 
   private getUrl(studentId: number): string {

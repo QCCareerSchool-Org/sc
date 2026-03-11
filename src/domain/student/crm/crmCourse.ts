@@ -1,4 +1,4 @@
-export type CRMCourse = {
+export interface CRMCourse {
   courseId: number;
   schoolId: number;
   code: string;
@@ -10,9 +10,9 @@ export type CRMCourse = {
   // enrollmentCount is omitted
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawCRMCourse = {
+export interface RawCRMCourse {
   courseId: number;
   schoolId: number;
   code: string;
@@ -26,4 +26,4 @@ export type RawCRMCourse = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

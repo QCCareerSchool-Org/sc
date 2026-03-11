@@ -1,6 +1,6 @@
 export type TransactionType = 'charge' | 'refund' | 'chargeback' | 'nsfFee' | 'void';
 
-export type CRMTransaction = {
+export interface CRMTransaction {
   transactionId: number;
   enrollmentId: number;
   paymentMethodId: number | null;
@@ -32,9 +32,9 @@ export type CRMTransaction = {
   severity: number | null;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawCRMTransaction = {
+export interface RawCRMTransaction {
   transactionId: number;
   enrollmentId: number;
   paymentMethodId: number | null;
@@ -70,4 +70,4 @@ export type RawCRMTransaction = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

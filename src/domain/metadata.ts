@@ -1,4 +1,4 @@
-export type Metadata = {
+export interface Metadata {
   name: string;
   value: string | null;
-};
+}

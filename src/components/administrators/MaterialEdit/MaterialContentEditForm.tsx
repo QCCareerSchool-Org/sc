@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -7,13 +7,13 @@ import type { MaterialContentReplaceEvent } from './useMaterialContentReplace';
 import { Spinner } from '@/components/Spinner';
 import type { Material } from '@/domain/material';
 
-type Props = {
+interface Props {
   administratorId: number;
   material: Material;
   formState: State['contentForm'];
   replace$: Subject<MaterialContentReplaceEvent>;
   onContentChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const MaterialContentEditForm: FC<Props> = props => {
   const id = useId();
@@ -29,7 +29,7 @@ export const MaterialContentEditForm: FC<Props> = props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid || props.formState.data.content === null) {
       return;
@@ -68,7 +68,7 @@ export const MaterialContentEditForm: FC<Props> = props => {
           <button type="submit" className="btn btn-primary me-2" style={{ width: 100 }} disabled={!valid || props.formState.data.content === null || props.formState.processingState === 'saving'}>
             {props.formState.processingState === 'saving' ? <Spinner size="sm" /> : 'Replace'}
           </button>
-          {props.formState.processingState === 'save error' && <span className="text-danger ms-2">{props.formState.errorMessage ? props.formState.errorMessage : 'Save Error'}</span>}
+          {props.formState.processingState === 'save error' && <span className="text-danger ms-2">{props.formState.errorMessage ?? 'Save Error'}</span>}
           {props.formState.processingState === 'success' && <span className="text-success ms-2">Saved</span>}
         </div>
       </form>

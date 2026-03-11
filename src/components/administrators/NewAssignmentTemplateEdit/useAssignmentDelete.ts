@@ -8,11 +8,11 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewAssignmentTemplateDeleteEvent = {
+export interface NewAssignmentTemplateDeleteEvent {
   administratorId: number;
   assignmentId: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<NewAssignmentTemplateDeleteEvent> => {
   const { newAssignmentTemplateService } = useAdminServices();
@@ -38,7 +38,7 @@ export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<NewAssi
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,5 +56,6 @@ export const useAssignmentDelete = (dispatch: Dispatch<Action>): Subject<NewAssi
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newAssignmentTemplateService, navigateToLogin, router ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return assignmentDelete$.current;
 };

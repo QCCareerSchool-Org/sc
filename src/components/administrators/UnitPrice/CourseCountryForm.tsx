@@ -1,24 +1,24 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { useId, useMemo } from 'react';
 
 import type { Country } from '@/domain/country';
 import type { CourseWithSchool } from '@/services/administrators/courseService';
 
-type Props = {
+interface Props {
   courseId: number;
   countryId: number | null;
   courses: CourseWithSchool[];
   countries: Country[];
   onCourseChange: ChangeEventHandler<HTMLSelectElement>;
   onCountryChange: ChangeEventHandler<HTMLSelectElement>;
-  onFormSubmit: FormEventHandler<HTMLFormElement>;
-};
+  onFormSubmit: SubmitEventHandler<HTMLFormElement>;
+}
 
 const defaultCountry = (countryName: string): boolean => {
   return [ 'Canada', 'United States', 'Australia', 'United Kingdom' ].includes(countryName);
 };
 
-type SchoolOptionGroup = { name: string; courses: Array<{ courseId: number; name: string }> };
+interface SchoolOptionGroup { name: string; courses: { courseId: number; name: string }[] }
 
 const getCourseOptionGroups = (courses: CourseWithSchool[]): SchoolOptionGroup[] => {
   let i = 0;

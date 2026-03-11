@@ -7,13 +7,13 @@ import { useAuditorServices } from '@/hooks/useAuditorServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type StudentFilterEvent = {
+export interface StudentFilterEvent {
   auditorId: number;
   name: string;
   group: string;
   location: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useFilter = (dispatch: Dispatch<Action>): Subject<StudentFilterEvent> => {
   const navigateToLogin = useNavigateToLogin();
@@ -33,7 +33,7 @@ export const useFilter = (dispatch: Dispatch<Action>): Subject<StudentFilterEven
             let message = 'Filter failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -50,5 +50,6 @@ export const useFilter = (dispatch: Dispatch<Action>): Subject<StudentFilterEven
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, studentService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return filter$.current;
 };

@@ -5,9 +5,9 @@ import type { NewSubmission } from '@/domain/student/newSubmission';
 import { useServices } from '@/hooks/useServices';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   newSubmission: NewSubmission;
-};
+}
 
 export const NewSubmissionInfoTable: FC<Props> = memo(({ newSubmission }) => {
   const { gradeService } = useServices();

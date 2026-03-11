@@ -8,11 +8,11 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type UnitDeleteEvent = {
+export interface UnitDeleteEvent {
   administratorId: number;
   unitId: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<UnitDeleteEvent> => {
   const { unitService } = useAdminServices();
@@ -37,7 +37,7 @@ export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<UnitDeleteEve
             let message = 'Delete failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -54,5 +54,6 @@ export const useUnitDelete = (dispatch: Dispatch<Action>): Subject<UnitDeleteEve
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, unitService, navigateToLogin, router ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return delete$.current;
 };

@@ -39,8 +39,8 @@ import type { IStudentService } from '@/services/administrators/studentService';
 import { StudentService } from '@/services/administrators/studentService';
 import type { ITutorService } from '@/services/administrators/tutorService';
 import { TutorService } from '@/services/administrators/tutorService';
-import { UnitService } from '@/services/administrators/unitService';
 import type { IUnitService } from '@/services/administrators/unitService';
+import { UnitService } from '@/services/administrators/unitService';
 
 export type AdminServices = Readonly<{
   readonly studentService: Readonly<IStudentService>;
@@ -67,9 +67,9 @@ export type AdminServices = Readonly<{
 
 export const AdminServicesContext = createContext<AdminServices | undefined>(undefined);
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export const AdminServicesProvider: FC<Props> = ({ children }) => {
   const { httpService } = useServices();

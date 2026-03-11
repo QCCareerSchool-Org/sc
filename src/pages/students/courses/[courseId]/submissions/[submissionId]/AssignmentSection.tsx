@@ -5,9 +5,9 @@ import { Section } from '@/components/Section';
 import type { NewSubmissionWithCourseAndChildren } from '@/services/students/newSubmissionService';
 import { basePath } from 'src/basePath';
 
-type Props = {
+interface Props {
   submission: NewSubmissionWithCourseAndChildren;
-};
+}
 
 export const AssignmentSection: FC<Props> = ({ submission }) => {
   const router = useRouter();

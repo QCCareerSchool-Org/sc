@@ -30,7 +30,7 @@ export const useInitialData = (dispatch: Dispatch<Action>, studentId: number): v
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin();
+            navigateToLogin(); return;
           }
           errorCode = err.code;
         }

@@ -6,9 +6,9 @@ import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   auditorId: number;
-};
+}
 
 export const AuditorHome: FC<Props> = ({ auditorId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

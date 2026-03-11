@@ -8,9 +8,9 @@ import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   administratorId: number;
-};
+}
 
 export const CourseDevelopmentOverview: FC<Props> = ({ administratorId }) => {
   const router = useRouter();

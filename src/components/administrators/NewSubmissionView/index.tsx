@@ -1,6 +1,6 @@
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEvent, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEvent, MouseEventHandler, SubmitEventHandler } from 'react';
 import { useCallback, useId, useReducer } from 'react';
 
 import { NewAssignmentList } from './NewAssignmentList';
@@ -16,10 +16,10 @@ import { ModalDialog } from '@/components/ModalDialog';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   submissionId: string;
-};
+}
 
 export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) => {
   const id = useId();
@@ -54,7 +54,7 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
     return null;
   }
 
-  const handleTransferFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleTransferFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     submissionTransfer$.next({ tutorId: state.transferForm.data.tutorId, processingState: state.transferForm.processingState });
   };

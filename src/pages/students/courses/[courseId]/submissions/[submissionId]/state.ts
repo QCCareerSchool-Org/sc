@@ -1,13 +1,13 @@
 import type { NewSubmissionWithCourseAndChildren } from '@/services/students/newSubmissionService';
 
-export type State = {
+export interface State {
   newSubmission?: NewSubmissionWithCourseAndChildren;
   optionalAssignmentIncomplete: boolean;
   error: boolean;
   errorCode?: number;
   processingState: 'idle' | 'submitting' | 'skipping' | 'submit error' | 'skip error';
   errorMessage?: string;
-};
+}
 
 export type Action =
   | { type: 'LOAD_UNIT_SUCEEDED'; payload: NewSubmissionWithCourseAndChildren }

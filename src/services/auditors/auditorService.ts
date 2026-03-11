@@ -25,13 +25,13 @@ export class AuditorService implements IAuditorService {
   public updateEmailAddress(auditorId: number, emailAddress: string, password: string): Observable<void> {
     const url = `${this.getBaseUrl(auditorId)}/emailAddress`;
     const body = { emailAddress, password };
-    return this.httpService.post<void>(url, body);
+    return this.httpService.post(url, body);
   }
 
   public updatePassword(auditorId: number, newPassword: string, newPasswordRepeat: string, password: string): Observable<void> {
     const url = `${this.getBaseUrl(auditorId)}/password`;
     const body = { newPassword, newPasswordRepeat, password };
-    return this.httpService.post<void>(url, body);
+    return this.httpService.post(url, body);
   }
 
   private getBaseUrl(auditorId: number): string {

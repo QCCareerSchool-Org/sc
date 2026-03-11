@@ -6,6 +6,7 @@ import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
 import type { IUUIDService } from '@/services/uuidService';
+import { getLength } from 'src/lib/segmenter';
 
 const sanitize = (input: string): string => {
   return sanitizeHtml(input, {
@@ -13,7 +14,7 @@ const sanitize = (input: string): string => {
   });
 };
 
-export type State = {
+export interface State {
   newPartTemplate?: NewPartTemplateWithAssignmentAndInputs;
   form: {
     data: {
@@ -98,7 +99,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_PART_TEMPLATE_SUCCEEDED'; payload: NewPartTemplateWithAssignmentAndInputs }
@@ -211,7 +212,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         form: {
           data: {
             partNumber: action.payload.partNumber.toString(),
-            title: action.payload.title ?? '',
+            title: action.payload.title,
             description: action.payload.description ?? '',
             descriptionType: action.payload.descriptionType,
             markingCriteria: action.payload.markingCriteria ?? '',
@@ -301,7 +302,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -319,7 +320,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -361,7 +362,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -394,7 +395,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
           ...state.form,
           data: {
             partNumber: action.payload.partNumber.toString(),
-            title: action.payload.title ?? '',
+            title: action.payload.title,
             description: action.payload.description ?? '',
             descriptionType: action.payload.descriptionType,
             markingCriteria: action.payload.markingCriteria ?? '',
@@ -445,7 +446,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -578,7 +579,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -745,7 +746,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

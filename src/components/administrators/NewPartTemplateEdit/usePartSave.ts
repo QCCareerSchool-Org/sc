@@ -8,12 +8,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewPartTemplateSavePayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type PartSavePayload = {
+export interface PartSavePayload {
   administratorId: number;
   partId: string;
   processingState: State['form']['processingState'];
   payload: NewPartTemplateSavePayload;
-};
+}
 
 export const usePartSave = (dispatch: Dispatch<Action>): Subject<PartSavePayload> => {
   const { newPartTemplateService } = useAdminServices();
@@ -37,7 +37,7 @@ export const usePartSave = (dispatch: Dispatch<Action>): Subject<PartSavePayload
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -55,5 +55,6 @@ export const usePartSave = (dispatch: Dispatch<Action>): Subject<PartSavePayload
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newPartTemplateService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return partSave$.current;
 };

@@ -6,7 +6,7 @@ import type { SubmissionSubmitEvent } from './useSubmissionSubmit';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
   submissionId: string;
@@ -16,7 +16,7 @@ type Props = {
   unitComplete: boolean;
   optionalAssignmentsIncomplete: boolean;
   errorMessage?: string;
-};
+}
 
 export const SubmitSection: FC<Props> = props => {
   const { studentId, courseId, submissionId, processingState, submit$, unitComplete, optionalAssignmentsIncomplete, errorMessage } = props;
@@ -50,7 +50,7 @@ export const SubmitSection: FC<Props> = props => {
         <div className="d-flex align-items-center">
           <button onClick={handleButtonClick} className="btn btn-primary" disabled={buttonDisabled}>Submit Assignments</button>
           {processingState === 'submitting' && <div className="ms-2"><Spinner /></div>}
-          {processingState === 'submit error' && <span className="text-danger ms-2">{errorMessage ? errorMessage : 'Error'}</span>}
+          {processingState === 'submit error' && <span className="text-danger ms-2">{errorMessage ?? 'Error'}</span>}
         </div>
       </div>
     </Section>

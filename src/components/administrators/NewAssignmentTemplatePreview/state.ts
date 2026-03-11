@@ -1,11 +1,11 @@
 import type { NewAssignmentTemplateWithSubmissionTemplateAndChildren } from '@/services/administrators/newAssignmentTemplateService';
 import { sanitize } from 'src/sanitize';
 
-export type State = {
+export interface State {
   assignmentTemplate?: NewAssignmentTemplateWithSubmissionTemplateAndChildren;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_ASSIGNMENT_TEMPLATE_SUCCEEDED'; payload: NewAssignmentTemplateWithSubmissionTemplateAndChildren }

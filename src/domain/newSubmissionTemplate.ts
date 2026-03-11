@@ -1,4 +1,4 @@
-export type NewSubmissionTemplate = {
+export interface NewSubmissionTemplate {
   /** uuid */
   submissionTemplateId: string;
   courseId: number;
@@ -11,9 +11,9 @@ export type NewSubmissionTemplate = {
   enabled: boolean;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewSubmissionTemplate = {
+export interface RawNewSubmissionTemplate {
   /** uuid */
   submissionTemplateId: string;
   courseId: number;
@@ -28,4 +28,4 @@ export type RawNewSubmissionTemplate = {
   created: string;
   /** date string */
   modified: string | null;
-};
+}

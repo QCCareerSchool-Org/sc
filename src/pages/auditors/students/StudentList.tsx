@@ -7,9 +7,9 @@ import { StudentTable } from './StudentTable';
 import { useFilter } from './useFilter';
 import { useInitialData } from './useInitialData';
 
-type Props = {
+interface Props {
   auditorId: number;
-};
+}
 
 export const StudentList: FC<Props> = ({ auditorId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

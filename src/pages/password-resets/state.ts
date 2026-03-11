@@ -1,6 +1,7 @@
 import type { CreatePasswordResetResult } from '@/services/passwordResetRequestService';
+import { getLength } from 'src/lib/segmenter';
 
-export type State = {
+export interface State {
   form: {
     data: {
       username: string;
@@ -15,7 +16,7 @@ export type State = {
     maskedEmailAddress: string;
     expiryDate: Date;
   };
-};
+}
 
 export type Action =
   | { type: 'USERNAME_CHANGED'; payload: string }
@@ -36,7 +37,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'USERNAME_CHANGED': {
       const maxLength = 255;
       let validationMessage: string | undefined;
-      if ([ ...action.payload ].length > maxLength) {
+      if (getLength(action.payload) > maxLength) {
         validationMessage = 'Exceeds maximum length';
       }
       return {

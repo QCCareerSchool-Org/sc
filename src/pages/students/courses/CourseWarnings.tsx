@@ -1,9 +1,10 @@
 import type { FC } from 'react';
+
 import type { Course } from '@/domain/course';
 
-type Props = {
+interface Props {
   courses: Course[];
-};
+}
 
 export const CourseWarnings: FC<Props> = ({ courses }) => {
   const courseExists = (courseCode: string): boolean => courses.findIndex(c => c.code === courseCode) !== -1;
@@ -41,14 +42,14 @@ export const CourseWarnings: FC<Props> = ({ courses }) => {
           <><strong>Important note:</strong> </>
           {!vm ?
             <><em>Pro Makeup Workshop</em> builds </>
-            : !vm
+            : !mw
               ? <><em>Virtual Makeup</em> builds </>
               : <>both <em>Pro Makeup Workshop</em> and <em>Virtual Makeup</em> build </>
           }
           <>on the concepts covered in <em>Master Makeup Artistry</em>. Please complete your <em>Master Makeup Artistry</em> course before starting </>
           {!vm ?
             <em>Pro Makeup Workshop</em>
-            : !vm
+            : !mw
               ? <em>Virtual Makeup</em>
               : <>your advanced courses</>
           }

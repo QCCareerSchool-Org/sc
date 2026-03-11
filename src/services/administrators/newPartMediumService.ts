@@ -17,10 +17,10 @@ export type NewPartMediumAddPayload = {
   order: number;
 } & FileUploadOrUrl;
 
-export type NewPartMediumSavePayload = {
+export interface NewPartMediumSavePayload {
   caption: string;
   order: number;
-};
+}
 
 type RawNewPartMediumWithPart = RawNewPartMedium & {
   newPartTemplate: RawNewPartTemplate;
@@ -55,6 +55,7 @@ export class NewPartMediumService implements INewPartMediumService {
       body.append('order', payload.order.toString());
       body.append('file', payload.file);
       headers = { 'Content-Type': 'multipart/form-data' };
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (payload.sourceData === 'url') {
       body = payload;
       headers = {};
@@ -87,7 +88,7 @@ export class NewPartMediumService implements INewPartMediumService {
 
   public deletePartMedium(administratorId: number, mediumId: string): Observable<void> {
     const url = `${this.getBaseUrl(administratorId)}/${mediumId}`;
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   public downloadPartMediumFile(administratorId: number, mediumId: string): Observable<void> {

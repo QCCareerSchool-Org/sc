@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import type { FC } from 'react';
-
 import { FaDownload } from 'react-icons/fa';
+
 import type { Course } from '@/domain/course';
 import type { School, SchoolName } from '@/domain/school';
 import type { Variant, VariantName } from '@/domain/variant';
 
-type Props = {
+interface Props {
   course: Course & { school: School; variant: Variant | null };
-};
+}
 
 export const HandbookButton: FC<Props> = ({ course }) => {
   const link = getLink(course.school.name, course.variant?.name);

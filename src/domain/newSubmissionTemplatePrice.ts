@@ -1,4 +1,4 @@
-export type NewSubmissionTemplatePrice = {
+export interface NewSubmissionTemplatePrice {
   unitTemplatePriceId: string;
   unitTemplateId: string;
   countryId: number | null;
@@ -6,9 +6,9 @@ export type NewSubmissionTemplatePrice = {
   price: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewSubmissionTemplatePrice = {
+export interface RawNewSubmissionTemplatePrice {
   unitTemplatePriceId: string;
   unitTemplateId: string;
   countryId: number | null;
@@ -18,4 +18,4 @@ export type RawNewSubmissionTemplatePrice = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

@@ -5,9 +5,9 @@ import { UnitEdit } from '@/components/administrators/UnitEdit';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   unitId: string | null;
-};
+}
 
 const NewMaterialUnitEditPage: NextPage<Props> = ({ unitId }) => {
   const authState = useAuthState();

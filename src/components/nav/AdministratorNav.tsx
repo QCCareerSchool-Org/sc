@@ -21,6 +21,7 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
   const [ loaded, setLoaded ] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoaded(true);
   }, []);
 
@@ -72,15 +73,15 @@ export const AdministratorNav: FC<AdministratorNavProps> = props => {
             {otherNavPresent && <span className="d-none d-md-inline me-3" style={{ minWidth: 64 }}><span className="badge text-bg-primary">Admin</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
-                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                { }
                 <a className={`nav-link ${index === 0 ? 'active' : ''}`} aria-current={index === 0 ? 'page' : undefined} href="/administrators">Home{index === 0 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item">
-                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                { }
                 <a className={`nav-link ${index === 1 ? 'active' : ''}`} aria-current={index === 1 ? 'page' : undefined} href="/administrators/accounts">Students{index === 1 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item">
-                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                { }
                 <a className={`nav-link ${index === 2 ? 'active' : ''}`} aria-current={index === 2 ? 'page' : undefined} href="/administrators/tutors">Tutors{index === 2 && <div className="active-indicator" />}</a>
               </li>
               <li className="nav-item dropdown">

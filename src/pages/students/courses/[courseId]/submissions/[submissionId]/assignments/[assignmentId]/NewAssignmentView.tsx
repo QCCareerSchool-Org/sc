@@ -20,12 +20,12 @@ import { scrollToId } from 'src/scrollToId';
 export type UploadSlotFunction = (partId: string, uploadSlotId: string, file?: File) => Observable<unknown>;
 export type TextBoxFunction = (partId: string, textBoxId: string, text: string) => Observable<unknown>;
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
   submissionId: string;
   assignmentId: string;
-};
+}
 
 export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId, assignmentId }) => {
   const router = useRouter();
@@ -33,7 +33,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
   const { newAssignmentService } = useStudentServices();
   const [ state, dispatch ] = useReducer(reducer, initialState);
 
-  useWarnIfUnsavedChanges(state.assignment && state.assignment?.formState !== 'pristine' && state.assignment?.saveState !== 'saved');
+  useWarnIfUnsavedChanges(state.assignment && state.assignment.formState !== 'pristine' && state.assignment.saveState !== 'saved');
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
@@ -46,7 +46,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin();
+            navigateToLogin(); return;
           }
           errorCode = err.code;
         }
@@ -67,6 +67,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
         next: progressResponse => {
           if (progressResponse.type === 'progress') {
             dispatch({ type: 'FILE_UPLOAD_PROGRESSED', payload: { partId, uploadSlotId, progress: progressResponse.value } });
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           } else if (progressResponse.type === 'data') {
             dispatch({ type: 'FILE_UPLOAD_SUCCEEDED', payload: { partId, uploadSlotId, filename: file.name, size: file.size } });
           }
@@ -75,7 +76,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
           let message = 'File upload failed';
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin();
+              navigateToLogin(); return;
             }
             if (err.message) {
               message = err.message;
@@ -97,7 +98,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
         error: err => {
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin();
+              navigateToLogin(); return;
             }
           }
           dispatch({ type: 'FILE_DELETE_FAILED', payload: { partId, uploadSlotId } });
@@ -115,7 +116,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
           let message = 'File download failed';
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin();
+              navigateToLogin(); return;
             }
             if (err.message) {
               message = err.message;
@@ -136,7 +137,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
         error: err => {
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin();
+              navigateToLogin(); return;
             }
           }
           dispatch({ type: 'TEXT_SAVE_FAILED', payload: { partId, textBoxId } });
@@ -165,7 +166,7 @@ export const NewAssignmentView: FC<Props> = ({ studentId, courseId, submissionId
   const assignment = state.assignment;
 
   const handleBackButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
-    void router.back();
+    router.back();
   };
 
   const handleIncompletePartClick = (e: MouseEvent, partId: string): void => {

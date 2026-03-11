@@ -6,10 +6,10 @@ import { Badge } from './Badge';
 import { EnrollmentsCell } from './EnrollmentsCell';
 import type { StudentData } from './state';
 
-type Props = {
+interface Props {
   student: StudentData;
   onGroupClick: (e: MouseEvent, group: string) => void;
-};
+}
 
 export const StudentTableRow: FC<Props> = props => {
   const router = useRouter();

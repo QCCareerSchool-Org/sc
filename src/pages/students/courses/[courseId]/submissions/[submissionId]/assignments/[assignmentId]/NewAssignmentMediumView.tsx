@@ -6,14 +6,14 @@ import { Video } from '@/components/Video';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   className: string;
   studentId: number;
   courseId: number;
   submissionId: string;
   assignmentId: string;
   newAssignmentMedium: NewAssignmentMedium;
-};
+}
 
 export const NewAssignmentMediumView: FC<Props> = memo(props => {
   const { className, studentId, courseId, submissionId, assignmentId, newAssignmentMedium } = props;

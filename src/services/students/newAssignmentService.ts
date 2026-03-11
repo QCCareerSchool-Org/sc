@@ -14,21 +14,21 @@ import { endpoint } from 'src/basePath';
 export type NewAssignmentWithChildren = NewAssignment & {
   newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark'>;
   newAssignmentMedia: NewAssignmentMedium[];
-  newParts: Array<NewPart & {
-    newTextBoxes: Array<NewTextBox>;
-    newUploadSlots: Array<NewUploadSlot>;
+  newParts: (NewPart & {
+    newTextBoxes: NewTextBox[];
+    newUploadSlots: NewUploadSlot[];
     newPartMedia: NewPartMedium[];
-  }>;
+  })[];
 };
 
 type RawNewAssignmentWithChildren = RawNewAssignment & {
   newSubmission: Omit<RawNewSubmission, 'complete' | 'points' | 'mark'>;
   newAssignmentMedia: RawNewAssignmentMedium[];
-  newParts: Array<RawNewPart & {
-    newTextBoxes: Array<RawNewTextBox>;
-    newUploadSlots: Array<RawNewUploadSlot>;
+  newParts: (RawNewPart & {
+    newTextBoxes: RawNewTextBox[];
+    newUploadSlots: RawNewUploadSlot[];
     newPartMedia: RawNewPartMedium[];
-  }>;
+  })[];
 };
 
 export interface INewAssignmentService {

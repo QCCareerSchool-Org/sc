@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, Dispatch, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, Dispatch, FC, SubmitEventHandler } from 'react';
 import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -6,17 +6,17 @@ import type { Action, State } from './state';
 import type { EmailChangeEvent } from './useSubmit';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   auditorId: number;
   formState: State['form'];
   dispatch: Dispatch<Action>;
   submit$: Subject<EmailChangeEvent>;
-};
+}
 
 export const ChangeEmailForm: FC<Props> = props => {
   const id = useId();
 
-  const handleSubmit: FormEventHandler = e => {
+  const handleSubmit: SubmitEventHandler = e => {
     e.preventDefault();
     props.submit$.next({
       auditorId: props.auditorId,

@@ -4,10 +4,10 @@ import { memo } from 'react';
 import { useServices } from '@/hooks/useServices';
 import type { NewSubmissionWithEnrollmentAndAssignments } from '@/services/tutors/newSubmissionService';
 
-type Props = {
+interface Props {
   newSubmission: NewSubmissionWithEnrollmentAndAssignments;
   onClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
-};
+}
 
 export const AssignmentTable: FC<Props> = memo(props => {
   const { gradeService } = useServices();
@@ -34,7 +34,7 @@ export const AssignmentTable: FC<Props> = memo(props => {
                 ? <td colSpan={props.newSubmission.mark === null ? 2 : 3} className="text-center">n/a</td>
                 : (
                   <>
-                    <td className="text-center">{a.mark === null ? '---' : a.mark}{modified && <> <span className="text-danger">*</span></>}</td>
+                    <td className="text-center">{a.mark ?? '---'}{modified && <> <span className="text-danger">*</span></>}</td>
                     <td className="text-center">{a.points}</td>
                     {a.mark !== null && <td className="text-center">{gradeService.calculate(a.mark, a.points, props.newSubmission.created)}</td>}
                   </>

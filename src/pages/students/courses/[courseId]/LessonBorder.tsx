@@ -1,10 +1,10 @@
 import type { CSSProperties, FC, ReactNode } from 'react';
 
-type Props = {
+interface Props {
   complete: boolean;
   last: boolean;
   children: ReactNode;
-};
+}
 
 export const LessonBorder: FC<Props> = ({ complete, last, children }) => {
   const style: CSSProperties = last ? {} : { borderBottom: '0.5px solid #a1a1a1' };

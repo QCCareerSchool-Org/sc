@@ -8,11 +8,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewAssignmentTemplateAddPayload } from '@/services/administrators/newAssignmentTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewAssignementTemplateInsertEvent = {
+export interface NewAssignementTemplateInsertEvent {
   administratorId: number;
   payload: NewAssignmentTemplateAddPayload;
   processingState: State['newAssignmentTemplateForm']['processingState'];
-};
+}
 
 export const useAssignmentTemplateInsert = (dispatch: Dispatch<Action>): Subject<NewAssignementTemplateInsertEvent> => {
   const { newAssignmentTemplateService } = useAdminServices();
@@ -33,7 +33,7 @@ export const useAssignmentTemplateInsert = (dispatch: Dispatch<Action>): Subject
             let message = 'Insert failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -50,5 +50,6 @@ export const useAssignmentTemplateInsert = (dispatch: Dispatch<Action>): Subject
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newAssignmentTemplateService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return insert$.current;
 };

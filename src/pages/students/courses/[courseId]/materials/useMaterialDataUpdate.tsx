@@ -6,11 +6,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-type MaterialDataUpdateEvent = {
+interface MaterialDataUpdateEvent {
   studentId: number;
   materialId: string;
   data: Record<string, string>;
-};
+}
 
 export const useMaterialDataUpdate = (commitFailure$: Subject<void>): Subject<MaterialDataUpdateEvent> => {
   const router = useRouter();
@@ -29,7 +29,7 @@ export const useMaterialDataUpdate = (commitFailure$: Subject<void>): Subject<Ma
             commitFailure$.next();
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin();
               }
             }
           },
@@ -42,5 +42,6 @@ export const useMaterialDataUpdate = (commitFailure$: Subject<void>): Subject<Ma
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ materialService, router, navigateToLogin, commitFailure$ ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return materialDataUpdate$.current;
 };

@@ -16,11 +16,11 @@ export type NewAssignmentWithUnitAndChildren = NewAssignment & {
   newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark'> & {
     enrollment: Enrollment;
   };
-  newParts: Array<NewPart & {
+  newParts: (NewPart & {
     newTextBoxes: NewTextBox[];
     newUploadSlots: NewUploadSlot[];
     newPartMedia: NewPartMedium[];
-  }>;
+  })[];
   newAssignmentMedia: NewAssignmentMedium[];
 };
 
@@ -28,11 +28,11 @@ type RawNewAssignmentWithUnitAndChildren = RawNewAssignment & {
   newSubmission: Omit<RawNewSubmission, 'complete' | 'points' | 'mark'> & {
     enrollment: RawEnrollment;
   };
-  newParts: Array<RawNewPart & {
+  newParts: (RawNewPart & {
     newTextBoxes: RawNewTextBox[];
     newUploadSlots: RawNewUploadSlot[];
     newPartMedia: RawNewPartMedium[];
-  }>;
+  })[];
   newAssignmentMedia: RawNewAssignmentMedium[];
 };
 

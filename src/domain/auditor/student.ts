@@ -1,4 +1,4 @@
-export type Student = {
+export interface Student {
   studentId: number;
   countryId: number;
   provinceId: number | null;
@@ -14,9 +14,9 @@ export type Student = {
   entityVersion: number;
   created: Date;
   modified: Date;
-};
+}
 
-export type RawStudent = {
+export interface RawStudent {
   studentId: number;
   countryId: number;
   provinceId: number | null;
@@ -36,4 +36,4 @@ export type RawStudent = {
   created: string;
   /** string date */
   modified: string;
-};
+}

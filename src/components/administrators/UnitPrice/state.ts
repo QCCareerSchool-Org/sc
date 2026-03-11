@@ -1,14 +1,14 @@
 import type { Country } from '@/domain/country';
 import type { CourseWithSchool } from '@/services/administrators/courseService';
 
-export type State = {
+export interface State {
   courses?: CourseWithSchool[];
   countries?: Country[];
   courseId?: number;
   countryId?: number | null;
   processingState: 'initial' | 'idle' | 'loading' | 'load error';
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_STARTED' }

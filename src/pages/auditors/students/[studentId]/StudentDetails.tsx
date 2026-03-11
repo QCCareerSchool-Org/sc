@@ -3,9 +3,9 @@ import type { FC } from 'react';
 import type { StudentData } from './state';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   student: StudentData;
-};
+}
 
 export const StudentDetails: FC<Props> = ({ student }) => {
   return (

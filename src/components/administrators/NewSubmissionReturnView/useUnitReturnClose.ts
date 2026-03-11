@@ -8,12 +8,12 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewUnitCloseEvent = {
+export interface NewUnitCloseEvent {
   administratorId: number;
   submissionReturnId: string;
   adminComment: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useUnitReturnClose = (dispatch: Dispatch<Action>): Subject<NewUnitCloseEvent> => {
   const { newSubmissionReturnService } = useAdminServices();
@@ -39,7 +39,7 @@ export const useUnitReturnClose = (dispatch: Dispatch<Action>): Subject<NewUnitC
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -57,5 +57,6 @@ export const useUnitReturnClose = (dispatch: Dispatch<Action>): Subject<NewUnitC
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionReturnService, navigateToLogin, router ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return unitReturnClose$.current;
 };

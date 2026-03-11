@@ -1,7 +1,7 @@
 import type { CRMPaymentMethod } from '@/domain/student/crm/crmPaymentMethod';
 import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 
-export type State = {
+export interface State {
   crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
   form: {
     data: {
@@ -16,7 +16,7 @@ export type State = {
   allSameCurrency: boolean;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: CRMStudentWithCountryProvinceAndEnrollments }

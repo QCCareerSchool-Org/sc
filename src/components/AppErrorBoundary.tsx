@@ -1,16 +1,14 @@
 import type { ErrorInfo, MouseEventHandler, ReactNode } from 'react';
 import { Component } from 'react';
 
-import { TrackJS } from 'src/trackjs-isomorphic';
-
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
-type State = {
+interface State {
   hasError: boolean;
   error: unknown;
-};
+}
 
 export class AppErrorBoundary extends Component<Props, State> {
 
@@ -24,9 +22,6 @@ export class AppErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: unknown, errorInfo: ErrorInfo): void {
-    if (error instanceof Error || (typeof error === 'object' && error !== null) || typeof error === 'string') {
-      TrackJS.track(error);
-    }
     console.error('ErrorBoundary', error, errorInfo);
   }
 
@@ -45,7 +40,7 @@ export class AppErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 
-  private async unregisterServiceWorkers(): Promise<void | boolean[]> {
+  private async unregisterServiceWorkers(): Promise<boolean[] | undefined> {
     if (!('navigator' in window && 'serviceWorker' in navigator && window.isSecureContext)) {
       return;
     }
@@ -53,7 +48,7 @@ export class AppErrorBoundary extends Component<Props, State> {
     return Promise.all(registrations.map(async r => r.unregister()));
   }
 
-  private async clearCaches(): Promise<void | boolean[]> {
+  private async clearCaches(): Promise<boolean[] | undefined> {
     if (!('caches' in window && window.isSecureContext)) {
       return;
     }
@@ -65,7 +60,7 @@ export class AppErrorBoundary extends Component<Props, State> {
     Promise.all([
       this.unregisterServiceWorkers(),
       this.clearCaches(),
-    ]).catch(err => {
+    ]).catch((err: unknown) => {
       console.error('Refresh error', err);
     }).finally(() => {
       window.location.reload();

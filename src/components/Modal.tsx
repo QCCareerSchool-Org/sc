@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
 import type { FC, MouseEventHandler, PropsWithChildren } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useModalDispatch } from '@/hooks/useModalDispatch';
 import { useScrollbarWidth } from '@/hooks/useScrollbarWidth';
 
 type ModalSize = 'sm' | 'lg' | 'xl';
 
-type Props = {
+interface Props {
   size?: ModalSize;
   show: boolean;
   onClose: () => void;
-};
+}
 
 const getModalClassName = (show: boolean): string => {
   let className = 'modal fade';
@@ -55,6 +55,7 @@ export const Modal: FC<PropsWithChildren<Props>> = props => {
     document.body.classList.remove('modal-open');
     document.body.style.removeProperty('overflow');
     document.body.style.removeProperty('padding-right');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShow(false);
   }, [ modalDispatch, props.show, scrollbarWidth ]);
 

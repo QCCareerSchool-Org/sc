@@ -5,9 +5,9 @@ import { CourseLink } from './CourseLink';
 import type { Course } from '@/domain/course';
 import type { Enrollment } from '@/domain/enrollment';
 
-type Props = {
-  enrollments: Array<Enrollment & { course: Course }>;
-};
+interface Props {
+  enrollments: (Enrollment & { course: Course })[];
+}
 
 export const CourseGrid: FC<Props> = ({ enrollments }) => (
   <div className="row">

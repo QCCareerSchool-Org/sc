@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import type { FC } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useModalState } from '@/hooks/useModalState';
 
@@ -12,6 +12,7 @@ export const ModalBackdrop: FC = () => {
 
   useEffect(() => {
     if (modalState) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisibility('showing');
       const id = setTimeout(() => setVisibility('show'), 0);
       return () => clearTimeout(id);

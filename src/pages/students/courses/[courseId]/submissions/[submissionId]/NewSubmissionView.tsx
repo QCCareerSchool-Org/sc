@@ -16,11 +16,11 @@ import { useSubmissionSubmit } from './useSubmissionSubmit';
 import { Section } from '@/components/Section';
 import { getVirtualCommunityLink } from 'src/lib/virtualCommunityLink';
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
   submissionId: string;
-};
+}
 
 export const NewSubmissionView: FC<Props> = ({ studentId, courseId, submissionId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

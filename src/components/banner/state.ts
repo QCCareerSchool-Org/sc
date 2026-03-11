@@ -4,18 +4,18 @@ import type { School } from '@/domain/school';
 import type { Student } from '@/domain/student/student';
 
 type Data = Student & {
-  enrollments: Array<Enrollment & {
+  enrollments: (Enrollment & {
     course: Course & {
       school: School;
     };
-  }>;
+  })[];
 };
 
-export type State = {
+export interface State {
   data?: Data;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
 | { type: 'LOAD_DATA_SUCCEEDED'; payload: Data }

@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import type { FC } from 'react';
 import { useEffect, useRef, useState } from 'react';
-
 import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
+
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavState } from '@/hooks/useNavState';
@@ -20,6 +20,7 @@ export const TutorNav: FC<TutorNavProps> = props => {
   const [ loaded, setLoaded ] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoaded(true);
   }, []);
 

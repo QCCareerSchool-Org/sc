@@ -7,12 +7,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type SubmissionSubmitEvent = {
+export interface SubmissionSubmitEvent {
   studentId: number;
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
-};
+}
 
 export const useSubmissionSubmit = (dispatch: Dispatch<Action>): Subject<SubmissionSubmitEvent> => {
   const { newSubmissionService } = useStudentServices();
@@ -33,7 +33,7 @@ export const useSubmissionSubmit = (dispatch: Dispatch<Action>): Subject<Submiss
             let message = 'Submit failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -50,5 +50,6 @@ export const useSubmissionSubmit = (dispatch: Dispatch<Action>): Subject<Submiss
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return submit$.current;
 };

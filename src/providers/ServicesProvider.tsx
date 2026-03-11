@@ -21,7 +21,7 @@ import type { IVideoService } from '@/services/videoService';
 import { VideoService } from '@/services/videoService';
 import { instance } from 'src/axiosInstance';
 
-export type Services = {
+export interface Services {
   httpService: IHttpService;
   loginService: ILoginService;
   passwordResetRequestService: IPasswordResetRequestService;
@@ -31,15 +31,15 @@ export type Services = {
   crmTelephoneCountryCodeService: ICRMTelephoneCountryCodeService;
   crmCountryService: ICRMCountryService;
   crmProvinceService: ICRMProvinceService;
-};
+}
 
 export const ServicesContext = createContext<Services | undefined>(undefined);
 
 const axiosHttpService = new AxiosHttpService(instance);
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export const ServicesProvider: FC<Props> = ({ children }) => {
   const [ state ] = useState({

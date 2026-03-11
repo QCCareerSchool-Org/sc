@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -9,7 +9,7 @@ import type { PartSavePayload } from './usePartSave';
 import { Spinner } from '@/components/Spinner';
 import type { NewPartTemplateWithAssignmentAndInputs } from '@/services/administrators/newPartTemplateService';
 
-type Props = {
+interface Props {
   administratorId: number;
   partId: string;
   partTemplate: NewPartTemplateWithAssignmentAndInputs;
@@ -21,7 +21,7 @@ type Props = {
   onDescriptionTypeChange: ChangeEventHandler<HTMLInputElement>;
   onMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   onPartNumberChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewPartTemplateEditForm: FC<Props> = memo(props => {
   const { administratorId, partId, partTemplate, formState, save$, delete$ } = props;
@@ -37,7 +37,7 @@ export const NewPartTemplateEditForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -60,7 +60,7 @@ export const NewPartTemplateEditForm: FC<Props> = memo(props => {
   };
 
   const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this part template and all its media and inputs?\n\nmedia: ${partTemplate.newPartMedia.length}\ntext boxes: ${partTemplate?.newTextBoxTemplates.length}\nupload slots: ${partTemplate?.newUploadSlotTemplates.length}`)) {
+    if (confirm(`Are you sure you want to delete this part template and all its media and inputs?\n\nmedia: ${partTemplate.newPartMedia.length}\ntext boxes: ${partTemplate.newTextBoxTemplates.length}\nupload slots: ${partTemplate.newUploadSlotTemplates.length}`)) {
       delete$.next({
         administratorId,
         partId,

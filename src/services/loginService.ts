@@ -22,7 +22,7 @@ export class LoginService implements ILoginService {
 
   public logOut(): Observable<void> {
     const url = this.getUrl() + '/logout';
-    return this.httpService.post<void>(url);
+    return this.httpService.post(url);
   }
 
   public refresh(): Observable<AuthenticationPayload> {

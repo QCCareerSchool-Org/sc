@@ -1,6 +1,8 @@
-import type { MutableRefObject, Ref } from 'react';
+import type { Ref, RefObject } from 'react';
 
-const isMutableRefObject = <T>(thing: unknown): thing is MutableRefObject<T> => (thing as MutableRefObject<T>) !== undefined;
+const isMutableRefObject = <T>(thing: unknown): thing is RefObject<T> => {
+  return thing !== undefined;
+};
 
 // https://www.davedrinks.coffee/how-do-i-use-two-react-refs/
 

@@ -5,9 +5,9 @@ import { SchoolView } from '@/components/administrators/SchoolView';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   schoolId: number | null;
-};
+}
 
 const SchoolViewPage: NextPage<Props> = ({ schoolId }) => {
   const authState = useAuthState();

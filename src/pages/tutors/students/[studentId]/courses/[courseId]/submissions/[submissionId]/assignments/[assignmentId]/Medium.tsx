@@ -6,11 +6,11 @@ import { Video } from '@/components/Video';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 
-type Props = {
+interface Props {
   medium: NewAssignmentMedium | NewPartMedium;
   src: string;
   className?: string;
-};
+}
 
 export const Medium: FC<Props> = ({ medium, src, className }) => {
   switch (medium.type) {

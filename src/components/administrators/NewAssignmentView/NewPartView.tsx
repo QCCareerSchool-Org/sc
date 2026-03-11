@@ -1,5 +1,5 @@
-import { memo, useCallback } from 'react';
 import type { FC, MouseEventHandler } from 'react';
+import { memo, useCallback } from 'react';
 import { catchError, EMPTY } from 'rxjs';
 
 import { MarkForm } from './MarkForm';
@@ -14,11 +14,11 @@ import { Section } from '@/components/Section';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   administratorId: number;
   part: PartWithForms;
   saveInput: (type: InputType, partId: string, id: string, markOverride: number | null) => void;
-};
+}
 
 export const NewPartView: FC<Props> = memo(({ administratorId, part, saveInput }) => {
   const { newPartMediumService } = useAdminServices();

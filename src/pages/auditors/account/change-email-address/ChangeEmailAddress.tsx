@@ -8,9 +8,9 @@ import { useSubmit } from './useSubmit';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   auditorId: number;
-};
+}
 
 export const ChangeEmailAddress: FC<Props> = ({ auditorId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

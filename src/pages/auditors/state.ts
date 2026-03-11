@@ -1,10 +1,10 @@
 import type { Auditor } from '@/domain/auditor/auditor';
 
-export type State = {
+export interface State {
   auditor?: Auditor;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: Auditor }

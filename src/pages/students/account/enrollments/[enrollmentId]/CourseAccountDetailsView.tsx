@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -11,10 +11,10 @@ import { capitalizeFirstLetter } from 'src/capitalizeFirstLetter';
 import { formatDate } from 'src/formatDate';
 import { statusName } from 'src/statusName';
 
-type Props = {
+interface Props {
   crmId: number;
   crmEnrollmentId: number;
-};
+}
 
 export const CourseAccountDetailsView: FC<Props> = ({ crmId, crmEnrollmentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -29,7 +29,7 @@ export const CourseAccountDetailsView: FC<Props> = ({ crmId, crmEnrollmentId }) 
 
   const currencyCode = state.crmEnrollment.currency.code;
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (state.form.data.paymentMethodId === null) {
       return;
@@ -169,7 +169,7 @@ export const CourseAccountDetailsView: FC<Props> = ({ crmId, crmEnrollmentId }) 
                     <button className="btn btn-primary flex-shrink-0" style={{ width: 100 }}>
                       {state.form.processingState === 'processing' ? <Spinner size="sm" /> : 'Pay Now'}
                     </button>
-                    {state.form.processingState === 'error' && <span className="text-danger ms-2">{state.form.errorMessage ? state.form.errorMessage : 'Error'}</span>}
+                    {state.form.processingState === 'error' && <span className="text-danger ms-2">{state.form.errorMessage ?? 'Error'}</span>}
                   </div>
                   {state.form.processingState === 'success' && (
                     <div className="alert alert-success mt-4">

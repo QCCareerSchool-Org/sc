@@ -1,4 +1,4 @@
-export type PasswordResetRequest = {
+export interface PasswordResetRequest {
   id: number;
   code: string;
   administratorId: number | null;
@@ -8,9 +8,9 @@ export type PasswordResetRequest = {
   used: boolean;
   requestDate: Date;
   expiryDate: Date | null;
-};
+}
 
-export type RawPasswordResetRequest = {
+export interface RawPasswordResetRequest {
   id: number;
   code: string;
   administratorId: number | null;
@@ -22,4 +22,4 @@ export type RawPasswordResetRequest = {
   requestDate: string;
   /** string date */
   expiryDate: string | null;
-};
+}

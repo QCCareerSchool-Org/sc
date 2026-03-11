@@ -8,11 +8,11 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type MaterialDeleteEvent = {
+export interface MaterialDeleteEvent {
   processingState: State['detailsForm']['processingState'];
   administratorId: number;
   materialId: string;
-};
+}
 
 export const useMaterialDelete = (dispatch: Dispatch<Action>): Subject<MaterialDeleteEvent> => {
   const { materialService } = useAdminServices();
@@ -38,7 +38,7 @@ export const useMaterialDelete = (dispatch: Dispatch<Action>): Subject<MaterialD
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,5 +56,6 @@ export const useMaterialDelete = (dispatch: Dispatch<Action>): Subject<MaterialD
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, materialService, navigateToLogin, router ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return delete$.current;
 };

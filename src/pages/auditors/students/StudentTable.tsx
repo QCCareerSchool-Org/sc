@@ -5,10 +5,10 @@ import type { StudentData } from './state';
 import { StudentTableRow } from './StudentTableRow';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   students?: StudentData[];
   onGroupClick: (e: MouseEvent, group: string) => void;
-};
+}
 
 export const StudentTable: FC<Props> = memo(props => {
   if (!props.students) {

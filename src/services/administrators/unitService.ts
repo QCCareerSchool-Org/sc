@@ -14,18 +14,18 @@ type RawUnitWithMaterials = RawUnit & {
   materials: RawMaterial[];
 };
 
-export type UnitInsertPayload = {
+export interface UnitInsertPayload {
   courseId: number;
   unitLetter: string;
   title: string | null;
   order: number;
-};
+}
 
-export type UnitSavePayload = {
+export interface UnitSavePayload {
   unitLetter: string;
   title: string | null;
   order: number;
-};
+}
 
 export interface IUnitService {
   getUnit: (administratorId: number, unitId: string) => Observable<UnitWithMaterials>;
@@ -72,7 +72,7 @@ export class UnitService implements IUnitService {
 
   public deleteUnit(administratorId: number, unitId: string): Observable<void> {
     const url = `${this.getUrl(administratorId)}/${unitId}`;
-    return this.http.delete<void>(url);
+    return this.http.delete(url);
   }
 
   private getUrl(administratorId: number): string {

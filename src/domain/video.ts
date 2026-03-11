@@ -1,4 +1,4 @@
-export type Video = {
+export interface Video {
   /** uuid */
   videoId: string;
   src: string;
@@ -6,4 +6,4 @@ export type Video = {
   captionSrc: string | null;
   title: string;
   description: string;
-};
+}

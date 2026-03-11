@@ -8,10 +8,10 @@ import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   administratorId: number;
   schoolId: number;
-};
+}
 
 export const SchoolView: FC<Props> = ({ administratorId, schoolId }) => {
   const router = useRouter();

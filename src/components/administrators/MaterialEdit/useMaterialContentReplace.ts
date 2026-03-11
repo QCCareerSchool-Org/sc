@@ -7,12 +7,12 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type MaterialContentReplaceEvent = {
+export interface MaterialContentReplaceEvent {
   processingState: State['contentForm']['processingState'];
   administratorId: number;
   materialId: string;
   content: File;
-};
+}
 
 export const useMaterialContentReplace = (dispatch: Dispatch<Action>): Subject<MaterialContentReplaceEvent> => {
   const { materialService } = useAdminServices();
@@ -34,7 +34,7 @@ export const useMaterialContentReplace = (dispatch: Dispatch<Action>): Subject<M
               let message = 'Replace failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -52,5 +52,6 @@ export const useMaterialContentReplace = (dispatch: Dispatch<Action>): Subject<M
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, materialService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return addOrReplace$.current;
 };

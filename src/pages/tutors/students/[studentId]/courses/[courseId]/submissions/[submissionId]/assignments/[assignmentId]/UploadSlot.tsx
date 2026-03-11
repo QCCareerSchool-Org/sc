@@ -6,12 +6,12 @@ import { Img } from '@/components/Img';
 import type { NewUploadSlot } from '@/domain/tutor/newUploadSlot';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   tutorId: number;
   newUploadSlot: WithInputForm<NewUploadSlot>;
   modified: boolean;
   submissionIsRedo: boolean;
-};
+}
 
 export const UploadSlot: FC<Props> = ({ tutorId, newUploadSlot, modified, submissionIsRedo }) => {
   const id = useId();

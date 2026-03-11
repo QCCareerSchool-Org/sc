@@ -30,7 +30,7 @@ export const useRefresh = (dispatch: Dispatch<Action>, studentId: number, course
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin();
+            navigateToLogin(); return;
           }
           errorCode = err.code;
         }
@@ -41,5 +41,6 @@ export const useRefresh = (dispatch: Dispatch<Action>, studentId: number, course
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, studentId, courseId, materialId, materialService, enrollmentService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return refresh$.current;
 };

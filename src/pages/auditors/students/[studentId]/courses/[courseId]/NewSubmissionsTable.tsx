@@ -5,11 +5,11 @@ import type { NewSubmission } from '@/domain/auditor/newSubmission';
 import type { Tutor } from '@/domain/auditor/tutor';
 import { useServices } from '@/hooks/useServices';
 
-type Props = {
-  newSubmissions: Array<NewSubmission & {
+interface Props {
+  newSubmissions: (NewSubmission & {
     tutor: Tutor | null;
-  }>;
-};
+  })[];
+}
 
 export const NewSubmissionsTable: FC<Props> = ({ newSubmissions }) => {
   const { gradeService } = useServices();

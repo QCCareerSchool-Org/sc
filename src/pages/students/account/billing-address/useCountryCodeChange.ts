@@ -6,10 +6,10 @@ import type { Action, State } from './state';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useServices } from '@/hooks/useServices';
 
-type EmailAddressChangeEvent = {
+interface EmailAddressChangeEvent {
   countryCode: string;
   crmProvinces: State['crmProvinces'];
-};
+}
 
 export const useCountryCodeChange = (dispatch: Dispatch<Action>): Subject<EmailAddressChangeEvent> => {
   const { crmProvinceService } = useServices();
@@ -51,5 +51,6 @@ export const useCountryCodeChange = (dispatch: Dispatch<Action>): Subject<EmailA
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, crmProvinceService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return change$.current;
 };

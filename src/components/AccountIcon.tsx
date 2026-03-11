@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import type { FC } from 'react';
 import { useEffect, useRef } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
-
 import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
+
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useServices } from '@/hooks/useServices';

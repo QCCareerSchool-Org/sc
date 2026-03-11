@@ -7,12 +7,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useServices } from '@/hooks/useServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type PasswordChangeEvent = {
+export interface PasswordChangeEvent {
   processingState: State['form']['processingState'];
   passwordResetId: number;
   code: string;
   password: string;
-};
+}
 
 export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordChangeEvent> => {
   const { passwordResetRequestService } = useServices();
@@ -33,7 +33,7 @@ export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordC
             let message = 'Request failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -50,5 +50,6 @@ export const usePasswordChange = (dispatch: Dispatch<Action>): Subject<PasswordC
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, passwordResetRequestService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return passwordChange$.current;
 };

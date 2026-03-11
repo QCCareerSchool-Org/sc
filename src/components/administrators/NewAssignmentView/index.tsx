@@ -17,10 +17,10 @@ import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   assignmentId: string;
-};
+}
 
 export const NewAssignmentView: FC<Props> = ({ administratorId, assignmentId }) => {
   const { gradeService } = useServices();

@@ -3,7 +3,7 @@ import type { Student } from '@/domain/student/student';
 import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 import type { StudentWithCountryProvinceAndEnrollments } from '@/services/students/studentService';
 
-export type State = {
+export interface State {
   student?: StudentWithCountryProvinceAndEnrollments;
   crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
   emailAddress: string;
@@ -16,7 +16,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: { student: StudentWithCountryProvinceAndEnrollments; crmStudent?: CRMStudentWithCountryProvinceAndEnrollments } }

@@ -45,10 +45,10 @@ import VE from '@/images/course-suggestions/thumbnails/ve.jpg';
 import VM from '@/images/course-suggestions/thumbnails/vm.jpg';
 import WP from '@/images/course-suggestions/thumbnails/wp.jpg';
 
-type Props = {
+interface Props {
   course: CourseSuggestion;
   size: number;
-};
+}
 
 const getSrc = (courseCode: string): StaticImageData => {
   switch (courseCode) {

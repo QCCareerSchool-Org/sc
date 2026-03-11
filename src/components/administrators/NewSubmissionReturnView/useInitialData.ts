@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import type { Dispatch } from 'react';
+import { useEffect } from 'react';
 import { Subject, takeUntil } from 'rxjs';
 
 import type { Action } from './state';
@@ -24,7 +24,7 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
         let errorCode: number | undefined;
         if (err instanceof HttpServiceError) {
           if (err.login) {
-            return void navigateToLogin();
+            navigateToLogin(); return;
           }
           errorCode = err.code;
         }

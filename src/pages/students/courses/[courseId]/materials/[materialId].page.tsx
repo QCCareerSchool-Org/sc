@@ -4,10 +4,10 @@ import ErrorPage from 'next/error';
 import { MaterialView } from './materialView';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   courseId: number | null;
   materialId: string | null;
-};
+}
 
 const MaterialPage: NextPage<Props> = ({ courseId, materialId }) => {
   const { studentId } = useAuthState();

@@ -4,9 +4,9 @@ import { useEffect, useRef } from 'react';
 import { useAuthState } from '@/hooks/useAuthState';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   materialId: string | null;
-};
+}
 
 const LessonPage: NextPage<Props> = ({ materialId }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);

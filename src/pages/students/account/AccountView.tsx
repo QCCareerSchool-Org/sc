@@ -14,10 +14,10 @@ import type { CRMEnrollment } from '@/domain/student/crm/crmEnrollment';
 import type { CRMTransaction } from '@/domain/student/crm/crmTransaction';
 import { statusName } from 'src/statusName';
 
-type Props = {
+interface Props {
   studentId: number;
   crmId?: number;
-};
+}
 
 export const AccountView: FC<Props> = ({ studentId, crmId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -65,15 +65,19 @@ export const AccountView: FC<Props> = ({ studentId, crmId }) => {
     switch (year) {
       case 2015:
       case 2016:
+        // eslint-disable-next-line react-hooks/immutability
         window.location.href = `/students/tax-receipts/view-2015.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
       case 2017:
+        // eslint-disable-next-line react-hooks/immutability
         window.location.href = `/students/tax-receipts/view-2017.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
       case 2018:
+        // eslint-disable-next-line react-hooks/immutability
         window.location.href = `/students/tax-receipts/view-2018.php?id=${encodeURIComponent(t2202ReceiptId)}`;
         break;
       default:
+        // eslint-disable-next-line react-hooks/immutability
         window.location.href = `/students/tax-receipts/view.php?id=${encodeURIComponent(t2202ReceiptId)}`;
     }
   };

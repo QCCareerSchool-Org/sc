@@ -6,10 +6,10 @@ import { StudentDetails } from './StudentDetails';
 import { useInitialData } from './useInitialData';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   auditorId: number;
   studentId: number;
-};
+}
 
 export const StudentView: FC<Props> = ({ auditorId, studentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

@@ -7,9 +7,9 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-type SubmissionRestartEvent = {
+interface SubmissionRestartEvent {
   processingState: State['restartForm']['processingState'];
-};
+}
 
 export const useSubmissionRestart = (dispatch: Dispatch<Action>, administratorId: number, submissionId: string): Subject<SubmissionRestartEvent> => {
   const { studentService, newSubmissionService } = useAdminServices();
@@ -31,7 +31,7 @@ export const useSubmissionRestart = (dispatch: Dispatch<Action>, administratorId
               let message = 'Transfer failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -49,5 +49,6 @@ export const useSubmissionRestart = (dispatch: Dispatch<Action>, administratorId
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, administratorId, submissionId, studentService, newSubmissionService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return transfer$.current;
 };

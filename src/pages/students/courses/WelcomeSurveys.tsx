@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 
 import type { StudentWithCountryProvinceAndEnrollments } from '@/services/students/studentService';
 
-type Props = {
+interface Props {
   student: StudentWithCountryProvinceAndEnrollments;
-};
+}
 
 export const WelcomeSurveys: FC<Props> = ({ student }) => {
   const urls = useMemo(() => {
@@ -41,26 +41,26 @@ export const WelcomeSurveys: FC<Props> = ({ student }) => {
     <>
       {urls?.makeup && (
         <div className="alert alert-info">
-          <p>Welcome to QC Makeup Academy! Before you get started, please fill out the <a href={urls?.makeup} target="_blank" rel="noreferrer" className="alert-link">Course Welcome Survey</a>.</p>
-          <a href={urls?.makeup} target="_blank" rel="noreferrer"><button className="btn btn-info">Take the Survey</button></a>
+          <p>Welcome to QC Makeup Academy! Before you get started, please fill out the <a href={urls.makeup} target="_blank" rel="noreferrer" className="alert-link">Course Welcome Survey</a>.</p>
+          <a href={urls.makeup} target="_blank" rel="noreferrer"><button className="btn btn-info">Take the Survey</button></a>
         </div>
       )}
       {urls?.event && (
         <div className="alert alert-info">
-          <p>Welcome to QC Event School! Before you get started, please fill out the <a href={urls?.event} target="_blank" rel="noreferrer" className="alert-link">Course Welcome Survey</a>.</p>
-          <a href={urls?.event} target="_blank" rel="noreferrer"><button className="btn btn-info">Take the Survey</button></a>
+          <p>Welcome to QC Event School! Before you get started, please fill out the <a href={urls.event} target="_blank" rel="noreferrer" className="alert-link">Course Welcome Survey</a>.</p>
+          <a href={urls.event} target="_blank" rel="noreferrer"><button className="btn btn-info">Take the Survey</button></a>
         </div>
       )}
       {urls?.design && (
         <div className="alert alert-info">
-          <p>Welcome to QC Design School! Before you get started, please fill out the <a href={urls?.design} target="_blank" rel="noreferrer" className="alert-link">Course Welcome Survey</a>.</p>
-          <a href={urls?.design} target="_blank" rel="noreferrer"><button className="btn btn-info">Take the Survey</button></a>
+          <p>Welcome to QC Design School! Before you get started, please fill out the <a href={urls.design} target="_blank" rel="noreferrer" className="alert-link">Course Welcome Survey</a>.</p>
+          <a href={urls.design} target="_blank" rel="noreferrer"><button className="btn btn-info">Take the Survey</button></a>
         </div>
       )}
       {urls?.pet && (
         <div className="alert alert-info">
-          <p>Welcome to QC Pet Studies! Before you get started, please fill out the <a href={urls?.pet} target="_blank" rel="noreferrer" className="alert-link">Course Welcome Survey</a>.</p>
-          <a href={urls?.pet} target="_blank" rel="noreferrer"><button className="btn btn-info">Take the Survey</button></a>
+          <p>Welcome to QC Pet Studies! Before you get started, please fill out the <a href={urls.pet} target="_blank" rel="noreferrer" className="alert-link">Course Welcome Survey</a>.</p>
+          <a href={urls.pet} target="_blank" rel="noreferrer"><button className="btn btn-info">Take the Survey</button></a>
         </div>
       )}
     </>
