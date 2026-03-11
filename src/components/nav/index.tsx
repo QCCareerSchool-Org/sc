@@ -7,10 +7,10 @@ import type { StudentNavProps } from './StudentNav';
 import type { TutorNavProps } from './TutorNav';
 import { useAuthState } from '@/hooks/useAuthState';
 
-const AdministratorNav = dynamic<AdministratorNavProps>(async () => import('./AdministratorNav').then(mod => mod.AdministratorNav));
-const StudentNav = dynamic<StudentNavProps>(async () => import('./StudentNav').then(mod => mod.StudentNav));
-const TutorNav = dynamic<TutorNavProps>(async () => import('./TutorNav').then(mod => mod.TutorNav));
-const AuditorNav = dynamic<AuditorNavProps>(async () => import('./AuditorNav').then(mod => mod.AuditorNav));
+const AdministratorNav = dynamic<AdministratorNavProps>(async () => import('./AdministratorNav.js').then(mod => mod.AdministratorNav));
+const StudentNav = dynamic<StudentNavProps>(async () => import('./StudentNav.js').then(mod => mod.StudentNav));
+const TutorNav = dynamic<TutorNavProps>(async () => import('./TutorNav.js').then(mod => mod.TutorNav));
+const AuditorNav = dynamic<AuditorNavProps>(async () => import('./AuditorNav.js').then(mod => mod.AuditorNav));
 
 export const SiteNav: FC = () => {
   const authState = useAuthState();

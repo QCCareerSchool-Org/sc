@@ -8,11 +8,11 @@ import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   submission: NewSubmission & { tutor: Tutor | null };
   onTutorChangeButtonClick: () => void;
-};
+}
 
 export const NewSubmissionStatsTable: FC<Props> = props => {
   const { administratorId, submission } = props;

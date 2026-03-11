@@ -7,14 +7,14 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type FeedbackUploadPayload = {
+export interface FeedbackUploadPayload {
   tutorId: number;
   studentId: number;
   courseId: number;
   submissionId: string;
   file: File;
   processingState: State['processingState'];
-};
+}
 
 export const useFeedbackUpload = (dispatch: Dispatch<Action>): Subject<FeedbackUploadPayload> => {
   const navigateToLogin = useNavigateToLogin();
@@ -42,7 +42,7 @@ export const useFeedbackUpload = (dispatch: Dispatch<Action>): Subject<FeedbackU
               let message = 'Upload failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -60,5 +60,6 @@ export const useFeedbackUpload = (dispatch: Dispatch<Action>): Subject<FeedbackU
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return feedbackUpload$.current;
 };

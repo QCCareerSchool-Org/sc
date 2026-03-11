@@ -8,11 +8,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewUploadSlotTemplateAddPayload } from '@/services/administrators/newUploadSlotTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewUploadSlotTemplateInsertEvent = {
+export interface NewUploadSlotTemplateInsertEvent {
   administratorId: number;
   payload: NewUploadSlotTemplateAddPayload;
   processingState: State['newUoloadSlotTemplateForm']['processingState'];
-};
+}
 
 export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<NewUploadSlotTemplateInsertEvent> => {
   const { newUploadSlotTemplateService } = useAdminServices();
@@ -36,7 +36,7 @@ export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<NewUplo
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,5 +54,6 @@ export const useUploadSlotInsert = (dispatch: Dispatch<Action>): Subject<NewUplo
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newUploadSlotTemplateService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return uploadSlotInsert$.current;
 };

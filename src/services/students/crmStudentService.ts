@@ -16,23 +16,23 @@ import { crmEndpoint } from 'src/basePath';
 export type CRMStudentWithCountryProvinceAndEnrollments = CRMStudent & {
   province: CRMProvince | null;
   country: CRMCountry;
-  enrollments: Array<CRMEnrollment & {
+  enrollments: (CRMEnrollment & {
     course: CRMCourse;
     currency: CRMCurrency;
     transactions: CRMTransaction[];
-    bonusItemShipments: Array<CRMBonusItemShipment & { bonusItem: CRMBonusItem }>;
-  }>;
+    bonusItemShipments: (CRMBonusItemShipment & { bonusItem: CRMBonusItem })[];
+  })[];
 };
 
 type RawCRMStudentWithCountryProvinceAndEnrollments = RawCRMStudent & {
   province: CRMProvince | null;
   country: CRMCountry;
-  enrollments: Array<RawCRMEnrollment & {
+  enrollments: (RawCRMEnrollment & {
     course: RawCRMCourse;
     currency: RawCRMCurrency;
     transactions: RawCRMTransaction[];
-    bonusItemShipments: Array<RawCRMBonusItemShipment & { bonusItem: RawCRMBonusItem }>;
-  }>;
+    bonusItemShipments: (RawCRMBonusItemShipment & { bonusItem: RawCRMBonusItem })[];
+  })[];
 };
 
 export type CRMStudentWithCountryAndProvince = CRMStudent & {

@@ -3,9 +3,9 @@ import type { FC } from 'react';
 import type { Award } from '@/domain/award';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   awards: Award[];
-};
+}
 
 export const AwardsTable: FC<Props> = ({ awards }) => {
   if (awards.length === 0) {

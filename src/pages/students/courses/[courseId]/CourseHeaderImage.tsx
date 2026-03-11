@@ -4,9 +4,9 @@ import { useRef } from 'react';
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   courseId: number;
-};
+}
 
 export const CourseHeaderImage: FC<Props> = ({ courseId }) => {
   const src = `${endpoint}/courseHeaderImages/${courseId}`;

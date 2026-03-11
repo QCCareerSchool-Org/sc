@@ -6,22 +6,22 @@ import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/n
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
-export type NewUploadSlotTemplateAddPayload = {
+export interface NewUploadSlotTemplateAddPayload {
   partId: string;
   label: string;
   allowedTypes: NewUploadSlotAllowedType[];
   points: number;
   order: number;
   optional: boolean;
-};
+}
 
-export type NewUploadSlotTemplateSavePayload = {
+export interface NewUploadSlotTemplateSavePayload {
   label: string;
   allowedTypes: NewUploadSlotAllowedType[];
   points: number;
   order: number;
   optional: boolean;
-};
+}
 
 type RawNewUploadSlotTemplateWithPart = RawNewUploadSlotTemplate & {
   newPartTemplate: RawNewPartTemplate;
@@ -67,7 +67,7 @@ export class NewUploadSlotTemplateService implements INewUploadSlotTemplateServi
 
   public deleteUploadSlot(administratorId: number, uploadSlotId: string): Observable<void> {
     const url = `${this.getBaseUrl(administratorId)}/${uploadSlotId}`;
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   private getBaseUrl(administratorId: number): string {

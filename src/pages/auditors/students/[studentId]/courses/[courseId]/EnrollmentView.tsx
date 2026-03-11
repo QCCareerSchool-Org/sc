@@ -1,18 +1,18 @@
 import { type FC, useReducer } from 'react';
 
-import { CourseProgress } from '../../CourseProgress';
 import { NewSubmissionsTable } from './NewSubmissionsTable';
 import { initialState, reducer } from './state';
 import { UnitsTable } from './UnitsTable';
 import { useInitialData } from './useInitialData';
+import { CourseProgress } from '../../CourseProgress';
 import { Spinner } from '@/components/Spinner';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   auditorId: number;
   studentId: number;
   courseId: number;
-};
+}
 
 export const EnrollmentView: FC<Props> = ({ auditorId, studentId, courseId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

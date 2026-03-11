@@ -1,8 +1,8 @@
 import NextError from 'next/error';
 import type { FC, MouseEventHandler } from 'react';
 import { useReducer } from 'react';
-
 import { catchError, EMPTY } from 'rxjs';
+
 import { NewAssignmentMediumView } from '../NewAssignmentMediumView';
 import { NewPartTemplatePreview } from './NewPartTemplatePreview';
 import { initialState, reducer } from './state';
@@ -13,10 +13,10 @@ import { Section } from '@/components/Section';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   administratorId: number;
   assignmentId: string;
-};
+}
 
 export const NewAssignmentTemplatePreview: FC<Props> = ({ administratorId, assignmentId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

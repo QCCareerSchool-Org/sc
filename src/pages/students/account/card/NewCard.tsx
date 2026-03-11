@@ -7,9 +7,9 @@ import { useInitialData } from './useInitialData';
 import { usePaymentMethodInsert } from './usePaymentMethodInsert';
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   crmId: number;
-};
+}
 
 export const NewCard: FC<Props> = ({ crmId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

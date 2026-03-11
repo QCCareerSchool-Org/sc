@@ -1,6 +1,6 @@
 import type { NewDescriptionType } from './newDescriptionType';
 
-export type NewPartTemplate = {
+export interface NewPartTemplate {
   /** uuid */
   partTemplateId: string;
   /** uuid */
@@ -12,9 +12,9 @@ export type NewPartTemplate = {
   markingCriteria: string | null;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewPartTemplate = {
+export interface RawNewPartTemplate {
   /** uuid */
   partTemplateId: string;
   /** uuid */
@@ -29,4 +29,4 @@ export type RawNewPartTemplate = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

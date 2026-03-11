@@ -1,16 +1,16 @@
 import type { Enrollment } from '@/domain/enrollment';
 import type { Material } from '@/domain/material';
 
-type Data = {
+interface Data {
   material: Material & { complete: boolean; materialData: Record<string, string> };
   enrollment: Enrollment;
-};
+}
 
-export type State = {
+export interface State {
   data?: Data;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: Data }

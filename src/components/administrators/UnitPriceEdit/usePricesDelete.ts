@@ -7,12 +7,12 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewUnitPricesDeleteEvent = {
+export interface NewUnitPricesDeleteEvent {
   administratorId: number;
   courseId: number;
   countryId: number | null;
   processingState: State['form']['processingState'];
-};
+}
 
 export const usePricesDelete = (dispatch: Dispatch<Action>): Subject<NewUnitPricesDeleteEvent> => {
   const { newSubmissionTemplatePriceService } = useAdminServices();
@@ -35,7 +35,7 @@ export const usePricesDelete = (dispatch: Dispatch<Action>): Subject<NewUnitPric
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -52,5 +52,6 @@ export const usePricesDelete = (dispatch: Dispatch<Action>): Subject<NewUnitPric
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionTemplatePriceService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return pricesDelete$.current;
 };

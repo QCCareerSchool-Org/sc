@@ -1,16 +1,16 @@
 import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 import type { StudentWithCountryProvinceAndEnrollments } from '@/services/students/studentService';
 
-export type Data = {
+export interface Data {
   student: StudentWithCountryProvinceAndEnrollments;
   crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
-};
+}
 
-export type State = {
+export interface State {
   data?: Data;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: Data }

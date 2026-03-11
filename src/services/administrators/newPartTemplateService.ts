@@ -10,22 +10,22 @@ import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/n
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
-export type NewPartTemplateAddPayload = {
+export interface NewPartTemplateAddPayload {
   assignmentId: string;
   partNumber: number;
   title: string;
   description: string | null;
   descriptionType: NewDescriptionType;
   markingCriteria: string | null;
-};
+}
 
-export type NewPartTemplateSavePayload = {
+export interface NewPartTemplateSavePayload {
   partNumber: number;
   title: string;
   description: string | null;
   descriptionType: NewDescriptionType;
   markingCriteria: string | null;
-};
+}
 
 type RawNewPartTemplateWithAssignmentAndInputs = RawNewPartTemplate & {
   newAssignmentTemplate: RawNewAssignmentTemplate;
@@ -75,7 +75,7 @@ export class NewPartTemplateService implements INewPartTemplateService {
 
   public deletePart(administratorId: number, partId: string): Observable<void> {
     const url = `${this.getBaseUrl(administratorId)}/${partId}`;
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   private getBaseUrl(administratorId: number): string {

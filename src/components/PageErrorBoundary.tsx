@@ -1,16 +1,14 @@
 import type { ReactElement, ReactNode } from 'react';
 import { Component } from 'react';
 
-import { TrackJS } from 'src/trackjs-isomorphic';
-
-type Props = {
+interface Props {
   fallback: ReactElement;
   children: ReactNode;
-};
+}
 
-type State = {
+interface State {
   hasError: boolean;
-};
+}
 
 export class PageErrorBoundary extends Component<Props, State> {
 
@@ -21,10 +19,6 @@ export class PageErrorBoundary extends Component<Props, State> {
 
   public static getDerivedStateFromError(): Partial<State> {
     return { hasError: true };
-  }
-
-  public componentDidCatch(error: Error): void {
-    TrackJS.track(error);
   }
 
   public render(): ReactNode {

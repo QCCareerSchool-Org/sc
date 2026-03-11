@@ -1,4 +1,4 @@
-export type State = {
+export interface State {
   form: {
     data: {
       newPassword: string;
@@ -8,7 +8,7 @@ export type State = {
     processingState: 'idle' | 'submitting' | 'success' | 'error';
     errorMessage?: string;
   };
-};
+}
 
 export type Action =
   | { type: 'NEW_PASSWORD_CHANGED'; payload: string }

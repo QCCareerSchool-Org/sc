@@ -8,11 +8,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewAssignmentMediumAddPayload } from '@/services/administrators/newAssignmentMediumService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewAssignmentMediumInsertEvent = {
+export interface NewAssignmentMediumInsertEvent {
   administratorId: number;
   payload: NewAssignmentMediumAddPayload;
   processingState: State['assignmentMediaForm']['processingState'];
-};
+}
 
 export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<NewAssignmentMediumInsertEvent> => {
   const { newAssignmentMediumService } = useAdminServices();
@@ -32,6 +32,7 @@ export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<NewAssignme
             next: progressResponse => {
               if (progressResponse.type === 'progress') {
                 dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_PROGRESSED', payload: progressResponse.value });
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               } else if (progressResponse.type === 'data') {
                 dispatch({ type: 'ADD_ASSIGNMENT_MEDIUM_SUCCEEDED', payload: progressResponse.value });
               }
@@ -40,7 +41,7 @@ export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<NewAssignme
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -58,5 +59,6 @@ export const useMediumInsert = (dispatch: Dispatch<Action>): Subject<NewAssignme
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newAssignmentMediumService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return mediumInsert$.current;
 };

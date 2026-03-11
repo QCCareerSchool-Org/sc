@@ -20,9 +20,9 @@ import SchoolWellness from '@/images/course-suggestions/banners/school-wellness.
 import SleepSpaces from '@/images/course-suggestions/banners/sleep-spaces.jpg';
 import TVFilmTheatre from '@/images/course-suggestions/banners/tv-film-theatre.jpg';
 
-type Props = {
+interface Props {
   group: CourseSuggestionGroup;
-};
+}
 
 export const GroupBannerImage: FC<Props> = ({ group }) => {
   const imageSrc = getImageSrc(group.id);

@@ -1,7 +1,8 @@
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import type { NewUploadSlotTemplateWithPart } from '@/services/administrators/newUploadSlotTemplateService';
+import { getLength } from 'src/lib/segmenter';
 
-export type State = {
+export interface State {
   newUploadSlotTemplate?: NewUploadSlotTemplateWithPart;
   form: {
     data: {
@@ -28,7 +29,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_UPLOAD_SLOT_TEMPLATE_SUCCEEDED'; payload: NewUploadSlotTemplateWithPart }
@@ -77,7 +78,7 @@ export const reducer = (state: State, action: Action): State => {
         newUploadSlotTemplate: action.payload,
         form: {
           data: {
-            label: action.payload.label ?? '',
+            label: action.payload.label,
             allowedTypes: {
               image: action.payload.allowedTypes.includes('image'),
               pdf: action.payload.allowedTypes.includes('pdf'),
@@ -102,7 +103,7 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -248,7 +249,7 @@ export const reducer = (state: State, action: Action): State => {
         form: {
           ...state.form,
           data: {
-            label: action.payload.label ?? '',
+            label: action.payload.label,
             allowedTypes: {
               image: action.payload.allowedTypes.includes('image'),
               pdf: action.payload.allowedTypes.includes('pdf'),

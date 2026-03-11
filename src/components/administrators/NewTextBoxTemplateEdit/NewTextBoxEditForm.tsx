@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -8,7 +8,7 @@ import type { NewTextBoxTemplateDeleteEvent } from './useTextBoxDelete';
 import type { NewTextBoxTemplateSaveEvent } from './useTextBoxSave';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   textBoxId: string;
   formState: State['form'];
@@ -19,7 +19,7 @@ type Props = {
   onLinesChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewTextBoxEditForm: FC<Props> = memo(props => {
   const { administratorId, textBoxId, formState, save$, delete$ } = props;
@@ -34,7 +34,7 @@ export const NewTextBoxEditForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;

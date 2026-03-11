@@ -2,10 +2,10 @@ export type SchoolName = 'QC Makeup Academy' | 'QC Design School' | 'QC Event Sc
 
 export type SchoolSlug = 'makeup' | 'design' | 'event' | 'pet' | 'wellness' | 'writing';
 
-export type School = {
+export interface School {
   schoolId: number;
   name: SchoolName;
   slug: SchoolSlug;
   order: number;
   entityVersion: number;
-};
+}

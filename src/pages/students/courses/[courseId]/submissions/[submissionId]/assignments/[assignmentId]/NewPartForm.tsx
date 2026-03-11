@@ -13,7 +13,7 @@ import { Section } from '@/components/Section';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
   submissionId: string;
@@ -25,7 +25,7 @@ type Props = {
   uploadFile: UploadSlotFunction;
   deleteFile: UploadSlotFunction;
   downloadFile: UploadSlotFunction;
-};
+}
 
 export const NewPartForm: FC<Props> = memo(props => {
   const { studentId, courseId, submissionId, assignmentId, part, locked, saveText, updateText, uploadFile, deleteFile, downloadFile } = props;

@@ -5,10 +5,10 @@ import { EnrollmentView } from './EnrollmentView';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 
-type Props = {
+interface Props {
   studentId: number | null;
   courseId: number | null;
-};
+}
 
 const AuditorEnrollmentPage: NextPage<Props> = ({ studentId, courseId }) => {
   const { auditorId } = useAuthState();

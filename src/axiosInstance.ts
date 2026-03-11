@@ -1,5 +1,5 @@
-import { isAxiosError } from 'axios';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { isAxiosError } from 'axios';
 import axiosObservable from 'axios-observable';
 import { firstValueFrom, switchMap } from 'rxjs';
 
@@ -56,6 +56,7 @@ instance.interceptors.response.use(undefined, async error => {
 });
 
 export abstract class AbstractAxiosError extends Error implements AxiosError {
+  cause?: Error | undefined;
 
   public constructor(private readonly originalError: AxiosError) {
     super(originalError.message);

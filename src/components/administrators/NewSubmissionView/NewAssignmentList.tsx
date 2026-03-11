@@ -1,13 +1,13 @@
-import { memo } from 'react';
 import type { FC, MouseEvent } from 'react';
+import { memo } from 'react';
 
 import type { NewAssignment } from '@/domain/administrator/newAssignment';
 import { useServices } from '@/hooks/useServices';
 
-type Props = {
+interface Props {
   assignments: NewAssignment[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
-};
+}
 
 export const NewAssignmentList: FC<Props> = memo(props => {
   const { assignments } = props;

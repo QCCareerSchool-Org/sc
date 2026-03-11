@@ -1,13 +1,13 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
-import { NewTextBoxFormElements } from '../NewTextBoxTemplateEdit/NewTextBoxFormElements';
 import type { State } from './state';
 import type { NewTextBoxTemplateInsertEvent } from './useTextBoxInsert';
+import { NewTextBoxFormElements } from '../NewTextBoxTemplateEdit/NewTextBoxFormElements';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   partId: string;
   formState: State['newTextBoxTemplateForm'];
@@ -17,7 +17,7 @@ type Props = {
   onLinesChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewTextBoxTemplateAddForm: FC<Props> = memo(props => {
   const { administratorId, partId, formState, insert$ } = props;
@@ -32,7 +32,7 @@ export const NewTextBoxTemplateAddForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler = e => {
+  const handleFormSubmit: SubmitEventHandler = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -69,7 +69,7 @@ export const NewTextBoxTemplateAddForm: FC<Props> = memo(props => {
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
               {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
             </button>
-            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'Error'}</span>}
           </div>
         </form>
       </div>

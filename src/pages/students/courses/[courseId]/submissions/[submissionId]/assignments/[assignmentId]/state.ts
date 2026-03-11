@@ -38,11 +38,11 @@ export type AssignmentState = NewAssignment & {
   saveState: 'saved' | 'unsaved' | 'saving' | 'error';
 };
 
-export type State = {
+export interface State {
   assignment?: AssignmentState;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export const initialState: State = {
   error: false,
@@ -487,6 +487,7 @@ const fileUploadSucceeded = (state: State, partId: string, uploadSlotId: string,
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .filter(u => !u.optional)
     .every(u => u.complete);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const partComplete = (uploadSlotComplete || uploadSlot.optional) && otherTextBoxesComplete && otherUploadSlotsComplete;
 
   const otherPartsComplete = state.assignment.parts
@@ -547,6 +548,7 @@ const fileUploadSucceeded = (state: State, partId: string, uploadSlotId: string,
       }
       for (const u of p.uploadSlots) {
         if (u.uploadSlotId === uploadSlotId) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (uploadSlotComplete || !u.optional) {
             partPoints += u.points;
           }
@@ -704,6 +706,7 @@ const fileDeleteSucceeded = (state: State, partId: string, uploadSlotId: string)
     .filter(u => u.uploadSlotId !== uploadSlotId)
     .filter(u => !u.optional)
     .every(u => u.complete);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const partComplete = (uploadSlotComplete || uploadSlot.optional) && otherTextBoxesComplete && otherUploadSlotsComplete;
 
   const otherPartsComplete = state.assignment.parts
@@ -764,6 +767,7 @@ const fileDeleteSucceeded = (state: State, partId: string, uploadSlotId: string)
       }
       for (const u of p.uploadSlots) {
         if (u.uploadSlotId === uploadSlotId) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (uploadSlotComplete || !u.optional) {
             partPoints += u.points;
           }

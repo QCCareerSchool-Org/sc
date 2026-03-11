@@ -3,7 +3,7 @@ import type { FC } from 'react';
 
 import { AccountIcon } from './AccountIcon';
 import { HeaderBar } from './HeaderBar';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
+import { useScreenWidthContext } from '@/hooks/useScreenWidthContext';
 import Logo from '@/images/logo.svg';
 
 const calculateLogoWidth = (height: number): number => {
@@ -11,8 +11,8 @@ const calculateLogoWidth = (height: number): number => {
 };
 
 export const SiteHeader: FC = () => {
-  const screenWidth = useScreenWidth();
-  const lgOrGreater = screenWidth >= 992;
+  const screenWidth = useScreenWidthContext();
+  const lgOrGreater = screenWidth !== null && screenWidth >= 992;
 
   const padding = lgOrGreater ? '1.5rem 0' : '0.25rem 0';
 

@@ -8,13 +8,13 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { MaterialInsertPayload } from '@/services/administrators/materialService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewMaterialInsertEvent = {
+export interface NewMaterialInsertEvent {
   processingState: State['materialForm']['processingState'];
   administratorId: number;
   payload: MaterialInsertPayload;
   content: File | null;
   image: File | null;
-};
+}
 
 export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMaterialInsertEvent> => {
   const { materialService } = useAdminServices();
@@ -42,7 +42,7 @@ export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMateri
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -60,5 +60,6 @@ export const useMaterialInsert = (dispatch: Dispatch<Action>): Subject<NewMateri
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, materialService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return materialInsert$.current;
 };

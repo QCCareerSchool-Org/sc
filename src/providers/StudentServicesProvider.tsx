@@ -23,7 +23,7 @@ import { T2202ReceiptService } from '@/services/students/t2202ReceiptService';
 import type { IVideoService } from '@/services/students/videoService';
 import { VideoService } from '@/services/students/videoService';
 
-export type StudentServices = {
+export interface StudentServices {
   studentService: IStudentService;
   enrollmentService: IEnrollmentService;
   newAssignmentService: INewAssignmentService;
@@ -34,13 +34,13 @@ export type StudentServices = {
   crmStudentService: ICRMStudentService;
   crmEnrollmentService: ICRMEnrollmentService;
   crmPaymentMethodService: ICRMPaymentMethodService;
-};
+}
 
 export const StudentServicesContext = createContext<StudentServices | undefined>(undefined);
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export const StudentServicesProvider: FC<Props> = ({ children }) => {
   const { httpService } = useServices();

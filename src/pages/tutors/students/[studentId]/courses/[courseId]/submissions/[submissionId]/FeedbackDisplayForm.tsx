@@ -9,7 +9,7 @@ import { Spinner } from '@/components/Spinner';
 import { endpoint } from 'src/basePath';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
-type Props = {
+interface Props {
   tutorId: number;
   studentId: number;
   courseId: number;
@@ -20,7 +20,7 @@ type Props = {
   processingState: State['processingState'];
   errorMessage: State['errorMessage'];
   delete$: Subject<FeedbackDeletePayload>;
-};
+}
 
 export const FeedbackDisplayForm: FC<Props> = memo(props => {
   const { tutorId, studentId, courseId, submissionId, responseFilename, responseFilesize, processingState, errorMessage, delete$ } = props;

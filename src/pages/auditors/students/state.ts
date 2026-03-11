@@ -8,11 +8,11 @@ import type { AuditorStudentList } from '@/services/auditors/studentService';
 export type StudentData = Student & {
   country: Country;
   province: Province | null;
-  enrollments: Array<Enrollment & { course: Course }>;
+  enrollments: (Enrollment & { course: Course })[];
   groups: string[];
 };
 
-export type State = {
+export interface State {
   students?: StudentData[];
   form: {
     processingState: 'idle' | 'submitting' | 'success' | 'error';
@@ -25,7 +25,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: AuditorStudentList }

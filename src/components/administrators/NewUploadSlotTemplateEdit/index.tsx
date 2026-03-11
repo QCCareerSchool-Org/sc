@@ -13,10 +13,10 @@ import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   uploadSlotId: string;
-};
+}
 
 const changesPresent = (uploadSlotTemplate: NewUploadSlotTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!uploadSlotTemplate) {
@@ -126,7 +126,7 @@ export const NewUploadSlotTemplateEdit: FC<Props> = ({ administratorId, uploadSl
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto bg-white">
                   <tbody>
-                    <tr><th scope="row">Part Template</th><td>{state.newUploadSlotTemplate.newPartTemplate.title ?? state.newUploadSlotTemplate.newPartTemplate.partNumber}</td></tr>
+                    <tr><th scope="row">Part Template</th><td>{state.newUploadSlotTemplate.newPartTemplate.title}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newUploadSlotTemplate.created)}</td></tr>
                     {state.newUploadSlotTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newUploadSlotTemplate.modified)}</td></tr>}
                   </tbody>

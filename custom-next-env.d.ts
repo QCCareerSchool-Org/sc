@@ -1,4 +1,4 @@
-/// <reference types="next" />
+// / <reference types="next" />
 
 // NOTE: This should be kept up to date with changes to the automatically
 // generated next-env.d.ts, but with the reference to next/image-types/global

@@ -8,11 +8,11 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewTextBoxTemplateDeleteEvent = {
+export interface NewTextBoxTemplateDeleteEvent {
   administratorId: number;
   textBoxId: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<NewTextBoxTemplateDeleteEvent> => {
   const { newTextBoxTemplateService } = useAdminServices();
@@ -38,7 +38,7 @@ export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<NewTextBox
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,5 +56,6 @@ export const useTextBoxDelete = (dispatch: Dispatch<Action>): Subject<NewTextBox
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newTextBoxTemplateService, navigateToLogin, router ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return textBoxDelete$.current;
 };

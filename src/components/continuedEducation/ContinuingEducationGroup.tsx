@@ -9,10 +9,10 @@ import type { Course } from '@/domain/course';
 import type { CourseSuggestionGroup } from '@/domain/courseSuggestion';
 import type { Currency, PriceResult } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
+import { useScreenWidthContext } from '@/hooks/useScreenWidthContext';
 import { useToggle } from '@/hooks/useToggle';
 
-export type ShippingDetails = {
+export interface ShippingDetails {
   sex: 'M' | 'F';
   firstName: string;
   lastName: string;
@@ -24,27 +24,27 @@ export type ShippingDetails = {
   countryCode: string;
   telephoneNumber: string;
   emailAddress: string;
-};
+}
 
-type SelectedCourse = {
+interface SelectedCourse {
   courseCode: string;
   price: PriceResult;
-};
+}
 
-type Props = {
+interface Props {
   shippingDetails: ShippingDetails;
   schoolSlug: SchoolSlug;
   group: CourseSuggestionGroup;
   disabledCourses: Course[];
   startExpanded?: boolean;
-};
+}
 
-type State = {
+interface State {
   selectedCourses: SelectedCourse[];
   normalPrice: number;
   price: number;
   currency?: Currency;
-};
+}
 
 type Action =
   | { type: 'COURSE_ADDED'; payload: { courseCode: string; price?: PriceResult } }
@@ -61,7 +61,7 @@ const reducer = (state: State, action: Action): State => {
         return state; // trying to add a course with a different price
       }
 
-      const newCurrency = state.currency ? state.currency : action.payload.price.currency;
+      const newCurrency = state.currency ?? action.payload.price.currency;
       const newSelectedCourses = [ ...state.selectedCourses, { courseCode: action.payload.courseCode, price: action.payload.price } ];
       const [ newNormalPrice, newPrice ] = recalculatePrices(newSelectedCourses);
       return {
@@ -142,7 +142,7 @@ export const getEnrollUrl = (schoolSlug: SchoolSlug, courses: string[], shipping
 };
 
 export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlug, group, disabledCourses, startExpanded }) => {
-  const screenWidth = useScreenWidth();
+  const screenWidth = useScreenWidthContext();
   const [ expanded, toggleExpanded ] = useToggle(!!startExpanded);
 
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -159,7 +159,7 @@ export const ContinuingEducationGroup: FC<Props> = ({ shippingDetails, schoolSlu
     }
   };
 
-  const iconSize = screenWidth > 992 ? 24 : 20;
+  const iconSize = screenWidth !== null && screenWidth > 992 ? 24 : 20;
 
   const enrollUrl = useMemo(() => {
     return getEnrollUrl(schoolSlug, state.selectedCourses.map(s => s.courseCode), shippingDetails);

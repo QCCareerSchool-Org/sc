@@ -1,4 +1,4 @@
-export type NewTextBoxTemplate = {
+export interface NewTextBoxTemplate {
   /** uuid */
   textBoxTemplateId: string;
   /** uuid */
@@ -10,9 +10,9 @@ export type NewTextBoxTemplate = {
   order: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewTextBoxTemplate = {
+export interface RawNewTextBoxTemplate {
   /** uuid */
   textBoxTemplateId: string;
   /** uuid */
@@ -26,4 +26,4 @@ export type RawNewTextBoxTemplate = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

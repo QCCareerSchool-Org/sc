@@ -1,10 +1,10 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 
-type Props = {
+interface Props {
   username: string;
   onUsernameChange: ChangeEventHandler<HTMLInputElement>;
-  onSubmit: FormEventHandler<HTMLFormElement>;
-};
+  onSubmit: SubmitEventHandler<HTMLFormElement>;
+}
 
 export const UsernameForm: FC<Props> = props => (
   <form onSubmit={props.onSubmit}>

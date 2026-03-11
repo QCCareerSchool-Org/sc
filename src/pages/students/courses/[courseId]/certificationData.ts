@@ -1,4 +1,4 @@
-export type CertificationData = {
+export interface CertificationData {
   code?: string;
   name: string;
   filename: string;
@@ -6,7 +6,7 @@ export type CertificationData = {
   codeRegistered?: boolean;
   nameTrademarked?: boolean;
   displayCode?: boolean;
-};
+}
 
 export const certificationDataDictionary: Record<string, CertificationData> = {
   // Pet

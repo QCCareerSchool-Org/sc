@@ -4,21 +4,21 @@ import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/stu
 import type { StudentWithCountryProvinceAndEnrollments } from '@/services/students/studentService';
 import type { T2202ReceiptWithEnrollmentWithCourse } from '@/services/students/t2202ReceiptService';
 
-export type State = {
+export interface State {
   student?: StudentWithCountryProvinceAndEnrollments;
   t2202Receipts?: T2202ReceiptWithEnrollmentWithCourse[];
   crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
-  enrollmentsWithForms?: Array<Enrollment & { course: Course }>;
+  enrollmentsWithForms?: (Enrollment & { course: Course })[];
   recentEnrollment: boolean;
   error: boolean;
   errorCode?: number;
-};
+}
 
-type LoadDataPayload = {
+interface LoadDataPayload {
   student: StudentWithCountryProvinceAndEnrollments;
   t2202Receipts: T2202ReceiptWithEnrollmentWithCourse[];
   crmStudent?: CRMStudentWithCountryProvinceAndEnrollments;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: LoadDataPayload }

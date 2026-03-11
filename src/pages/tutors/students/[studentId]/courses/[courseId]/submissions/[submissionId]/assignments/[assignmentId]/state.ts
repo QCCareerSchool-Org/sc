@@ -14,10 +14,10 @@ import type { NewAssignmentWithUnitAndChildren } from '@/services/tutors/newAssi
  * Form values and validation messages are stored lower down in the tree,
  * inside child components
  */
-export type InputForm = {
+export interface InputForm {
   state: 'idle' | 'saving' | 'save error';
   errorMessage?: string;
-};
+}
 
 export type WithInputForm<Input> = Input & {
   form: InputForm;
@@ -29,7 +29,7 @@ export type PartWithForms = NewPart & {
   newPartMedia: NewPartMedium[];
 };
 
-export type State = {
+export interface State {
   newAssignment?: NewAssignment & {
     newSubmission: Omit<NewSubmission, 'complete' | 'points' | 'mark'> & {
       enrollment: Enrollment;
@@ -39,7 +39,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_ASSIGNMENT_SUCCEEDED'; payload: NewAssignmentWithUnitAndChildren }
@@ -154,6 +154,7 @@ export const reducer = (state: State, action: Action): State => {
             assignmentMark += partMark;
             return part;
           }),
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           mark: assignmentMarked ? assignmentMark : null,
         },
       };
@@ -261,6 +262,7 @@ export const reducer = (state: State, action: Action): State => {
             assignmentMark += partMark;
             return part;
           }),
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           mark: assignmentMarked ? assignmentMark : null,
         },
       };

@@ -6,10 +6,10 @@ import { Img } from '@/components/Img';
 import type { NewUploadSlot } from '@/domain/administrator/newUploadSlot';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   administratorId: number;
   uploadSlot: WithInputForm<NewUploadSlot>;
-};
+}
 
 export const NewUploadSlotView: FC<Props> = ({ administratorId, uploadSlot }) => {
   const id = useId();

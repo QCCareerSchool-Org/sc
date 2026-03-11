@@ -2,10 +2,10 @@ import Head from 'next/head';
 import type { FC } from 'react';
 import { memo } from 'react';
 
-type Props = {
+interface Props {
   title?: string;
   description?: string;
-};
+}
 
 const siteTitle = 'Online Student Center';
 

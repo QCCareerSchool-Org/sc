@@ -3,10 +3,10 @@ import { memo } from 'react';
 
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 
-type Props = {
+interface Props {
   uploadSlots: NewUploadSlotTemplate[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, uploadSlotId: string) => void;
-};
+}
 
 export const NewUploadSlotTemplateList: FC<Props> = memo(props => {
   const { uploadSlots } = props;

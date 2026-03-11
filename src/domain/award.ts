@@ -1,4 +1,4 @@
-export type Award = {
+export interface Award {
   /** uuid */
   submissionId: string;
   courseName: string;
@@ -8,4 +8,4 @@ export type Award = {
   /** the student's name */
   name: string;
   created: Date;
-};
+}

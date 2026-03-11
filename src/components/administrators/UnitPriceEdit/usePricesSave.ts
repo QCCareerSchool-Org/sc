@@ -8,13 +8,13 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewSubmissionTemplatePricePayload } from '@/services/administrators/newSubmissionTemplatePriceService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewUnitPricesSaveEvent = {
+export interface NewUnitPricesSaveEvent {
   administratorId: number;
   courseId: number;
   countryId: number | null;
   payload: NewSubmissionTemplatePricePayload;
   processingState: State['form']['processingState'];
-};
+}
 
 export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPricesSaveEvent> => {
   const { newSubmissionTemplatePriceService } = useAdminServices();
@@ -37,7 +37,7 @@ export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPrices
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -54,5 +54,6 @@ export const usePricesSave = (dispatch: Dispatch<Action>): Subject<NewUnitPrices
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionTemplatePriceService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return pricesSave$.current;
 };

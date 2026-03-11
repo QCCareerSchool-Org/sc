@@ -1,14 +1,14 @@
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { useId, useReducer } from 'react';
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
 
 import { initialState, reducer } from './state';
 import { useSubmit } from './useSubmit';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   auditorId: number;
-};
+}
 
 export const ChangePassword: FC<Props> = ({ auditorId }) => {
   const id = useId();
@@ -16,7 +16,7 @@ export const ChangePassword: FC<Props> = ({ auditorId }) => {
 
   const submit$ = useSubmit(dispatch);
 
-  const handleSubmit: FormEventHandler = e => {
+  const handleSubmit: SubmitEventHandler = e => {
     e.preventDefault();
     submit$.next({
       auditorId,

@@ -1,7 +1,7 @@
 import type { NewSubmission } from '@/domain/tutor/newSubmission';
 import type { NewSubmissionWithEnrollmentAndAssignments } from '@/services/tutors/newSubmissionService';
 
-export type State = {
+export interface State {
   newSubmission?: NewSubmissionWithEnrollmentAndAssignments;
   error: boolean;
   errorCode?: number;
@@ -15,7 +15,7 @@ export type State = {
   };
   processingState: 'idle' | 'uploading' | 'upload error' | 'deleting' | 'delete error' | 'closing' | 'close error' | 'returning' | 'return error';
   errorMessage?: string;
-};
+}
 
 export type Action =
   | { type: 'LOAD_UNIT_SUCCEEDED'; payload: NewSubmissionWithEnrollmentAndAssignments }

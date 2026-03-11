@@ -7,12 +7,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type SubmissionSkipEvent = {
+export interface SubmissionSkipEvent {
   studentId: number;
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
-};
+}
 
 export const useSubmissionSkip = (dispatch: Dispatch<Action>): Subject<SubmissionSkipEvent> => {
   const { newSubmissionService } = useStudentServices();
@@ -33,7 +33,7 @@ export const useSubmissionSkip = (dispatch: Dispatch<Action>): Subject<Submissio
             let message = 'Skip failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -50,5 +50,6 @@ export const useSubmissionSkip = (dispatch: Dispatch<Action>): Subject<Submissio
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return skip$.current;
 };

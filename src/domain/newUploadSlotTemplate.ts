@@ -1,4 +1,4 @@
-export type NewUploadSlotTemplate = {
+export interface NewUploadSlotTemplate {
   /** uuid */
   uploadSlotTemplateId: string;
   /** uuid */
@@ -10,9 +10,9 @@ export type NewUploadSlotTemplate = {
   order: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewUploadSlotTemplate = {
+export interface RawNewUploadSlotTemplate {
   /** uuid */
   uploadSlotTemplateId: string;
   /** uuid */
@@ -26,4 +26,4 @@ export type RawNewUploadSlotTemplate = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

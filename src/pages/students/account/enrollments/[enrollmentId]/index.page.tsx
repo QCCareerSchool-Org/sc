@@ -6,9 +6,9 @@ import { DatabaseLinkError } from '@/components/DatabaseLinkError';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   crmEnrollmentId: number | null;
-};
+}
 
 const CourseAccountDetailsPage: NextPage<Props> = ({ crmEnrollmentId }) => {
   const { crmId } = useAuthState();

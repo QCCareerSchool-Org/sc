@@ -2,10 +2,10 @@ import { useContext } from 'react';
 
 import { ScreenWidthContext } from '@/providers/ScreenWidthProvider';
 
-export const useScreenWidth = (): number => {
+export const useScreenWidthContext = (): number | null => {
   const state = useContext(ScreenWidthContext);
   if (typeof state === 'undefined') {
-    throw Error('useScreenWidth must be used inside a ScreenWidthProvider');
+    throw Error('useScreenWidthContext must be used inside a ScreenWidthProvider');
   }
   return state;
 };

@@ -14,10 +14,10 @@ import { useUnitSave } from './useUnitSave';
 import { Section } from '@/components/Section';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   unitId: string;
-};
+}
 
 export const UnitEdit: FC<Props> = ({ administratorId, unitId }) => {
   const router = useRouter();

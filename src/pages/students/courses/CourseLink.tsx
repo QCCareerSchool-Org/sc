@@ -3,10 +3,10 @@ import type { FC, ReactNode } from 'react';
 
 import type { Course } from '@/domain/course';
 
-type Props = {
+interface Props {
   course: Course;
   children: ReactNode;
-};
+}
 
 export const CourseLink: FC<Props> = ({ course, children }) => {
   if (course.submissionType === 1) {

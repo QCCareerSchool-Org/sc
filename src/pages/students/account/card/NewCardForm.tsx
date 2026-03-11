@@ -8,7 +8,7 @@ import type { PaymentMethodInsertEvent } from './usePaymentMethodInsert';
 import { PaysafeForm } from '@/components/PaysafeForm';
 import type { CRMStudentWithCountryProvinceAndEnrollments } from '@/services/students/crmStudentService';
 
-type Props = {
+interface Props {
   crmId: number;
   form: State['form'];
   crmStudent: CRMStudentWithCountryProvinceAndEnrollments;
@@ -19,7 +19,7 @@ type Props = {
   onEnrollmentIdChange: ChangeEventHandler<HTMLSelectElement>;
   onUpdateAllChange: ChangeEventHandler<HTMLInputElement>;
   onCardDataChange: () => void;
-};
+}
 
 export const NewCardForm: FC<Props> = props => {
   const { crmId, form, crmStudent, currencyCode, currencyName, allSameCurrency, insert$ } = props;

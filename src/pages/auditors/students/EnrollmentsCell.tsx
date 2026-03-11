@@ -6,9 +6,9 @@ import { Badge } from './Badge';
 import type { Course } from '@/domain/course';
 import type { Enrollment } from '@/domain/enrollment';
 
-type Props = {
-  enrollments: Array<Enrollment & { course: Course }>;
-};
+interface Props {
+  enrollments: (Enrollment & { course: Course })[];
+}
 
 const maxCourses = 4;
 

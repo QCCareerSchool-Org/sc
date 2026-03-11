@@ -16,19 +16,19 @@ import { endpoint } from 'src/basePath';
 export type StudentWithCountryProvinceAndEnrollments = Student & {
   country: Country;
   province: Province | null;
-  enrollments: Array<Enrollment & { course: Course & { school: School; variant: Variant | null } }>;
-  surveyCompletions: Array<SurveyCompletion & {
+  enrollments: (Enrollment & { course: Course & { school: School; variant: Variant | null } })[];
+  surveyCompletions: (SurveyCompletion & {
     survey: Survey;
-  }>;
+  })[];
 };
 
 export type RawStudentWithCountryProvinceAndEnrollments = RawStudent & {
   country: Country;
   province: Province | null;
-  enrollments: Array<RawEnrollment & { course: Course & { school: School; variant: Variant | null } }>;
-  surveyCompletions: Array<RawSurveyCompletion & {
+  enrollments: (RawEnrollment & { course: Course & { school: School; variant: Variant | null } })[];
+  surveyCompletions: (RawSurveyCompletion & {
     survey: Survey;
-  }>;
+  })[];
 };
 
 export interface IStudentService {

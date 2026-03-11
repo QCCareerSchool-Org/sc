@@ -1,18 +1,19 @@
 import type { Material, MaterialType } from '@/domain/material';
 import type { Unit } from '@/domain/unit';
+import { getLength } from 'src/lib/segmenter';
 
 type UnitWithMaterials = Unit & {
   materials: Material[];
 };
 
-type LessonMeta = {
+interface LessonMeta {
   minutes: string;
   chapters: string;
   videos: string;
   knowledgeChecks: string;
-};
+}
 
-export type State = {
+export interface State {
   unit?: UnitWithMaterials;
   form: {
     data: {
@@ -60,7 +61,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: UnitWithMaterials }
@@ -190,7 +191,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -337,7 +338,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -355,7 +356,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -405,6 +406,7 @@ export const reducer = (state: State, action: Action): State => {
           if (action.payload.size > maxSize) {
             validationMessage = 'File exceeds maximum size';
           }
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (state.materialForm.data.type === 'video' || state.materialForm.data.type === 'assignment') {
           throw Error(`File not allowed for type ${state.materialForm.data.type}`);
         }
@@ -439,7 +441,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (state.materialForm.data.type === 'video') {
         const maxLength = 1024;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

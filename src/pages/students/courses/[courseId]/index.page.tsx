@@ -7,9 +7,9 @@ import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 import { useNavDispatch } from '@/hooks/useNavDispatch';
 
-type Props = {
+interface Props {
   courseId: number | null;
-};
+}
 
 const CourseViewPage: NextPage<Props> = ({ courseId }) => {
   const authState = useAuthState();

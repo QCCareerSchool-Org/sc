@@ -15,10 +15,10 @@ import { useUnitInsert } from './useUnitInsert';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   courseId: number;
-};
+}
 
 export const CourseView: FC<Props> = ({ administratorId, courseId }) => {
   const router = useRouter();
@@ -127,6 +127,7 @@ export const CourseView: FC<Props> = ({ administratorId, courseId }) => {
             <div className="container">
               <h2 className="h3">Submission Templates</h2>
               <p className="lead">A <em>submission template</em> describes what will be submitted to a tutor, as a single package, for marking. It contains one or more <em>assignments</em>. When a student <strong>initializes</strong> his or her next <em>submission</em>, the content in the associated <em>submission template</em> will be used to create that <em>submission</em>. Changes made to a <em>submission template</em> the changes will only affect <em>submissions</em> <strong>initialized</strong> after that point.</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
               {state.course.submissionType === 1 && (
                 <div className="mb-4">
                   {state.course.submissionsEnabled
@@ -157,7 +158,7 @@ export const CourseView: FC<Props> = ({ administratorId, courseId }) => {
                       </>
                     )
                   }
-                  {state.enableForm.processingState === 'save error' && <span className="text-danger ms-2">{state.enableForm.errorMessage ? state.enableForm.errorMessage : 'Error'}</span>}
+                  {state.enableForm.processingState === 'save error' && <span className="text-danger ms-2">{state.enableForm.errorMessage ?? 'Error'}</span>}
                 </div>
               )}
               <div className="row">

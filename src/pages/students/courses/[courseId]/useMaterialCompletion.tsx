@@ -8,13 +8,13 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type MaterialCompleteEvent = {
+export interface MaterialCompleteEvent {
   studentId: number;
   enrollmentId: number;
   materialId: string;
   complete: boolean;
   processingState: MaterialWithCompletionForm['processingState'];
-};
+}
 
 export const useMaterialCompletion = (dispatch: Dispatch<Action>): Subject<MaterialCompleteEvent> => {
   const router = useRouter();
@@ -35,7 +35,7 @@ export const useMaterialCompletion = (dispatch: Dispatch<Action>): Subject<Mater
           let message = 'Saving failed';
           if (err instanceof HttpServiceError) {
             if (err.login) {
-              return void navigateToLogin();
+              navigateToLogin(); return;
             }
             if (err.message) {
               message = err.message;
@@ -68,5 +68,6 @@ export const useMaterialCompletion = (dispatch: Dispatch<Action>): Subject<Mater
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, materialService, router, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return completion$.current;
 };

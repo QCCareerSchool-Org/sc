@@ -18,8 +18,8 @@
 import { parse as parseInterval, toSeconds } from 'iso8601-duration';
 import type { FC, MouseEventHandler } from 'react';
 import { useEffect, useReducer, useRef } from 'react';
-
 import { Subject, takeUntil } from 'rxjs';
+
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
 import { useMaterialDataUpdate } from './useMaterialDataUpdate';
@@ -32,11 +32,11 @@ import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { ScormAPI } from 'src/lib/scorm';
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
   materialId: string;
-};
+}
 
 type MaterialState = 'NOT_STARTED' | 'INCOMPLETE' | 'COMPLETE';
 
@@ -59,9 +59,10 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
 
   useInitialData(dispatch, studentId, courseId, materialId);
   const refresh$ = useRefresh(dispatch, studentId, courseId, materialId);
+  // eslint-disable-next-line react-hooks/refs
   const materialDataUpdate$ = useMaterialDataUpdate(commitFailure$.current);
 
-  const scormAPI = useRef<ScormAPI>();
+  const scormAPI = useRef<ScormAPI>(undefined);
 
   const commit = useRef((data: Record<string, string>): boolean => {
     if (typeof authState.administratorId === 'undefined') { // don't save if logged in as an admin
@@ -235,9 +236,9 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   );
 };
 
-type DurationProps = {
+interface DurationProps {
   seconds: number;
-};
+}
 
 const Duration: FC<DurationProps> = ({ seconds }) => {
   const dayInSeconds = 60 * 60 * 24;

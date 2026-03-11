@@ -1,5 +1,5 @@
-export type CRMTelephoneCountryCode = {
+export interface CRMTelephoneCountryCode {
   telephoneCountryCodeId: number;
   code: number;
   region: string;
-};
+}

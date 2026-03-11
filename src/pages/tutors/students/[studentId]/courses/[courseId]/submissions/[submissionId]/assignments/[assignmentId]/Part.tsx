@@ -10,13 +10,13 @@ import type { InputType } from './useInputSave';
 import { Description } from '@/components/Description';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   tutorId: number;
   newPart: PartWithForms;
   saveInput: (type: InputType, partId: string, id: string, mark: number | null, notes: string | null) => void;
   submissionClosed: boolean;
   submissionIsRedo: boolean;
-};
+}
 
 export const Part: FC<Props> = memo(({ tutorId, newPart, saveInput, submissionClosed, submissionIsRedo }) => {
   const partModified = newPart.newTextBoxes.some(t => t.modified !== null && t.modified.getTime() !== t.created.getTime()) || newPart.newUploadSlots.some(u => u.modified !== null && u.modified.getTime() !== u.created.getTime());

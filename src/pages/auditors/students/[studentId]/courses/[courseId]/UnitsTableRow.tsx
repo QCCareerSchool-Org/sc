@@ -3,10 +3,10 @@ import { type FC, memo, useMemo } from 'react';
 import type { EnrollmentData } from './state';
 import { useServices } from '@/hooks/useServices';
 
-type Props = {
+interface Props {
   unit: EnrollmentData['course']['units'][0];
   materialCompletions: EnrollmentData['materialCompletions'];
-};
+}
 
 export const UnitsTableRow: FC<Props> = memo(({ unit, materialCompletions }) => {
   const { gradeService } = useServices();

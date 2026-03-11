@@ -5,9 +5,9 @@ import styles from './MZKitNotice.module.css';
 import KitImage from './sc-deluxe-no-brushes.jpg';
 import { getTelephoneNumber } from 'src/lib/helper-functions';
 
-type Props = {
+interface Props {
   countryCode: string;
-};
+}
 
 export const MZKitNotice: FC<Props> = ({ countryCode }) => {
   const mailtoHref = 'mailto:account@qccareerschool.com?subject=Paying Off My Balance&body=Please send me more information on any discounts and promotions that I qualify for if I pay off my balance.';

@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -8,7 +8,7 @@ import type { MaterialDetailsSaveEvent } from './useMaterialDetailsSave';
 import { Spinner } from '@/components/Spinner';
 import type { Material } from '@/domain/material';
 
-type Props = {
+interface Props {
   administratorId: number;
   material: Material;
   formState: State['detailsForm'];
@@ -21,7 +21,7 @@ type Props = {
   onChaptersChange: ChangeEventHandler<HTMLInputElement>;
   onVideosChange: ChangeEventHandler<HTMLInputElement>;
   onKnowledgeChecksChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const MaterialDetailsEditForm: FC<Props> = props => {
   const id = useId();
@@ -37,7 +37,7 @@ export const MaterialDetailsEditForm: FC<Props> = props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -132,8 +132,8 @@ export const MaterialDetailsEditForm: FC<Props> = props => {
         <button type="button" onClick={handleDeleteClick} className="btn btn-danger" style={{ width: 80 }} disabled={props.formState.processingState === 'saving' || props.formState.processingState === 'deleting'}>
           {props.formState.processingState === 'deleting' ? <Spinner size="sm" /> : 'Delete'}
         </button>
-        {props.formState.processingState === 'save error' && <span className="text-danger ms-2">{props.formState.errorMessage ? props.formState.errorMessage : 'Save Error'}</span>}
-        {props.formState.processingState === 'delete error' && <span className="text-danger ms-2">{props.formState.errorMessage ? props.formState.errorMessage : 'Delete Error'}</span>}
+        {props.formState.processingState === 'save error' && <span className="text-danger ms-2">{props.formState.errorMessage ?? 'Save Error'}</span>}
+        {props.formState.processingState === 'delete error' && <span className="text-danger ms-2">{props.formState.errorMessage ?? 'Delete Error'}</span>}
         {props.formState.processingState === 'success' && <span className="text-success ms-2">Saved</span>}
       </div>
       <style jsx>{`

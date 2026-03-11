@@ -1,14 +1,14 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
-import { NewAssignmentMediumFormElements } from '../NewAssignmentMediumEdit/NewAssignmentMediumFormElements';
 import type { State } from './state';
 import type { NewAssignmentMediumInsertEvent } from './useMediumInsert';
+import { NewAssignmentMediumFormElements } from '../NewAssignmentMediumEdit/NewAssignmentMediumFormElements';
 import { Spinner } from '@/components/Spinner';
 import type { NewAssignmentMediumAddPayload } from '@/services/administrators/newAssignmentMediumService';
 
-type Props = {
+interface Props {
   administratorId: number;
   assignmentId: string;
   formState: State['assignmentMediaForm'];
@@ -18,7 +18,7 @@ type Props = {
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
   onFileChange: ChangeEventHandler<HTMLInputElement>;
   onExternalDataChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewAssignmentMediumAddForm: FC<Props> = memo(props => {
   const { administratorId, assignmentId, formState, insert$ } = props;
@@ -33,7 +33,7 @@ export const NewAssignmentMediumAddForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -87,7 +87,7 @@ export const NewAssignmentMediumAddForm: FC<Props> = memo(props => {
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
               {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
             </button>
-            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'Error'}</span>}
           </div>
         </form>
       </div>

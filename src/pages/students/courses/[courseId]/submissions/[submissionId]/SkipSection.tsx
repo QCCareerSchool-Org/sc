@@ -6,14 +6,14 @@ import type { SubmissionSkipEvent } from './useSubmissionSkip';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
   skip$: Subject<SubmissionSkipEvent>;
   errorMessage?: string;
-};
+}
 
 export const SkipSection: FC<Props> = ({ studentId, courseId, submissionId, processingState, skip$, errorMessage }) => {
 
@@ -41,7 +41,7 @@ export const SkipSection: FC<Props> = ({ studentId, courseId, submissionId, proc
         <div className="d-flex align-items-center">
           <button onClick={handleButtonClick} className="btn btn-secondary" disabled={buttonDisabled}>Skip Assignments</button>
           {processingState === 'skipping' && <div className="ms-2"><Spinner /></div>}
-          {processingState === 'skip error' && <span className="text-danger ms-2">{errorMessage ? errorMessage : 'Error'}</span>}
+          {processingState === 'skip error' && <span className="text-danger ms-2">{errorMessage ?? 'Error'}</span>}
         </div>
       </div>
     </Section>

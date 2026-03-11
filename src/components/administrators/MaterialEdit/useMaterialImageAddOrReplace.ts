@@ -7,12 +7,12 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type MaterialImageAddOrReplaceEvent = {
+export interface MaterialImageAddOrReplaceEvent {
   processingState: State['imageForm']['processingState'];
   administratorId: number;
   materialId: string;
   image: File;
-};
+}
 
 export const useMaterialImageAddOrReplace = (dispatch: Dispatch<Action>): Subject<MaterialImageAddOrReplaceEvent> => {
   const { materialService } = useAdminServices();
@@ -34,7 +34,7 @@ export const useMaterialImageAddOrReplace = (dispatch: Dispatch<Action>): Subjec
               let message = 'Save failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -52,5 +52,6 @@ export const useMaterialImageAddOrReplace = (dispatch: Dispatch<Action>): Subjec
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, materialService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return addOrReplace$.current;
 };

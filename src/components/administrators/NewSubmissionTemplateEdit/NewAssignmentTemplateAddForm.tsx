@@ -1,13 +1,13 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
-import { NewAssignmentTemplateFormElements } from '../NewAssignmentTemplateEdit/NewAssignmentTemplateFormElements';
 import type { State } from './state';
 import type { NewAssignementTemplateInsertEvent } from './useAssignmentTemplateInsert';
+import { NewAssignmentTemplateFormElements } from '../NewAssignmentTemplateEdit/NewAssignmentTemplateFormElements';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   submissionId: string;
   formState: State['newAssignmentTemplateForm'];
@@ -18,7 +18,7 @@ type Props = {
   onMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   onAssignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewAssignmentTemplateAddForm: FC<Props> = memo(props => {
   const { administratorId, submissionId, formState, insert$ } = props;
@@ -33,7 +33,7 @@ export const NewAssignmentTemplateAddForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -72,7 +72,7 @@ export const NewAssignmentTemplateAddForm: FC<Props> = memo(props => {
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
               {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
             </button>
-            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'Error'}</span>}
           </div>
         </form>
       </div>

@@ -1,5 +1,5 @@
-export type Country = {
+export interface Country {
   countryId: number;
   code: string;
   name: string;
-};
+}

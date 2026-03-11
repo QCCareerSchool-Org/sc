@@ -3,10 +3,10 @@ import { memo } from 'react';
 
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 
-type Props = {
+interface Props {
   assignments: NewAssignmentTemplate[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, assignmentId: string) => void;
-};
+}
 
 export const NewAssignmentTemplateList: FC<Props> = memo(props => {
   const { assignments } = props;

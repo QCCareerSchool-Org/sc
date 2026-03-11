@@ -15,26 +15,10 @@ import { ScrollPreventer } from '@/components/ScrollPreventer';
 import { SessionRefresh } from '@/components/SessionRefresh';
 import { StateProvider } from '@/providers/index';
 import { gaPageview } from 'src/lib/ga';
-import { TrackJS } from 'src/trackjs-isomorphic';
 
 import 'src/style.scss';
 
-if (!TrackJS.isInstalled()) {
-  TrackJS.install({
-    token: '0377457a8a0c41c2a11da5e34f786bba',
-    application: 'react-student-center',
-    network: { enabled: false },
-    onError: payload => {
-      payload.metadata.push({
-        key: 'authState',
-        value: getSanitizedAuthState(),
-      });
-      return true;
-    },
-  });
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
   index?: number;
@@ -48,7 +32,7 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
   const router = useRouter();
 
   useEffect(() => {
-    import('bootstrap'); // load the boostrap javascript library on the client only
+    void import('bootstrap'); // load the boostrap javascript library on the client only
   }, [ router ]);
 
   useEffect(() => {
@@ -90,23 +74,23 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
 export default SCApp;
 
 /** Returns a string representing the stored auth state for error logging purposes */
-const getSanitizedAuthState = (): string => {
-  if (window.navigator.cookieEnabled && 'localStorage' in window) {
-    const storedAuthState = window.localStorage.getItem('authState');
-    if (storedAuthState) {
-      try {
-        const authState = JSON.parse(storedAuthState) as Record<string, unknown>;
-        return JSON.stringify({
-          administratorId: authState.administratorId,
-          auditorId: authState.auditorId,
-          tutorId: authState.tutorId,
-          studentId: authState.studentId,
-          crmId: authState.crmId,
-        });
-      } catch (err) {
-        return 'unable to parse stored auth state';
-      }
-    }
-  }
-  return 'no stored auth state found';
-};
+// const getSanitizedAuthState = (): string => {
+//   if (window.navigator.cookieEnabled && 'localStorage' in window) {
+//     const storedAuthState = window.localStorage.getItem('authState');
+//     if (storedAuthState) {
+//       try {
+//         const authState = JSON.parse(storedAuthState) as Record<string, unknown>;
+//         return JSON.stringify({
+//           administratorId: authState.administratorId,
+//           auditorId: authState.auditorId,
+//           tutorId: authState.tutorId,
+//           studentId: authState.studentId,
+//           crmId: authState.crmId,
+//         });
+//       } catch {
+//         return 'unable to parse stored auth state';
+//       }
+//     }
+//   }
+//   return 'no stored auth state found';
+// };

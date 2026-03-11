@@ -7,7 +7,7 @@ import type { FeedbackUploadPayload } from './useFeedbackUpload';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   tutorId: number;
   studentId: number;
   courseId: number;
@@ -15,7 +15,7 @@ type Props = {
   state: State;
   onFileChange: ChangeEventHandler<HTMLInputElement>;
   upload$: Subject<FeedbackUploadPayload>;
-};
+}
 
 export const FeebackUploadForm: FC<Props> = memo(props => {
   const { tutorId, studentId, courseId, submissionId, state, upload$ } = props;

@@ -1,4 +1,4 @@
-export type NewUnitPrice = {
+export interface NewUnitPrice {
   unitPriceId: string;
   unitId: string;
   countryId: number | null;
@@ -7,9 +7,9 @@ export type NewUnitPrice = {
   selected: boolean;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewUnitPrice = {
+export interface RawNewUnitPrice {
   unitPriceId: string;
   unitId: string;
   countryId: number | null;
@@ -20,4 +20,4 @@ export type RawNewUnitPrice = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

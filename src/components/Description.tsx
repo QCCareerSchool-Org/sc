@@ -2,19 +2,20 @@ import type { FC } from 'react';
 
 import type { NewDescriptionType } from '@/domain/newDescriptionType';
 
-type Props = {
+interface Props {
   description: string;
   descriptionType: NewDescriptionType;
-};
+}
 
 export const Description: FC<Props> = ({ description, descriptionType }) => {
   if (descriptionType === 'text') {
     return (
       <>
-        {description?.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
+        {description.replace(/\r\n/gu, '\n').split('\n\n').map((p, i) => <p key={i} className="lead">{p}</p>)}
       </>
     );
   }
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (descriptionType === 'html') {
     return <div className="htmlDescription" dangerouslySetInnerHTML={{ __html: description }} />;
   }

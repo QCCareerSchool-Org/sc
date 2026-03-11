@@ -3,9 +3,9 @@ import { memo } from 'react';
 
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   reason: 'wrong tutor' | 'not submitted';
-};
+}
 
 export const InaccessibleUnit: FC<Props> = memo(({ reason }) => (
   <Section>

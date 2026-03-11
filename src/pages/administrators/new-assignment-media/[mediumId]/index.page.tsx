@@ -5,9 +5,9 @@ import { NewAssignmentMediumEdit } from '@/components/administrators/NewAssignme
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   mediumId: string | null;
-};
+}
 
 const NewAssignmentMediumEditPage: NextPage<Props> = ({ mediumId }) => {
   const authState = useAuthState();

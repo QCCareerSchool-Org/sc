@@ -6,9 +6,9 @@ import { useAuthState } from '@/hooks/useAuthState';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { AuthState } from '@/state/auth';
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 const validPath = (path: string, authState: AuthState): boolean => {
   if (path.startsWith('/students') && typeof authState.studentId === 'undefined') {
@@ -32,6 +32,7 @@ export const RouteGuard: FC<Props> = ({ children }) => {
   const router = useRouter();
   const [ isClient, setIsClient ] = useState(false);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setIsClient(true), []);
 
   // we don't have any auth state in SSR, so only calculate validity if isClient is true

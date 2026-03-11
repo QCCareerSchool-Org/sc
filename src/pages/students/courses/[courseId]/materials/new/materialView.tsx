@@ -31,11 +31,11 @@ import { useServices } from '@/hooks/useServices';
 import { endpoint } from 'src/basePath';
 import { ScormAPI } from 'src/lib/scorm';
 
-type Props = {
+interface Props {
   studentId: number;
   courseId: number;
   materialId: string;
-};
+}
 
 const REFRESH_INTERVAL_MS = 300_000; // 5 minutes
 
@@ -53,9 +53,10 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
   const commitFailure$ = useRef(new Subject<void>());
 
   useInitialData(dispatch, studentId, courseId, materialId);
+  // eslint-disable-next-line react-hooks/refs
   const materialDataUpdate$ = useMaterialDataUpdate(commitFailure$.current);
 
-  const scormAPI = useRef<ScormAPI>();
+  const scormAPI = useRef<ScormAPI>(undefined);
 
   const commit = useRef((data: Record<string, string>): boolean => {
     if (typeof authState.administratorId === 'undefined') { // don't save if logged in as an admin
@@ -78,7 +79,7 @@ export const MaterialView: FC<Props> = ({ studentId, courseId, materialId }) => 
         takeUntil(destroy$),
       ).subscribe({
         next: () => { lastRefreshTime = getTime(); },
-        error: () => { void navigateToLogin(); },
+        error: () => { navigateToLogin(); },
       });
     };
 

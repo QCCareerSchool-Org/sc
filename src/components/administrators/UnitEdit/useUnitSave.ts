@@ -8,12 +8,12 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { UnitSavePayload } from '@/services/administrators/unitService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type UnitSaveEvent = {
+export interface UnitSaveEvent {
   administratorId: number;
   unitId: string;
   payload: UnitSavePayload;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useUnitSave = (dispatch: Dispatch<Action>): Subject<UnitSaveEvent> => {
   const { unitService } = useAdminServices();
@@ -34,7 +34,7 @@ export const useUnitSave = (dispatch: Dispatch<Action>): Subject<UnitSaveEvent> 
             let message = 'Save failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -51,5 +51,6 @@ export const useUnitSave = (dispatch: Dispatch<Action>): Subject<UnitSaveEvent> 
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, unitService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return save$.current;
 };

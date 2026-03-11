@@ -5,9 +5,9 @@ import { NewAssignmentTemplatePreview } from '@/components/administrators/NewAss
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   assignmentId: string | null;
-};
+}
 
 const NewAssignmentTemplatePreviewPage: NextPage<Props> = ({ assignmentId }) => {
   const authState = useAuthState();

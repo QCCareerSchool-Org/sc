@@ -1,8 +1,8 @@
 import type { FC, PropsWithChildren } from 'react';
 
-type Props = {
+interface Props {
   color?: 'black' | 'blue';
-};
+}
 
 export const MaterialButton: FC<PropsWithChildren<Props>> = ({ color = 'black', children }) => {
   return (

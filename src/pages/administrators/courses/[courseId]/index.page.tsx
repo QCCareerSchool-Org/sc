@@ -5,9 +5,9 @@ import { CourseView } from '@/components/administrators/CourseView';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   courseId: number | null;
-};
+}
 
 const CourseViewPage: NextPage<Props> = ({ courseId }) => {
   const authState = useAuthState();

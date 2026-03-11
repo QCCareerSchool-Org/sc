@@ -1,8 +1,4 @@
-export type UnitToggleState = {
-  [courseId: number]: {
-    [unitLetter: string]: boolean;
-  };
-};
+export type UnitToggleState = Record<number, Record<string, boolean>>;
 
 export type UnitToggleAction =
   | { type: 'INITIALIZE'; payload: UnitToggleState }

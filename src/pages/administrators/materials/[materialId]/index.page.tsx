@@ -5,9 +5,9 @@ import { MaterialEdit } from '@/components/administrators/MaterialEdit';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   materialId: string | null;
-};
+}
 
 const MaterialEditPage: NextPage<Props> = ({ materialId }) => {
   const authState = useAuthState();

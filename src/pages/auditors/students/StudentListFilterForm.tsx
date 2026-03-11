@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, Dispatch, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, Dispatch, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -6,12 +6,12 @@ import type { Action, State } from './state';
 import type { StudentFilterEvent } from './useFilter';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   auditorId: number;
   dispatch: Dispatch<Action>;
   formState: State['form'];
   filter$: Subject<StudentFilterEvent>;
-};
+}
 
 export const StudentListFilterForm: FC<Props> = ({ auditorId, dispatch, formState, filter$ }) => {
   const id = useId();
@@ -28,7 +28,7 @@ export const StudentListFilterForm: FC<Props> = ({ auditorId, dispatch, formStat
     dispatch({ type: 'LOCATION_CHANGED', payload: e.target.value });
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     filter$.next({
       auditorId,

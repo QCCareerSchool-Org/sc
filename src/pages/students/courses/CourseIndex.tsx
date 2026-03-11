@@ -15,10 +15,10 @@ import { Section } from '@/components/Section';
 import { ppaCourseCodes } from '@/domain/course';
 import { getVirtualCommunityLink } from 'src/lib/virtualCommunityLink';
 
-type Props = {
+interface Props {
   administratorId?: number;
   studentId: number;
-};
+}
 
 export const CourseIndex: FC<Props> = ({ studentId }) => {
 
@@ -114,13 +114,10 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
           <div className="container">
             <h2 className="h4">Continued Education</h2>
             <p className="lead">
-              {blackFridayMessage
-                ? blackFridayMessage
-                : <>Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses.</>
-              }
+              {blackFridayMessage ?? <>Take your career to the next level by expanding your skillset. As a QC student, your are eligible to receive a <strong style={{ color: '#ca0000' }}>50% discount</strong> on all continued education courses.</>}
             </p>
             {showTaxCreditMessage && <TaxCreditMessage />}
-            {nonVariantSchoolSlugs?.map(s => s.slug).map(s => courseSuggestionGroups[s].map(group => {
+            {nonVariantSchoolSlugs.map(s => s.slug).map(s => courseSuggestionGroups[s].map(group => {
               return <ContinuingEducationGroup
                 key={group.id}
                 shippingDetails={{

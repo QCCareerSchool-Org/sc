@@ -8,11 +8,11 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewPartMediumDeleteEvent = {
+export interface NewPartMediumDeleteEvent {
   administratorId: number;
   mediumId: string;
   processingState: State['form']['processingState'];
-};
+}
 
 export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<NewPartMediumDeleteEvent> => {
   const { newPartMediumService } = useAdminServices();
@@ -38,7 +38,7 @@ export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<NewPartMedi
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,5 +56,6 @@ export const useMediumDelete = (dispatch: Dispatch<Action>): Subject<NewPartMedi
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newPartMediumService, navigateToLogin, router ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return mediumDelete$.current;
 };

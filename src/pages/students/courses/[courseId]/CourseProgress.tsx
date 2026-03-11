@@ -3,10 +3,10 @@ import { memo, useMemo } from 'react';
 
 import type { EnrollmentState, MaterialWithCompletionForm } from './state';
 
-type Props = {
+interface Props {
   enrollment: EnrollmentState;
   onProgressResetDismissed: () => void;
-};
+}
 
 /** the relative weight a submission compared to an assignment */
 const submissionWeight = 3;

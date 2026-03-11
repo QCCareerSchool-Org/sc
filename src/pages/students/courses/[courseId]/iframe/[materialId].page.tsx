@@ -1,15 +1,15 @@
 import type { GetServerSideProps } from 'next';
 import ErrorPage from 'next/error';
-
-import type { ReactElement } from 'react';
+import type { JSX, ReactElement } from 'react';
 import { useEffect, useMemo } from 'react';
+
 import { useAuthState } from '@/hooks/useAuthState';
 import type { NextPageWithLayout } from 'src/pages/_app.page';
 
-type Props = {
+interface Props {
   courseId: number | null;
   materialId: string | null;
-};
+}
 
 const randomInt = (min: number, max: number): number => {
   min = Math.ceil(min);

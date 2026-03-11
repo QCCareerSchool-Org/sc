@@ -5,12 +5,12 @@ import PagesIcon from './pages.svg';
 import type { State } from './state';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   unitLetter: string;
   formState: State['form'];
   expired: boolean;
   onInitializeButtonClick: MouseEventHandler;
-};
+}
 
 export const EmptySubmissionSection: FC<Props> = props => {
   const buttonDisabled = props.expired || props.formState.processingState === 'initializing';

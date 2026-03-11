@@ -13,23 +13,23 @@ export type EnrollmentData = Enrollment & {
     school: School;
     oldSubmissionTemplates: unknown[];
     newSubmissionTemplates: NewSubmissionTemplate[];
-    units: Array<Unit & {
-      materials: Array<Material & { materialData: Record<string, string> }>;
-    }>;
+    units: (Unit & {
+      materials: (Material & { materialData: Record<string, string> })[];
+    })[];
   };
   tutor: Tutor | null;
   oldSubmissions: unknown[];
-  newSubmissions: Array<NewSubmission & {
+  newSubmissions: (NewSubmission & {
     tutor: Tutor | null;
-  }>;
+  })[];
   materialCompletions: MaterialCompletion[];
 };
 
-export type State = {
+export interface State {
   enrollment?: EnrollmentData;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: EnrollmentData }

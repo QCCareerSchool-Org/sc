@@ -13,10 +13,10 @@ import { useMaterialImageAddOrReplace } from './useMaterialImageAddOrReplace';
 import { useMaterialImageDelete } from './useMaterialImageDelete';
 import { Section } from '@/components/Section';
 
-type Props = {
+interface Props {
   administratorId: number;
   materialId: string;
-};
+}
 
 export const MaterialEdit: FC<Props> = ({ administratorId, materialId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

@@ -1,6 +1,7 @@
 import type { NewSubmissionReturnWithSubmission, NewSubmissionReturnWithSubmissionWithTutorAndEnrollment } from '@/services/administrators/newSubmissionReturnService';
+import { getLength } from 'src/lib/segmenter';
 
-export type State = {
+export interface State {
   newSubmissionReturn?: NewSubmissionReturnWithSubmissionWithTutorAndEnrollment;
   form: {
     adminComment: string;
@@ -10,7 +11,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_UNIT_RETURN_SUCEEDED'; payload: NewSubmissionReturnWithSubmissionWithTutorAndEnrollment }
@@ -45,7 +46,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

@@ -1,4 +1,4 @@
-export type NewTransfer = {
+export interface NewTransfer {
   /** uuid */
   transferId: string;
   /** uuid */
@@ -7,9 +7,9 @@ export type NewTransfer = {
   preTutorId: number;
   postTutorId: number;
   created: Date;
-};
+}
 
-export type RawNewTransfer = {
+export interface RawNewTransfer {
   /** uuid */
   transferId: string;
   /** uuid */
@@ -19,4 +19,4 @@ export type RawNewTransfer = {
   postTutorId: number;
   /** string date */
   created: string;
-};
+}

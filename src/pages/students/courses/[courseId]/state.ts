@@ -27,10 +27,10 @@ export type EnrollmentState = Enrollment & {
     school: School;
     variant: Variant | null;
     newSubmissionTemplates: NewSubmissionTemplate[];
-    units: Array<Unit & {
+    units: (Unit & {
       materials: MaterialWithCompletionForm[];
       videos: Video[];
-    }>;
+    })[];
   };
   tutor: Tutor | null;
   newSubmissions: NewSubmission[];
@@ -38,17 +38,17 @@ export type EnrollmentState = Enrollment & {
   metadata: Metadata[];
 };
 
-type Data = {
+interface Data {
   enrollment: EnrollmentState;
   crmEnrollment?: CRMEnrollment;
-};
+}
 
-type DataPayload = {
+interface DataPayload {
   enrollment: EnrollmentWithStudentCourseAndUnits;
   crmEnrollment?: CRMEnrollment;
-};
+}
 
-export type State = {
+export interface State {
   data?: Data;
   form: {
     processingState: 'idle' | 'initializing' | 'initialize error';
@@ -56,7 +56,7 @@ export type State = {
   };
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: DataPayload }

@@ -2,9 +2,9 @@ import type { FC } from 'react';
 
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 
-type Props = {
+interface Props {
   newTextBoxTemplate: NewTextBoxTemplate;
-};
+}
 
 export const NewTextBoxTemplatePreview: FC<Props> = ({ newTextBoxTemplate }) => {
   return (

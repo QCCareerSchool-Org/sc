@@ -1,11 +1,11 @@
 import type { FC, ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-type Props = {
+interface Props {
   id?: string;
   className?: string;
   children: ReactNode;
-};
+}
 
 const minDistance = 750;
 

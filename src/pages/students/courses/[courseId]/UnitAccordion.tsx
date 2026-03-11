@@ -17,7 +17,7 @@ import type { Unit } from '@/domain/unit';
 import { useUnitToggleDispatch } from '@/hooks/useUnitToggleDispatch';
 import { useUnitToggleState } from '@/hooks/useUnitToggleState';
 
-type Props = {
+interface Props {
   studentId: number;
   enrollmentId: number;
   courseId: number;
@@ -33,7 +33,7 @@ type Props = {
   assignmentsDisabled: boolean;
   onInitializeButtonClick: MouseEventHandler<HTMLButtonElement>;
   formState: State['form'];
-};
+}
 
 const iconSize = 24;
 
@@ -55,7 +55,7 @@ export const UnitAccordion: FC<Props> = props => {
     firstRender.current = false;
   }, [ courseId, firstUnit, unit.unitLetter, unitToggleDispatch, unitToggleState ]);
 
-  const open = !!unitToggleState[courseId]?.[unit.unitLetter];
+  const open = unitToggleState[courseId][unit.unitLetter];
 
   const assignments = useMemo(() => unit.materials.filter(m => m.type !== 'assignment'), [ unit.materials ]);
 
@@ -79,6 +79,7 @@ export const UnitAccordion: FC<Props> = props => {
                 <Lesson key={m.materialId} studentId={studentId} enrollmentId={enrollmentId} courseId={courseId} material={m} materialCompletion$={materialCompletion$} last={i === a.length - 1} />
               ))
             }
+            {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
             {(submission || (!assignmentsDisabled && nextUnit.success && nextUnit.unitLetter === unit.unitLetter)) && (
               <div className="container assignmentContainer">
                 <UnitAccordionSectionPadding>

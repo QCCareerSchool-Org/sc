@@ -5,16 +5,16 @@ import type { IHttpService } from './httpService';
 import type { PasswordResetRequest, RawPasswordResetRequest } from '@/domain/passwordResetRequest';
 import { endpoint } from 'src/basePath';
 
-export type CreatePasswordResetResult = {
+export interface CreatePasswordResetResult {
   maskedEmailAddress: string;
   expiryDate: Date;
-};
+}
 
-type RawCreatePasswordResetResult = {
+interface RawCreatePasswordResetResult {
   maskedEmailAddress: string;
   /** string date */
   expiryDate: string;
-};
+}
 
 export interface IPasswordResetRequestService {
   create: (username: string) => Observable<CreatePasswordResetResult>;

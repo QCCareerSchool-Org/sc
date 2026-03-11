@@ -1,10 +1,11 @@
 import type { FC } from 'react';
+
 import type { NewSubmission } from '@/domain/auditor/newSubmission';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   newSubmission: NewSubmission;
-};
+}
 
 export const NewSubmissionStatus: FC<Props> = ({ newSubmission }) => {
   if (newSubmission.closed) {

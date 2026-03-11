@@ -4,10 +4,10 @@ import { memo } from 'react';
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
-type Props = {
+interface Props {
   media: NewAssignmentMedium[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, mediaId: string) => void;
-};
+}
 
 export const NewAssignmentMediumList: FC<Props> = memo(props => {
   const { media } = props;

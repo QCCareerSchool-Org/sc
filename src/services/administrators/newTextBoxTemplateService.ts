@@ -6,22 +6,22 @@ import type { NewTextBoxTemplate, RawNewTextBoxTemplate } from '@/domain/newText
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
-export type NewTextBoxTemplateAddPayload = {
+export interface NewTextBoxTemplateAddPayload {
   partId: string;
   description: string | null;
   points: number;
   lines: number | null;
   order: number;
   optional: boolean;
-};
+}
 
-export type NewTextBoxTemplateSavePayload = {
+export interface NewTextBoxTemplateSavePayload {
   description: string | null;
   points: number;
   lines: number | null;
   order: number;
   optional: boolean;
-};
+}
 
 type RawNewTextBoxTemplateWithPart = RawNewTextBoxTemplate & {
   newPartTemplate: RawNewPartTemplate;
@@ -65,7 +65,7 @@ export class NewTextBoxTemplateService implements INewTextBoxTemplateService {
 
   public deleteTextBox(administratorId: number, textBoxId: string): Observable<void> {
     const url = `${this.getBaseUrl(administratorId)}/${textBoxId}`;
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   private getBaseUrl(administratorId: number): string {

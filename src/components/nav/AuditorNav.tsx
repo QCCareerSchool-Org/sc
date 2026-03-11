@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import type { FC, MouseEventHandler } from 'react';
 import { useEffect, useRef, useState } from 'react';
-
 import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
+
 import { ActiveIndicator } from './ActiveIndicator';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useAuthState } from '@/hooks/useAuthState';
@@ -20,6 +20,7 @@ export const AuditorNav: FC<AuditorNavProps> = props => {
   const [ loaded, setLoaded ] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoaded(true);
   }, []);
 

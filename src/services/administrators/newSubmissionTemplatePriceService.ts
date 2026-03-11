@@ -5,11 +5,11 @@ import type { NewSubmissionTemplatePrice, RawNewSubmissionTemplatePrice } from '
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
-export type NewSubmissionTemplatePricePayload = Array<{
+export type NewSubmissionTemplatePricePayload = {
   submissionTemplateId: string;
   price: number;
   currencyId: number;
-}>;
+}[];
 
 export interface INewSubmissionTemplatePriceService {
   getPrices: (administratorId: number, courseId: number, countryId: number | null) => Observable<NewSubmissionTemplatePrice[]>;
@@ -28,12 +28,12 @@ export class NewSubmissionTemplatePriceService implements INewSubmissionTemplate
 
   public replacePrices(administratorId: number, courseId: number, countryId: number | null, payload: NewSubmissionTemplatePricePayload): Observable<void> {
     const url = this.getBaseUrl(administratorId, courseId, countryId);
-    return this.httpService.put<void>(url, { priceData: payload });
+    return this.httpService.put(url, { priceData: payload });
   }
 
   public deletePrices(administratorId: number, courseId: number, countryId: number | null): Observable<void> {
     const url = this.getBaseUrl(administratorId, courseId, countryId);
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   private getBaseUrl(administratorId: number, courseId: number, countryId: number | null): string {

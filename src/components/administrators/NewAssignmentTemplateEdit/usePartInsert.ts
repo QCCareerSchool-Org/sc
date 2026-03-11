@@ -8,11 +8,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewPartTemplateAddPayload } from '@/services/administrators/newPartTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewPartTemplateInsertEvent = {
+export interface NewPartTemplateInsertEvent {
   administratorId: number;
   payload: NewPartTemplateAddPayload;
   processingState: State['newPartTemplateForm']['processingState'];
-};
+}
 
 export const usePartInsert = (dispatch: Dispatch<Action>): Subject<NewPartTemplateInsertEvent> => {
   const { newPartTemplateService } = useAdminServices();
@@ -34,7 +34,7 @@ export const usePartInsert = (dispatch: Dispatch<Action>): Subject<NewPartTempla
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -52,5 +52,6 @@ export const usePartInsert = (dispatch: Dispatch<Action>): Subject<NewPartTempla
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newPartTemplateService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return partInsert$.current;
 };

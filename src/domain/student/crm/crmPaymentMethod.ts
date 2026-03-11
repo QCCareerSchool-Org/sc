@@ -1,6 +1,6 @@
 export type PaysafeCompany = 'CA' | 'US' | 'GB';
 
-export type CRMPaymentMethod = {
+export interface CRMPaymentMethod {
   paymentMethodId: number;
   enrollmentId: number | null;
   paymentTypeId: number;
@@ -19,9 +19,9 @@ export type CRMPaymentMethod = {
   transactionCount: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawCRMPaymentMethod = {
+export interface RawCRMPaymentMethod {
   paymentMethodId: number;
   enrollmentId: number | null;
   paymentTypeId: number;
@@ -42,4 +42,4 @@ export type RawCRMPaymentMethod = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

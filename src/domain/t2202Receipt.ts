@@ -1,4 +1,4 @@
-export type T2202Receipt = {
+export interface T2202Receipt {
   t2202ReceiptId: number;
   enrollmentId: number;
   startYear: number;
@@ -14,4 +14,4 @@ export type T2202Receipt = {
   countryId: number;
   accessed: number;
   version: number;
-};
+}

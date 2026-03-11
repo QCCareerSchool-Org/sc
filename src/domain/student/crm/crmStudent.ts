@@ -1,4 +1,4 @@
-export type CRMStudent = {
+export interface CRMStudent {
   studentId: number;
   currencyId: number;
   userId: number | null;
@@ -20,9 +20,9 @@ export type CRMStudent = {
   sms: boolean;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawCRMStudent = {
+export interface RawCRMStudent {
   studentId: number;
   currencyId: number;
   userId: number | null;
@@ -46,4 +46,4 @@ export type RawCRMStudent = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

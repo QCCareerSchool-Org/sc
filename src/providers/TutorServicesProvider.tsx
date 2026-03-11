@@ -7,16 +7,16 @@ import { NewAssignmentService } from '@/services/tutors/newAssignmentService';
 import type { INewSubmissionService } from '@/services/tutors/newSubmissionService';
 import { NewSubmissionService } from '@/services/tutors/newSubmissionService';
 
-export type TutorServices = {
+export interface TutorServices {
   newAssignmentService: INewAssignmentService;
   newSubmissionService: INewSubmissionService;
-};
+}
 
 export const TutorServicesContext = createContext<TutorServices | undefined>(undefined);
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export const TutorServicesProvider: FC<Props> = ({ children }) => {
   const { httpService } = useServices();

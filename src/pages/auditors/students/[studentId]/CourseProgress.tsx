@@ -9,20 +9,20 @@ import type { MaterialCompletion } from '@/domain/materialCompletion';
 import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { Unit } from '@/domain/unit';
 
-type Props = {
+interface Props {
   enrollment: Enrollment & {
     course: Course & {
-      units: Array<Unit & {
-        materials: Array<Material & {
+      units: (Unit & {
+        materials: (Material & {
           materialData: Record<string, string>;
-        }>;
-      }>;
+        })[];
+      })[];
       newSubmissionTemplates: NewSubmissionTemplate[];
     };
     newSubmissions: NewSubmission[];
     materialCompletions: MaterialCompletion[];
   };
-};
+}
 
 /** the relative weight a submission compared to an assignment */
 const submissionWeight = 3;

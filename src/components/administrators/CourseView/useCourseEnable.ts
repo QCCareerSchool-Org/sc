@@ -7,12 +7,12 @@ import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
-export type CourseEnablePayload = {
+export interface CourseEnablePayload {
   administratorId: number;
   courseId: number;
   enable: boolean;
   processingState: State['enableForm']['processingState'];
-};
+}
 
 export const useCourseEnable = (dispatch: Dispatch<Action>): Subject<CourseEnablePayload> => {
   const { courseService } = useAdminServices();
@@ -33,7 +33,7 @@ export const useCourseEnable = (dispatch: Dispatch<Action>): Subject<CourseEnabl
             let message = 'Updating course failed';
             if (err instanceof HttpServiceError) {
               if (err.login) {
-                return void navigateToLogin();
+                navigateToLogin(); return;
               }
               if (err.message) {
                 message = err.message;
@@ -50,5 +50,6 @@ export const useCourseEnable = (dispatch: Dispatch<Action>): Subject<CourseEnabl
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, courseService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return courseEnable$.current;
 };

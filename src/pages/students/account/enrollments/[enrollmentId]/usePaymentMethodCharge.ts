@@ -7,13 +7,13 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import { HttpServiceError } from '@/services/httpService';
 
-type PaymentMethodChargeEvent = {
+interface PaymentMethodChargeEvent {
   studentId: number;
   enrollmentId: number;
   paymentMethodId: number;
   amount: number;
   processingState: State['form']['processingState'];
-};
+}
 
 export const usePaymentMethodCharge = (dispatch: Dispatch<Action>): Subject<PaymentMethodChargeEvent> => {
   const { crmPaymentMethodService } = useStudentServices();
@@ -41,7 +41,7 @@ export const usePaymentMethodCharge = (dispatch: Dispatch<Action>): Subject<Paym
               let message = 'Update failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -59,5 +59,6 @@ export const usePaymentMethodCharge = (dispatch: Dispatch<Action>): Subject<Paym
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, crmPaymentMethodService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return change$.current;
 };

@@ -3,9 +3,9 @@ import type { FC } from 'react';
 import { EnrollmentsTableRow } from './EnrollmentsTableRow';
 import type { StudentData } from './state';
 
-type Props = {
+interface Props {
   student: StudentData;
-};
+}
 
 export const EnrollmentsTable: FC<Props> = ({ student }) => {
   return (

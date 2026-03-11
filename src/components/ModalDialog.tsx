@@ -1,9 +1,9 @@
 import type { FC, PropsWithChildren } from 'react';
 
-type Props = {
+interface Props {
   title: string;
   onClose: () => void;
-};
+}
 
 export const ModalDialog: FC<PropsWithChildren<Props>> = props => (
   <div className="modal-dialog">

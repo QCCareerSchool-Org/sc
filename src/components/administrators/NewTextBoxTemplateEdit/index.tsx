@@ -13,10 +13,10 @@ import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   textBoxId: string;
-};
+}
 
 const changesPresent = (textBoxTemplate: NewTextBoxTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!textBoxTemplate) {
@@ -102,7 +102,7 @@ export const NewTextBoxTemplateEdit: FC<Props> = ({ administratorId, textBoxId }
               <div>
                 <table className="table table-bordered w-auto ms-lg-auto bg-white">
                   <tbody>
-                    <tr><th scope="row">Part Template</th><td>{state.newTextBoxTemplate.newPartTemplate.title ?? state.newTextBoxTemplate.newPartTemplate.partNumber}</td></tr>
+                    <tr><th scope="row">Part Template</th><td>{state.newTextBoxTemplate.newPartTemplate.title}</td></tr>
                     <tr><th scope="row">Created</th><td>{formatDateTime(state.newTextBoxTemplate.created)}</td></tr>
                     {state.newTextBoxTemplate.modified && <tr><th scope="row">Modified</th><td>{formatDateTime(state.newTextBoxTemplate.modified)}</td></tr>}
                   </tbody>

@@ -1,6 +1,6 @@
 export type StudentType = 'general' | 'design' | 'event' | 'writing';
 
-export type AuthenticationPayload = {
+export interface AuthenticationPayload {
   studentCenter: {
     id: number;
     studentType: StudentType;
@@ -12,4 +12,4 @@ export type AuthenticationPayload = {
   };
   exp: number;
   xsrf: string;
-};
+}

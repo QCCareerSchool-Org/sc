@@ -1,7 +1,7 @@
 import type { RefObject } from 'react';
 import { useEffect, useState } from 'react';
 
-export const useResizeObserver = (ref: RefObject<HTMLElement>, options?: ResizeObserverOptions): ResizeObserverEntry | undefined => {
+export const useResizeObserver = (ref: RefObject<HTMLElement | null>, options?: ResizeObserverOptions): ResizeObserverEntry | undefined => {
   const [ entry, setEntry ] = useState<ResizeObserverEntry>();
 
   useEffect(() => {

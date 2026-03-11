@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, FormEventHandler } from 'react';
+import type { ChangeEventHandler, SubmitEventHandler } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import type { Observable } from 'rxjs';
 import { catchError, EMPTY, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
@@ -13,16 +13,16 @@ import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useServices } from '@/hooks/useServices';
 import { basePath } from 'src/basePath';
 
-type LogInPayload = {
+interface LogInPayload {
   username: string;
   password: string;
   stayLoggedIn: boolean;
   returnUrl: string | null;
-};
+}
 
-type Props = {
+interface Props {
   returnUrl: string | null;
-};
+}
 
 const LoginPage: NextPage<Props> = ({ returnUrl }) => {
   const router = useRouter();
@@ -65,6 +65,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
             } else if (response.studentCenter.type === 'auditor') {
               authDispatch({ type: 'AUDITOR_LOG_IN', payload: { accountId: response.studentCenter.id, xsrfToken: response.xsrf } });
               return void router.push(r ?? '/auditors');
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             } else if (response.studentCenter.type === 'student') {
               authDispatch({
                 type: 'STUDENT_LOG_IN',
@@ -92,7 +93,7 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ router, authDispatch, loginService ]);
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     logIn$.current.next({ username, password, stayLoggedIn, returnUrl });
   };
@@ -162,8 +163,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
     : typeof ctx.query.returnUrl === 'string' && !ctx.query.returnUrl.includes('login')
       ? ctx.query.returnUrl
       : null;
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  return { props: { returnUrl: returnUrl } };
+
+  return { props: { returnUrl } };
 };
 
 export default LoginPage;

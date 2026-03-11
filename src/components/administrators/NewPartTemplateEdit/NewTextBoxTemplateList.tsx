@@ -3,10 +3,10 @@ import { memo } from 'react';
 
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 
-type Props = {
+interface Props {
   textBoxes: NewTextBoxTemplate[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, textBoxId: string) => void;
-};
+}
 
 export const NewTextBoxTemplateList: FC<Props> = memo(props => {
   const { textBoxes } = props;

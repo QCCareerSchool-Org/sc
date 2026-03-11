@@ -1,6 +1,6 @@
 import type { NewMediumType } from './newAssignmentMedium';
 
-export type NewPartMedium = {
+export interface NewPartMedium {
   /** uuid */
   partMediumId: string;
   /** uuid */
@@ -14,9 +14,9 @@ export type NewPartMedium = {
   order: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewPartMedium = {
+export interface RawNewPartMedium {
   /** uuid */
   partMediumId: string;
   /** uuid */
@@ -32,4 +32,4 @@ export type RawNewPartMedium = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

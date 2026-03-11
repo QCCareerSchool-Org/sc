@@ -19,12 +19,12 @@ import { Spinner } from '@/components/Spinner';
 import { endpoint } from 'src/basePath';
 import { formatDate } from 'src/formatDate';
 
-type Props = {
+interface Props {
   tutorId: number;
   studentId: number;
   courseId: number;
   submissionId: string;
-};
+}
 
 export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, submissionId }) => {
   const router = useRouter();

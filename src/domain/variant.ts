@@ -1,6 +1,6 @@
 export type VariantName = 'EarthWise Pet';
 
-export type Variant = {
+export interface Variant {
   variantId: number;
   name: VariantName;
-};
+}

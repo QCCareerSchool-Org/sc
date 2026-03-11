@@ -7,13 +7,13 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type FeedbackDeletePayload = {
+export interface FeedbackDeletePayload {
   tutorId: number;
   studentId: number;
   courseId: number;
   submissionId: string;
   processingState: State['processingState'];
-};
+}
 
 export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackDeletePayload> => {
   const navigateToLogin = useNavigateToLogin();
@@ -37,7 +37,7 @@ export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackD
               let message = 'Delete failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -55,5 +55,6 @@ export const useFeedbackDelete = (dispatch: Dispatch<Action>): Subject<FeedbackD
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return feedbackDelete$.current;
 };

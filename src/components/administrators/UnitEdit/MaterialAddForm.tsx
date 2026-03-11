@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
+import type { ChangeEventHandler, FC, SubmitEventHandler } from 'react';
 import { memo, useId } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -7,7 +7,7 @@ import type { NewMaterialInsertEvent } from './useMaterialInsert';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   unitId: string;
   formState: State['materialForm'];
@@ -23,7 +23,7 @@ type Props = {
   onChaptersChange: ChangeEventHandler<HTMLInputElement>;
   onVideosChange: ChangeEventHandler<HTMLInputElement>;
   onKnowledgeChecksChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 const defaultMimeTypes = [
   'image/*',
@@ -53,7 +53,7 @@ export const MaterialAddForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -191,7 +191,7 @@ export const MaterialAddForm: FC<Props> = memo(props => {
             <button type="submit" className="btn btn-primary" style={{ width: 80 }} disabled={!valid || formState.processingState === 'inserting'}>
               {formState.processingState === 'inserting' ? <Spinner size="sm" /> : 'Add'}
             </button>
-            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ? formState.errorMessage : 'Error'}</span>}
+            {formState.processingState === 'insert error' && <span className="text-danger ms-2">{formState.errorMessage ?? 'Error'}</span>}
           </div>
           {formState.processingState === 'inserting' && <div className="mt-4"><ProgressBar progress={formState.progress}>{formState.progress.toFixed(0)}%</ProgressBar></div>}
         </form>

@@ -7,14 +7,14 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export type ReturnPayload = {
+export interface ReturnPayload {
   tutorId: number;
   studentId: number;
   courseId: number;
   submissionId: string;
   comment: string;
   processingState: State['processingState'];
-};
+}
 
 export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> => {
   const navigateToLogin = useNavigateToLogin();
@@ -38,7 +38,7 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
               let message = 'Return failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -56,5 +56,6 @@ export const useReturn = (dispatch: Dispatch<Action>): Subject<ReturnPayload> =>
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newSubmissionService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return return$.current;
 };

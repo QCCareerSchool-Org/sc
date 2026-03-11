@@ -1,4 +1,4 @@
-export type Unit = {
+export interface Unit {
   /** uuid */
   unitId: string;
   courseId: number;
@@ -7,9 +7,9 @@ export type Unit = {
   order: number;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawUnit = {
+export interface RawUnit {
   /** uuid */
   unitId: string;
   courseId: number;
@@ -20,4 +20,4 @@ export type RawUnit = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

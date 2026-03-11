@@ -4,10 +4,10 @@ import { memo } from 'react';
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
-type Props = {
+interface Props {
   media: NewPartMedium[];
   onClick: (e: MouseEvent<HTMLTableRowElement>, mediaId: string) => void;
-};
+}
 
 export const NewPartMediumList: FC<Props> = memo(props => {
   const { media } = props;

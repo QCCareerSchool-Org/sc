@@ -3,7 +3,7 @@ import { useId } from 'react';
 
 import type { State } from './state';
 
-type Props = {
+interface Props {
   formData: State['form']['data'];
   formValidationMessages: State['form']['validationMessages'];
   onDescriptionChange: ChangeEventHandler<HTMLTextAreaElement>;
@@ -11,7 +11,7 @@ type Props = {
   onLinesChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewTextBoxFormElements: FC<Props> = props => {
   const { formData, formValidationMessages } = props;

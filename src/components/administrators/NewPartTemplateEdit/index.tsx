@@ -24,10 +24,10 @@ import { useServices } from '@/hooks/useServices';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 import { formatDateTime } from 'src/formatDate';
 
-type Props = {
+interface Props {
   administratorId: number;
   partId: string;
-};
+}
 
 const changesPresent = (partTemplate: NewPartTemplate | undefined, formData: State['form']['data']): boolean => {
   if (!partTemplate) {

@@ -7,9 +7,9 @@ import { navInitialState, navReducer } from '@/state/nav';
 export const NavStateContext = createContext<NavState | undefined>(undefined);
 export const NavDispatchContext = createContext<Dispatch<NavAction> | undefined>(undefined);
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export const NavStateProvider: FC<Props> = ({ children }) => {
   const [ state, dispatch ] = useReducer(navReducer, navInitialState);

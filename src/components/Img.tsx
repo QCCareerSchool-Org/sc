@@ -3,11 +3,11 @@ import { memo, useRef } from 'react';
 
 import { useRefreshAndRetryMedia } from '@/hooks/useRefreshAndRetryMedia';
 
-type Props = {
+interface Props {
   src: string;
   alt: string;
   className?: string;
-};
+}
 
 export const Img: FC<Props> = memo(({ src, alt, className }) => {
   const imageRef = useRef<HTMLImageElement>(null);

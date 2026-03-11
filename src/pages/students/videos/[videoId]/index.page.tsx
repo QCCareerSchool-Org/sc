@@ -1,6 +1,7 @@
 import type { GetServerSideProps } from 'next';
 import { useEffect, useRef, useState } from 'react';
 import { catchError, EMPTY, Subject, switchMap, takeUntil } from 'rxjs';
+
 import { BlankLayout } from '@/components/layouts/BlankLayout';
 import { Meta } from '@/components/Meta';
 import { Video as VideoComponent } from '@/components/Video';
@@ -9,9 +10,9 @@ import { useAuthState } from '@/hooks/useAuthState';
 import { useStudentServices } from '@/hooks/useStudentServices';
 import type { NextPageWithLayout } from 'src/pages/_app.page';
 
-type Props = {
+interface Props {
   videoId: string | null;
-};
+}
 
 const VideoPage: NextPageWithLayout<Props> = ({ videoId }) => {
   const [ video, setVideo ] = useState<Video>();

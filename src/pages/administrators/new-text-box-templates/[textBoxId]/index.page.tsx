@@ -5,9 +5,9 @@ import { NewTextBoxTemplateEdit } from '@/components/administrators/NewTextBoxTe
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   textBoxId: string | null;
-};
+}
 
 const NewTextBoxTemplateEditPage: NextPage<Props> = ({ textBoxId }) => {
   const authState = useAuthState();

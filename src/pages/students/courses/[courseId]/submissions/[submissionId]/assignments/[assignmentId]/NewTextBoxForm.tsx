@@ -5,13 +5,14 @@ import { debounceTime, exhaustMap, Subject, takeUntil } from 'rxjs';
 import type { TextBoxFunction } from './NewAssignmentView';
 import type { TextBoxState } from './state';
 import { Spinner } from '@/components/Spinner';
+import { getLength } from 'src/lib/segmenter';
 
-type Props = {
+interface Props {
   textBox: TextBoxState;
   locked: boolean;
   update: TextBoxFunction;
   save: TextBoxFunction;
-};
+}
 
 /** amount of time to wait between calling save */
 const saveDelay = 1000;
@@ -40,10 +41,10 @@ export const NewTextBoxForm: FC<Props> = memo(({ textBox, locked, update, save }
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ save, update, textBox.partId, textBox.textBoxId ]);
 
-  const characters = [ ...textBox.text ].length;
+  const characters = getLength(textBox.text);
 
   const handleTextareaChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
-    const newLength = [ ...e.target.value ].length;
+    const newLength = getLength(e.target.value);
     if (newLength <= maxLength) {
       textChange$.current.next(e.target.value);
     }

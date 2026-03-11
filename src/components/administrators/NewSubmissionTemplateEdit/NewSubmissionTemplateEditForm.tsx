@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -9,7 +9,7 @@ import type { NewSubmissionTemplateSaveEvent } from './useSubmissionTemplateSave
 import { Spinner } from '@/components/Spinner';
 import type { NewSubmissionTemplateWithCourseAndAssignments } from '@/services/administrators/newSubmissionTemplateService';
 
-type Props = {
+interface Props {
   administratorId: number;
   submissionId: string;
   submissionTemplate: NewSubmissionTemplateWithCourseAndAssignments;
@@ -22,7 +22,7 @@ type Props = {
   onUnitLetterChange: ChangeEventHandler<HTMLInputElement>;
   onOrderChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewSubmissionTemplateEditForm: FC<Props> = memo(props => {
   const { administratorId, submissionId, submissionTemplate, formState, save$, delete$ } = props;
@@ -37,7 +37,7 @@ export const NewSubmissionTemplateEditForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -58,7 +58,7 @@ export const NewSubmissionTemplateEditForm: FC<Props> = memo(props => {
   };
 
   const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this unit template and all its assignments?\n\nassignments: ${submissionTemplate?.newAssignmentTemplates.length}`)) {
+    if (confirm(`Are you sure you want to delete this unit template and all its assignments?\n\nassignments: ${submissionTemplate.newAssignmentTemplates.length}`)) {
       delete$.next({
         administratorId,
         submissionId,

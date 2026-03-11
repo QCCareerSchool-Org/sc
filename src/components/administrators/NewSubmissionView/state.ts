@@ -3,13 +3,13 @@ import type { Tutor } from '@/domain/administrator/tutor';
 import type { NewSubmissionWithEnrollmentAndCourseAndAssignments, NewTransferWithSubmissionAndTutors } from '@/services/administrators/newSubmissionService';
 import type { StudentWithCountryAndProvince } from '@/services/administrators/studentService';
 
-type Data = {
+interface Data {
   newSubmission: NewSubmissionWithEnrollmentAndCourseAndAssignments;
   student: StudentWithCountryAndProvince;
   tutors: Tutor[];
-};
+}
 
-export type State = {
+export interface State {
   data?: Data;
   transferForm: {
     data: {
@@ -28,7 +28,7 @@ export type State = {
   popup: boolean;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: Data }

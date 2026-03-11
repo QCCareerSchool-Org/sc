@@ -1,6 +1,6 @@
 export type MaterialType = 'lesson' | 'video' | 'download' | 'assignment' | 'scorm2004';
 
-export type Material = {
+export interface Material {
   /** uuid */
   materialId: string;
   /** uuid */
@@ -20,9 +20,9 @@ export type Material = {
   knowledgeChecks: number | null;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawMaterial = {
+export interface RawMaterial {
   /** uuid */
   materialId: string;
   /** uuid */
@@ -44,4 +44,4 @@ export type RawMaterial = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

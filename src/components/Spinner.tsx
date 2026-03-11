@@ -1,9 +1,9 @@
 import type { CSSProperties, FC } from 'react';
 
-type Props = {
+interface Props {
   size?: 'sm' | 'lg';
   height?: number;
-};
+}
 
 export const Spinner: FC<Props> = ({ size, height }) => {
   let className = 'spinner-border';

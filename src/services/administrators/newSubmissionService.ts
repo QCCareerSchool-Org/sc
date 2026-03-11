@@ -18,16 +18,16 @@ export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission &
     course: Course;
   };
   tutor: Tutor | null;
-  newAssignments: Array<NewAssignment & {
-    newParts: Array<NewPart & {
+  newAssignments: (NewAssignment & {
+    newParts: (NewPart & {
       newTextBoxes: NewTextBox[];
       newUploadSlots: NewUploadSlot[];
-    }>;
-  }>;
-  newTransfers: Array<NewTransfer & {
+    })[];
+  })[];
+  newTransfers: (NewTransfer & {
     preTutor: Tutor;
     postTutor: Tutor;
-  }>;
+  })[];
 };
 
 type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & {
@@ -35,16 +35,16 @@ type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & 
     course: Course;
   };
   tutor: Tutor | null;
-  newAssignments: Array<RawNewAssignment & {
-    newParts: Array<RawNewPart & {
+  newAssignments: (RawNewAssignment & {
+    newParts: (RawNewPart & {
       newTextBoxes: RawNewTextBox[];
       newUploadSlots: RawNewUploadSlot[];
-    }>;
-  }>;
-  newTransfers: Array<RawNewTransfer & {
+    })[];
+  })[];
+  newTransfers: (RawNewTransfer & {
     preTutor: Tutor;
     postTutor: Tutor;
-  }>;
+  })[];
 };
 
 export type NewTransferWithSubmissionAndTutors = NewTransfer & {

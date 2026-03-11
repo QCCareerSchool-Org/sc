@@ -1,14 +1,14 @@
-export type NewSubmissionReturn = {
+export interface NewSubmissionReturn {
   /** uuid */
   submissionReturnId: string;
   /** uuid */
   submissionId: string;
   returned: Date;
   completed: Date | null;
-};
+}
 
 // what we get from the back end
-export type RawNewSubmissionReturn = {
+export interface RawNewSubmissionReturn {
   /** uuid */
   submissionReturnId: string;
   /** uuid */
@@ -17,4 +17,4 @@ export type RawNewSubmissionReturn = {
   returned: string;
   /** string date */
   completed: string | null;
-};
+}

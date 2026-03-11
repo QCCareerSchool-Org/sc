@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEventHandler, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { memo } from 'react';
 import type { Subject } from 'rxjs';
 
@@ -9,7 +9,7 @@ import type { NewAssignmentTemplateSaveEvent } from './useAssignmentSave';
 import { Spinner } from '@/components/Spinner';
 import type { NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate } from '@/services/administrators/newAssignmentTemplateService';
 
-type Props = {
+interface Props {
   administratorId: number;
   assignmentId: string;
   assignmentTemplate: NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate;
@@ -22,7 +22,7 @@ type Props = {
   onMarkingCriteriaChange: ChangeEventHandler<HTMLTextAreaElement>;
   onAssignmentNumberChange: ChangeEventHandler<HTMLInputElement>;
   onOptionalChange: ChangeEventHandler<HTMLInputElement>;
-};
+}
 
 export const NewAssignmentTemplateEditForm: FC<Props> = memo(props => {
   const { administratorId, assignmentId, assignmentTemplate, formState, save$, delete$ } = props;
@@ -37,7 +37,7 @@ export const NewAssignmentTemplateEditForm: FC<Props> = memo(props => {
     }
   }
 
-  const handleFormSubmit: FormEventHandler<HTMLFormElement> = e => {
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
     if (!valid) {
       return;
@@ -58,7 +58,7 @@ export const NewAssignmentTemplateEditForm: FC<Props> = memo(props => {
   };
 
   const handleDeleteClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (confirm(`Are you sure you want to delete this assignment template and all its media and parts?\n\nmedia:${assignmentTemplate?.newAssignmentMedia.length}\nparts: ${assignmentTemplate?.newPartTemplates.length}`)) {
+    if (confirm(`Are you sure you want to delete this assignment template and all its media and parts?\n\nmedia:${assignmentTemplate.newAssignmentMedia.length}\nparts: ${assignmentTemplate.newPartTemplates.length}`)) {
       delete$.next({
         administratorId,
         assignmentId,

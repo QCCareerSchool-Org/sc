@@ -2,9 +2,9 @@ import type { FC } from 'react';
 
 import type { NewUploadSlotTemplate } from '@/domain/newUploadSlotTemplate';
 
-type Props = {
+interface Props {
   newUploadSlotTemplate: NewUploadSlotTemplate;
-};
+}
 
 export const NewUploadSlotTemplatePreview: FC<Props> = ({ newUploadSlotTemplate }) => {
   return (

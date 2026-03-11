@@ -11,7 +11,7 @@ import type { NewUploadSlotTemplate, RawNewUploadSlotTemplate } from '@/domain/n
 import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
-export type NewAssignmentTemplateAddPayload = {
+export interface NewAssignmentTemplateAddPayload {
   submissionId: string;
   assignmentNumber: number;
   title: string | null;
@@ -19,16 +19,16 @@ export type NewAssignmentTemplateAddPayload = {
   descriptionType: string;
   markingCriteria: string | null;
   optional: boolean;
-};
+}
 
-export type NewAssignmentTemplateSavePayload = {
+export interface NewAssignmentTemplateSavePayload {
   assignmentNumber: number;
   title: string | null;
   description: string | null;
   descriptionType: string;
   markingCriteria: string | null;
   optional: boolean;
-};
+}
 
 type RawNewAssignmentTemplateWithSubmissionTemplateAndPartTemplate = RawNewAssignmentTemplate & {
   newSubmissionTemplate: RawNewSubmissionTemplate;
@@ -44,21 +44,21 @@ export type NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate = NewAssi
 
 type RawNewAssignmentTemplateWithSubmissionTemplateAndChildren = RawNewAssignmentTemplate & {
   newSubmissionTemplate: RawNewSubmissionTemplate;
-  newPartTemplates: Array<RawNewPartTemplate & {
+  newPartTemplates: (RawNewPartTemplate & {
     newTextBoxTemplates: RawNewTextBoxTemplate[];
     newUploadSlotTemplates: RawNewUploadSlotTemplate[];
     newPartMedia: RawNewPartMedium[];
-  }>;
+  })[];
   newAssignmentMedia: RawNewAssignmentMedium[];
 };
 
 export type NewAssignmentTemplateWithSubmissionTemplateAndChildren = NewAssignmentTemplate & {
   newSubmissionTemplate: NewSubmissionTemplate;
-  newPartTemplates: Array<NewPartTemplate & {
+  newPartTemplates: (NewPartTemplate & {
     newTextBoxTemplates: NewTextBoxTemplate[];
     newUploadSlotTemplates: NewUploadSlotTemplate[];
     newPartMedia: NewPartMedium[];
-  }>;
+  })[];
   newAssignmentMedia: NewAssignmentMedium[];
 };
 
@@ -104,7 +104,7 @@ export class NewAssignmentTemplateService implements INewAssignmentTemplateServi
 
   public deleteAssignment(administratorId: number, assignmentId: string): Observable<void> {
     const url = `${this.getBaseUrl(administratorId)}/${assignmentId}`;
-    return this.httpService.delete<void>(url);
+    return this.httpService.delete(url);
   }
 
   private getBaseUrl(administratorId: number): string {

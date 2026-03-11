@@ -5,11 +5,11 @@ import { NewAssignmentView } from './NewAssignmentView';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';
 
-type Props = {
+interface Props {
   courseId: number | null;
   submissionId: string | null;
   assignmentId: string | null;
-};
+}
 
 const NewAssignmentViewPage: NextPage<Props> = ({ courseId, submissionId, assignmentId }) => {
   const authState = useAuthState();

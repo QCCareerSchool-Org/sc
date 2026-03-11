@@ -1,14 +1,15 @@
 import type { Material } from '@/domain/material';
 import type { MaterialWithUnitWithCourse } from '@/services/administrators/materialService';
+import { getLength } from 'src/lib/segmenter';
 
-type LessonMeta = {
+interface LessonMeta {
   minutes: string;
   chapters: string;
   videos: string;
   knowledgeChecks: string;
-};
+}
 
-export type State = {
+export interface State {
   material?: MaterialWithUnitWithCourse;
   detailsForm: {
     data: {
@@ -57,7 +58,7 @@ export type State = {
   imageVersion: string;
   error: boolean;
   errorCode?: number;
-};
+}
 
 export type Action =
   | { type: 'LOAD_MATERIAL_SUCCEEDED'; payload: MaterialWithUnitWithCourse }
@@ -145,7 +146,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -163,7 +164,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = [ ...action.payload ].length;
+        const newLength = getLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -226,8 +227,8 @@ export const reducer = (state: State, action: Action): State => {
         detailsForm: {
           ...state.detailsForm,
           data: {
-            title: action.payload.title ?? '',
-            description: action.payload.description ?? '',
+            title: action.payload.title,
+            description: action.payload.description,
             order: action.payload.order.toString(),
             lessonMeta: action.payload.type === 'lesson' || action.payload.type === 'scorm2004' ? {
               minutes: action.payload.minutes?.toString() ?? '',

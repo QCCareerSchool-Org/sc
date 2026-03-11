@@ -1,5 +1,5 @@
 import NextError from 'next/error';
-import type { ChangeEvent, FC, FormEventHandler, MouseEventHandler } from 'react';
+import type { ChangeEvent, FC, MouseEventHandler, SubmitEventHandler } from 'react';
 import { memo, useReducer } from 'react';
 
 import { initialState, reducer } from './state';
@@ -9,11 +9,11 @@ import { usePricesSave } from './usePricesSave';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
 
-type Props = {
+interface Props {
   administratorId: number;
   courseId: number;
   countryId: number | null;
-};
+}
 
 export const UnitPriceEdit: FC<Props> = memo(({ administratorId, courseId, countryId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
@@ -55,7 +55,7 @@ export const UnitPriceEdit: FC<Props> = memo(({ administratorId, courseId, count
     dispatch({ type: 'CURRENCY_CHANGED', payload: { unitTemplateId, currencyId: e.target.value } });
   };
 
-  const handleFormSubmit: FormEventHandler = e => {
+  const handleFormSubmit: SubmitEventHandler = e => {
     e.preventDefault();
     save$.next({
       administratorId,

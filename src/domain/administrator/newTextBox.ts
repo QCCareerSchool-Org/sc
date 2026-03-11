@@ -1,4 +1,4 @@
-export type NewTextBox = {
+export interface NewTextBox {
   /** uuid */
   textBoxId: string;
   /** uuid */
@@ -15,9 +15,9 @@ export type NewTextBox = {
   complete: boolean;
   created: Date;
   modified: Date | null;
-};
+}
 
-export type RawNewTextBox = {
+export interface RawNewTextBox {
   /** uuid */
   textBoxId: string;
   /** uuid */
@@ -36,4 +36,4 @@ export type RawNewTextBox = {
   created: string;
   /** string date */
   modified: string | null;
-};
+}

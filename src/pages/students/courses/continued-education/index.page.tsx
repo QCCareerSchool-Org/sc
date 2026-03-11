@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
-
 import { useEffect } from 'react';
+
 import { ContinuedEducation } from './ContinuedEducation';
 import { Meta } from '@/components/Meta';
 import { useAuthState } from '@/hooks/useAuthState';

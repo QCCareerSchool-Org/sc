@@ -7,11 +7,11 @@ import { catchError, from, map, merge, Subject, tap, throwError } from 'rxjs';
 import { AbstractAxiosError, AxiosOtherError, AxiosRefreshError } from 'src/axiosInstance';
 import { endpoint } from 'src/basePath';
 
-export type HttpServiceConfig = {
+export interface HttpServiceConfig {
   params?: Record<string, string | number | boolean>;
   headers?: Record<string, string | number | boolean>;
   withCredentials?: boolean;
-};
+}
 
 export class HttpServiceError extends Error {
   public constructor(message: string, public readonly login: boolean, public readonly code?: number) {
@@ -134,7 +134,7 @@ export class AxiosHttpService implements IHttpService {
     return this.instance.get(url, { ...config, responseType: 'blob' }).pipe(
       tap(response => {
         const header = response.headers['content-disposition'] as AxiosHeaderValue | undefined;
-        const value = header?.toString();
+        const value = header?.valueOf.toString();
         const filename = value ? /filename="(.*)"/u.exec(value)?.[1] : 'unknown';
         if (response.data instanceof Blob) {
           saveAs(response.data, filename ? decodeURIComponent(filename) : undefined);
@@ -157,7 +157,7 @@ export class AxiosHttpService implements IHttpService {
           }
 
           if (err.response.data instanceof Blob) {
-            const blob = err.response?.data;
+            const blob = err.response.data;
 
             // turn the blob back into text
             // because Blob.prototype.text returns a Promise, we conver it to an Observable
@@ -193,7 +193,7 @@ export class AxiosHttpService implements IHttpService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private handleError<T>(err: unknown, caught: Observable<T>): Observable<never> {
     if (err instanceof AbstractAxiosError) {
-      const message = typeof err.response?.data === 'string' ? err.response?.data : '';
+      const message = typeof err.response?.data === 'string' ? err.response.data : '';
       if (err instanceof AxiosRefreshError) {
         return throwError(() => new HttpServiceError(message, true));
       }

@@ -7,7 +7,7 @@ import type { RawUnit, Unit } from '@/domain/unit';
 import type { IHttpService, ProgressResponse } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
-export type MaterialInsertPayload = {
+export interface MaterialInsertPayload {
   unitId: string;
   type: MaterialType;
   title: string;
@@ -20,9 +20,9 @@ export type MaterialInsertPayload = {
     videos: number;
     knowledgeChecks: number;
   } | null;
-};
+}
 
-export type MaterialEditPayload = {
+export interface MaterialEditPayload {
   title: string;
   description: string;
   order: number;
@@ -32,7 +32,7 @@ export type MaterialEditPayload = {
     videos: number;
     knowledgeChecks: number;
   } | null;
-};
+}
 
 type RawMaterialWithUnitWithCourse = RawMaterial & {
   unit: RawUnit & {
@@ -121,7 +121,7 @@ export class MaterialService implements IMaterialService {
 
   public deleteMaterial(administratorId: number, materialId: string): Observable<void> {
     const url = `${this.getUrl(administratorId)}/${materialId}`;
-    return this.http.delete<void>(url);
+    return this.http.delete(url);
   }
 
   public replaceMaterialContent(administratorId: number, materialId: string, content: File): Observable<Material> {

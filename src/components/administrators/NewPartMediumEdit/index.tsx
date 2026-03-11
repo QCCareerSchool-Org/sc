@@ -16,10 +16,10 @@ import { endpoint } from 'src/basePath';
 import { formatDateTime } from 'src/formatDate';
 import { humanReadableFileSize } from 'src/humanReadableFilesize';
 
-type Props = {
+interface Props {
   administratorId: number;
   mediumId: string;
-};
+}
 
 export const NewPartMediumEdit: FC<Props> = ({ administratorId, mediumId }) => {
   const [ state, dispatch ] = useReducer(reducer, initialState);

@@ -5,7 +5,7 @@ import { debounceTime, Subject, takeUntil } from 'rxjs';
 import type { InputForm } from './state';
 import { useWarnIfUnsavedChanges } from '@/hooks/useWarnIfUnsavedChanges';
 
-type Props = {
+interface Props {
   id: string;
   partId: string;
   points: number;
@@ -16,7 +16,7 @@ type Props = {
   submissionClosed: boolean;
   submissionIsRedo: boolean;
   modified: boolean;
-};
+}
 
 export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form, save, submissionClosed, submissionIsRedo, modified }) => {
   const [ markFormValue, setMarkFormValue ] = useState(mark); // for the html input
@@ -27,6 +27,7 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form
 
   const valueChange$ = useRef(new Subject<{ mark: number | null; notes: string | null }>());
 
+  // eslint-disable-next-line react-hooks/refs
   useWarnIfUnsavedChanges(mark !== immediateMark.current || notes !== immediateNotes.current);
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export const MarkForm: FC<Props> = memo(({ id, partId, points, mark, notes, form
           : (
             <>
               <textarea onChange={handleNotesChange} value={notesFormValue ?? ''} className="form-control tutorFillable" rows={3} placeholder="Enter your notes here" />
-              {submissionIsRedo && modified && <div className="fw-bold text-danger">(REGRADE)</div>}
+              {submissionIsRedo && <div className="fw-bold text-danger">(REGRADE)</div>}
             </>
           )
         }

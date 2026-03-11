@@ -10,14 +10,14 @@ import type { PriceResult } from '@/domain/price';
 import type { SchoolSlug } from '@/domain/school';
 import { getTelephoneNumber } from 'src/lib/helper-functions';
 
-type Props = {
+interface Props {
   disabled: boolean;
   course: CourseSuggestion;
   price?: PriceResult;
   schoolSlug: SchoolSlug;
   shippingDetails: ShippingDetails;
   onClose: () => void;
-};
+}
 
 const padding = 1.5; // rem
 const iconSize = 20; // px;

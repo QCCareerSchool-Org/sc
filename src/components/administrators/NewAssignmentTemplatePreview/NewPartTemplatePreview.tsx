@@ -1,6 +1,6 @@
 import type { FC, MouseEventHandler } from 'react';
-
 import { catchError, EMPTY } from 'rxjs';
+
 import { NewPartMediumView } from '../NewPartMediumView';
 import { NewTextBoxTemplatePreview } from './NewTextBoxTemplatePreview';
 import { NewUploadSlotTemplatePreview } from './NewUploadSlotTemplatePreview';
@@ -20,10 +20,10 @@ type NewPartTemplateWithInputs = NewPartTemplate & {
   newPartMedia: NewPartMedium[];
 };
 
-type Props = {
+interface Props {
   administratorId: number;
   newPartTemplate: NewPartTemplateWithInputs;
-};
+}
 
 export const NewPartTemplatePreview: FC<Props> = ({ administratorId, newPartTemplate }) => {
   const { newPartMediumService } = useAdminServices();

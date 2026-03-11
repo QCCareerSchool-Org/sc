@@ -6,16 +6,16 @@ import { AuditorService, type IAuditorService } from '@/services/auditors/audito
 import type { IStudentService } from '@/services/auditors/studentService';
 import { StudentService } from '@/services/auditors/studentService';
 
-export type AuditorServices = {
+export interface AuditorServices {
   auditorService: IAuditorService;
   studentService: IStudentService;
-};
+}
 
 export const AuditorServicesContext = createContext<AuditorServices | undefined>(undefined);
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export const AuditorServicesProvider: FC<Props> = ({ children }) => {
   const { httpService } = useServices();

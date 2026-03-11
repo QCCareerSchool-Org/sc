@@ -11,22 +11,22 @@ import { UnitAccordionSectionPadding } from './UnitAccordionSectionPadding';
 import type { MaterialCompleteEvent } from './useMaterialCompletion';
 import { Img } from '@/components/Img';
 import type { Material } from '@/domain/material';
-import { useScreenWidth } from '@/hooks/useScreenWidth';
+import { useScreenWidthContext } from '@/hooks/useScreenWidthContext';
 import { endpoint } from 'src/basePath';
 
-type Props = {
+interface Props {
   studentId: number;
   enrollmentId: number;
   courseId: number;
   material: MaterialWithCompletionForm;
   materialCompletion$: Subject<MaterialCompleteEvent>;
   last: boolean;
-};
+}
 
 export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material, materialCompletion$, last }) => {
   const id = useId();
-  const screenwidth = useScreenWidth();
-  const md = screenwidth >= 768;
+  const screenWidth = useScreenWidthContext();
+  const md = screenWidth !== null && screenWidth >= 768;
 
   const handleCompleteChange: ChangeEventHandler<HTMLInputElement> = e => {
     materialCompletion$.next({
@@ -139,12 +139,12 @@ export const Lesson: FC<Props> = ({ studentId, enrollmentId, courseId, material,
   );
 };
 
-type LessonLinkProps = {
+interface LessonLinkProps {
   studentId: number;
   courseId: number;
   material: Material;
   className?: string;
-};
+}
 
 const LesssonLink: FC<PropsWithChildren<LessonLinkProps>> = ({ studentId, courseId, material, className, children }) => {
   const handleClick: MouseEventHandler<HTMLElement> = e => {

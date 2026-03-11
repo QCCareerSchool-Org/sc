@@ -8,11 +8,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import type { NewTextBoxTemplateAddPayload } from '@/services/administrators/newTextBoxTemplateService';
 import { HttpServiceError } from '@/services/httpService';
 
-export type NewTextBoxTemplateInsertEvent = {
+export interface NewTextBoxTemplateInsertEvent {
   administratorId: number;
   payload: NewTextBoxTemplateAddPayload;
   processingState: State['newTextBoxTemplateForm']['processingState'];
-};
+}
 
 export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<NewTextBoxTemplateInsertEvent> => {
   const { newTextBoxTemplateService } = useAdminServices();
@@ -36,7 +36,7 @@ export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<NewTextBox
               let message = 'Insert failed';
               if (err instanceof HttpServiceError) {
                 if (err.login) {
-                  return void navigateToLogin();
+                  navigateToLogin(); return;
                 }
                 if (err.message) {
                   message = err.message;
@@ -54,5 +54,6 @@ export const useTextBoxInsert = (dispatch: Dispatch<Action>): Subject<NewTextBox
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ dispatch, newTextBoxTemplateService, navigateToLogin ]);
 
+  // eslint-disable-next-line react-hooks/refs
   return textBoxInsert$.current;
 };
