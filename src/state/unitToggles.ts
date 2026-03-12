@@ -1,4 +1,4 @@
-export type UnitToggleState = Record<number, Record<string, boolean>>;
+export type UnitToggleState = Partial<Record<number, Record<string, boolean>>>;
 
 export type UnitToggleAction =
   | { type: 'INITIALIZE'; payload: UnitToggleState }
