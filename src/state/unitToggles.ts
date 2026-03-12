@@ -33,7 +33,7 @@ export const unitToggleReducer = (state: UnitToggleState, action: UnitToggleActi
           ...state,
           [action.payload.courseId]: {
             ...state[action.payload.courseId],
-            [action.payload.unitLetter]: !state[action.payload.courseId][action.payload.unitLetter],
+            [action.payload.unitLetter]: !state[action.payload.courseId]?.[action.payload.unitLetter],
           },
         }
         : {
