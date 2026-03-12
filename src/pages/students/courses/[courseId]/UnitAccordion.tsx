@@ -55,7 +55,7 @@ export const UnitAccordion: FC<Props> = props => {
     firstRender.current = false;
   }, [ courseId, firstUnit, unit.unitLetter, unitToggleDispatch, unitToggleState ]);
 
-  const open = unitToggleState[courseId][unit.unitLetter];
+  const open = typeof unitToggleState[courseId]?.[unit.unitLetter] !== 'undefined' && unitToggleState[courseId][unit.unitLetter];
 
   const assignments = useMemo(() => unit.materials.filter(m => m.type !== 'assignment'), [ unit.materials ]);
 
