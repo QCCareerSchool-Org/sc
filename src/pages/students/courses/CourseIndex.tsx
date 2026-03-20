@@ -88,7 +88,7 @@ export const CourseIndex: FC<Props> = ({ studentId }) => {
           )}
           {state.data.student.created >= new Date(Date.UTC(2023, 8, 22, 4)) && !state.data.student.passwordChanged && <UnchangedPasswordWarning />}
           <div className="alert alert-primary mb-3">
-            <strong><Link href="https://shop.qccareerschool.com">Shop the QC Career School Store!</Link></strong> Browse our curated selection of companion textbooks and professional tools designed to complement your online course.
+            <strong><Link href="https://shop.qccareerschool.com" className="link-primary">Shop the QC Career School Store!</Link></strong> Browse our curated selection of companion textbooks and professional tools designed to complement your online course.
           </div>
           {state.data.student.enrollments.length === 0
             ? <p className="lead">No enrollments found.</p>
