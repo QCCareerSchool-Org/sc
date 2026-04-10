@@ -24,13 +24,13 @@ export const CertificationLogoSection: FC<Props> = ({ certificationData, graduat
               <div className="row align-items-center">
                 <div className="col-12 col-md-4 mb-3 mb-md-0">
                   { /* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`https://aeea626a74ffdd96fbcf-77df9cf355bf5239094a1d99115ccf2c.ssl.cf1.rackcdn.com/${certificationData.filename}.svg`} style={{ display: 'block', width: '100%', maxWidth: 255, margin: '0 auto 12px' }} alt={certificationData.name} />
+                  <img src={`https://cdn.qccareerschool.com/student-center/Certification%20Logos/${certificationData.filename}.svg`} style={{ display: 'block', width: '100%', maxWidth: 255, margin: '0 auto 12px' }} alt={certificationData.name} />
                   <div style={{ textAlign: 'center' }}>
-                    <a download href={`https://aeea626a74ffdd96fbcf-77df9cf355bf5239094a1d99115ccf2c.ssl.cf1.rackcdn.com/${certificationData.filename}.pdf`} target="_blank" rel="noreferrer">Download PDF</a>
+                    <a download href={`https://cdn.qccareerschool.com/student-center/Certification%20Logos/${certificationData.filename}.pdf`} target="_blank" rel="noreferrer">Download PDF</a>
                   </div>
                 </div>
                 <div className="col-12 col-md-8">
-                  <p className="code"><span className="a-tag">&lt;a href=<span className="attribute">&quot;{certificationData.url}&quot;</span>&gt;<span className="img-tag">&lt;img src=<span className="attribute">&quot;https://aeea626a74ffdd96fbcf-77df9cf355bf5239094a1d99115ccf2c.ssl.cf1.rackcdn.com/{certificationData.filename}.svg&quot;</span> height=<span className="attribute">&quot;190&quot;</span> alt=<span className="attribute">&quot;{certificationData.name}&quot;</span> /&gt;</span>&lt;/a&gt;</span></p>
+                  <p className="code"><span className="a-tag">&lt;a href=<span className="attribute">&quot;{certificationData.url}&quot;</span>&gt;<span className="img-tag">&lt;img src=<span className="attribute">&quot;https://cdn.qccareerschool.com/student-center/Certification%20Logogs/{certificationData.filename}.svg&quot;</span> height=<span className="attribute">&quot;190&quot;</span> alt=<span className="attribute">&quot;{certificationData.name}&quot;</span> /&gt;</span>&lt;/a&gt;</span></p>
                 </div>
               </div>
             </>
