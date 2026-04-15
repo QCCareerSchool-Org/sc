@@ -1,4 +1,4 @@
-import type { AxiosHeaderValue, AxiosProgressEvent, AxiosResponse } from 'axios';
+import type { AxiosProgressEvent, AxiosResponse } from 'axios';
 import type axios from 'axios-observable';
 import { saveAs } from 'file-saver';
 import type { Observable } from 'rxjs';
@@ -133,9 +133,10 @@ export class AxiosHttpService implements IHttpService {
   public download(url: string, config?: HttpServiceConfig): Observable<void> {
     return this.instance.get(url, { ...config, responseType: 'blob' }).pipe(
       tap(response => {
-        const header = response.headers['content-disposition'] as AxiosHeaderValue | undefined;
-        const value = header?.valueOf.toString();
-        const filename = value ? /filename="(.*)"/u.exec(value)?.[1] : 'unknown';
+        const header = response.headers['content-disposition'] as unknown;
+        const filename = typeof header === 'string'
+          ? /filename="([^"]*)"/u.exec(header)?.[1]
+          : undefined;
         if (response.data instanceof Blob) {
           saveAs(response.data, filename ? decodeURIComponent(filename) : undefined);
         }
