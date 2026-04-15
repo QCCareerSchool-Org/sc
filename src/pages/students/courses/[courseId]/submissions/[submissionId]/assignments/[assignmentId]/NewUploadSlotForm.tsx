@@ -164,7 +164,7 @@ const accept = (allowedTypes: string[]): string => {
   const accepted = [];
   for (const allowedType of allowedTypes) {
     if (allowedType === 'image') {
-      accepted.push('image/jpeg', 'image/png', 'image/x-png', 'image/bmp', 'image/gif', 'image/heic', 'image/heic-sequence', 'image/heif', 'image/heif-sequence', 'image/avif', 'image/webp');
+      accepted.push('image/jpeg', 'image/png', 'image/x-png', 'image/bmp', 'image/gif', 'image/heic', 'image/heic-sequence', 'image/heif', 'image/heif-sequence', 'image/webp'); // image/avif not fully supported
     } else if (allowedType === 'pdf') {
       accepted.push('application/pdf');
     } else if (allowedType === 'word') {
