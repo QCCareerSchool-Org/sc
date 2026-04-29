@@ -4,6 +4,7 @@ export interface Course {
   code: string;
   version: number;
   name: string;
+  subheading: string | null;
   courseGuide: boolean;
   quizzesEnabled: boolean;
   noTutor: boolean;
