@@ -137,7 +137,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
           <div className="row">
             <div className="col-12 col-lg-6 mb-4 mb-lg-0">
               <h1 className="mb-0 mb-2 text-shadow">{enrollment.course.name}</h1>
-              {enrollment.course.subheading && <p className="lead mb-2">{enrollment.course.subheading}</p>}
+              {enrollment.course.subheading && <h2 className="h4 lead mb-2 text-shadow">{enrollment.course.subheading}</h2>}
               <p className="lead mb-0 text-shadow">Student Number: <strong>{enrollment.course.code}&thinsp;{enrollment.studentNumber}</strong></p>
               {enrollment.tutor && <p className="lead mb-0 text-shadow">Tutor: <strong>{enrollment.tutor.firstName} {enrollment.tutor.lastName}</strong></p>}
               {enrollment.dueDate && <p className="lead mb-0 text-shadow">Complete By: <strong>{formatDate(enrollment.dueDate)}</strong></p>}
