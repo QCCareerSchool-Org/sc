@@ -38,7 +38,7 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   const feedbackDelete$ = useFeedbackDelete(dispatch);
   const close$ = useClose(dispatch);
   const return$ = useReturn(dispatch);
-  const saveNote$ = useSaveNote(dispatch);
+  const saveNote$ = useSaveNote();
 
   const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
     saveNote$.next({ tutorId, studentId, note: note.trim() || null });

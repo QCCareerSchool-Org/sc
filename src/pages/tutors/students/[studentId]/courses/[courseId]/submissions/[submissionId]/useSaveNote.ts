@@ -1,8 +1,6 @@
-import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
 
-import type { Action } from './state';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
@@ -13,7 +11,7 @@ export interface SaveNotePayload {
   note: string | null;
 }
 
-export const useSaveNote = (dispatch: Dispatch<Action>): Subject<SaveNotePayload> => {
+export const useSaveNote = (): Subject<SaveNotePayload> => {
   const navigateToLogin = useNavigateToLogin();
   const { newSubmissionService } = useTutorServices();
 
