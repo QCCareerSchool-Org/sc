@@ -22,6 +22,7 @@ export type Action =
   | { type: 'LOAD_UNIT_FAILED'; payload?: number }
   | { type: 'FILE_CHANGED'; payload: File }
   | { type: 'MESSAGE_CHANGED'; payload: string }
+  | { type: 'TUTOR_NOTE_CHANGED'; payload: string }
   | { type: 'CLOSE_UNIT_STARTED' }
   | { type: 'CLOSE_UNIT_SUCCEEDED'; payload: NewSubmission }
   | { type: 'CLOSE_UNIT_FAILED'; payload?: string }
@@ -76,6 +77,28 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         returnForm: { ...state.returnForm, message: action.payload },
       };
+    case 'TUTOR_NOTE_CHANGED': {
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread
+      const length = [ ...action.payload ].length;
+      if (length > 16_777_215) {
+        throw Error('maximum length exceeded');
+      }
+      return {
+        ...state,
+        newSubmission: state.newSubmission
+          ? {
+            ...state.newSubmission,
+            enrollment: {
+              ...state.newSubmission.enrollment,
+              student: {
+                ...state.newSubmission.enrollment.student,
+                tutorNote: action.payload,
+              },
+            },
+          }
+          : undefined,
+      };
+    }
     case 'CLOSE_UNIT_STARTED':
       return { ...state, processingState: 'closing', errorMessage: undefined };
     case 'CLOSE_UNIT_SUCCEEDED':
