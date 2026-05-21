@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, FocusEventHandler, MouseEvent, MouseEventHandler } from 'react';
-import { useCallback, useReducer, useState } from 'react';
+import { useCallback, useId, useReducer, useState } from 'react';
 
 import { AssignmentTable } from './AssignmentTable';
 import { FeebackUploadForm } from './FeebackUploadForm';
@@ -28,6 +28,7 @@ interface Props {
 }
 
 export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, submissionId }) => {
+  const id = useId();
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const [ note, setNote ] = useState<string>(state.newSubmission?.enrollment.student.note ?? '');
@@ -106,8 +107,9 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
               </table>
             </div>
             <div className="col-lg-6 col-md-12">
-              <h2>Note</h2>
+              <label htmlFor={id + '_note'} className="form-label">Tutor Note</label>
               <textarea
+                id={id + '_note'}
                 className="form-control"
                 rows={4}
                 value={note}

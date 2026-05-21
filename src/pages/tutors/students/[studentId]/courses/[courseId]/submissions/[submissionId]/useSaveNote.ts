@@ -13,7 +13,7 @@ export interface SaveNotePayload {
 
 export const useSaveNote = (): Subject<SaveNotePayload> => {
   const navigateToLogin = useNavigateToLogin();
-  const { newSubmissionService } = useTutorServices();
+  const { studentService } = useTutorServices();
 
   const saveNote$ = useRef(new Subject<SaveNotePayload>());
 
@@ -22,7 +22,7 @@ export const useSaveNote = (): Subject<SaveNotePayload> => {
 
     saveNote$.current.pipe(
       exhaustMap(({ tutorId, studentId, note }) => {
-        return newSubmissionService.saveNote(tutorId, studentId, note).pipe(
+        return studentService.saveNote(tutorId, studentId, note).pipe(
           tap({
             error: err => {
               if (err instanceof HttpServiceError && err.login) {
@@ -37,7 +37,7 @@ export const useSaveNote = (): Subject<SaveNotePayload> => {
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ newSubmissionService, navigateToLogin ]);
+  }, [ studentService, navigateToLogin ]);
 
   // eslint-disable-next-line react-hooks/refs
   return saveNote$.current;

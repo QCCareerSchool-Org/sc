@@ -44,7 +44,6 @@ export interface INewSubmissionService {
   deleteFeedback: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmission>;
   closeSubmission: (tutorId: number, studentId: number, submissionId: string) => Observable<NewSubmission>;
   returnSubmission: (tutorId: number, studentId: number, submissionId: string, comment: string) => Observable<NewSubmission>;
-  saveNote: (tutorId: number, studentId: number, note: string | null) => Observable<{ studentId: number; note: string | null }>;
 }
 
 export class NewSubmissionService implements INewSubmissionService {
@@ -92,11 +91,6 @@ export class NewSubmissionService implements INewSubmissionService {
     return this.httpService.post<RawNewSubmission>(url, { comment }).pipe(
       map(this.mapNewSubmission),
     );
-  }
-
-  public saveNote(tutorId: number, studentId: number, note: string | null): Observable<{ studentId: number; note: string | null }> {
-    const url = `${endpoint}/tutors/${tutorId}/students/${studentId}/note`;
-    return this.httpService.patch<{ studentId: number; note: string | null }>(url, { note });
   }
 
   private getUrl(tutorId: number, studentId: number): string {

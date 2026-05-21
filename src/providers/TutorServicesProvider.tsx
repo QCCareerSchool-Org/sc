@@ -6,10 +6,12 @@ import type { INewAssignmentService } from '@/services/tutors/newAssignmentServi
 import { NewAssignmentService } from '@/services/tutors/newAssignmentService';
 import type { INewSubmissionService } from '@/services/tutors/newSubmissionService';
 import { NewSubmissionService } from '@/services/tutors/newSubmissionService';
+import { type IStudentService, StudentService } from '@/services/tutors/studentService';
 
 export interface TutorServices {
   newAssignmentService: INewAssignmentService;
   newSubmissionService: INewSubmissionService;
+  studentService: IStudentService;
 }
 
 export const TutorServicesContext = createContext<TutorServices | undefined>(undefined);
@@ -23,6 +25,7 @@ export const TutorServicesProvider: FC<Props> = ({ children }) => {
   const [ state ] = useState({
     newAssignmentService: new NewAssignmentService(httpService),
     newSubmissionService: new NewSubmissionService(httpService),
+    studentService: new StudentService(httpService),
   });
 
   return (
