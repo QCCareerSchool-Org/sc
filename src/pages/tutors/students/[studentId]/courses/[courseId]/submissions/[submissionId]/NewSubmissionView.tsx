@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, FocusEventHandler, MouseEvent, MouseEventHandler } from 'react';
-import { useCallback, useId, useReducer, useState } from 'react';
+import { useCallback, useId, useReducer } from 'react';
 
 import { AssignmentTable } from './AssignmentTable';
 import { FeebackUploadForm } from './FeebackUploadForm';
@@ -31,7 +31,6 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   const id = useId();
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
-  const [ note, setNote ] = useState<string>(state.newSubmission?.enrollment.student.tutorNote ?? '');
 
   useInitialData(dispatch, tutorId, studentId, courseId, submissionId);
 
@@ -42,8 +41,8 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   const saveNote$ = useSaveNote();
 
   const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
-    saveNote$.next({ tutorId, studentId, note: note.trim() || null });
-  }, [ saveNote$, tutorId, studentId, note ]);
+    saveNote$.next({ tutorId, studentId, note: state.newSubmission?.enrollment.student.tutorNote ?? null });
+  }, [ saveNote$, tutorId, studentId, state.newSubmission?.enrollment.student.tutorNote ]);
 
   const handleAssignmentClick = useCallback((e: MouseEvent, assignmentId: string): void => {
     void router.push(`${router.asPath}/assignments/${assignmentId}`);
@@ -56,7 +55,7 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   }, []);
 
   const handleNoteChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
-    setNote(e.target.value);
+    dispatch({ type: 'TUTOR_NOTE_CHANGED', payload: e.target.value });
   };
 
   if (state.error) {
@@ -112,7 +111,7 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
                 id={id + '_note'}
                 className="form-control"
                 rows={4}
-                value={note}
+                value={state.newSubmission.enrollment.student.tutorNote ?? ''}
                 onChange={handleNoteChange}
                 onBlur={handleSaveNote}
                 placeholder="Enter note here..."
