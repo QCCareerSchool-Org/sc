@@ -1,6 +1,6 @@
 import type { NewTextBoxTemplate } from '@/domain/newTextBoxTemplate';
 import type { NewTextBoxTemplateWithPart } from '@/services/administrators/newTextBoxTemplateService';
-import { getLength } from 'src/lib/segmenter';
+import { getByteLength } from 'src/lib/byteLength';
 
 export interface State {
   newTextBoxTemplate?: NewTextBoxTemplateWithPart;
@@ -83,7 +83,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

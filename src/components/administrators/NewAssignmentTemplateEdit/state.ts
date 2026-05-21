@@ -3,7 +3,8 @@ import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewPartTemplate } from '@/domain/newPartTemplate';
 import type { NewAssignmentTemplateWithSubmissionTemplateAndPartTemplate } from '@/services/administrators/newAssignmentTemplateService';
 import type { IUUIDService } from '@/services/uuidService';
-import { getLength } from 'src/lib/segmenter';
+import { getByteLength } from 'src/lib/byteLength';
+import { getCodePointLength } from 'src/lib/codePointLength';
 import { sanitize } from 'src/sanitize';
 
 export interface State {
@@ -237,7 +238,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
-        const newLength = getLength(action.payload);
+        const newLength = getCodePointLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -255,7 +256,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -297,7 +298,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -415,7 +416,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = getLength(action.payload);
+        const newLength = getCodePointLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -433,7 +434,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload.length) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -475,7 +476,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
       let validationMessage: string | undefined;
       if (action.payload.length) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -529,7 +530,7 @@ export const createReducer = (uuidService: IUUIDService) => (state: State, actio
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = getLength(action.payload);
+        const newLength = getCodePointLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

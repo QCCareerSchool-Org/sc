@@ -1,6 +1,6 @@
 import type { NewAssignmentMedium } from '@/domain/newAssignmentMedium';
 import type { NewAssignmentMediumWithAssignnment } from '@/services/administrators/newAssignmentMediumService';
-import { getLength } from 'src/lib/segmenter';
+import { getCodePointLength } from 'src/lib/codePointLength';
 
 export interface State {
   newAssignmentMedium?: NewAssignmentMediumWithAssignnment;
@@ -79,7 +79,7 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = getLength(action.payload);
+        const newLength = getCodePointLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

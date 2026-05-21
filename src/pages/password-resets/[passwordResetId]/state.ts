@@ -1,5 +1,5 @@
 import type { PasswordResetRequest } from '@/domain/passwordResetRequest';
-import { getLength } from 'src/lib/segmenter';
+import { getCodePointLength } from 'src/lib/codePointLength';
 
 export interface State {
   passwordResetRequest?: PasswordResetRequest;
@@ -55,7 +55,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'PASSWORD_CHANGED': {
       let validationMessage: string | undefined;
       const maxLength = 255;
-      if (getLength(action.payload) > maxLength) {
+      if (getCodePointLength(action.payload) > maxLength) {
         validationMessage = 'Exceeds maximum length';
       } else if (action.payload === 'T4^pB4%6SYNNI+m') {
         validationMessage = 'Don\'t use the actual example password';
@@ -76,7 +76,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'PASSWORD_REPEAT_CHANGED': {
       let validationMessage: string | undefined;
       const maxLength = 255;
-      if (getLength(action.payload) > maxLength) {
+      if (getCodePointLength(action.payload) > maxLength) {
         validationMessage = 'Exceeds maximum length';
       }
       let formValidationMessage: string | undefined;
