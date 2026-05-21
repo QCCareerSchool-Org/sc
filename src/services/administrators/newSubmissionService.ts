@@ -16,6 +16,9 @@ import { endpoint } from 'src/basePath';
 export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission & {
   enrollment: Enrollment & {
     course: Course;
+    student: {
+      note: string | null;
+    };
   };
   tutor: Tutor | null;
   newAssignments: (NewAssignment & {
@@ -33,6 +36,9 @@ export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission &
 type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & {
   enrollment: RawEnrollment & {
     course: Course;
+    student: {
+      note: string | null;
+    };
   };
   tutor: Tutor | null;
   newAssignments: (RawNewAssignment & {
