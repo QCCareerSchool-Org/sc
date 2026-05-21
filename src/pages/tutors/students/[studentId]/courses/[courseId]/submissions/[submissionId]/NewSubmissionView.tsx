@@ -31,7 +31,7 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   const id = useId();
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
-  const [ note, setNote ] = useState<string>(state.newSubmission?.enrollment.student.note ?? '');
+  const [ note, setNote ] = useState<string>(state.newSubmission?.enrollment.student.tutorNote ?? '');
 
   useInitialData(dispatch, tutorId, studentId, courseId, submissionId);
 
