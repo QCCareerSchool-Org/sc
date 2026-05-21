@@ -1,7 +1,7 @@
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, FC, MouseEvent, MouseEventHandler } from 'react';
-import { useCallback, useReducer } from 'react';
+import type { ChangeEventHandler, FC, FocusEventHandler, MouseEvent, MouseEventHandler } from 'react';
+import { useCallback, useId, useReducer, useState } from 'react';
 
 import { AssignmentTable } from './AssignmentTable';
 import { FeebackUploadForm } from './FeebackUploadForm';
@@ -12,6 +12,7 @@ import { useFeedbackDelete } from './useFeedbackDelete';
 import { useFeedbackUpload } from './useFeedbackUpload';
 import { useInitialData } from './useInitialData';
 import { useReturn } from './useReturn';
+import { useSaveNote } from './useSaveNote';
 import { Audio } from '@/components/Audio';
 import { InaccessibleUnit } from '@/components/InaccessibleUnit';
 import { Section } from '@/components/Section';
@@ -27,8 +28,10 @@ interface Props {
 }
 
 export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, submissionId }) => {
+  const id = useId();
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const [ note, setNote ] = useState<string>(state.newSubmission?.enrollment.student.note ?? '');
 
   useInitialData(dispatch, tutorId, studentId, courseId, submissionId);
 
@@ -36,6 +39,11 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   const feedbackDelete$ = useFeedbackDelete(dispatch);
   const close$ = useClose(dispatch);
   const return$ = useReturn(dispatch);
+  const saveNote$ = useSaveNote();
+
+  const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
+    saveNote$.next({ tutorId, studentId, note: note.trim() || null });
+  }, [ saveNote$, tutorId, studentId, note ]);
 
   const handleAssignmentClick = useCallback((e: MouseEvent, assignmentId: string): void => {
     void router.push(`${router.asPath}/assignments/${assignmentId}`);
@@ -46,6 +54,10 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
       dispatch({ type: 'FILE_CHANGED', payload: e.target.files[0] });
     }
   }, []);
+
+  const handleNoteChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
+    setNote(e.target.value);
+  };
 
   if (state.error) {
     return <NextError statusCode={state.errorCode ?? 500} />;
@@ -80,17 +92,33 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
       <Section>
         <div className="container">
           <h1>Unit {state.newSubmission.unitLetter}{state.newSubmission.title && <>: {state.newSubmission.title}</>}</h1>
-          <table className="table table-bordered bg-white w-auto">
-            <tbody>
-              <tr><th scope="row">Course</th><td>{state.newSubmission.enrollment.course.name} v{state.newSubmission.enrollment.course.version}</td></tr>
-              <tr><th scope="row">Student</th><td>{state.newSubmission.enrollment.student.firstName} {state.newSubmission.enrollment.student.lastName}</td></tr>
-              <tr><th scope="row">Student Number</th><td>{state.newSubmission.enrollment.course.code}&thinsp;{state.newSubmission.enrollment.studentNumber}</td></tr>
-              <tr><th scope="row">Submitted</th><td>{formatDate(state.newSubmission.submitted)}</td></tr>
-              {state.newSubmission.closed && state.newSubmission.responseFilename !== null && (
-                <tr><th scope="row">Audio File</th><td style={{ padding: '0.3rem' }}><Audio controls src={`${endpoint}/tutors/${tutorId}/students/${studentId}/newSubmissions/${submissionId}/response`} style={{ marginBottom: -6, maxHeight: 32, maxWidth: 240 }} /></td></tr>
-              )}
-            </tbody>
-          </table>
+          <div className="row">
+            <div className="col-lg-6 col-md-12">
+              <table className="table table-bordered bg-white w-auto">
+                <tbody>
+                  <tr><th scope="row">Course</th><td>{state.newSubmission.enrollment.course.name} v{state.newSubmission.enrollment.course.version}</td></tr>
+                  <tr><th scope="row">Student</th><td>{state.newSubmission.enrollment.student.firstName} {state.newSubmission.enrollment.student.lastName}</td></tr>
+                  <tr><th scope="row">Student Number</th><td>{state.newSubmission.enrollment.course.code}&thinsp;{state.newSubmission.enrollment.studentNumber}</td></tr>
+                  <tr><th scope="row">Submitted</th><td>{formatDate(state.newSubmission.submitted)}</td></tr>
+                  {state.newSubmission.closed && state.newSubmission.responseFilename !== null && (
+                    <tr><th scope="row">Audio File</th><td style={{ padding: '0.3rem' }}><Audio controls src={`${endpoint}/tutors/${tutorId}/students/${studentId}/newSubmissions/${submissionId}/response`} style={{ marginBottom: -6, maxHeight: 32, maxWidth: 240 }} /></td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="col-lg-6 col-md-12">
+              <label htmlFor={id + '_note'} className="form-label">Tutor Note</label>
+              <textarea
+                id={id + '_note'}
+                className="form-control"
+                rows={4}
+                value={note}
+                onChange={handleNoteChange}
+                onBlur={handleSaveNote}
+                placeholder="Enter note here..."
+              />
+            </div>
+          </div>
           {state.newSubmission.tutorId !== tutorId && (
             <div className="alert alert-info mt-4">This submission was marked by another tutor</div>
           )}
