@@ -6,6 +6,7 @@ import type { NewPart, RawNewPart } from '@/domain/administrator/newPart';
 import type { NewSubmission, RawNewSubmission } from '@/domain/administrator/newSubmission';
 import type { NewTextBox, RawNewTextBox } from '@/domain/administrator/newTextBox';
 import type { NewUploadSlot, RawNewUploadSlot } from '@/domain/administrator/newUploadSlot';
+import type { RawStudent, Student } from '@/domain/administrator/student';
 import type { Tutor } from '@/domain/administrator/tutor';
 import type { Course } from '@/domain/course';
 import type { Enrollment, RawEnrollment } from '@/domain/enrollment';
@@ -16,9 +17,7 @@ import { endpoint } from 'src/basePath';
 export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission & {
   enrollment: Enrollment & {
     course: Course;
-    student: {
-      tutorNote: string | null;
-    };
+    student: Student;
   };
   tutor: Tutor | null;
   newAssignments: (NewAssignment & {
@@ -36,9 +35,7 @@ export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission &
 type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & {
   enrollment: RawEnrollment & {
     course: Course;
-    student: {
-      tutorNote: string | null;
-    };
+    student: RawStudent;
   };
   tutor: Tutor | null;
   newAssignments: (RawNewAssignment & {
@@ -138,7 +135,11 @@ export class NewSubmissionService implements INewSubmissionService {
         enrollmentDate: newSubmission.enrollment.enrollmentDate === null ? null : new Date(newSubmission.enrollment.enrollmentDate),
         dueDate: newSubmission.enrollment.dueDate === null ? null : new Date(newSubmission.enrollment.dueDate),
         student: {
-          tutorNote: newSubmission.enrollment.student.tutorNote,
+          ...newSubmission.enrollment.student,
+          lastLogin: newSubmission.enrollment.student.lastLogin === null ? null : new Date(newSubmission.enrollment.student.lastLogin),
+          expiry: newSubmission.enrollment.student.expiry === null ? null : new Date(newSubmission.enrollment.student.expiry),
+          created: new Date(newSubmission.enrollment.student.created),
+          modified: new Date(newSubmission.enrollment.student.modified),
         },
       },
       newAssignments: newSubmission.newAssignments.map(a => ({
