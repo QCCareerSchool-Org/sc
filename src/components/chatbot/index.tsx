@@ -1,6 +1,7 @@
 'use client';
 
 import type { ChangeEventHandler } from 'react';
+import type { SubmitEventHandler } from 'react';
 import { type FC, useEffect, useState } from 'react';
 
 import styles from './index.module.css';
@@ -18,15 +19,9 @@ interface Message {
 export const Chatbot: FC = () => {
   const { studentId } = useAuthState();
   const { studentService } = useStudentServices();
-
-  const [ messages, setMessages ] = useState<Message[]>([
-    { type: 'user', text: 'Hello!' },
-    { type: 'bot', text: 'How are you?' },
-  ]);
-
+  const [ messages, setMessages ] = useState<Message[]>([]);
   const [ nextMessage, setNextMessage ] = useState('');
   const [ isSending, setIsSending ] = useState(false);
-
   const [ student, setStudent ] = useState<StudentPayload>();
 
   useEffect(() => {
@@ -57,7 +52,7 @@ export const Chatbot: FC = () => {
   const handleSubmit = () => {
     const message = nextMessage.trim();
 
-    if (!message || isSending) {
+    if (!message || isSending || !student) {
       return;
     }
 
@@ -106,17 +101,38 @@ export const Chatbot: FC = () => {
     setNextMessage(e.target.value);
   };
 
+  const handleFormSubmit: SubmitEventHandler<HTMLFormElement> = e => {
+    e.preventDefault();
+    handleSubmit();
+  };
+
   return (
     <div className={styles.chatbot}>
-      <h1>Chat</h1>
+      <header className={styles.header}>
+        <div>
+          <h1>Student Chat</h1>
+          <p>{student ? 'Online' : 'Loading student profile'}</p>
+        </div>
+      </header>
       <div className={styles.messagePane}>
         {messages.map((m, i) => <Message key={i} text={m.text} type={m.type} />)}
         {isSending && <Progress />}
       </div>
-      <div className={styles.footer}>
-        <textarea value={nextMessage} onChange={handleChange} onKeyDown={handleKeyDown} />
-        <button onClick={handleSubmit} disabled={!student || isSending || !nextMessage.trim()}>Send</button>
-      </div>
+      <form
+        className={styles.footer}
+        onSubmit={handleFormSubmit}
+      >
+        <textarea
+          aria-label="Message"
+          placeholder="Ask a question"
+          value={nextMessage}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+        />
+        <button type="submit" disabled={!student || isSending || !nextMessage.trim()}>
+          Send
+        </button>
+      </form>
     </div>
   );
 };

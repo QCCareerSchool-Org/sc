@@ -1,19 +1,21 @@
 .message {
-  background-color: white;
-  padding: 0.5rem 0.875rem;
-  border: 1px solid #999;
   border-radius: 0.5rem;
-  max-width: 30rem;
-
+  box-shadow: 0 0.25rem 0.875rem rgba(15, 23, 42, 0.06);
+  line-height: 1.45;
+  max-width: min(24rem, 86%);
+  overflow-wrap: anywhere;
+  padding: 0.625rem 0.8125rem;
 }
 
 .user {
-  color: red;
-  text-align: right;
+  background-color: #244f9e;
+  color: white;
   margin-left: auto;
 }
 
 .bot {
-  color: blue;
+  background-color: white;
+  border: 1px solid #e1e6ee;
+  color: #172033;
   margin-right: auto;
 }
