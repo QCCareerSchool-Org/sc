@@ -3,6 +3,7 @@
 import type { ChangeEventHandler } from 'react';
 import type { SubmitEventHandler } from 'react';
 import { type FC, useEffect, useRef, useState } from 'react';
+import { FaCommentDots, FaMinus } from 'react-icons/fa';
 
 import styles from './index.module.css';
 import { Message } from './message';
@@ -22,6 +23,7 @@ export const Chatbot: FC = () => {
   const [ messages, setMessages ] = useState<Message[]>([]);
   const [ nextMessage, setNextMessage ] = useState('');
   const [ isSending, setIsSending ] = useState(false);
+  const [ isMinimized, setIsMinimized ] = useState(false);
   const [ student, setStudent ] = useState<StudentPayload>();
   const messageEndRef = useRef<HTMLDivElement>(null);
 
@@ -111,6 +113,27 @@ export const Chatbot: FC = () => {
     handleSubmit();
   };
 
+  const handleMinimizeClick = () => {
+    setIsMinimized(true);
+  };
+
+  const handleRestoreClick = () => {
+    setIsMinimized(false);
+  };
+
+  if (isMinimized) {
+    return (
+      <button
+        type="button"
+        className={styles.launcher}
+        onClick={handleRestoreClick}
+      >
+        <FaCommentDots aria-hidden="true" />
+        <span>{isSending ? 'Replying' : 'Chat'}</span>
+      </button>
+    );
+  }
+
   return (
     <div className={styles.chatbot}>
       <header className={styles.header}>
@@ -118,6 +141,15 @@ export const Chatbot: FC = () => {
           <h1>Student Chat</h1>
           <p>{student ? 'Online' : 'Loading student profile'}</p>
         </div>
+        <button
+          type="button"
+          className={styles.minimizeButton}
+          title="Minimize chat"
+          aria-label="Minimize chat"
+          onClick={handleMinimizeClick}
+        >
+          <FaMinus aria-hidden="true" />
+        </button>
       </header>
       <div className={styles.messagePane}>
         {messages.map((m, i) => <Message key={i} text={m.text} type={m.type} />)}
