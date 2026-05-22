@@ -17,7 +17,7 @@ export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission &
   enrollment: Enrollment & {
     course: Course;
     student: {
-      note: string | null;
+      tutorNote: string | null;
     };
   };
   tutor: Tutor | null;

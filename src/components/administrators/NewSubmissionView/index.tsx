@@ -97,12 +97,9 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
                   <NewTransfersList transfers={submission.newTransfers} />
                 </div>
               )}
-              <textarea
-                className="form-control"
-                value={state.data.newSubmission.enrollment.student.note ?? ''}
-                rows={4}
-                placeholder="Enter note here..."
-              />
+              <div className="form-control" style={{ minHeight: 120 }}>
+                {state.data.newSubmission.enrollment.student.tutorNote ?? ''}
+              </div>
             </div>
             <div className="col-12 col-lg-5">
               <NewSubmissionStatsTable administratorId={administratorId} submission={submission} onTutorChangeButtonClick={handleTutorChangeButtonClick} />
