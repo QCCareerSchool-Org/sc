@@ -1,0 +1,19 @@
+.message {
+  background-color: white;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid #999;
+  border-radius: 0.5rem;
+  max-width: 30rem;
+
+}
+
+.user {
+  color: red;
+  text-align: right;
+  margin-left: auto;
+}
+
+.bot {
+  color: blue;
+  margin-right: auto;
+}

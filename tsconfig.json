@@ -42,7 +42,12 @@
       "@/images/*": [
         "src/images/*"
       ]
-    }
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "custom-next-env.d.ts",
@@ -50,9 +55,19 @@
     "**/*.js",
     "**/*.tsx",
     "**/*.jsx",
+    "**/*.mts",
+    "**/*.mjs",
+    "**/*.mtsx",
+    "**/*.mjsx",
+    "**/*.cts",
+    "**/*.cjs",
+    "**/*.ctsx",
+    "**/*.cjsx",
     ".eslintrc.js",
     "jest.config.js",
-    "jest.setup.js"
+    "jest.setup.js",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

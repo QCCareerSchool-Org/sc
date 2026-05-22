@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 
 import { LessonCloser } from './LessonCloser';
 import { AppErrorBoundary } from '@/components/AppErrorBoundary';
+import { Chatbot } from '@/components/chatbot';
 import { ErrorFallback } from '@/components/ErrorFallback';
 import { DefaultLayout } from '@/components/layouts/DefaultLayout';
 import { ModalBackdrop } from '@/components/ModalBackdrop';
@@ -65,6 +66,7 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
             </PageErrorBoundary>
           </RouteGuard>,
         )}
+        {process.env.NODE_ENV === 'development' && <Chatbot />}
         <ModalBackdrop />
       </StateProvider>
     </AppErrorBoundary>
