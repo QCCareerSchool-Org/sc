@@ -1,6 +1,5 @@
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartMediumWithPart } from '@/services/administrators/newPartMediumService';
-import { getByteLength } from 'src/lib/byteLength';
 import { getCodePointLength } from 'src/lib/codePointLength';
 
 export interface State {
