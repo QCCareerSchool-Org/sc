@@ -2,7 +2,7 @@
 
 import type { ChangeEventHandler } from 'react';
 import type { SubmitEventHandler } from 'react';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useRef, useState } from 'react';
 
 import styles from './index.module.css';
 import { Message } from './message';
@@ -23,6 +23,7 @@ export const Chatbot: FC = () => {
   const [ nextMessage, setNextMessage ] = useState('');
   const [ isSending, setIsSending ] = useState(false);
   const [ student, setStudent ] = useState<StudentPayload>();
+  const messageEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!studentId) {
@@ -35,6 +36,10 @@ export const Chatbot: FC = () => {
 
     return () => subscription.unsubscribe();
   }, [ studentId, studentService ]);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  }, [ messages, isSending ]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key !== 'Enter') {
@@ -117,6 +122,7 @@ export const Chatbot: FC = () => {
       <div className={styles.messagePane}>
         {messages.map((m, i) => <Message key={i} text={m.text} type={m.type} />)}
         {isSending && <Progress />}
+        <div ref={messageEndRef} />
       </div>
       <form
         className={styles.footer}
