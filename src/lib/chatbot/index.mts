@@ -1,6 +1,8 @@
 import { OpenAI } from 'openai';
 import type { Metadata } from 'openai/resources';
 
+import type { BusinessPolicyViolation } from './businessPolicy.mjs';
+import { classifyBusinessPolicy } from './businessPolicy.mjs';
 import { classifyRequest } from './classification.mjs';
 import type { GuardrailName } from './guardrails.mjs';
 import { runPreflightGuardrails } from './guardrails.mjs';
@@ -50,6 +52,12 @@ const vectorStores: VectorStores = {
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export const run = async (question: string, payload: StudentPayload, metadata: QCMetadata, previousResponseId: string | null): Promise<WorkflowOutput> => {
+  const businessPolicyViolation = await classifyBusinessPolicy(question, payload, client);
+
+  if (businessPolicyViolation !== 'none') {
+    return { status: 'blocked', answer: getBusinessPolicyFallbackAnswer(businessPolicyViolation), responseId: null };
+  }
+
   const guardrails = await runPreflightGuardrails(question, client);
 
   if (guardrails.triggered) {
@@ -71,6 +79,17 @@ export const run = async (question: string, payload: StudentPayload, metadata: Q
   previousResponseId = response.id;
 
   return { status: 'answered', answer: response.output_text, responseId: response.id };
+};
+
+const getBusinessPolicyFallbackAnswer = (violation: BusinessPolicyViolation): string => {
+  switch (violation) {
+    case 'submit-ready-academic-work':
+      return `I can't write, complete, or polish work that could be submitted as your own. I can still help you understand the topic, make an outline, review your draft, or work through a practice example step by step.`;
+    case 'off-domain-homework':
+      return `I can only help with your QC course, student account, and school support questions. I can't help with outside homework like math, science, or unrelated school assignments.`;
+    case 'none':
+      throw new Error('No business policy fallback exists for an allowed request');
+  }
 };
 
 const createBody = (
@@ -102,12 +121,18 @@ const createBody = (
 
 const getGuardrailFallbackAnswer = (guardrailName: GuardrailName): string => {
   switch (guardrailName) {
-    case 'Custom Prompt Check':
-      return `I can't write or complete work that could be submitted as your own. I can still help you understand the topic, make an outline, review a draft you wrote, or work through a practice example step by step.`;
     case 'Contains PII':
       return `I can't process sensitive personal information here. Please remove private details like payment information, government IDs, or account credentials, and I can still help with the question.`;
+    case 'Prompt Injection Detection':
+    case 'Jailbreak':
+      return `I can't help with requests that try to bypass system rules or change how this assistant is supposed to work. I can still help with your course, account, or school support question.`;
+    case 'Moderation':
+    case 'NSFW Text':
+      return `I can't help with that request as written. I can still help with a safer question about your course, account, or school support needs.`;
+    case 'Hallucination Detection':
+      return `I don't have enough reliable information to answer that safely. Please rephrase the question or ask about your course, account, or school support needs.`;
     default:
-      return `I can't help with that request as written, but I can still help with a safer version of the question.`;
+      return `I can't help with that request as written. I can still help with your course, account, or school support question.`;
   }
 };
 

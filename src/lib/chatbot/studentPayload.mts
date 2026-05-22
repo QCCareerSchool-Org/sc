@@ -26,5 +26,5 @@ export type StudentPayload = Student & {
 
 export const isStudentPayload = (u: unknown): u is StudentPayload => {
   // TODO
-  return true;
+  return u !== null && typeof u === 'object';
 };

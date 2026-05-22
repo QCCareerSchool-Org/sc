@@ -100,7 +100,6 @@ const parseRouteOutput = (outputText: string): RequestRoute => {
     parsed = JSON.parse(outputText);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-
     throw new Error(`Could not parse request route JSON: ${message}`);
   }
 

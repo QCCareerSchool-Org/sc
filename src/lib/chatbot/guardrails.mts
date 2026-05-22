@@ -10,7 +10,6 @@ const guardrailNames = {
   moderation: 'Moderation',
   pii: 'Contains PII',
   promptInjection: 'Prompt Injection Detection',
-  customPrompt: 'Custom Prompt Check',
 } as const;
 
 export type GuardrailName = typeof guardrailNames[keyof typeof guardrailNames];
@@ -20,23 +19,6 @@ for (const value of Object.values(guardrailNames)) {
     throw new Error(`${value} guardrail is not registered`);
   }
 }
-
-const customPromptDetails = `Raise the guardrail when the student is asking the assistant to produce academic work that they could submit as their own.
-
-Flag requests to:
-- write or complete an assignment, essay, report, quiz, test, or exam answer for submission
-- impersonate the student
-- bypass plagiarism, grading, or AI-detection systems
-
-Do not flag:
-- explanations
-- tutoring
-- brainstorming
-- outlines
-- study plans
-- practice problems with explanations
-- feedback on student-written drafts
-`;
 
 const model = 'gpt-4.1-mini';
 
@@ -76,8 +58,6 @@ const guardrailConfig: GuardrailBundle = {
     { name: guardrailNames.pii, config: { block: false, detect_encoded_pii: true, entities: piiEntities } },
     // eslint-disable-next-line camelcase
     { name: guardrailNames.promptInjection, config: { model, confidence_threshold: 0.7 } },
-    // eslint-disable-next-line camelcase
-    { name: guardrailNames.customPrompt, config: { system_prompt_details: customPromptDetails, model, confidence_threshold: 0.7 } },
   ],
 };
 

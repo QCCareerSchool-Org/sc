@@ -27,7 +27,7 @@ export type Action =
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'LOAD_DATA_SUCCEEDED': {
-      if (action.payload.crmStudent && action.payload.crmStudent.enrollments.length === 0) {
+      if (action.payload.crmStudent?.enrollments.length === 0) {
         return {
           ...state,
           error: true,
