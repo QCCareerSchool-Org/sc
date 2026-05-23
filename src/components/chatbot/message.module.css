@@ -7,6 +7,29 @@
   padding: 0.625rem 0.8125rem;
 }
 
+.message p,
+.message ul,
+.message ol {
+  margin: 0;
+}
+
+.message p + p,
+.message p + ul,
+.message p + ol,
+.message ul + p,
+.message ol + p {
+  margin-top: 0.5rem;
+}
+
+.message ul,
+.message ol {
+  padding-left: 1.25rem;
+}
+
+.message li + li {
+  margin-top: 0.25rem;
+}
+
 .user {
   background-color: #244f9e;
   color: white;
