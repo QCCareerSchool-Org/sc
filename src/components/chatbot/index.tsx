@@ -14,13 +14,16 @@ import type { StudentPayload } from 'src/lib/chatbot/studentPayload.mjs';
 
 interface Message {
   text: string;
-  type: 'user' | 'bot';
+  type: 'user' | 'bot' | 'system';
 }
+
+const disclaimer = 'Meet your course helper! This AI chatbot is here to help with any questions you might have as you complete your course. AI-generated responses may occasionally contain errors. If you need more help, simply reach out to our student support team!';
+const getGreeting = (student: StudentPayload) => `Hi ${student.firstName}! what can I help you with today?`;
 
 export const Chatbot: FC = () => {
   const { studentId } = useAuthState();
   const { studentService } = useStudentServices();
-  const [ messages, setMessages ] = useState<Message[]>([]);
+  const [ messages, setMessages ] = useState<Message[]>([ { type: 'system', text: disclaimer } ]);
   const [ nextMessage, setNextMessage ] = useState('');
   const [ isSending, setIsSending ] = useState(false);
   const [ isMinimized, setIsMinimized ] = useState(false);
@@ -32,8 +35,17 @@ export const Chatbot: FC = () => {
       return;
     }
 
-    const subscription = studentService.getStudent(studentId).subscribe(s => {
-      setStudent(s as unknown as StudentPayload);
+    const subscription = studentService.getStudent(studentId).subscribe(data => {
+      const s = data as unknown as StudentPayload;
+      // temporary
+      for (const e of s.enrollments) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!e.submissions) {
+          e.submissions = [];
+        }
+      }
+      setStudent(s);
+      setMessages(m => [ ...m, { type: 'bot', text: getGreeting(s) } ]);
     });
 
     return () => subscription.unsubscribe();
@@ -66,10 +78,7 @@ export const Chatbot: FC = () => {
     setIsSending(true);
     setNextMessage('');
 
-    const body = {
-      message,
-      student,
-    };
+    const body = { message, student };
 
     setMessages(m => ([ ...m, { type: 'user', text: message } ]));
 
@@ -83,7 +92,7 @@ export const Chatbot: FC = () => {
       });
 
       if (!response.ok) {
-        throw Error(response.statusText);
+        throw Error(getResponseErrorMessage(response));
       }
 
       try {
@@ -98,9 +107,12 @@ export const Chatbot: FC = () => {
       } catch {
         throw Error('Couldn\'t parse response');
       }
-
     })()
-      .catch(console.error)
+      .catch((error: unknown) => {
+        console.error(error);
+        setNextMessage(message);
+        setMessages(m => ([ ...m, { type: 'system', text: getRequestErrorMessage(error) } ]));
+      })
       .finally(() => setIsSending(false));
   };
 
@@ -123,11 +135,7 @@ export const Chatbot: FC = () => {
 
   if (isMinimized) {
     return (
-      <button
-        type="button"
-        className={styles.launcher}
-        onClick={handleRestoreClick}
-      >
+      <button type="button" className={styles.launcher} onClick={handleRestoreClick}>
         <FaCommentDots aria-hidden="true" />
         <span>{isSending ? 'Replying' : 'Chat'}</span>
       </button>
@@ -141,13 +149,7 @@ export const Chatbot: FC = () => {
           <h1>Student Chat</h1>
           <p>{student ? 'Online' : 'Loading student profile'}</p>
         </div>
-        <button
-          type="button"
-          className={styles.minimizeButton}
-          title="Minimize chat"
-          aria-label="Minimize chat"
-          onClick={handleMinimizeClick}
-        >
+        <button type="button" className={styles.minimizeButton} title="Minimize chat" aria-label="Minimize chat" onClick={handleMinimizeClick}>
           <FaMinus aria-hidden="true" />
         </button>
       </header>
@@ -156,10 +158,7 @@ export const Chatbot: FC = () => {
         {isSending && <Progress />}
         <div ref={messageEndRef} />
       </div>
-      <form
-        className={styles.footer}
-        onSubmit={handleFormSubmit}
-      >
+      <form className={styles.footer} onSubmit={handleFormSubmit}>
         <textarea
           aria-label="Message"
           placeholder="Ask a question"
@@ -173,4 +172,26 @@ export const Chatbot: FC = () => {
       </form>
     </div>
   );
+};
+
+const getResponseErrorMessage = (response: Response): string => {
+  if (response.status === 400) {
+    return 'I could not understand that request. Please try rephrasing it.';
+  }
+
+  if (response.status === 401 || response.status === 403) {
+    return 'Please sign in again before sending another message.';
+  }
+
+  if (response.status >= 500) {
+    return 'The chat service is having trouble right now. Please try again in a moment.';
+  }
+
+  return response.statusText || 'The message could not be sent.';
+};
+
+const getRequestErrorMessage = (error: unknown): string => {
+  return error instanceof Error
+    ? error.message
+    : 'The message could not be sent.';
 };

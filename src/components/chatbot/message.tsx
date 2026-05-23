@@ -4,9 +4,9 @@ import styles from './message.module.css';
 
 interface Props {
   text: string;
-  type: 'user' | 'bot';
+  type: 'user' | 'bot' | 'system';
 }
 
 export const Message: FC<Props> = ({ text, type }) => (
-  <div className={`${styles.message} ${type === 'user' ? styles.user : styles.bot}`}>{text}</div>
+  <div className={`${styles.message} ${styles[type]}`}>{text}</div>
 );

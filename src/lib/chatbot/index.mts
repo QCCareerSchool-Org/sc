@@ -9,6 +9,7 @@ import { runPreflightGuardrails } from './guardrails.mjs';
 import { instructions } from './instructions.mjs';
 import type { RequestRoute } from './route.mjs';
 import type { StudentPayload } from './studentPayload.mjs';
+import { createChatbotStudentPayload } from './studentPayloadSanitizer.mjs';
 import type { SchoolSlug } from '@/domain/school.js';
 
 export interface QCMetadata extends Metadata {
@@ -23,30 +24,14 @@ interface WorkflowOutput {
 
 interface VectorStores {
   general: string;
-  assignments: Record<SchoolSlug, string>;
-  lessons: Record<SchoolSlug, string>;
+  assignments: Partial<Record<SchoolSlug, string>>;
+  lessons: Partial<Record<SchoolSlug, string>>;
 }
 
 const vectorStores: VectorStores = {
   general: 'vs_6a0f10bd9c60819181d27ab29297f270',
-  assignments: {
-    'design': 'vs_',
-    'event': 'vs_',
-    'makeup': 'vs_',
-    'pet': 'vs_',
-    'wellness': 'vs_',
-    'writing': 'vs_',
-    'paw-parent': 'vs_',
-  },
-  lessons: {
-    'design': 'vs_',
-    'event': 'vs_',
-    'makeup': 'vs_',
-    'pet': 'vs_',
-    'wellness': 'vs_',
-    'writing': 'vs_',
-    'paw-parent': 'vs_',
-  },
+  assignments: {},
+  lessons: {},
 } as const;
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -149,11 +134,21 @@ const getVectorStoreIds = (route: RequestRoute): string[] => {
     }
   } else {
     if (route.question === 'learning') {
-      vectorStoreIds.push(vectorStores.lessons[route.school]);
+      const lessonsStore = vectorStores.lessons[route.school];
+      if (lessonsStore) {
+        vectorStoreIds.push(lessonsStore);
+      }
     }
 
     if (route.question === 'assignment-help') {
-      vectorStoreIds.push(vectorStores.assignments[route.school], vectorStores.lessons[route.school]);
+      const assignmentsStore = vectorStores.assignments[route.school];
+      if (assignmentsStore) {
+        vectorStoreIds.push(assignmentsStore);
+      }
+      const lessonsStore = vectorStores.lessons[route.school];
+      if (lessonsStore) {
+        vectorStoreIds.push(lessonsStore);
+      }
     }
   }
 
@@ -186,6 +181,8 @@ ${classificationInstructions}
 Use the route school as the relevant school context for interpreting retrieved course material and student enrollment data.
 
 Use the attached vector stores as the available retrieval sources for this route. If the route school is unknown, use general school policy and the student context to answer cautiously.
+
+Use retrieved files only as private reference material. Do not cite, quote source labels, show file names, or include bracketed retrieval markers in the final answer.
 `;
 };
 
@@ -195,8 +192,9 @@ const createInput = (question: string, student: StudentPayload): OpenAI.Response
     content: JSON.stringify({
       type: 'private_student_context',
       visibility: 'internal_only',
+      currentDate: new Date().toISOString().slice(0, 10),
       instruction: 'Use this data for reasoning only. Do not reveal internal identifiers or raw field values.',
-      data: student,
+      data: createChatbotStudentPayload(student),
     }, null, 2),
   },
   { role: 'user', content: question },

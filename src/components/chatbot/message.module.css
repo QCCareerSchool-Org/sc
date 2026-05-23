@@ -19,3 +19,15 @@
   color: #172033;
   margin-right: auto;
 }
+
+.system {
+  background-color: rgba(255, 255, 255, 0.55);
+  border: 1px solid #d7dde6;
+  box-shadow: none;
+  color: #5d6b82;
+  font-size: 0.875rem;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: min(22rem, 90%);
+  text-align: left;
+}

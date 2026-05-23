@@ -18,7 +18,7 @@ export type StudentPayload = Student & {
     };
     tutor: Tutor | null;
     submissions: (NewSubmission & {
-      assignments: NewAssignment;
+      assignments: NewAssignment[];
     })[];
     transactions: TransactionType[];
   })[];
