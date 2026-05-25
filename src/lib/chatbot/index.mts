@@ -10,7 +10,7 @@ import { instructions } from './instructions.mjs';
 import type { PromptClassification, QuestionClassification } from './promptClassification.mjs';
 import type { StudentPayload } from './studentPayload.mjs';
 import { createChatbotStudentPayload } from './studentPayloadSanitizer.mjs';
-import { getVectorStoreIds } from './vectorStores.js';
+import { getQuestionVectorStoreIds } from './vectorStores.js';
 import type { SchoolSlug } from '@/domain/school.js';
 
 export interface QCMetadata extends Metadata {
@@ -79,7 +79,7 @@ const createBody = (
   previousResponseId: string | null,
   classification: PromptClassification,
 ): OpenAI.Responses.ResponseCreateParamsNonStreaming => {
-  const vectorStoreIds = getVectorStoreIds(classification);
+  const vectorStoreIds = getQuestionVectorStoreIds(classification);
 
   return {
     input: createInput(question, student),

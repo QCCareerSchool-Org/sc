@@ -4,7 +4,7 @@ import { defaultSpecRegistry, runGuardrails } from '@openai/guardrails';
 import type { OpenAI } from 'openai';
 
 import type { PromptClassification } from './promptClassification.mjs';
-import { getVectorStoreIds } from './vectorStores.js';
+import { getAnswerVectorStoreId } from './vectorStores.js';
 import type { SchoolSlug } from '@/domain/school.js';
 
 const guardrailNames = {
@@ -82,7 +82,7 @@ ${candidateSchools.map(s => `- ${s}`).join('\n')}`;
 };
 
 const getPostflightGuardrailConfig = (classification: PromptClassification) => {
-  const knowledgeSource = getVectorStoreIds(classification);
+  const knowledgeSource = getAnswerVectorStoreId(classification);
   return {
     guardrails: [
       // eslint-disable-next-line camelcase

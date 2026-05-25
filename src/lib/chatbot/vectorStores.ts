@@ -13,31 +13,31 @@ const vectorStores: VectorStores = {
   lessons: {},
 } as const;
 
-export const getVectorStoreIds = (route: PromptClassification): string[] => {
+export const getQuestionVectorStoreIds = (classification: PromptClassification): string[] => {
   const vectorStoreIds: string[] = [ vectorStores.general ];
 
-  if (route.school === 'unknown') {
-    if (route.question === 'learning') {
+  if (classification.school === 'unknown') {
+    if (classification.question === 'learning') {
       vectorStoreIds.push(...Object.values(vectorStores.lessons));
     }
 
-    if (route.question === 'assignment-help') {
+    if (classification.question === 'assignment-help') {
       vectorStoreIds.push(...Object.values(vectorStores.assignments), ...Object.values(vectorStores.lessons));
     }
   } else {
-    if (route.question === 'learning') {
-      const lessonsStore = vectorStores.lessons[route.school];
+    if (classification.question === 'learning') {
+      const lessonsStore = vectorStores.lessons[classification.school];
       if (lessonsStore) {
         vectorStoreIds.push(lessonsStore);
       }
     }
 
-    if (route.question === 'assignment-help') {
-      const assignmentsStore = vectorStores.assignments[route.school];
+    if (classification.question === 'assignment-help') {
+      const assignmentsStore = vectorStores.assignments[classification.school];
       if (assignmentsStore) {
         vectorStoreIds.push(assignmentsStore);
       }
-      const lessonsStore = vectorStores.lessons[route.school];
+      const lessonsStore = vectorStores.lessons[classification.school];
       if (lessonsStore) {
         vectorStoreIds.push(lessonsStore);
       }
@@ -45,4 +45,19 @@ export const getVectorStoreIds = (route: PromptClassification): string[] => {
   }
 
   return vectorStoreIds;
+};
+
+export const getAnswerVectorStoreId = (classification: PromptClassification): string | undefined => {
+  if (classification.question === 'logistics') {
+    return vectorStores.general;
+  }
+
+  if (classification.school === 'unknown') {
+    return;
+  }
+
+  const lessonsStore = vectorStores.lessons[classification.school];
+  if (lessonsStore) {
+    return lessonsStore;
+  }
 };
