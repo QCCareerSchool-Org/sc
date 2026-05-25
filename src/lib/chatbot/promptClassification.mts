@@ -1,12 +1,12 @@
 import type { SchoolSlug } from '@/domain/school.js';
 import { isSchoolSlug } from '@/domain/school.js';
 
-export interface RequestRoute {
+export interface PromptClassification {
   question: QuestionClassification;
   school: SchoolClassification;
 }
 
-export const isRequestRoute = (value: unknown): value is RequestRoute => {
+export const isPromptClassification = (value: unknown): value is PromptClassification => {
   return value !== null && typeof value === 'object'
     && 'question' in value && isQuestionClassification(value.question)
     && 'school' in value && isSchoolClassification(value.school);
