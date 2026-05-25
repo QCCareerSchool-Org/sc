@@ -5,9 +5,13 @@ import { isPromptClassification, questionClassifications } from './promptClassif
 import { schoolDescriptions } from './schoolDescriptions.js';
 import type { SchoolSlug } from '@/domain/school.js';
 
+type SchoolClassificationScope =
+  | { type: 'known'; school: SchoolSlug }
+  | { type: 'candidates'; schools: SchoolSlug[] };
+
 export const classifyRequest = async (question: string, candidateSchools: SchoolSlug[], client: OpenAI): Promise<PromptClassification> => {
-  const onlyCandidateSchool = candidateSchools.length === 1 ? candidateSchools[0] : null;
-  const body = createBody(question, candidateSchools);
+  const schoolScope = createSchoolClassificationScope(candidateSchools);
+  const body = createBody(question, schoolScope);
   const response = await client.responses.create(body);
 
   if (response.error) {
@@ -15,8 +19,8 @@ export const classifyRequest = async (question: string, candidateSchools: School
   }
 
   const parsed = parseJson(response.output_text);
-  const classification = onlyCandidateSchool && parsed !== null && typeof parsed === 'object'
-    ? { ...parsed, onlyCandidateSchool }
+  const classification = schoolScope.type === 'known' && parsed !== null && typeof parsed === 'object'
+    ? { ...parsed, school: schoolScope.school }
     : parsed;
 
   if (!isPromptClassification(classification)) {
@@ -26,15 +30,20 @@ export const classifyRequest = async (question: string, candidateSchools: School
   return classification;
 };
 
-const createBody = (question: string, candidateSchools: SchoolSlug[]): OpenAI.Responses.ResponseCreateParamsNonStreaming => {
-  const onlyCandidateSchool = candidateSchools.length === 1 ? candidateSchools[0] : null;
+const createSchoolClassificationScope = (candidateSchools: SchoolSlug[]): SchoolClassificationScope => {
+  return candidateSchools.length === 1
+    ? { type: 'known', school: candidateSchools[0] }
+    : { type: 'candidates', schools: candidateSchools };
+};
 
-  const schoolClassificationPrompt = onlyCandidateSchool ? '' : `
+const createBody = (question: string, schoolScope: SchoolClassificationScope): OpenAI.Responses.ResponseCreateParamsNonStreaming => {
+  const schoolClassificationPrompt = schoolScope.type === 'known' ? '' : `
 Choose exactly one school classification from the allowed schools:
-${candidateSchools.map(school => `- ${schoolDescriptions[school]}`).join('\n')}
+${schoolScope.schools.map(school => `- ${schoolDescriptions[school]}`).join('\n')}
 - unknown: the school is not clear from the message`;
-  const schoolClassificationSchema = onlyCandidateSchool ? {} : {
-    school: { type: 'string', enum: [ ...candidateSchools, 'unknown' ] },
+
+  const schoolClassificationSchema = schoolScope.type === 'known' ? {} : {
+    school: { type: 'string', enum: [ ...schoolScope.schools, 'unknown' ] },
   };
 
   const developerContent = `Classify the student's message for application routing.
@@ -53,7 +62,7 @@ ${schoolClassificationPrompt}`;
       question: { type: 'string', enum: questionClassifications },
       ...schoolClassificationSchema,
     },
-    required: onlyCandidateSchool ? [ 'question' ] : [ 'question', 'school' ],
+    required: schoolScope.type === 'known' ? [ 'question' ] : [ 'question', 'school' ],
   };
 
   return {
