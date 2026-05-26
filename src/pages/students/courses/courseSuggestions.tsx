@@ -2,7 +2,7 @@ import type { CourseSuggestionGroup } from '@/domain/courseSuggestion';
 import type { SchoolSlug } from '@/domain/school';
 
 export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]> = {
-  event: [
+  'event': [
     {
       id: 'high-budget-events',
       description: 'Plan high-budget events.',
@@ -92,7 +92,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
       ],
     },
   ],
-  wellness: [
+  'wellness': [
     {
       id: 'sleep-spaces',
       description: 'Plan ideal sleep spaces.',
@@ -114,7 +114,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
       ],
     },
   ],
-  design: [
+  'design': [
     {
       id: 'add-value-homes',
       description: 'Add value to your clients\' homes.',
@@ -198,7 +198,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
     },
 
   ],
-  pet: [
+  'pet': [
     {
       id: 'full-service-dog-care',
       description: 'Provide full-service dog care.',
@@ -234,7 +234,7 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
       ],
     },
   ],
-  makeup: [
+  'makeup': [
     {
       id: 'look-their-best',
       description: 'Help your clients feel and look their best.',
@@ -310,5 +310,6 @@ export const courseSuggestionGroups: Record<SchoolSlug, CourseSuggestionGroup[]>
       ],
     },
   ],
-  writing: [],
+  'writing': [],
+  'paw-parent': [],
 };
