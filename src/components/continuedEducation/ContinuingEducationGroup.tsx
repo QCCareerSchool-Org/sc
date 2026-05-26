@@ -114,6 +114,8 @@ const getEnrollUrlBase = (schoolSlug: SchoolSlug): string => {
       return 'https://enroll.qcwellnessstudies.com/continued-education';
     case 'writing':
       return 'https://enroll.winghill.com/continued-education';
+    case 'paw-parent':
+      return 'https://enroll.pawparentacademy.com/continued-education';
   }
 };
 
