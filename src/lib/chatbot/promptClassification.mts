@@ -22,8 +22,6 @@ export const isQuestionClassification = (value: unknown): value is QuestionClass
   return typeof value === 'string' && set.has(value as QuestionClassification);
 };
 
-export type SchoolClassification = SchoolSlug | 'unknown';
+export type SchoolClassification = SchoolSlug;
 
-export const isSchoolClassification = (value: unknown): value is SchoolClassification => {
-  return isSchoolSlug(value) || value === 'unknown';
-};
+export const isSchoolClassification = isSchoolSlug;

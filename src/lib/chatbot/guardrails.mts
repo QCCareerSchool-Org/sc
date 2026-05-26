@@ -4,7 +4,7 @@ import { defaultSpecRegistry, runGuardrails } from '@openai/guardrails';
 import type { OpenAI } from 'openai';
 
 import type { PromptClassification } from './promptClassification.mjs';
-import { getAnswerVectorStoreId } from './vectorStores.js';
+import { vectorStoreIds } from './vectorStores.js';
 import type { SchoolSlug } from '@/domain/school.js';
 
 const guardrailNames = {
@@ -12,13 +12,15 @@ const guardrailNames = {
   hallucination: 'Hallucination Detection',
   jailbreak: 'Jailbreak',
   moderation: 'Moderation',
-  pii: 'Contains PII',
-  promptInjection: 'Prompt Injection Detection',
+  containsPii: 'Contains PII',
+  // promptInjection: 'Prompt Injection Detection',
   offTopic: 'Off Topic Prompts',
+  customPrompt: 'Custom Prompt Check',
 } as const;
 
 export type GuardrailName = typeof guardrailNames[keyof typeof guardrailNames];
 
+// make sure the guardrails we're trying to use actually exist
 for (const value of Object.values(guardrailNames)) {
   if (!defaultSpecRegistry.has(value)) {
     throw new Error(`${value} guardrail is not registered`);
@@ -51,42 +53,37 @@ const moderationCategories: Category[] = [
 ];
 
 const getPreflightGuardrailConfig = (candidateSchools: SchoolSlug[]): GuardrailBundle => {
-  // TODO: Make a prompt based on the schools
-  const offTopicPrompt = `Student support for QC Career School's online-learning platform.
+  const onTopic = `QC course concepts, tutoring, studying, assignments, student account, enrollment, payments, school policies, course materials, and platform support for the following schools:\n${candidateSchools.map(s => `- ${s}`).join('\n')}`;
 
-Allowed topics:
-- QC course concepts, tutoring, studying, assignments, student account, enrollment, payments, school policies, course materials, and platform support.
-
-Flag as off-topic:
-- Requests to write, complete, rewrite, polish, or produce submission-ready academic work for the student.
-- Homework or assignments outside QC courses, such as unrelated math, science, or schoolwork.
-
-The student is enrolled in:
-${candidateSchools.map(s => `- ${s}`).join('\n')}`;
+  const redFlags = `- academic dishonesty
+  - requests to answer assignment questions
+  - requests to solve homework problems
+  - requests for bypassing plagiarism or AI-detection systems`;
 
   return {
     guardrails: [
       // eslint-disable-next-line camelcase
-      { name: guardrailNames.nsfw, config: { model, confidence_threshold: 0.7 } },
+      { name: guardrailNames.containsPii, config: { entities: piiEntities, block: false, detect_encoded_pii: false } },
       // eslint-disable-next-line camelcase
       { name: guardrailNames.jailbreak, config: { model, confidence_threshold: 0.7 } },
       { name: guardrailNames.moderation, config: { categories: moderationCategories } },
       // eslint-disable-next-line camelcase
-      { name: guardrailNames.pii, config: { block: false, detect_encoded_pii: true, entities: piiEntities } },
+      { name: guardrailNames.offTopic, config: { model, max_turns: 10, system_prompt_details: onTopic, confidence_threshold: 0.7 } },
       // eslint-disable-next-line camelcase
-      { name: guardrailNames.promptInjection, config: { model, confidence_threshold: 0.7 } },
-      // eslint-disable-next-line camelcase
-      { name: guardrailNames.offTopic, config: { model, max_turns: 10, system_prompt_details: offTopicPrompt, confidence_threshold: 0.7 } },
+      { name: guardrailNames.customPrompt, config: { model, system_prompt_details: redFlags, confidence_threshold: 0.7 } },
     ],
   };
 };
 
-const getPostflightGuardrailConfig = (classification: PromptClassification) => {
-  const knowledgeSource = getAnswerVectorStoreId(classification);
+const getPostflightGuardrailConfig = (vectorStoreId: string) => {
   return {
     guardrails: [
       // eslint-disable-next-line camelcase
-      { name: guardrailNames.hallucination, config: { model, knowledge_source: knowledgeSource, confidence_threshold: 0.7 } },
+      { name: guardrailNames.hallucination, config: { model, knowledge_source: vectorStoreId, confidence_threshold: 0.7 } },
+      // eslint-disable-next-line camelcase
+      { name: guardrailNames.containsPii, config: { entities: piiEntities, block: true, detect_encoded_pii: false } },
+      // eslint-disable-next-line camelcase
+      { name: guardrailNames.nsfw, config: { model, confidence_threshold: 0.7 } },
     ],
   };
 };
@@ -95,14 +92,31 @@ type GuardrailsResponse =
   | { triggered: false; guardrail: null; results: GuardrailResult[] }
   | { triggered: true; guardrail: GuardrailName; results: GuardrailResult[] };
 
+export const maskPii = async (inputText: string, client: OpenAI): Promise<string> => {
+  const config: GuardrailBundle = {
+    guardrails: [
+      // eslint-disable-next-line camelcase
+      { name: guardrailNames.containsPii, config: { entities: piiEntities, block: false, detect_encoded_pii: true } },
+    ],
+  };
+
+  const context = { guardrailLlm: client };
+  const [ result ] = await runGuardrails(inputText, config, context, true);
+  const checkedText = result.info.checked_text;
+
+  return checkedText ?? inputText;
+};
+
 export const runPreflightGuardrails = async (inputText: string, candidateSchools: SchoolSlug[], client: OpenAI): Promise<GuardrailsResponse> => {
   const context = { guardrailLlm: client };
-  const results = await runGuardrails(inputText, getPreflightGuardrailConfig(candidateSchools), context, true);
+  const config = getPreflightGuardrailConfig(candidateSchools);
+  const results = await runGuardrails(inputText, config, context, true);
+  console.log(results);
 
-  const guardrail = getFirstTriggeredGuardrail(results);
+  const triggeredGuardrail = getFirstTriggeredGuardrail(results);
 
-  if (guardrail) {
-    return { triggered: true, guardrail, results };
+  if (triggeredGuardrail) {
+    return { triggered: true, guardrail: triggeredGuardrail, results };
   }
 
   return { triggered: false, guardrail: null, results };
@@ -110,12 +124,13 @@ export const runPreflightGuardrails = async (inputText: string, candidateSchools
 
 export const runPostflightGuardrails = async (inputText: string, classification: PromptClassification, client: OpenAI): Promise<GuardrailsResponse> => {
   const context = { guardrailLlm: client };
-  const results = await runGuardrails(inputText, getPostflightGuardrailConfig(classification), context, true);
+  const vectorStoreId = vectorStoreIds[classification.school];
+  const config = getPostflightGuardrailConfig(vectorStoreId);
+  const results = await runGuardrails(inputText, config, context, true);
+  const triggeredGuardrail = getFirstTriggeredGuardrail(results);
 
-  const guardrail = getFirstTriggeredGuardrail(results);
-
-  if (guardrail) {
-    return { triggered: true, guardrail, results };
+  if (triggeredGuardrail) {
+    return { triggered: true, guardrail: triggeredGuardrail, results };
   }
 
   return { triggered: false, guardrail: null, results };
