@@ -1,7 +1,8 @@
 import type { NewAssignmentTemplate } from '@/domain/newAssignmentTemplate';
 import type { NewSubmissionTemplate } from '@/domain/newSubmissionTemplate';
 import type { NewSubmissionTemplateWithCourseAndAssignments } from '@/services/administrators/newSubmissionTemplateService';
-import { getLength } from 'src/lib/segmenter';
+import { getByteLength } from 'src/lib/byteLength';
+import { getCodePointLength } from 'src/lib/codePointLength';
 import { sanitize } from 'src/sanitize';
 
 export interface State {
@@ -172,7 +173,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
-        const newLength = getLength(action.payload);
+        const newLength = getCodePointLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -190,7 +191,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -208,7 +209,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -348,7 +349,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
-        const newLength = getLength(action.payload);
+        const newLength = getCodePointLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -366,7 +367,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -405,7 +406,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

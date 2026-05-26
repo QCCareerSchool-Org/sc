@@ -1,5 +1,5 @@
 import type { CreatePasswordResetResult } from '@/services/passwordResetRequestService';
-import { getLength } from 'src/lib/segmenter';
+import { getCodePointLength } from 'src/lib/codePointLength';
 
 export interface State {
   form: {
@@ -37,7 +37,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'USERNAME_CHANGED': {
       const maxLength = 255;
       let validationMessage: string | undefined;
-      if (getLength(action.payload) > maxLength) {
+      if (getCodePointLength(action.payload) > maxLength) {
         validationMessage = 'Exceeds maximum length';
       }
       return {

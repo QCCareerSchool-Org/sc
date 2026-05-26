@@ -1,6 +1,6 @@
 import type { NewPartMedium } from '@/domain/newPartMedium';
 import type { NewPartMediumWithPart } from '@/services/administrators/newPartMediumService';
-import { getLength } from 'src/lib/segmenter';
+import { getCodePointLength } from 'src/lib/codePointLength';
 
 export interface State {
   newPartMedium?: NewPartMediumWithPart;
@@ -79,7 +79,7 @@ export const reducer = (state: State, action: Action): State => {
         validationMessage = 'Required';
       } else {
         const maxLength = 191;
-        const newLength = getLength(action.payload);
+        const newLength = getCodePointLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

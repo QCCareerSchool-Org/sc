@@ -110,4 +110,6 @@ export interface PriceRow {
   shipping: number;
 }
 
-export const isPrice = (obj: unknown): obj is PriceResult => true;
+export const isPrice = (obj: unknown): obj is PriceResult => {
+  return obj !== null && typeof obj === 'object';
+};
