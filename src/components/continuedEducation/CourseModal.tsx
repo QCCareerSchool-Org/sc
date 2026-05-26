@@ -36,6 +36,8 @@ const getMailto = (schoolSlug: SchoolSlug): string => {
       return 'info@qcwellnessstudies.com';
     case 'writing':
       return 'info@winghill.com';
+    case 'paw-parent':
+      return 'info@pawparentacademy.com';
   }
 };
 
