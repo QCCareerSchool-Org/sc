@@ -74,25 +74,3 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
 };
 
 export default SCApp;
-
-/** Returns a string representing the stored auth state for error logging purposes */
-// const getSanitizedAuthState = (): string => {
-//   if (window.navigator.cookieEnabled && 'localStorage' in window) {
-//     const storedAuthState = window.localStorage.getItem('authState');
-//     if (storedAuthState) {
-//       try {
-//         const authState = JSON.parse(storedAuthState) as Record<string, unknown>;
-//         return JSON.stringify({
-//           administratorId: authState.administratorId,
-//           auditorId: authState.auditorId,
-//           tutorId: authState.tutorId,
-//           studentId: authState.studentId,
-//           crmId: authState.crmId,
-//         });
-//       } catch {
-//         return 'unable to parse stored auth state';
-//       }
-//     }
-//   }
-//   return 'no stored auth state found';
-// };
