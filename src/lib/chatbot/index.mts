@@ -18,7 +18,7 @@ export interface QCMetadata extends Metadata {
 interface WorkflowOutput {
   status: 'blocked' | 'answered';
   answer: string;
-  responseId: string | null;
+  conversationId?: string | null;
 }
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -31,7 +31,7 @@ const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
  * @param previousResponseId the id of the previous response for continuity
  * @returns the chatbot's reponse
  */
-export const run = async (question: string, payload: StudentPayload, metadata: QCMetadata, previousResponseId: string | null): Promise<WorkflowOutput> => {
+export const run = async (question: string, payload: StudentPayload, metadata: QCMetadata, conversationId: string | null): Promise<WorkflowOutput> => {
   const candidateSchools = getCandidateSchools(payload);
 
   const maskedQuestion = await maskPii(question, client);
@@ -39,11 +39,15 @@ export const run = async (question: string, payload: StudentPayload, metadata: Q
   const guardrailsPreflightResponse = await runPreflightGuardrails(question, candidateSchools, client);
 
   if (guardrailsPreflightResponse.triggered) {
-    return { status: 'blocked', answer: getGuardrailFallbackAnswer(guardrailsPreflightResponse.guardrail), responseId: null };
+    return { status: 'blocked', answer: getGuardrailFallbackAnswer(guardrailsPreflightResponse.guardrail), conversationId: null };
   }
 
   const classification = await classifyRequest(maskedQuestion, candidateSchools, client);
-  const body = createBody(maskedQuestion, payload, metadata, previousResponseId, classification);
+  if (!conversationId) {
+    const conversation = await client.conversations.create();
+    conversationId = conversation.id;
+  }
+  const body = createBody(maskedQuestion, payload, metadata, conversationId, classification);
   const response = await client.responses.create(body);
 
   if (response.error) {
@@ -57,25 +61,24 @@ export const run = async (question: string, payload: StudentPayload, metadata: Q
   const guardrailsPostflightResponse = await runPostflightGuardrails(response.output_text, classification, client);
 
   if (guardrailsPostflightResponse.triggered) {
-    return { status: 'blocked', answer: getGuardrailFallbackAnswer(guardrailsPostflightResponse.guardrail), responseId: null };
+    return { status: 'blocked', answer: getGuardrailFallbackAnswer(guardrailsPostflightResponse.guardrail), conversationId: null };
   }
 
-  return { status: 'answered', answer: response.output_text, responseId: response.id };
+  return { status: 'answered', answer: response.output_text, conversationId: response.conversation?.id ?? null };
 };
 
 const getCandidateSchools = (student: StudentPayload): SchoolSlug[] => {
   return [ ...new Set(student.enrollments.map(e => e.course.school.slug)) ];
 };
 
-const createBody = (question: string, student: StudentPayload, metadata: Metadata | null, previousResponseId: string | null, classification: PromptClassification): OpenAI.Responses.ResponseCreateParamsNonStreaming => ({
+const createBody = (question: string, student: StudentPayload, metadata: Metadata | null, conversationId: string | null, classification: PromptClassification): OpenAI.Responses.ResponseCreateParamsNonStreaming => ({
   input: createInput(question, student),
   metadata,
   instructions: createInstructions(classification),
   // eslint-disable-next-line camelcase
   max_output_tokens: 2048,
   model: 'gpt-4.1-mini',
-  // eslint-disable-next-line camelcase
-  previous_response_id: previousResponseId,
+  conversation: conversationId,
   store: true,
   temperature: 1,
   tools: [
