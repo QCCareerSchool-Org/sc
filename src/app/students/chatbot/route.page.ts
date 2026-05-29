@@ -27,6 +27,10 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
 
     let conversationId = cookieStore.get('conversationId')?.value ?? null;
 
+    if ('conversationId' in body) {
+      conversationId = body.conversationId ?? null;
+    }
+
     const chatResponse = await run(
       body.message,
       body.student,
@@ -61,10 +65,12 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
 interface RequestBody {
   message: string;
   student: StudentPayload;
+  conversationId?: string | null;
 }
 
 const isValid = (u: unknown): u is RequestBody => {
   return u !== null && typeof u === 'object'
     && 'message' in u && typeof u.message === 'string'
-    && 'student' in u && isStudentPayload(u.student);
+    && 'student' in u && isStudentPayload(u.student)
+    && (!('conversationId' in u) || typeof u.conversationId === 'string' || u.conversationId === null);
 };

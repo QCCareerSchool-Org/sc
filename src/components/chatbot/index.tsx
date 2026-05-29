@@ -17,6 +17,13 @@ interface Message {
   type: 'user' | 'bot' | 'system';
 }
 
+interface StoredChat {
+  conversationId: string | null;
+  messages: Message[];
+}
+
+const storageKey = (studentId: number) => `chatbot_conversation_${studentId}`;
+
 const disclaimer = 'Meet your course helper! This AI chatbot is here to help with any questions you might have as you complete your course. AI-generated responses may occasionally contain errors. If you need more help, simply reach out to our student support team!';
 const getGreeting = (student: StudentPayload) => `Hi ${student.firstName}! what can I help you with today?`;
 
@@ -24,6 +31,7 @@ export const Chatbot: FC = () => {
   const { studentId } = useAuthState();
   const { studentService } = useStudentServices();
   const [ messages, setMessages ] = useState<Message[]>([ { type: 'system', text: disclaimer } ]);
+  const [ conversationId, setConverstionId ] = useState<string | null>(null);
   const [ nextMessage, setNextMessage ] = useState('');
   const [ isSending, setIsSending ] = useState(false);
   const [ isMinimized, setIsMinimized ] = useState(false);
@@ -37,6 +45,7 @@ export const Chatbot: FC = () => {
 
     const subscription = studentService.getStudent(studentId).subscribe(data => {
       const s = data as unknown as StudentPayload;
+      const greeting = getGreeting(s);
       // temporary
       for (const e of s.enrollments) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -45,7 +54,14 @@ export const Chatbot: FC = () => {
         }
       }
       setStudent(s);
-      setMessages(m => [ ...m, { type: 'bot', text: getGreeting(s) } ]);
+      setMessages(m => {
+        const lastMessage = m.at(-1);
+        if (lastMessage?.type === 'bot' && lastMessage.text === greeting) {
+          return m;
+        }
+
+        return [ ...m, { type: 'bot', text: greeting } ];
+      });
     });
 
     return () => subscription.unsubscribe();
@@ -67,6 +83,35 @@ export const Chatbot: FC = () => {
     event.preventDefault();
     handleSubmit();
   };
+
+  useEffect(() => {
+    if (!studentId) {
+      return;
+    }
+    const raw = window.localStorage.getItem(storageKey(studentId));
+    if (!raw) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as StoredChat;
+      setMessages(parsed.messages);
+      setConverstionId(parsed.conversationId);
+    } catch {
+      window.localStorage.removeItem(storageKey(studentId));
+    }
+  }, [ studentId ]);
+
+  useEffect(() => {
+    if (!studentId) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      storageKey(studentId),
+      JSON.stringify({ conversationId, messages }),
+    );
+  }, [ studentId, conversationId, messages ]);
 
   const handleSubmit = () => {
     const message = nextMessage.trim();
