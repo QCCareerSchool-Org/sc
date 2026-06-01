@@ -1,28 +1,28 @@
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
 
+import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
-import { useTutorServices } from '@/hooks/useTutorServices';
 import { HttpServiceError } from '@/services/httpService';
 
-export interface SaveNotePayload {
-  tutorId: number;
+export interface SaveAdminNotePayload {
+  administratorId: number;
   studentId: number;
   note: string | null;
 }
 
-export const useSaveNote = (): Subject<SaveNotePayload> => {
+export const useSaveNote = (): Subject<SaveAdminNotePayload> => {
   const navigateToLogin = useNavigateToLogin();
-  const { studentService } = useTutorServices();
+  const { studentService } = useAdminServices();
 
-  const saveNote$ = useRef(new Subject<SaveNotePayload>());
+  const saveNote$ = useRef(new Subject<SaveAdminNotePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
     saveNote$.current.pipe(
-      exhaustMap(({ tutorId, studentId, note }) => {
-        return studentService.saveNote(tutorId, studentId, note).pipe(
+      exhaustMap(({ administratorId, studentId, note }) => {
+        return studentService.saveAdminNote(administratorId, studentId, note).pipe(
           tap({
             error: err => {
               if (err instanceof HttpServiceError && err.login) {

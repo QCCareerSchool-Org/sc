@@ -4,14 +4,14 @@ import type { IHttpService } from '@/services/httpService';
 import { endpoint } from 'src/basePath';
 
 export interface IStudentService {
-  saveNote: (tutorId: number, studentId: number, note: string | null) => Observable<void>;
+  saveTutorNote: (tutorId: number, studentId: number, note: string | null) => Observable<void>;
 }
 
 export class StudentService implements IStudentService {
 
   public constructor(private readonly httpService: IHttpService) { /* empty */ }
 
-  public saveNote(tutorId: number, studentId: number, note: string | null): Observable<void> {
+  public saveTutorNote(tutorId: number, studentId: number, note: string | null): Observable<void> {
     const url = `${this.getUrl(tutorId, studentId)}/tutorNote`;
     const body = { note };
     return this.httpService.put(url, body);

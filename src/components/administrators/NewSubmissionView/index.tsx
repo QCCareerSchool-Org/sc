@@ -1,6 +1,6 @@
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, FC, MouseEvent, MouseEventHandler, SubmitEventHandler } from 'react';
+import type { ChangeEventHandler, FC, FocusEventHandler, MouseEvent, MouseEventHandler, SubmitEventHandler } from 'react';
 import { useCallback, useId, useReducer } from 'react';
 
 import { NewAssignmentList } from './NewAssignmentList';
@@ -39,6 +39,14 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
     const tutorId = e.target.value.length ? parseInt(e.target.value, 10) : null;
     dispatch({ type: 'TUTOR_ID_CHANGED', payload: tutorId });
   };
+
+  const handleNoteChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
+    dispatch({ type: 'ADMIN_NOTE_CHANGED', payload: e.target.value });
+  };
+
+  const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
+      saveNote$.next({ tutorId, studentId, note: state.newSubmission?.enrollment.student.tutorNote ?? null });
+    }, [ saveNote$, tutorId, studentId, state.newSubmission?.enrollment.student.tutorNote ]);
 
   const handlePopupClose = useCallback(() => dispatch({ type: 'POPUP_TOGGLED' }), []);
 
@@ -97,6 +105,20 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
                   <NewTransfersList transfers={submission.newTransfers} />
                 </div>
               )}
+              <h3>Admin Note</h3>
+              <div className="col-lg-6 col-md-12">
+                <label htmlFor={id + '_note'} className="form-label">Admin Note</label>
+                <textarea
+                  id={id + '_note'}
+                  className="form-control"
+                  rows={4}
+                  value={state.newSubmission.enrollment.student.adminNote ?? ''}
+                  onChange={handleNoteChange}
+                  onBlur={handleSaveNote}
+                  placeholder="Enter note here..."
+                />
+              </div>
+              <h3>Tutor Note</h3>
               <div className="form-control" style={{ minHeight: 120 }}>
                 {state.data.newSubmission.enrollment.student.tutorNote ?? ''}
               </div>
