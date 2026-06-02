@@ -16,10 +16,10 @@ export const useInitialData = (dispatch: Dispatch<Action>, administratorId: numb
 
     newSubmissionService.getSubmission(administratorId, submissionId).pipe(
       switchMap(newSubmission => forkJoin([
-        studentService.getStudent(administratorId, newSubmission.enrollment.studentId),
+        // studentService.getStudent(administratorId, newSubmission.enrollment.studentId),
         tutorService.getTutorsBySchool(administratorId, newSubmission.enrollment.course.schoolId),
       ]).pipe(
-        map(([ student, tutors ]) => ({ newSubmission, student, tutors })),
+        map(([ tutors ]) => ({ newSubmission, tutors })),
       )),
       takeUntil(destroy$),
     ).subscribe({

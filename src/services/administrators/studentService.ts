@@ -34,7 +34,7 @@ export class StudentService implements IStudentService {
   }
 
   public saveAdminNote(administratorId: number, studentId: number, note: string | null): Observable<void> {
-    const url = `${this.getUrl(administratorId, studentId)}/adminNote`;
+    const url = `${this.getUrl(administratorId, studentId)}/note`;
     const body = { note };
     return this.httpService.put(url, body);
   }

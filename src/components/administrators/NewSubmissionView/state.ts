@@ -1,11 +1,10 @@
 import type { NewSubmission } from '@/domain/administrator/newSubmission';
 import type { Tutor } from '@/domain/administrator/tutor';
 import type { NewSubmissionWithEnrollmentAndCourseAndAssignments, NewTransferWithSubmissionAndTutors } from '@/services/administrators/newSubmissionService';
-import type { StudentWithCountryAndProvince } from '@/services/administrators/studentService';
 
 interface Data {
   newSubmission: NewSubmissionWithEnrollmentAndCourseAndAssignments;
-  student: StudentWithCountryAndProvince;
+  // student: StudentWithCountryAndProvince;
   tutors: Tutor[];
 }
 

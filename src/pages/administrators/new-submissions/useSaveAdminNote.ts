@@ -6,12 +6,11 @@ import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
 
 export interface SaveAdminNotePayload {
-  administratorId: number;
   studentId: number;
   note: string | null;
 }
 
-export const useSaveAdminNote = (): Subject<SaveAdminNotePayload> => {
+export const useSaveAdminNote = (administratorId: number): Subject<SaveAdminNotePayload> => {
   const navigateToLogin = useNavigateToLogin();
   const { studentService } = useAdminServices();
 
@@ -21,7 +20,7 @@ export const useSaveAdminNote = (): Subject<SaveAdminNotePayload> => {
     const destroy$ = new Subject<void>();
 
     saveAdminNote$.current.pipe(
-      exhaustMap(({ administratorId, studentId, note }) => {
+      exhaustMap(({ studentId, note }) => {
         return studentService.saveAdminNote(administratorId, studentId, note).pipe(
           tap({
             error: err => {
@@ -37,8 +36,8 @@ export const useSaveAdminNote = (): Subject<SaveAdminNotePayload> => {
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ studentService, navigateToLogin ]);
+  }, [ administratorId, studentService, navigateToLogin ]);
 
   // eslint-disable-next-line react-hooks/refs
-return saveAdminNote$.current;
+  return saveAdminNote$.current;
 };

@@ -7,6 +7,7 @@ export interface Student {
   sex: 'M' | 'F';
   firstName: string;
   lastName: string;
+  tutorNote: string | null;
   adminNote: string | null;
   numLogins: number;
   lastLogin: Date | null;
@@ -33,6 +34,7 @@ export interface RawStudent {
   sex: 'M' | 'F';
   firstName: string;
   lastName: string;
+  tutorNote: string | null;
   adminNote: string | null;
   numLogins: number;
   /** string date */

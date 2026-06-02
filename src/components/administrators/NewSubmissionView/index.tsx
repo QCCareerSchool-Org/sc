@@ -1,7 +1,7 @@
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, FocusEventHandler, MouseEvent, MouseEventHandler, SubmitEventHandler } from 'react';
-import { useCallback, useId, useReducer, useState } from 'react';
+import { useCallback, useId, useReducer } from 'react';
 
 import { NewAssignmentList } from './NewAssignmentList';
 import { NewSubmissionStatsTable } from './NewSubmissionStatsTable';
@@ -26,13 +26,15 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
   const id = useId();
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
-  const [ adminNote, setAdminNote ] = useState<string>(state.data?.newSubmission.enrollment.student.adminNote ?? '');
+  // const [ adminNote, setAdminNote ] = useState<string>(state.data?.newSubmission.enrollment.student.adminNote ?? '');
 
   useInitialData(dispatch, administratorId, submissionId);
 
+  console.log(state.data?.newSubmission.enrollment.student);
+
   const submissionTransfer$ = useSubmissionTransfer(dispatch, administratorId, submissionId);
   const submissionRestart$ = useSubmissionRestart(dispatch, administratorId, submissionId);
-  const saveAdminNote$ = useSaveAdminNote();
+  const saveAdminNote$ = useSaveAdminNote(administratorId);
 
   const handleClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
     void router.push(`/administrators/new-assignments/${assignmentId}`);
@@ -44,14 +46,16 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
   };
 
   const handleNoteChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
-    setAdminNote(e.target.value);
+    dispatch({ type: 'ADMIN_NOTE_CHANGED', payload: e.target.value });
   };
 
   const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
-    const studentId = state.data?.newSubmission.enrollment.studentId;
-    if (!studentId) { return; }
-    saveAdminNote$.next({ administratorId, studentId, note: adminNote.trim() || null });
-  }, [ saveAdminNote$, administratorId, adminNote, state.data?.newSubmission.enrollment.studentId ]);
+    if (!state.data) {
+      return;
+    }
+    const studentId = state.data.newSubmission.enrollment.studentId;
+    saveAdminNote$.next({ studentId, note: state.data.newSubmission.enrollment.student.adminNote ?? '' });
+  }, [ saveAdminNote$, state.data ]);
 
   const handlePopupClose = useCallback(() => dispatch({ type: 'POPUP_TOGGLED' }), []);
 
@@ -115,7 +119,7 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
                 id={id + '_note'}
                 className="form-control"
                 rows={4}
-                value={adminNote}
+                value={state.data.newSubmission.enrollment.student.adminNote ?? ''}
                 onChange={handleNoteChange}
                 onBlur={handleSaveNote}
                 placeholder="Enter note here..."
