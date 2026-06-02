@@ -1,7 +1,7 @@
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, FC, FocusEventHandler, MouseEvent, MouseEventHandler, SubmitEventHandler } from 'react';
-import { useCallback, useId, useReducer } from 'react';
+import { useCallback, useId, useReducer, useState } from 'react';
 
 import { NewAssignmentList } from './NewAssignmentList';
 import { NewSubmissionStatsTable } from './NewSubmissionStatsTable';
@@ -15,6 +15,7 @@ import { Modal } from '@/components/Modal';
 import { ModalDialog } from '@/components/ModalDialog';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
+import { useSaveAdminNote } from 'src/pages/administrators/new-submissions/useSaveAdminNote';
 
 interface Props {
   administratorId: number;
@@ -25,11 +26,13 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
   const id = useId();
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const [ adminNote, setAdminNote ] = useState<string>(state.data?.newSubmission.enrollment.student.adminNote ?? '');
 
   useInitialData(dispatch, administratorId, submissionId);
 
   const submissionTransfer$ = useSubmissionTransfer(dispatch, administratorId, submissionId);
   const submissionRestart$ = useSubmissionRestart(dispatch, administratorId, submissionId);
+  const saveAdminNote$ = useSaveAdminNote();
 
   const handleClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
     void router.push(`/administrators/new-assignments/${assignmentId}`);
@@ -41,12 +44,14 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
   };
 
   const handleNoteChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
-    dispatch({ type: 'ADMIN_NOTE_CHANGED', payload: e.target.value });
+    setAdminNote(e.target.value);
   };
 
   const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
-      saveNote$.next({ tutorId, studentId, note: state.newSubmission?.enrollment.student.tutorNote ?? null });
-    }, [ saveNote$, tutorId, studentId, state.newSubmission?.enrollment.student.tutorNote ]);
+    const studentId = state.data?.newSubmission.enrollment.studentId;
+    if (!studentId) { return; }
+    saveAdminNote$.next({ administratorId, studentId, note: adminNote.trim() || null });
+  }, [ saveAdminNote$, administratorId, adminNote, state.data?.newSubmission.enrollment.studentId ]);
 
   const handlePopupClose = useCallback(() => dispatch({ type: 'POPUP_TOGGLED' }), []);
 
@@ -105,20 +110,17 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
                   <NewTransfersList transfers={submission.newTransfers} />
                 </div>
               )}
-              <h3>Admin Note</h3>
-              <div className="col-lg-6 col-md-12">
-                <label htmlFor={id + '_note'} className="form-label">Admin Note</label>
-                <textarea
-                  id={id + '_note'}
-                  className="form-control"
-                  rows={4}
-                  value={state.newSubmission.enrollment.student.adminNote ?? ''}
-                  onChange={handleNoteChange}
-                  onBlur={handleSaveNote}
-                  placeholder="Enter note here..."
-                />
-              </div>
-              <h3>Tutor Note</h3>
+              <label htmlFor={id + '_note'} className="form-label">Admin Note</label>
+              <textarea
+                id={id + '_note'}
+                className="form-control"
+                rows={4}
+                value={adminNote}
+                onChange={handleNoteChange}
+                onBlur={handleSaveNote}
+                placeholder="Enter note here..."
+              />
+              <label htmlFor={id + '_note'} className="form-label mt-3">Tutor Note</label>
               <div className="form-control" style={{ minHeight: 120 }}>
                 {state.data.newSubmission.enrollment.student.tutorNote ?? ''}
               </div>

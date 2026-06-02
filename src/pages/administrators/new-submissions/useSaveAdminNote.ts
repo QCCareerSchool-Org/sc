@@ -11,16 +11,16 @@ export interface SaveAdminNotePayload {
   note: string | null;
 }
 
-export const useSaveNote = (): Subject<SaveAdminNotePayload> => {
+export const useSaveAdminNote = (): Subject<SaveAdminNotePayload> => {
   const navigateToLogin = useNavigateToLogin();
   const { studentService } = useAdminServices();
 
-  const saveNote$ = useRef(new Subject<SaveAdminNotePayload>());
+  const saveAdminNote$ = useRef(new Subject<SaveAdminNotePayload>());
 
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    saveNote$.current.pipe(
+    saveAdminNote$.current.pipe(
       exhaustMap(({ administratorId, studentId, note }) => {
         return studentService.saveAdminNote(administratorId, studentId, note).pipe(
           tap({
@@ -40,5 +40,5 @@ export const useSaveNote = (): Subject<SaveAdminNotePayload> => {
   }, [ studentService, navigateToLogin ]);
 
   // eslint-disable-next-line react-hooks/refs
-  return saveNote$.current;
+return saveAdminNote$.current;
 };

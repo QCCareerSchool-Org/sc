@@ -18,6 +18,7 @@ export type NewSubmissionWithEnrollmentAndCourseAndAssignments = NewSubmission &
     course: Course;
     student: {
       tutorNote: string | null;
+      adminNote: string | null;
     };
   };
   tutor: Tutor | null;
@@ -38,6 +39,7 @@ type RawNewSubmissionWithEnrollmentAndCourseAndAssignments = RawNewSubmission & 
     course: Course;
     student: {
       tutorNote: string | null;
+      adminNote: string | null;
     };
   };
   tutor: Tutor | null;
@@ -139,6 +141,7 @@ export class NewSubmissionService implements INewSubmissionService {
         dueDate: newSubmission.enrollment.dueDate === null ? null : new Date(newSubmission.enrollment.dueDate),
         student: {
           tutorNote: newSubmission.enrollment.student.tutorNote,
+          adminNote: newSubmission.enrollment.student.adminNote,
         },
       },
       newAssignments: newSubmission.newAssignments.map(a => ({

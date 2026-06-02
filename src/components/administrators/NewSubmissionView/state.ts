@@ -34,6 +34,7 @@ export type Action =
   | { type: 'LOAD_DATA_SUCCEEDED'; payload: Data }
   | { type: 'LOAD_DATA_FAILED'; payload?: number }
   | { type: 'TUTOR_ID_CHANGED'; payload: number | null }
+  | { type: 'ADMIN_NOTE_CHANGED'; payload: string }
   | { type: 'POPUP_TOGGLED' }
   | { type: 'SUBMISSION_TRANSFER_STARTED' }
   | { type: 'SUBMISSION_TRANSFER_SUCCEEDED'; payload: NewTransferWithSubmissionAndTutors }
@@ -69,6 +70,26 @@ export const reducer = (state: State, action: Action): State => {
         },
       };
     }
+    case 'ADMIN_NOTE_CHANGED':
+      if (!state.data) {
+        throw Error('Data isn\'t loaded');
+      }
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          newSubmission: {
+            ...state.data.newSubmission,
+            enrollment: {
+              ...state.data.newSubmission.enrollment,
+              student: {
+                ...state.data.newSubmission.enrollment.student,
+                adminNote: action.payload,
+              },
+            },
+          },
+        },
+      };
     case 'SUBMISSION_TRANSFER_STARTED':
       return { ...state, transferForm: { ...state.transferForm, processingState: 'saving', errorMessage: undefined } };
     case 'SUBMISSION_TRANSFER_SUCCEEDED':
