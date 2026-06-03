@@ -7,7 +7,7 @@ import Hero from './hero-.jpg';
 import type { Award } from '@/domain/award';
 
 export interface Props {
-  submissionId: string | null;
+  certificateId: string | null;
 };
 
 export interface Certificate {
@@ -15,8 +15,8 @@ export interface Certificate {
   id: string;
 }
 
-const AwardPage: NextPage<{ submissionId: string }> = async ({ submissionId }) => {
-  console.log(submissionId);
+const AwardPage: NextPage<{ certificateId: string }> = async ({ certificateId }) => {
+  console.log(certificateId);
   return (
     <>
       <section>
@@ -45,17 +45,17 @@ const AwardPage: NextPage<{ submissionId: string }> = async ({ submissionId }) =
 export default AwardPage;
 
 export const getServerSideProps: GetServerSideProps<Props> = async ctx => {
-  const submissionId = typeof ctx.params?.submissionId === 'string' ? ctx.params.submissionId : null;
-  return await Promise.resolve({ props: { submissionId } });
+  const certificateId = typeof ctx.params?.certificateId === 'string' ? ctx.params.certificateId : null;
+  return await Promise.resolve({ props: { certificateId } });
 };
 
-const getCertificate = async (submissionId: string): Promise<Certificate> => {
-  if (/^\d+$/u.test(submissionId)) {
-    const submissionIdNumber = parseInt(submissionId, 10);
-    return fetchOldAward(submissionIdNumber);
+const getCertificate = async (certificateId: string): Promise<Certificate> => {
+  if (/^\d+$/u.test(certificateId)) {
+    const certificateIdNumber = parseInt(certificateId, 10);
+    return fetchOldAward(certificateIdNumber);
   }
 
-  return fetchAward(submissionId);
+  return fetchAward(certificateId);
 };
 
 // look up how to do NextJS Pages Router PDF request
