@@ -1,9 +1,12 @@
-import { FaLinkedin, FaLinkedinIn } from 'react-icons/fa';
+import { FaLinkedinIn } from 'react-icons/fa';
+import { GiGraduateCap } from 'react-icons/gi';
+import { GrDownload } from 'react-icons/gr';
 
 import { BackgroundImage } from './backgroundImage';
 import { fetchAward } from './fetchAward';
 import { fetchOldAward } from './fetchOldAward';
 import Hero from './hero-.jpg';
+import styles from './index.module.css';
 import { SuggestedText } from './suggestedText';
 import { BlueskyShare } from '../share/bluesky';
 import { FacebookShare } from '../share/facebook';
@@ -22,31 +25,31 @@ interface Certificate {
 }
 
 interface PageProps {
-  params: {
+  params: Promise<{
     certificateId: string;
-  };
+  }>;
 }
 
 const AwardPage = async ({ params }: PageProps) => {
-
+  const { certificateId } = await params;
+  console.log(certificateId);
   let certificate: Certificate;
   try {
-    certificate = await getCertificate(params.certificateId);
+    certificate = await getCertificate(certificateId);
   } catch {
     return <p>Certificate not found.</p>;
   }
-
   const suggestedText = `I just earned this Award of Excellence from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫 #AwardOfExcellence @QCEventPlanning`;
   const url = `https://www.qceventplanning.com/awards/${certificate.id}`;
   return (
     <>
-      <section className="position-relative overflow-hidden py-4 d-flex align-items-center" style={{ minHeight: '70vh' }}>
+      <section className="position-relative overflow-hidden py-4 d-flex align-items-center" style={{ minHeight: '50vh' }}>
         <BackgroundImage src={Hero} />
-        <div className="position-relative z-1 container text-center text-white ">
-          <h1 className="fw-bold">You Did It!</h1>
+        <div className="position-relative z-1 container text-center text-white">
+          <h1 className="fw-bold mb-4">You Did It!</h1>
           <div className="row justify-content-center">
             <div className="col-12 col-sm-10 col-md-8 col-lg-5">
-              <div className="bg-white p-2 rounded-4 shadow text-black fw-bold">Congratulations, {certificate.name}!</div>
+              <div className="bg-white p-2 rounded-4 shadow text-black fw-bold mb-4">Congratulations, {certificate.name}!</div>
             </div>
           </div>
 
@@ -60,7 +63,7 @@ const AwardPage = async ({ params }: PageProps) => {
 
       <section>
         <div className="container text-center">
-          <div className=" bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">Congratulations, {certificate.name}!</div>
+          <div className=" bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">CERTIFICATION ID: {certificate.id}</div>
         </div>
       </section>
 
@@ -69,53 +72,33 @@ const AwardPage = async ({ params }: PageProps) => {
           <h2 className="text-center mb-4">Next Steps</h2>
 
           <div className="row g-4 justify-content-center">
-            <div className="col-12 col-md-6 col-lg-4">
-              <div className="p-4 bg-white rounded-4 shadow-sm h-100 d-flex flex-column">
-                <div className="mb-3 text-center">
-                  <i className="bi bi-linkedin fs-1 text-primary" />
-                </div>
-                <h5 className="fw-bold text-center"><div className="bg-blue rounded-3"><FaLinkedinIn color="#0A66C2" size={32} /></div> Add to LinkedIn Profile</h5>
-                <p className="mt-2 flex-grow-1 text-center">
-                  Add this verified credential to your LinkedIn profile's Licenses & Certifications section.
-                  It makes your profile highly searchable for recruiters and instantly signals your expertise.
-                </p>
-                <button className="btn btn-primary w-100 mt-3 fw-semibold">
-                  Add Credential
-                </button>
-              </div>
-            </div>
+            {actions.map(action => (
+              <div key={action.title} className="col-12 col-md-6 col-lg-4">
+                <div className="p-4 bg-white rounded-4 shadow-sm h-100 d-flex flex-column">
+                  <div className="d-flex gap-2">
+                    <div
+                      className={`rounded-3 d-flex align-items-center justify-content-center ${action.styling}`}
+                      style={{ width: 40, height: 40 }}
+                    >
+                      {action.icon}
+                    </div>
 
-            <div className="col-12 col-md-6 col-lg-4">
-              <div className="p-4 bg-white rounded-4 shadow-sm h-100 d-flex flex-column">
-                <div className="mb-3 text-center">
-                  <i className="bi bi-file-earmark-pdf fs-1 text-danger" />
-                </div>
-                <h5 className="fw-bold text-center">Download PDF</h5>
-                <p className="mt-2 flex-grow-1 text-center">
-                  Download a high-quality PDF suitable for printing or adding to your portfolio.
-                  Perfect for framing or sharing with clients.
-                </p>
-                <button className="btn btn-danger w-100 mt-3 fw-semibold">
-                  Download Official PDF
-                </button>
-              </div>
-            </div>
+                    <div>
+                      <h5 className="mb-0">{action.title}</h5>
+                      <p>{action.subtitle}</p>
+                    </div>
+                  </div>
 
-            <div className="col-12 col-md-6 col-lg-4">
-              <div className="p-4 bg-white rounded-4 shadow-sm h-100 d-flex flex-column">
-                <div className="mb-3 text-center">
-                  <i className="bi bi-gift fs-1 text-success" />
-                </div>
-                <h5 className="fw-bold text-center">Enjoy Alumni Benefits</h5>
-                <p className="mt-2 flex-grow-1 text-center">
-                  Enjoy lifetime access to 50% off additional courses and 10% off QC Career School merchandise.
-                </p>
-                <button className="btn btn-success w-100 mt-3 fw-semibold">
-                  See Merchandise
-                </button>
-              </div>
-            </div>
+                  <p className="mt-2 flex-grow-1">
+                    {action.description}
+                  </p>
 
+                  <button className={`btn btn-primary ${action.styling}`}>
+                    {action.buttonText}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -171,16 +154,35 @@ const getCertificate = async (certificateId: string): Promise<Certificate> => {
     schoolName: award.schoolName,
     courseName: award.courseName,
   };
-  // const certificateIdNumber = parseInt(certificateId, 10);
-  // if (/^\d+$/u.test(certificateId)) {
-  //   return fetchOldAward(certificateIdNumber);
-  // }
-  // return fetchAward(certificateId);
 };
 
-//   return fetchAward(certificateId);
-// };
+const actions = [
+  {
+    title: 'Add to LinkedIn Profile',
+    subtitle: 'Licenses & Certifications Section',
+    description:
+      "Add this verified credential to your LinkedIn profile's Licenses & Certifications section. It makes your profile highly searchable for recruiters and instantly signals your expertise.",
+    buttonText: 'Add Credential',
+    styling: styles.linkedin,
+    icon: <FaLinkedinIn size={22} color="white" />,
+  },
 
-// look up how to do NextJS Pages Router PDF request
-// social integration (mockup backend call to get data)
-// template already exists
+  {
+    title: 'Download PDF',
+    subtitle: 'Official Verified Document',
+    styling: styles.blackBtn,
+    description:
+      'Download a high-quality PDF suitable for printing or adding to your portfolio. Perfect for framing or sharing with clients.',
+    buttonText: 'Download Official PDF',
+    icon: <GrDownload color="white" />,
+  },
+  {
+    title: 'Enjoy Alumni Benefits',
+    subtitle: 'Lifetime Privileges & Savings',
+    styling: styles.blackBtn,
+    description:
+      'Enjoy lifetime access to 50% off additional courses and 10% off QC Career School merchandise.',
+    buttonText: 'See Merchandise',
+    icon: <GiGraduateCap color="white" />,
+  },
+];
