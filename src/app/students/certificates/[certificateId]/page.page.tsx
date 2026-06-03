@@ -22,6 +22,7 @@ interface Certificate {
   id: number;
   schoolName: string;
   courseName: string;
+  // date: string;
 }
 
 interface PageProps {
@@ -64,7 +65,14 @@ const AwardPage = async ({ params }: PageProps) => {
       <section>
         <div className="container text-center">
           <div className=" bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">CERTIFICATION ID: {certificate.id}</div>
+          <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4 row">
+            <div className="col-12 col-md-4">
+              <p className="mb-0">{certificate.id}</p>
+              {/* <p className="mb-0">{certificate.date}</p> */}
+            </div>
+          </div>
         </div>
+
       </section>
 
       <section className="py-5 bg-light">

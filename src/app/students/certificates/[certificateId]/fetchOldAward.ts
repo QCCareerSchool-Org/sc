@@ -1,13 +1,16 @@
+import { endpoint } from 'src/basePath';
 import { isRawAward } from './submission';
 import type { Award } from '@/domain/award';
 
 export const fetchOldAward = async (submissionId: number): Promise<Award> => {
-  const url = `http://localhost:3000/api/sc/v1/oldAwards/${submissionId}`;
+  const url = `${endpoint}/oldAwards/${submissionId}`;
   const response = await fetch(url);
   if (!response.ok) {
+    console.log(response.statusText);
     throw Error(response.statusText);
   }
   const body: unknown = await response.json();
+  console.log(body);
   if (!isRawAward(body)) {
     throw Error('Unexpected response');
   }

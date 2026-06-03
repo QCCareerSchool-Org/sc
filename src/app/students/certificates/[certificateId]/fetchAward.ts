@@ -1,8 +1,9 @@
 import { isRawAward } from './submission';
 import type { Award } from '@/domain/award';
+import { endpoint } from 'src/basePath';
 
 export const fetchAward = async (submissionId: string): Promise<Award> => {
-  const url = `http://localhost:3000/api/sc/v1/awards/${encodeURIComponent(submissionId)}`;
+  const url = `${endpoint}/oldAwards/${submissionId}`;
   const response = await fetch(url);
   if (!response.ok) {
     throw Error(response.statusText);
