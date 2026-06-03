@@ -1,6 +1,8 @@
+import type { Dispatch } from 'react';
 import { useEffect, useRef } from 'react';
 import { catchError, EMPTY, exhaustMap, Subject, takeUntil, tap } from 'rxjs';
 
+import type { Action } from './state';
 import { useAdminServices } from '@/hooks/useAdminServices';
 import { useNavigateToLogin } from '@/hooks/useNavigateToLogin';
 import { HttpServiceError } from '@/services/httpService';
@@ -10,7 +12,7 @@ export interface SaveAdminNotePayload {
   note: string | null;
 }
 
-export const useSaveAdminNote = (administratorId: number): Subject<SaveAdminNotePayload> => {
+export const useSaveAdminNote = (administratorId: number, dispatch: Dispatch<Action>): Subject<SaveAdminNotePayload> => {
   const navigateToLogin = useNavigateToLogin();
   const { studentService } = useAdminServices();
 
@@ -20,23 +22,26 @@ export const useSaveAdminNote = (administratorId: number): Subject<SaveAdminNote
     const destroy$ = new Subject<void>();
 
     saveAdminNote$.current.pipe(
+      tap(() => dispatch({ type: 'ADMIN_NOTE_SAVE_STARTED' })),
       exhaustMap(({ studentId, note }) => {
         return studentService.saveAdminNote(administratorId, studentId, note).pipe(
           tap({
-            error: err => {
-              if (err instanceof HttpServiceError && err.login) {
-                navigateToLogin();
-              }
-            },
+            next: () => dispatch({ type: 'ADMIN_NOTE_SAVE_SUCCEEDED' }),
           }),
-          catchError(() => EMPTY),
+          catchError(err => {
+            dispatch({ type: 'ADMIN_NOTE_SAVE_FAILED', payload: 'Failed to save admin note' });
+            if (err instanceof HttpServiceError && err.login) {
+              navigateToLogin();
+            }
+            return EMPTY;
+          }),
         );
       }),
       takeUntil(destroy$),
     ).subscribe();
 
     return () => { destroy$.next(); destroy$.complete(); };
-  }, [ administratorId, studentService, navigateToLogin ]);
+  }, [ administratorId, studentService, navigateToLogin, dispatch ]);
 
   // eslint-disable-next-line react-hooks/refs
   return saveAdminNote$.current;

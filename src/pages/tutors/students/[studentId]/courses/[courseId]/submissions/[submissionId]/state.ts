@@ -15,6 +15,10 @@ export interface State {
   };
   processingState: 'idle' | 'uploading' | 'upload error' | 'deleting' | 'delete error' | 'closing' | 'close error' | 'returning' | 'return error';
   errorMessage?: string;
+  tutorNoteForm: {
+    processingState: 'idle' | 'saving' | 'save error';
+    errorMessage?: string;
+  };
 }
 
 export type Action =
@@ -23,6 +27,9 @@ export type Action =
   | { type: 'FILE_CHANGED'; payload: File }
   | { type: 'MESSAGE_CHANGED'; payload: string }
   | { type: 'TUTOR_NOTE_CHANGED'; payload: string }
+  | { type: 'TUTOR_NOTE_SAVE_STARTED' }
+  | { type: 'TUTOR_NOTE_SAVE_SUCCEEDED' }
+  | { type: 'TUTOR_NOTE_SAVE_FAILED'; payload: string }
   | { type: 'CLOSE_UNIT_STARTED' }
   | { type: 'CLOSE_UNIT_SUCCEEDED'; payload: NewSubmission }
   | { type: 'CLOSE_UNIT_FAILED'; payload?: string }
@@ -47,6 +54,9 @@ export const initialState: State = {
     message: '',
   },
   processingState: 'idle',
+  tutorNoteForm: {
+    processingState: 'idle',
+  },
 };
 
 export const reducer = (state: State, action: Action): State => {
@@ -99,6 +109,12 @@ export const reducer = (state: State, action: Action): State => {
           : undefined,
       };
     }
+    case 'TUTOR_NOTE_SAVE_STARTED':
+      return { ...state, tutorNoteForm: { processingState: 'saving', errorMessage: undefined } };
+    case 'TUTOR_NOTE_SAVE_SUCCEEDED':
+      return { ...state, tutorNoteForm: { processingState: 'idle', errorMessage: undefined } };
+    case 'TUTOR_NOTE_SAVE_FAILED':
+      return { ...state, tutorNoteForm: { processingState: 'save error', errorMessage: action.payload } };
     case 'CLOSE_UNIT_STARTED':
       return { ...state, processingState: 'closing', errorMessage: undefined };
     case 'CLOSE_UNIT_SUCCEEDED':

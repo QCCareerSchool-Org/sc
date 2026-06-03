@@ -9,13 +9,13 @@ import { NewSubmissionStatus } from './NewSubmissionStatus';
 import { NewTransfersList } from './NewTransfersList';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
+import { useSaveAdminNote } from './useSaveAdminNote';
 import { useSubmissionRestart } from './useSubmissionRestart';
 import { useSubmissionTransfer } from './useSubmissionTransfer';
 import { Modal } from '@/components/Modal';
 import { ModalDialog } from '@/components/ModalDialog';
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
-import { useSaveAdminNote } from 'src/pages/administrators/new-submissions/useSaveAdminNote';
 
 interface Props {
   administratorId: number;
@@ -30,11 +30,9 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
 
   useInitialData(dispatch, administratorId, submissionId);
 
-  console.log(state.data?.newSubmission.enrollment.student);
-
   const submissionTransfer$ = useSubmissionTransfer(dispatch, administratorId, submissionId);
   const submissionRestart$ = useSubmissionRestart(dispatch, administratorId, submissionId);
-  const saveAdminNote$ = useSaveAdminNote(administratorId);
+  const saveAdminNote$ = useSaveAdminNote(administratorId, dispatch);
 
   const handleClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
     void router.push(`/administrators/new-assignments/${assignmentId}`);
@@ -114,7 +112,12 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
                   <NewTransfersList transfers={submission.newTransfers} />
                 </div>
               )}
-              <label htmlFor={id + '_note'} className="form-label">Admin Note</label>
+              <label htmlFor={id + '_note'} className="form-label">
+                Admin Note
+                {state.adminNoteForm.processingState === 'saving' && <span className="ms-2"><Spinner size="sm" /></span>}
+                {state.adminNoteForm.processingState === 'idle' && state.adminNoteForm.errorMessage === undefined && <span className="ms-2 text-success small">Saved</span>}
+                {state.adminNoteForm.processingState === 'save error' && <span className="ms-2 text-danger small">{state.adminNoteForm.errorMessage}</span>}
+              </label>
               <textarea
                 id={id + '_note'}
                 className="form-control"

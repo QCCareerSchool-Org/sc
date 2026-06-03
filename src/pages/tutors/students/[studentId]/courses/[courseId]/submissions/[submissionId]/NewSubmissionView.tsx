@@ -38,7 +38,7 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   const feedbackDelete$ = useFeedbackDelete(dispatch);
   const close$ = useClose(dispatch);
   const return$ = useReturn(dispatch);
-  const saveTutorNote$ = useSaveTutorNote();
+  const saveTutorNote$ = useSaveTutorNote(dispatch);
 
   const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
     saveTutorNote$.next({ tutorId, studentId, note: state.newSubmission?.enrollment.student.tutorNote ?? null });
@@ -106,7 +106,12 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
               </table>
             </div>
             <div className="col-lg-6 col-md-12">
-              <label htmlFor={id + '_note'} className="form-label">Tutor Note</label>
+              <label htmlFor={id + '_note'} className="form-label">
+                Tutor Note
+                {state.tutorNoteForm.processingState === 'saving' && <span className="ms-2"><Spinner size="sm" /></span>}
+                {state.tutorNoteForm.processingState === 'idle' && state.tutorNoteForm.errorMessage === undefined && <span className="ms-2 text-success small">Saved</span>}
+                {state.tutorNoteForm.processingState === 'save error' && <span className="ms-2 text-danger small">{state.tutorNoteForm.errorMessage}</span>}
+              </label>
               <textarea
                 id={id + '_note'}
                 className="form-control"

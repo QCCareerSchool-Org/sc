@@ -24,6 +24,10 @@ export interface State {
     processingState: 'idle' | 'saving' | 'save error';
     errorMessage?: string;
   };
+  adminNoteForm: {
+    processingState: 'idle' | 'saving' | 'save error';
+    errorMessage?: string;
+  };
   popup: boolean;
   error: boolean;
   errorCode?: number;
@@ -34,6 +38,9 @@ export type Action =
   | { type: 'LOAD_DATA_FAILED'; payload?: number }
   | { type: 'TUTOR_ID_CHANGED'; payload: number | null }
   | { type: 'ADMIN_NOTE_CHANGED'; payload: string }
+  | { type: 'ADMIN_NOTE_SAVE_STARTED' }
+  | { type: 'ADMIN_NOTE_SAVE_SUCCEEDED' }
+  | { type: 'ADMIN_NOTE_SAVE_FAILED'; payload: string }
   | { type: 'POPUP_TOGGLED' }
   | { type: 'SUBMISSION_TRANSFER_STARTED' }
   | { type: 'SUBMISSION_TRANSFER_SUCCEEDED'; payload: NewTransferWithSubmissionAndTutors }
@@ -88,7 +95,14 @@ export const reducer = (state: State, action: Action): State => {
             },
           },
         },
+        adminNoteForm: { processingState: 'idle', errorMessage: undefined },
       };
+    case 'ADMIN_NOTE_SAVE_STARTED':
+      return { ...state, adminNoteForm: { processingState: 'saving', errorMessage: undefined } };
+    case 'ADMIN_NOTE_SAVE_SUCCEEDED':
+      return { ...state, adminNoteForm: { processingState: 'idle', errorMessage: undefined } };
+    case 'ADMIN_NOTE_SAVE_FAILED':
+      return { ...state, adminNoteForm: { processingState: 'save error', errorMessage: action.payload } };
     case 'SUBMISSION_TRANSFER_STARTED':
       return { ...state, transferForm: { ...state.transferForm, processingState: 'saving', errorMessage: undefined } };
     case 'SUBMISSION_TRANSFER_SUCCEEDED':
@@ -133,6 +147,9 @@ export const initialState: State = {
     processingState: 'idle',
   },
   restartForm: {
+    processingState: 'idle',
+  },
+  adminNoteForm: {
     processingState: 'idle',
   },
   popup: false,
