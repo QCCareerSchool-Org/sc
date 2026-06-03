@@ -1,8 +1,8 @@
 import { FaLinkedin, FaLinkedinIn } from 'react-icons/fa';
 
 import { BackgroundImage } from './backgroundImage';
-// import { fetchAward } from './fetchAward';
-// import { fetchOldAward } from './fetchOldAward';
+import { fetchAward } from './fetchAward';
+import { fetchOldAward } from './fetchOldAward';
 import Hero from './hero-.jpg';
 import { SuggestedText } from './suggestedText';
 import { BlueskyShare } from '../share/bluesky';
@@ -10,6 +10,7 @@ import { FacebookShare } from '../share/facebook';
 import { LinkedInShare } from '../share/linkedIn';
 import { ThreadsShare } from '../share/threads';
 import { TwitterShare } from '../share/twitter';
+import type { Award } from '@/domain/award';
 
 // import type { Award } from '@/domain/award';
 
@@ -26,8 +27,15 @@ interface PageProps {
   };
 }
 
-const AwardPage = ({ params }: PageProps) => {
-  const certificate = getCertificate(params.certificateId);
+const AwardPage = async ({ params }: PageProps) => {
+
+  let certificate: Certificate;
+  try {
+    certificate = await getCertificate(params.certificateId);
+  } catch {
+    return <p>Certificate not found.</p>;
+  }
+
   const suggestedText = `I just earned this Award of Excellence from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫 #AwardOfExcellence @QCEventPlanning`;
   const url = `https://www.qceventplanning.com/awards/${certificate.id}`;
   return (
@@ -68,7 +76,7 @@ const AwardPage = ({ params }: PageProps) => {
                 </div>
                 <h5 className="fw-bold text-center"><div className="bg-blue rounded-3"><FaLinkedinIn color="#0A66C2" size={32} /></div> Add to LinkedIn Profile</h5>
                 <p className="mt-2 flex-grow-1 text-center">
-                  Add this verified credential to your LinkedIn profile’s Licenses & Certifications section.
+                  Add this verified credential to your LinkedIn profile's Licenses & Certifications section.
                   It makes your profile highly searchable for recruiters and instantly signals your expertise.
                 </p>
                 <button className="btn btn-primary w-100 mt-3 fw-semibold">
@@ -148,16 +156,26 @@ const AwardPage = ({ params }: PageProps) => {
 
 export default AwardPage;
 
-const getCertificate = (certificateId: string): Certificate => {
+const getCertificate = async (certificateId: string): Promise<Certificate> => {
+  let award: Award;
+
+  if (/^\d+$/u.test(certificateId)) {
+    award = await fetchOldAward(parseInt(certificateId, 10));
+  } else {
+    award = await fetchAward(certificateId);
+  }
+
   return {
-    id: parseInt(certificateId, 10),
-    name: 'Name LastName',
-    schoolName: 'QC Event School',
-    courseName: 'Event Planning',
+    id: parseInt(award.submissionId, 10),
+    name: award.name,
+    schoolName: award.schoolName,
+    courseName: award.courseName,
   };
+  // const certificateIdNumber = parseInt(certificateId, 10);
   // if (/^\d+$/u.test(certificateId)) {
-  //   const certificateIdNumber = parseInt(certificateId, 10);
   //   return fetchOldAward(certificateIdNumber);
+  // }
+  // return fetchAward(certificateId);
 };
 
 //   return fetchAward(certificateId);
