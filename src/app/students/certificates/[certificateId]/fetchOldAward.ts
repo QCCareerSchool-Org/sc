@@ -23,5 +23,6 @@ export const fetchOldAward = async (submissionId: number): Promise<Award> => {
     submissionId: String(body.submissionId),
     schoolName: body.schoolName,
     created: new Date(body.created),
+    designation: body.courseName,
   };
 };

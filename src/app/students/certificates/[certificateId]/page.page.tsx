@@ -3,10 +3,13 @@ import { GiGraduateCap } from 'react-icons/gi';
 import { GrDownload } from 'react-icons/gr';
 
 import { BackgroundImage } from './backgroundImage';
+import Certificate from './Certificate';
 import { fetchAward } from './fetchAward';
 import { fetchOldAward } from './fetchOldAward';
 import Hero from './hero-.jpg';
 import styles from './index.module.css';
+import directorSignature from './kayla.svg';
+import registrarSignature from './lucie.svg';
 import { SuggestedText } from './suggestedText';
 import { BlueskyShare } from '../share/bluesky';
 import { FacebookShare } from '../share/facebook';
@@ -114,6 +117,11 @@ const AwardPage = async ({ params }: PageProps) => {
       <section>
         <div className="container text-center">
           <div className=" bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">CERTIFICATION ID: {certificate.id}</div>
+
+          <div className="bg-white border border-[#D2D2D7]/50 rounded-b-2xl p-1 overflow-x-auto shadow-sm">
+            <Certificate name={certificate.name} schoolName={certificate.schoolName} courseName={certificate.courseName} registrarSignatureUrl={registrarSignature} directorSignatureUrl={directorSignature} date={certificate.date} />
+          </div>
+
           <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4 row justify-content-center">
             <div className="col-12 col-md-4">
               <p className="mb-0">CERTIFICATION ID</p>
@@ -125,17 +133,15 @@ const AwardPage = async ({ params }: PageProps) => {
             </div>
           </div>
         </div>
-
       </section>
 
       <section className="py-5 bg-light">
         <div className="container">
           <h2 className="text-center mb-4">Next Steps</h2>
-
-          <div className="row g-4 justify-content-center">
+          <div className="row justify-content-center">
             {actions.map(action => (
               <div key={action.title} className="col-12 col-md-6 col-lg-4">
-                <div className="p-4 bg-white rounded-4 shadow-sm h-100 d-flex flex-column">
+                <div className="p-4 h-100 d-flex flex-column">
                   <div className="d-flex gap-2">
                     <div
                       className={`rounded-3 d-flex align-items-center justify-content-center ${action.styling}`}

@@ -1,0 +1,25 @@
+.recipientName {
+  font-family: 'Great Vibes', cursive;
+  font-size: 52px;
+  color: #1A1A1A;
+}
+
+.institutionHeader {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  letter-spacing: 0.1em;
+  color: #1A1A1A;
+}
+
+.courseTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+}
+
+.metaSubtext {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: #404040;
+}

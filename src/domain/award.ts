@@ -10,6 +10,7 @@ export interface Award {
   /** the student's name */
   name: string;
   created: Date;
+  designation: string;
 }
 
 export interface RawAward {
@@ -22,4 +23,5 @@ export interface RawAward {
   name: string;
   /** string date */
   created: string | null;
+  designation: string;
 }
