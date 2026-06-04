@@ -1,4 +1,4 @@
-import type { School } from './school';
+import type { SchoolName } from './school';
 
 export interface Award {
   /** uuid */
@@ -15,7 +15,7 @@ export interface Award {
 export interface RawAward {
   submissionId: string | number;
   courseName: string;
-  schoolName: School;
+  schoolName: SchoolName;
   unitLetter: string;
   grade: string;
   /** student name */

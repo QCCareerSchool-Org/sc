@@ -22,7 +22,7 @@ interface Certificate {
   id: number;
   schoolName: string;
   courseName: string;
-  // date: string;
+  date: string;
 }
 
 interface PageProps {
@@ -42,6 +42,55 @@ const AwardPage = async ({ params }: PageProps) => {
   }
   const suggestedText = `I just earned this Award of Excellence from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫 #AwardOfExcellence @QCEventPlanning`;
   const url = `https://www.qceventplanning.com/awards/${certificate.id}`;
+  const certUrl =
+    typeof window !== 'undefined'
+      ? window.location.href
+      : '';
+  const month = new Date(certificate.date).getMonth() + 1;
+  const year = new Date(certificate.date).getFullYear();
+  const linkedInUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(
+    certificate.name,
+  )}&organizationName=${encodeURIComponent(
+    certificate.schoolName,
+  )}&certId=${encodeURIComponent(
+    certificate.id,
+  )}&issueMonth=${month}&issueYear=${year}&certUrl=${encodeURIComponent(
+    certUrl,
+  )}`;
+
+  const actions = [
+    {
+      title: 'Add to LinkedIn Profile',
+      subtitle: 'Licenses & Certifications Section',
+      description:
+      "Add this verified credential to your LinkedIn profile's Licenses & Certifications section. It makes your profile highly searchable for recruiters and instantly signals your expertise.",
+      buttonText: 'Add Credential',
+      styling: styles.linkedin,
+      link: linkedInUrl,
+      icon: <FaLinkedinIn size={22} color="white" />,
+    },
+
+    {
+      title: 'Download PDF',
+      subtitle: 'Official Verified Document',
+      styling: styles.blackBtn,
+      description:
+      'Download a high-quality PDF suitable for printing or adding to your portfolio. Perfect for framing or sharing with clients.',
+      buttonText: 'Download Official PDF',
+      link: `placeholder`,
+      icon: <GrDownload color="white" />,
+    },
+    {
+      title: 'Enjoy Alumni Benefits',
+      subtitle: 'Lifetime Privileges & Savings',
+      styling: styles.blackBtn,
+      description:
+      'Enjoy lifetime access to 50% off additional courses and 10% off QC Career School merchandise.',
+      buttonText: 'See Merchandise',
+      icon: <GiGraduateCap color="white" />,
+    },
+  ];
+
   return (
     <>
       <section className="position-relative overflow-hidden py-4 d-flex align-items-center" style={{ minHeight: '50vh' }}>
@@ -65,10 +114,14 @@ const AwardPage = async ({ params }: PageProps) => {
       <section>
         <div className="container text-center">
           <div className=" bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">CERTIFICATION ID: {certificate.id}</div>
-          <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4 row">
+          <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4 row justify-content-center">
             <div className="col-12 col-md-4">
+              <p className="mb-0">CERTIFICATION ID</p>
               <p className="mb-0">{certificate.id}</p>
-              {/* <p className="mb-0">{certificate.date}</p> */}
+            </div>
+            <div className="col-12 col-md-4">
+              <p className="mb-0">DATE</p>
+              <p className="mb-0">{certificate.date}</p>
             </div>
           </div>
         </div>
@@ -101,9 +154,9 @@ const AwardPage = async ({ params }: PageProps) => {
                     {action.description}
                   </p>
 
-                  <button className={`btn btn-primary ${action.styling}`}>
+                  <a className={`btn btn-primary ${action.styling}`} href={action.link}>
                     {action.buttonText}
-                  </button>
+                  </a>
                 </div>
               </div>
             ))}
@@ -140,7 +193,6 @@ const AwardPage = async ({ params }: PageProps) => {
           </div>
         </div>
       </section>
-
     </>
   );
 };
@@ -161,36 +213,6 @@ const getCertificate = async (certificateId: string): Promise<Certificate> => {
     name: award.name,
     schoolName: award.schoolName,
     courseName: award.courseName,
+    date: award.created.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }),
   };
 };
-
-const actions = [
-  {
-    title: 'Add to LinkedIn Profile',
-    subtitle: 'Licenses & Certifications Section',
-    description:
-      "Add this verified credential to your LinkedIn profile's Licenses & Certifications section. It makes your profile highly searchable for recruiters and instantly signals your expertise.",
-    buttonText: 'Add Credential',
-    styling: styles.linkedin,
-    icon: <FaLinkedinIn size={22} color="white" />,
-  },
-
-  {
-    title: 'Download PDF',
-    subtitle: 'Official Verified Document',
-    styling: styles.blackBtn,
-    description:
-      'Download a high-quality PDF suitable for printing or adding to your portfolio. Perfect for framing or sharing with clients.',
-    buttonText: 'Download Official PDF',
-    icon: <GrDownload color="white" />,
-  },
-  {
-    title: 'Enjoy Alumni Benefits',
-    subtitle: 'Lifetime Privileges & Savings',
-    styling: styles.blackBtn,
-    description:
-      'Enjoy lifetime access to 50% off additional courses and 10% off QC Career School merchandise.',
-    buttonText: 'See Merchandise',
-    icon: <GiGraduateCap color="white" />,
-  },
-];

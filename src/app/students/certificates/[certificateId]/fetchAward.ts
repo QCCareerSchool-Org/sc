@@ -9,6 +9,7 @@ export const fetchAward = async (submissionId: string): Promise<Award> => {
     throw Error(response.statusText);
   }
   const body: unknown = await response.json();
+  console.log(body);
   if (!isRawAward(body)) {
     throw Error('Unexpected response');
   }
@@ -17,7 +18,7 @@ export const fetchAward = async (submissionId: string): Promise<Award> => {
   }
   return {
     ...body,
-    schoolName: body.name,
+    schoolName: body.schoolName,
     submissionId: String(body.submissionId),
     created: new Date(body.created),
   };

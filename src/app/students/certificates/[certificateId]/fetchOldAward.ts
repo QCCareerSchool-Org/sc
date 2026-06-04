@@ -1,12 +1,11 @@
-import { endpoint } from 'src/basePath';
 import { isRawAward } from './submission';
 import type { Award } from '@/domain/award';
+import { endpoint } from 'src/basePath';
 
 export const fetchOldAward = async (submissionId: number): Promise<Award> => {
   const url = `${endpoint}/oldAwards/${submissionId}`;
   const response = await fetch(url);
   if (!response.ok) {
-    console.log(response.statusText);
     throw Error(response.statusText);
   }
   const body: unknown = await response.json();
@@ -17,11 +16,12 @@ export const fetchOldAward = async (submissionId: number): Promise<Award> => {
   if (!body.created) {
     throw new Error('Missing created date');
   }
+  console.log(body.schoolName);
 
   return {
     ...body,
     submissionId: String(body.submissionId),
-    schoolName: body.name,
+    schoolName: body.schoolName,
     created: new Date(body.created),
   };
 };
