@@ -106,7 +106,7 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
          ========================================================================= */}
         {/* Y=80px Institution Title (Cinzel serif, 28px) */}
         <div
-          className={styles.courseTitle}
+          className={styles.institutionHeader}
           style={{
             position: 'absolute',
             top: '84px',
@@ -187,7 +187,7 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
           }}
         >
           <h2
-            className={` ${styles.courseTitle} select-text`}
+            className={styles.courseTitle}
             style={{
               margin: 0,
               padding: 0,
@@ -286,7 +286,7 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
                 bottom: '5px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                height: '45px',
+                height: '80px',
                 width: 'auto',
                 maxHeight: '100%',
                 objectFit: 'contain',

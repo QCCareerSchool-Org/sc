@@ -1,19 +1,17 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-import { oklchToRgb } from './oklchtoRGB';
+import { oklchToRgb } from './oklchToRgb';
 
 export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v: boolean) => void) => {
   const element = document.getElementById('certificate-print-area');
   if (!element) { return; }
 
-  setIsGeneratingPDF(true);
+  setIsGenerating(true);
 
   try {
     // Ensure all custom loaded fonts (such as Cinzel and Great Vibes) are fully loaded and prepared by browser
-    if (document.fonts) {
-      await document.fonts.ready;
-    }
+    await document.fonts.ready;
 
     // 1. Save original transform and transition
     const originalTransform = element.style.transform;
@@ -127,6 +125,6 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
     console.error('PDF creation failed, falling back to window.print():', error);
     window.print();
   } finally {
-    setIsGeneratingPDF(false);
+    setIsGenerating(false);
   }
 };

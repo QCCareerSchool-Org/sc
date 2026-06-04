@@ -3,9 +3,11 @@ import { GiGraduateCap } from 'react-icons/gi';
 import { GrDownload } from 'react-icons/gr';
 
 import { BackgroundImage } from './backgroundImage';
-import Certificate from './Certificate';
+import type Certificate from './Certificate';
+import { CertificateWrapper } from './CertificateWrapper';
 import { fetchAward } from './fetchAward';
 import { fetchOldAward } from './fetchOldAward';
+import { handleDownloadPDF } from './handlePDFDownload';
 import Hero from './hero-.jpg';
 import styles from './index.module.css';
 import directorSignature from './kayla.svg';
@@ -117,11 +119,11 @@ const AwardPage = async ({ params }: PageProps) => {
       <section>
         <div className="container text-center">
           <div className=" bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">CERTIFICATION ID: {certificate.id}</div>
-
-          <div className="bg-white border border-[#D2D2D7]/50 rounded-b-2xl p-1 overflow-x-auto shadow-sm">
-            <Certificate name={certificate.name} schoolName={certificate.schoolName} courseName={certificate.courseName} registrarSignatureUrl={registrarSignature} directorSignatureUrl={directorSignature} date={certificate.date} />
-          </div>
-
+        </div>
+      </section>
+      <CertificateWrapper name={certificate.name} schoolName={certificate.schoolName} courseName={certificate.courseName} registrarSignatureUrl={registrarSignature} directorSignatureUrl={directorSignature} date={certificate.date} />
+      <section>
+        <div>
           <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4 row justify-content-center">
             <div className="col-12 col-md-4">
               <p className="mb-0">CERTIFICATION ID</p>
