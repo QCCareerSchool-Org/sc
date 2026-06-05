@@ -3,7 +3,7 @@ import type { Certificate } from '@/domain/certificate';
 import { endpoint } from 'src/basePath';
 
 export const fetchCertificate = async (courseId: string, studentId: string): Promise<Certificate> => {
-  const url = `${endpoint}/api/v1/students/${studentId}/courses/${courseId}`;
+  const url = `${endpoint}/${studentId}/courses/${courseId}`;
   const response = await fetch(url);
   if (!response.ok) {
     throw Error(response.statusText);

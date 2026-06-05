@@ -40,13 +40,11 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
       y: 0,
       onclone: clonedDoc => {
         // Force layout boundaries directly on the cloned document's body to ensure exact 1:1 scale
-        if (clonedDoc.body) {
-          clonedDoc.body.style.margin = '0px';
-          clonedDoc.body.style.padding = '0px';
-          clonedDoc.body.style.width = '1056px';
-          clonedDoc.body.style.height = '816px';
-          clonedDoc.body.style.overflow = 'hidden';
-        }
+        clonedDoc.body.style.margin = '0px';
+        clonedDoc.body.style.padding = '0px';
+        clonedDoc.body.style.width = '1056px';
+        clonedDoc.body.style.height = '816px';
+        clonedDoc.body.style.overflow = 'hidden';
 
         const printArea = clonedDoc.getElementById('certificate-print-area');
         if (printArea) {
@@ -83,7 +81,7 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
             'boxShadow',
             'stroke',
             'fill',
-          ]; name;
+          ];
 
           for (const el of elements as unknown as HTMLElement[]) {
             const win = clonedDoc.defaultView ?? window;
@@ -92,7 +90,7 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
             propsToFix.forEach(prop => {
               const val = computed.getPropertyValue(prop);
               if (typeof val === 'string' && val.includes('oklch')) {
-                const replacedVal = val.replace(/oklch\([^)]+\)/gi, match => oklchToRgb(match));
+                const replacedVal = val.replace(/oklch\([^)]+\)/giu, match => oklchToRgb(match));
                 el.style.setProperty(prop, replacedVal);
               }
             });
@@ -117,7 +115,7 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
     pdf.addImage(imgData, 'JPEG', 0, 0, 11, 8.5);
 
     // Save file with student name
-    const cleanName = studentName ? studentName.trim().replace(/[^a-zA-Z0-9]/g, '_') : 'QC_Certificate';
+    const cleanName = studentName ? studentName.trim().replace(/[^a-zA-Z0-9]/gu, '_') : 'QC_Certificate';
     pdf.save(`QC_Credential_${cleanName}.pdf`);
   } catch (error) {
     console.error('PDF creation failed, falling back to window.print():', error);

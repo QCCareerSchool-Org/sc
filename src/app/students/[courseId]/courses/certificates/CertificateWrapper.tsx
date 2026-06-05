@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { FaDownload } from 'react-icons/fa';
 
 import Certificate from './Certificate';
 import { handleDownloadPDF } from './handlePDFDownload';
@@ -69,9 +70,16 @@ export const CertificateWrapper = ({ courseName, schoolName, name, registrarSign
             Official Digital Certificate
           </span>
         </div>
-        <button disabled={isGeneratingPDF} onClick={handleDownload}>
-          {isGeneratingPDF ? 'Saving...' : 'Save PDF'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            disabled={isGeneratingPDF}
+            onClick={handleDownload}
+            className="btn btn-primary rounded-pill fw-bold d-inline-flex align-items-center gap-1 flex-shrink-0"
+          >
+            <FaDownload className="w-3 h-3 shrink-0" />
+            <span>{isGeneratingPDF ? 'Saving...' : 'Save PDF'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Certificate frame */}
