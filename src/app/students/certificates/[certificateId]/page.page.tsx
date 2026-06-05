@@ -5,6 +5,7 @@ import { GrDownload } from 'react-icons/gr';
 import { BackgroundImage } from './backgroundImage';
 import type Certificate from './Certificate';
 import { CertificateWrapper } from './CertificateWrapper';
+import { DownloadPDFButton } from './downloadPDFButton';
 import { fetchAward } from './fetchAward';
 import { fetchOldAward } from './fetchOldAward';
 import Hero from './hero-.jpg';
@@ -35,7 +36,7 @@ interface PageProps {
   }>;
 }
 
-const AwardPage = async ({ params }: PageProps) => {
+const CertificatePage = async ({ params }: PageProps) => {
   const { certificateId } = await params;
   console.log(certificateId);
   let certificate: Certificate;
@@ -80,8 +81,7 @@ const AwardPage = async ({ params }: PageProps) => {
       styling: styles.blackBtn,
       description:
       'Download a high-quality PDF suitable for printing or adding to your portfolio. Perfect for framing or sharing with clients.',
-      buttonText: 'Download Official PDF',
-      link: `placeholder`,
+      button: <DownloadPDFButton name={certificate.name} />,
       icon: <GrDownload color="white" />,
     },
     {
@@ -162,10 +162,11 @@ const AwardPage = async ({ params }: PageProps) => {
                   <p className="mt-2 flex-grow-1">
                     {action.description}
                   </p>
-
-                  <a className={`btn btn-primary ${action.styling}`} href={action.link}>
-                    {action.buttonText}
-                  </a>
+                  {action.button ?? (
+                    <a className={`btn btn-primary ${action.styling}`} href={action.link}>
+                      {action.buttonText}
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
@@ -206,7 +207,7 @@ const AwardPage = async ({ params }: PageProps) => {
   );
 };
 
-export default AwardPage;
+export default CertificatePage;
 
 const getCertificate = async (certificateId: string): Promise<Certificate> => {
   let award: Award;
