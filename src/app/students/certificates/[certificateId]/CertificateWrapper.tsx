@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Certificate from './Certificate';
 import { handleDownloadPDF } from './handlePDFDownload';
@@ -11,8 +11,35 @@ interface CertificateProps {
   name: string;
   date: Date; }
 
+const svgToPngBase64 = async (url: string): Promise<string> => {
+  const response = await fetch(url);
+  const svgText = await response.text();
+  return new Promise(resolve => {
+    const img = new window.Image();
+    const blob = new Blob([ svgText ], { type: 'image/svg+xml' });
+    const objectUrl = URL.createObjectURL(blob);
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || 300;
+      canvas.height = img.naturalHeight || 100;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(objectUrl);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.src = objectUrl;
+  });
+};
+
 export const CertificateWrapper = ({ courseName, schoolName, name, registrarSignatureUrl, directorSignatureUrl, date }: CertificateProps) => {
   const [ isGeneratingPDF, setIsGeneratingPDF ] = useState(false);
+  const [ registrarPng, setRegistrarPng ] = useState<string>('');
+  const [ directorPng, setDirectorPng ] = useState<string>('');
+
+  useEffect(() => {
+    void svgToPngBase64(registrarSignatureUrl.src).then(setRegistrarPng);
+    void svgToPngBase64(directorSignatureUrl.src).then(setDirectorPng);
+  }, [ registrarSignatureUrl.src, directorSignatureUrl.src ]);
 
   const handleDownload = () => {
     void handleDownloadPDF(name, setIsGeneratingPDF);
@@ -56,7 +83,7 @@ export const CertificateWrapper = ({ courseName, schoolName, name, registrarSign
           margin: '0 auto',
         }}
       >
-        <Certificate courseName={courseName} schoolName={schoolName} name={name} registrarSignatureUrl={registrarSignatureUrl} directorSignatureUrl={directorSignatureUrl} date={date} />
+        <Certificate courseName={courseName} schoolName={schoolName} name={name} registrarSignatureUrl={registrarPng} directorSignatureUrl={directorPng} date={date} />
       </div>
     </section>
   );

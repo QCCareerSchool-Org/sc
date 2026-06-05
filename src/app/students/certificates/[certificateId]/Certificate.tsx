@@ -9,8 +9,8 @@ import styles from './Certificate.module.css';
 interface CertificateProps {
   courseName: string;
   schoolName: string;
-  registrarSignatureUrl: StaticImageData;
-  directorSignatureUrl: StaticImageData;
+  registrarSignatureUrl: string;
+  directorSignatureUrl: string;
   name: string;
   date: Date; }
 
@@ -278,7 +278,7 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
         >
           {/* Dynamic Signature */}
           {registrarSignatureUrl && (
-            <Image
+            <img
               src={registrarSignatureUrl}
               alt="Registrar Signature"
               style={{
@@ -372,12 +372,12 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
         >
           {/* Dynamic Signature */}
           {directorSignatureUrl && (
-            <Image
+            <img
               src={directorSignatureUrl}
               alt="Director Signature"
               style={{
                 position: 'absolute',
-                bottom: '26px',
+                bottom: '24px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 height: '80px',
