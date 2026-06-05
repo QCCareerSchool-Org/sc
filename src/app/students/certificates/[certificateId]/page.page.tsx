@@ -45,7 +45,7 @@ const CertificatePage = async ({ params }: PageProps) => {
   } catch {
     return <p>Certificate not found.</p>;
   }
-  const suggestedText = `I just earned this Award of Excellence from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫 #AwardOfExcellence @QCEventPlanning`;
+  const suggestedText = `I just earned this Certificate from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫 @QCEventPlanning`;
   const url = `https://www.qceventplanning.com/awards/${certificate.id}`;
   const certUrl =
     typeof window !== 'undefined'
@@ -180,7 +180,7 @@ const CertificatePage = async ({ params }: PageProps) => {
           <div className="row justify-content-center">
             <div className="col-12 col-sm-10 col-md-8 col-lg-6">
               <h2 className="mb-2">Share Your Success</h2>
-              <p className="lead mb-5">Celebrate your achievement by sharing your Award of Excellence with your friends and followers on social media. Don't forget to tag <b>@QCEventPlanning</b> so we can cheer you on!</p>
+              <p className="lead mb-5">Celebrate your achievement by sharing your Certificate with your friends and followers on social media. Don't forget to tag <b>@QCEventPlanning</b> so we can cheer you on!</p>
               <div className="mb-4">
                 <h3 className="h4 mb-1">Sample Text</h3>
                 <SuggestedText text={suggestedText} />

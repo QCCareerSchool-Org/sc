@@ -52,20 +52,13 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
   }, []);
   // Map schools to their proper label string dynamically
   const getSchoolLabel = (type: string) => {
-    switch (type) {
-      case 'design':
-        return 'QC DESIGN SCHOOL';
-      case 'event':
-        return 'QC EVENT SCHOOL';
-      case 'makeup':
-        return 'QC MAKEUP ACADEMY';
-      case 'pet':
-        return 'QC PET STUDIES';
-      case 'wellness':
-        return 'QC WELLNESS STUDIES';
-      default:
-        return 'QC DESIGN SCHOOL';
-    }
+    const lower = type.toLowerCase();
+    if (lower.includes('design')) { return 'QC DESIGN SCHOOL'; }
+    if (lower.includes('event')) { return 'QC EVENT SCHOOL'; }
+    if (lower.includes('makeup')) { return 'QC MAKEUP ACADEMY'; }
+    if (lower.includes('pet')) { return 'QC PET STUDIES'; }
+    if (lower.includes('wellness')) { return 'QC WELLNESS STUDIES'; }
+    return 'QC CAREER SCHOOL';
   };
 
   const schoolLabel = getSchoolLabel(schoolName);
@@ -193,7 +186,7 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
               textAlign: 'center',
             }}
           >
-            {schoolName === 'design' &&
+            {schoolName === schoolLabel &&
            (courseName.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING COURSE' ||
             courseName.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING')
               ? 'ADVANCED INTERNATIONAL ORGANIZING PROFESSIONAL COURSE'
