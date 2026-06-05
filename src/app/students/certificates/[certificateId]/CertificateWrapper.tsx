@@ -44,6 +44,7 @@ export const CertificateWrapper = ({ courseName, schoolName, name, registrarSign
 
       {/* Certificate frame */}
       <div
+        className="container"
         style={{
           backgroundColor: 'white',
           border: '1px solid rgba(210, 210, 215, 0.5)',
@@ -51,6 +52,8 @@ export const CertificateWrapper = ({ courseName, schoolName, name, registrarSign
           padding: '4px',
           overflowX: 'auto',
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          maxWidth: '1056px',
+          margin: '0 auto',
         }}
       >
         <Certificate courseName={courseName} schoolName={schoolName} name={name} registrarSignatureUrl={registrarSignatureUrl} directorSignatureUrl={directorSignatureUrl} date={date} />

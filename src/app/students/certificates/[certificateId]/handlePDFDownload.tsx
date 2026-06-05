@@ -29,7 +29,7 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
       scale: 3.0, // Ultra sharp DPI capture
       useCORS: true,
       backgroundColor: '#ffffff',
-      logging: false,
+      logging: true,
       width: 1056,
       height: 816,
       windowWidth: 1056,

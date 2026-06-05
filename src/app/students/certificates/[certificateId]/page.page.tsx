@@ -7,7 +7,6 @@ import type Certificate from './Certificate';
 import { CertificateWrapper } from './CertificateWrapper';
 import { fetchAward } from './fetchAward';
 import { fetchOldAward } from './fetchOldAward';
-import { handleDownloadPDF } from './handlePDFDownload';
 import Hero from './hero-.jpg';
 import styles from './index.module.css';
 import directorSignature from './kayla.svg';
@@ -121,7 +120,9 @@ const AwardPage = async ({ params }: PageProps) => {
           <div className=" bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">CERTIFICATION ID: {certificate.id}</div>
         </div>
       </section>
-      <CertificateWrapper name={certificate.name} schoolName={certificate.schoolName} courseName={certificate.courseName} registrarSignatureUrl={registrarSignature} directorSignatureUrl={directorSignature} date={certificate.date} />
+      <div className="text-center">
+        <CertificateWrapper name={certificate.name} schoolName={certificate.schoolName} courseName={certificate.courseName} registrarSignatureUrl={registrarSignature} directorSignatureUrl={directorSignature} date={certificate.date} />
+      </div>
       <section>
         <div>
           <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4 row justify-content-center">

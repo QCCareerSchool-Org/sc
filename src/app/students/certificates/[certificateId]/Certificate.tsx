@@ -283,12 +283,12 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
               alt="Registrar Signature"
               style={{
                 position: 'absolute',
-                bottom: '5px',
+                bottom: '30px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 height: '80px',
                 width: 'auto',
-                maxHeight: '100%',
+                maxHeight: '140%',
                 objectFit: 'contain',
               }}
             />
@@ -377,12 +377,12 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
               alt="Director Signature"
               style={{
                 position: 'absolute',
-                bottom: '5px',
+                bottom: '26px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                height: '45px',
+                height: '80px',
                 width: 'auto',
-                maxHeight: '100%',
+                maxHeight: '144%',
                 objectFit: 'contain',
               }}
             />
