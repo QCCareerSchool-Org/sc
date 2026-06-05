@@ -39,20 +39,36 @@ interface PageProps {
 const CertificatePage = async ({ params }: PageProps) => {
   const { certificateId } = await params;
   console.log(certificateId);
+
   let certificate: Certificate;
   try {
     certificate = await getCertificate(certificateId);
   } catch {
     return <p>Certificate not found.</p>;
   }
-  const suggestedText = `I just earned this Certificate from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫 @QCEventPlanning`;
+
+  const getSchoolUsername = (type: string) => {
+    const lower = type.toLowerCase();
+    if (lower.includes('design')) { return 'QCDesignSchool'; }
+    if (lower.includes('event')) { return '@QCEventSchool'; }
+    if (lower.includes('makeup')) { return '@QCMakeupAcademy'; }
+    if (lower.includes('pet')) { return '@QCPetStudies'; }
+    return '@QCCareerSchool';
+  };
+
+  const schoolUsername = getSchoolUsername(certificate.schoolName);
+
+  const suggestedText = `I just earned this Certificate from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫 ${schoolUsername}`;
+  const suggestedTextNoUsername = `I just earned this Certificate from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫`;
   const url = `https://www.qceventplanning.com/awards/${certificate.id}`;
   const certUrl =
     typeof window !== 'undefined'
       ? window.location.href
       : '';
+
   const month = new Date(certificate.date).getMonth() + 1;
   const year = new Date(certificate.date).getFullYear();
+
   const linkedInUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(
     certificate.name,
   )}&organizationName=${encodeURIComponent(
@@ -176,20 +192,20 @@ const CertificatePage = async ({ params }: PageProps) => {
       </section>
 
       <section className="bg-light" style={{ borderBottom: '1px solid #ddd' }}>
-        <div className="container text-center">
+        <div className="container text-center mb-5">
           <div className="row justify-content-center">
             <div className="col-12 col-sm-10 col-md-8 col-lg-6">
               <h2 className="mb-2">Share Your Success</h2>
-              <p className="lead mb-5">Celebrate your achievement by sharing your Certificate with your friends and followers on social media. Don't forget to tag <b>@QCEventPlanning</b> so we can cheer you on!</p>
+              <p className="lead mb-5">Celebrate your achievement by sharing your Certificate with your friends and followers on social media. Don't forget to tag <b>{schoolUsername}</b> so we can cheer you on!</p>
               <div className="mb-4">
                 <h3 className="h4 mb-1">Sample Text</h3>
                 <SuggestedText text={suggestedText} />
               </div>
               <div className="mt-2">
-                <ThreadsShare text={`${suggestedText.replace(' 💫', '')} ${url}`} />
+                <ThreadsShare text={`${suggestedTextNoUsername.replace(' 💫', '')} ${url}`} />
               </div>
               <div className="mt-2">
-                <BlueskyShare text={`${suggestedText} ${url}`} />
+                <BlueskyShare text={`${suggestedTextNoUsername} ${url}`} />
               </div>
               <div className="mt-2">
                 <FacebookShare url={url} />
