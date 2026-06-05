@@ -1,7 +1,5 @@
 'use client';
 
-import type { StaticImageData } from 'next/image';
-import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import styles from './Certificate.module.css';
@@ -196,8 +194,8 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
             }}
           >
             {schoolName === 'design' &&
-           (courseName?.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING COURSE' ||
-            courseName?.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING')
+           (courseName.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING COURSE' ||
+            courseName.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING')
               ? 'ADVANCED INTERNATIONAL ORGANIZING PROFESSIONAL COURSE'
               : (courseName || 'THE ADVANCED PROFESSIONAL COURSE')}
           </h2>
@@ -278,6 +276,7 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
         >
           {/* Dynamic Signature */}
           {registrarSignatureUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
             <img
               src={registrarSignatureUrl}
               alt="Registrar Signature"
@@ -372,6 +371,7 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
         >
           {/* Dynamic Signature */}
           {directorSignatureUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={directorSignatureUrl}
               alt="Director Signature"

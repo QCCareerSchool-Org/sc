@@ -25,7 +25,7 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
     await new Promise(resolve => setTimeout(resolve, 80));
 
     // 3. Render canvas via html2canvas
-    const canvas: HTMLCanvasElement = await html2canvas(element, {
+    const canvas = await html2canvas(element, {
       scale: 3.0, // Ultra sharp DPI capture
       useCORS: true,
       backgroundColor: '#ffffff',
@@ -90,12 +90,10 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
             const computed = win.getComputedStyle(el);
 
             propsToFix.forEach(prop => {
-              const val = computed[prop as any];
+              const val = computed.getPropertyValue(prop);
               if (typeof val === 'string' && val.includes('oklch')) {
-                const replacedVal = val.replace(/oklch\([^)]+\)/gi, match => {
-                  return oklchToRgb(match);
-                });
-                el.style[prop as any] = replacedVal;
+                const replacedVal = val.replace(/oklch\([^)]+\)/gi, match => oklchToRgb(match));
+                el.style.setProperty(prop, replacedVal);
               }
             });
           }
