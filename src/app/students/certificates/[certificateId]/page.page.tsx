@@ -91,6 +91,7 @@ const CertificatePage = async ({ params }: PageProps) => {
       description:
       'Enjoy lifetime access to 50% off additional courses and 10% off QC Career School merchandise.',
       buttonText: 'See Merchandise',
+      link: 'https://shop.qccareerschool.com/',
       icon: <GiGraduateCap color="white" />,
     },
   ];
