@@ -250,7 +250,7 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
               color: '#1A1A1A',
             }}
           >
-            {date || 'May 7th, 2013'}
+            {date instanceof Date ? date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : 'May 7th, 2013'}
           </span>
         </div>
 

@@ -1,28 +1,28 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { isRawAward } from './submission';
+import { isCertificate } from '../../../../../../students/[courseId]/courses/certificates/isCertificate';
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { submissionId: string } },
+  { params }: { params: { courseId: string; studentId: string } },
 ): Promise<NextResponse> => {
 
   try {
-    const { submissionId } = params;
-    const url = `http://localhost:8080/v1/awards/${encodeURIComponent(submissionId)}`;
+    const { courseId, studentId } = params;
+    const url = `http://localhost:8080/v1/certificates/${studentId}/courses/${courseId}`;
     const response = await fetch(url);
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: 'Award not found' },
+        { error: 'Certificate not found' },
         { status: response.status },
       );
     }
 
     const body: unknown = await response.json();
 
-    if (!isRawAward(body)) {
+    if (!isCertificate(body)) {
       return NextResponse.json(
         { error: 'Unexpected response' },
         { status: response.status },
