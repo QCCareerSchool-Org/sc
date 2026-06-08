@@ -8,6 +8,7 @@ interface PageProps {
 
 const CertificatePage = async ({ params }: PageProps) => {
   const { courseId } = await params;
+  console.log('Course ID:', courseId);
 
   return <CertificateClient courseId={courseId} />;
 };

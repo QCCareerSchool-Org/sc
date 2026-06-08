@@ -42,9 +42,10 @@ const CertificateClient = ({ courseId }: PageProps) => {
         graduationDate: new Date(data.graduationDate),
       }))
       .catch(() => setError(true));
-  });
+  }, [ courseId, studentId ]);
 
   if (error) {
+    console.log(error);
     return <p>Certificate not found.</p>;
   }
   if (!certificate) {
@@ -147,7 +148,7 @@ const CertificateClient = ({ courseId }: PageProps) => {
               <p className="mt-2">
                 You have successfully completed your {certificate.courseName}{' '}
                 course and earned the professional designation of{' '}
-                {certificate.courseName}. Today, we proudly celebrate your
+                {certificate.designation.name}. Today, we proudly celebrate your
                 talent, your hard work, and your official graduation.
               </p>
             </div>

@@ -187,10 +187,10 @@ export default function Certificate({ courseName, schoolName, name, registrarSig
             }}
           >
             {schoolName === schoolLabel &&
-           (courseName.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING COURSE' ||
+           (courseName.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING' ||
             courseName.trim().toUpperCase() === 'PROFESSIONAL ORGANIZING')
-              ? 'ADVANCED INTERNATIONAL ORGANIZING PROFESSIONAL COURSE'
-              : (courseName || 'THE ADVANCED PROFESSIONAL COURSE')}
+              ? 'ADVANCED INTERNATIONAL ORGANIZING PROFESSIONAL'
+              : (courseName || 'THE ADVANCED PROFESSIONAL')} Course
           </h2>
         </div>
 
