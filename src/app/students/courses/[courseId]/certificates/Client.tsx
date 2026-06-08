@@ -138,7 +138,7 @@ const CertificateClient = ({ courseId }: PageProps) => {
           <div className="row justify-content-center">
             <div className="col-12 col-sm-10 col-md-8 col-lg-5">
               <div className="bg-white p-2 rounded-4 shadow text-black fw-bold mb-4">
-                Congratulations, {certificate.firstName} {certificate.lastName}!
+                Congratulations, {certificate.firstName} {certificate.lastName} 🎉!
               </div>
             </div>
           </div>
@@ -146,10 +146,7 @@ const CertificateClient = ({ courseId }: PageProps) => {
           <div className="row justify-content-center">
             <div className="col-12 col-sm-10 col-md-8 col-lg-9">
               <p className="mt-2">
-                You have successfully completed your {certificate.courseName}{' '}
-                course and earned the professional designation of{' '}
-                {certificate.designation.name}. Today, we proudly celebrate your
-                talent, your hard work, and your official graduation.
+                You have successfully completed your <span className="fw-bold">{certificate.courseName}</span> course and earned the professional designation of <span className="fw-bold">{certificate.designation.name}</span>. Today, we proudly celebrate your talent, your hard work, and your official graduation.
               </p>
             </div>
           </div>
@@ -157,9 +154,17 @@ const CertificateClient = ({ courseId }: PageProps) => {
       </section>
 
       <section>
-        <div className="container text-center">
-          <div className=" bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">
-            CERTIFICATION ID: {certificate.signature}
+        <div className="no-print bg-white rounded border mt-4 mb-4 p-4 text-center shadow-sm mx-auto" style={{ maxWidth: '1000px' }}>
+          <div
+            className="text-uppercase fw-semibold"
+            style={{
+              letterSpacing: '0.15em',
+              color: '#86868B',
+              fontSize: '0.875rem',
+              fontFamily: 'monospace',
+            }}
+          >
+            Graduate Credential • ID {certificate.signature}
           </div>
         </div>
       </section>
@@ -167,7 +172,7 @@ const CertificateClient = ({ courseId }: PageProps) => {
         <div
           className="mx-auto"
           style={{
-            maxWidth: '1200px',
+            maxWidth: '1000px',
             boxShadow: '0 4px 24px rgba(0, 0, 0, 0.12)',
           }}
         >
@@ -183,18 +188,35 @@ const CertificateClient = ({ courseId }: PageProps) => {
         </div>
       </div>
       <section>
-        <div className="container">
-          <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">
-            <div className="row justify-content-center text-center">
-              <div className="col-12 col-md-4">
-                <p className="mb-0">CERTIFICATION ID</p>
-                <p className="mb-0">{certificate.signature}</p>
-              </div>
-              <div className="col-12 col-md-4">
-                <p className="mb-0">DATE</p>
-                <p className="mb-0">
-                  {certificate.graduationDate.toLocaleDateString()}
-                </p>
+        <div className="row justify-content-center mb-4 mt-4">
+          <div className="col-12 col-md-8 col-lg-6">
+            <div
+              className={`no-print rounded-3 p-4 border ${styles.infoCard}`}
+            >
+              <div className="row g-3 text-center">
+                <div className="col-6">
+                  <span className={`d-block text-uppercase ${styles.infoLabel}`}>
+                    Certification ID
+                  </span>
+
+                  <span className={`fw-bold ${styles.infoValue}`}>
+                    {certificate.signature}
+                  </span>
+                </div>
+
+                <div className="col-6">
+                  <span
+                    className={`d-block text-uppercase ${styles.infoLabel}`}
+                  >
+                    Issue Date Authority
+                  </span>
+
+                  <span
+                    className={`fw-bold ${styles.infoValue}`}
+                  >
+                    {certificate.graduationDate.toLocaleDateString()}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
