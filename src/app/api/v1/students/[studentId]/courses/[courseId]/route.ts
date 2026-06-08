@@ -1,11 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-<<<<<<<< HEAD:src/app/api/v1/students/[studentId]/courses/[courseId]/route.ts
 import { isCertificate } from '../../../../../../students/[courseId]/courses/certificates/isCertificate';
-========
-import { isCertificate } from './isCertificate';
->>>>>>>> 78c580d (student view):src/app/students/[courseId]/courses/certificates/route.ts
 
 export const GET = async (
   request: NextRequest,
