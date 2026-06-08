@@ -1,12 +1,10 @@
-import { isCertificate } from '../../../../isCertificate';
 import type { Certificate } from '@/domain/certificate';
+import { isCertificate } from 'src/app/isCertificate';
 import { endpoint } from 'src/basePath';
 
-export const fetchCertificate = async (courseId: string, studentId: string): Promise<Certificate> => {
-  const url = `${endpoint}/students/${studentId}/courses/${courseId}/certificates`;
-  const response = await fetch(url, {
-    credentials: 'include',
-  });
+export const fetchCertificate = async (signature: string): Promise<Certificate> => {
+  const url = `${endpoint}/certificates/${signature}`;
+  const response = await fetch(url);
   if (!response.ok) {
     throw Error(response.statusText);
   }

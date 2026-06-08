@@ -184,11 +184,11 @@ const CertificateClient = ({ courseId }: PageProps) => {
       <section>
         <div>
           <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4 row justify-content-center">
-            <div className="col-12 col-md-4">
+            <div className="col-12 col-md-5">
               <p className="mb-0">CERTIFICATION ID</p>
               <p className="mb-0">{certificate.signature}</p>
             </div>
-            <div className="col-12 col-md-4">
+            <div className="col-12 col-md-5">
               <p className="mb-0">DATE</p>
               <p className="mb-0">
                 {certificate.graduationDate.toLocaleDateString()}
