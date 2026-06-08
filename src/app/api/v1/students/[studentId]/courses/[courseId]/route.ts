@@ -10,7 +10,7 @@ export const GET = async (
 
   try {
     const { courseId, studentId } = params;
-    const url = `http://localhost:8080/v1/certificates/${studentId}/courses/${courseId}`;
+    const url = `http://localhost:8080/certificates/${studentId}/courses/${courseId}`;
     const response = await fetch(url);
 
     if (!response.ok) {
