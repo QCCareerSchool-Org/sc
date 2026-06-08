@@ -5,7 +5,7 @@ import { fetchCertificate } from './fetchCertificate';
 import directorSignature from '../../kayla.svg';
 import registrarSignature from '../../lucie.svg';
 import type { Certificate } from '@/domain/certificate';
-import { CertificateWrapper } from 'src/app/students/courses/[courseId]/certificates/CertificateWrapper';
+import { CertificateWrapper } from 'src/app/students/courses/[courseId]/certificate/CertificateWrapper';
 
 interface PageProps {
   signature: string;

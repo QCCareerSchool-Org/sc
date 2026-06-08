@@ -1,4 +1,4 @@
-import CertificateClient from './Client';
+import { CertificateClient } from './certificatePageClient';
 
 interface PageProps {
   params: Promise<{
@@ -8,9 +8,10 @@ interface PageProps {
 
 const CertificatePage = async ({ params }: PageProps) => {
   const { courseId } = await params;
-  console.log('Course ID:', courseId);
 
-  return <CertificateClient courseId={courseId} />;
+  return (
+    <CertificateClient courseId={courseId} />
+  );
 };
 
 export default CertificatePage;

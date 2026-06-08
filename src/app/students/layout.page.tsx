@@ -2,8 +2,8 @@
 import type { FC, PropsWithChildren } from 'react';
 
 import 'src/style.scss';
-import '@fontsource/great-vibes';
-import '@fontsource/cinzel';
+// import '@fontsource/great-vibes';
+// import '@fontsource/cinzel';
 import { AuthStateProvider } from '@/providers/AuthStateProvider';
 
 const RootLayout: FC<PropsWithChildren> = ({ children }) => (

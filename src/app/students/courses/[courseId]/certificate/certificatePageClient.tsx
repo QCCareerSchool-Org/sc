@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { FaLinkedinIn } from 'react-icons/fa';
 import { GiGraduateCap } from 'react-icons/gi';
@@ -21,11 +22,11 @@ import registrarSignature from '../../../../lucie.svg';
 import type { Certificate } from '@/domain/certificate';
 import { useAuthState } from '@/hooks/useAuthState';
 
-interface PageProps {
+interface Props {
   courseId: string;
 }
 
-const CertificateClient = ({ courseId }: PageProps) => {
+export const CertificateClient = ({ courseId }: Props) => {
   const { studentId } = useAuthState();
 
   const [ certificate, setCertificate ] = useState<Certificate | null>(null);
@@ -276,5 +277,3 @@ const CertificateClient = ({ courseId }: PageProps) => {
     </>
   );
 };
-
-export default CertificateClient;

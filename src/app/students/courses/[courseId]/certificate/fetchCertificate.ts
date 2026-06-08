@@ -16,7 +16,5 @@ export const fetchCertificate = async (courseId: string, studentId: string): Pro
   }
   console.log(body);
 
-  return {
-    ...body,
-  };
+  return body;
 };
