@@ -10,14 +10,14 @@ import { DownloadPDFButton } from './downloadPDFButton';
 import { fetchCertificate } from './fetchCertificate';
 import Hero from './hero-.jpg';
 import styles from './index.module.css';
-import directorSignature from './kayla.svg';
-import registrarSignature from './lucie.svg';
 import { BlueskyShare } from './share/bluesky';
 import { FacebookShare } from './share/facebook';
 import { LinkedInShare } from './share/linkedIn';
 import { ThreadsShare } from './share/threads';
 import { TwitterShare } from './share/twitter';
 import { SuggestedText } from './suggestedText';
+import directorSignature from '../../../../kayla.svg';
+import registrarSignature from '../../../../lucie.svg';
 import type { Certificate } from '@/domain/certificate';
 import { useAuthState } from '@/hooks/useAuthState';
 
@@ -178,21 +178,24 @@ const CertificateClient = ({ courseId }: PageProps) => {
             registrarSignatureUrl={registrarSignature}
             directorSignatureUrl={directorSignature}
             date={certificate.graduationDate}
+            savePDF={true}
           />
         </div>
       </div>
       <section>
-        <div>
-          <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4 row justify-content-center">
-            <div className="col-12 col-md-5">
-              <p className="mb-0">CERTIFICATION ID</p>
-              <p className="mb-0">{certificate.signature}</p>
-            </div>
-            <div className="col-12 col-md-5">
-              <p className="mb-0">DATE</p>
-              <p className="mb-0">
-                {certificate.graduationDate.toLocaleDateString()}
-              </p>
+        <div className="container">
+          <div className="bg-white text-dark rounded-3 border border-1 p-4 mt-4 mb-4">
+            <div className="row justify-content-center text-center">
+              <div className="col-12 col-md-4">
+                <p className="mb-0">CERTIFICATION ID</p>
+                <p className="mb-0">{certificate.signature}</p>
+              </div>
+              <div className="col-12 col-md-4">
+                <p className="mb-0">DATE</p>
+                <p className="mb-0">
+                  {certificate.graduationDate.toLocaleDateString()}
+                </p>
+              </div>
             </div>
           </div>
         </div>

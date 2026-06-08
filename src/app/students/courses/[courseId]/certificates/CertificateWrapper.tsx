@@ -10,7 +10,8 @@ interface CertificateProps {
   registrarSignatureUrl: StaticImageData;
   directorSignatureUrl: StaticImageData;
   name: string;
-  date: Date; }
+  date: Date;
+  savePDF?: boolean; }
 
 const svgToPngBase64 = async (url: string): Promise<string> => {
   const response = await fetch(url);
@@ -37,7 +38,7 @@ const svgToPngBase64 = async (url: string): Promise<string> => {
   });
 };
 
-export const CertificateWrapper = ({ courseName, schoolName, name, registrarSignatureUrl, directorSignatureUrl, date }: CertificateProps) => {
+export const CertificateWrapper = ({ courseName, schoolName, name, registrarSignatureUrl, directorSignatureUrl, date, savePDF }: CertificateProps) => {
   const [ isGeneratingPDF, setIsGeneratingPDF ] = useState(false);
   const [ registrarPng, setRegistrarPng ] = useState<string>('');
   const [ directorPng, setDirectorPng ] = useState<string>('');
@@ -70,16 +71,18 @@ export const CertificateWrapper = ({ courseName, schoolName, name, registrarSign
             Official Digital Certificate
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            disabled={isGeneratingPDF}
-            onClick={handleDownload}
-            className="btn btn-primary rounded-pill fw-bold d-inline-flex align-items-center gap-1 flex-shrink-0"
-          >
-            <FaDownload className="w-3 h-3 shrink-0" />
-            <span>{isGeneratingPDF ? 'Saving...' : 'Save PDF'}</span>
-          </button>
-        </div>
+        {savePDF && (
+          <div className="flex items-center gap-2">
+            <button
+              disabled={isGeneratingPDF}
+              onClick={handleDownload}
+              className="btn btn-primary rounded-pill fw-bold d-inline-flex align-items-center gap-1 flex-shrink-0"
+            >
+              <FaDownload className="w-3 h-3 shrink-0" />
+              <span>{isGeneratingPDF ? 'Saving...' : 'Save PDF'}</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Certificate frame */}
