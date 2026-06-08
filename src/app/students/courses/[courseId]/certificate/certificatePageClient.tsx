@@ -1,26 +1,18 @@
 'use client';
-<<<<<<<< HEAD:src/app/students/courses/[courseId]/certificate/certificatePageClient.tsx
 
 import { useEffect, useState } from 'react';
 import { FaLinkedinIn } from 'react-icons/fa';
 import { GiGraduateCap } from 'react-icons/gi';
 import { GrDownload } from 'react-icons/gr';
 
-========
-import { useEffect, useState } from 'react';
-import { FaLinkedinIn } from 'react-icons/fa';
-import { GiGraduateCap } from 'react-icons/gi';
-import { GrDownload } from 'react-icons/gr';
-
->>>>>>>> d3fdc31a8b1a5ad1bc9af7c5922c87cd98e3b818:src/app/students/courses/[courseId]/certificates/Client.tsx
 import { BackgroundImage } from './backgroundImage';
 import { CertificateWrapper } from './CertificateWrapper';
 import { DownloadPDFButton } from './downloadPDFButton';
 import { fetchCertificate } from './fetchCertificate';
 import Hero from './hero-.jpg';
 import styles from './index.module.css';
-import directorSignature from './kayla.svg';
-import registrarSignature from './lucie.svg';
+import registrarSignature from './kayla.svg';
+import directorSignature from './lucie.svg';
 import { BlueskyShare } from './share/bluesky';
 import { FacebookShare } from './share/facebook';
 import { LinkedInShare } from './share/linkedIn';
@@ -30,27 +22,16 @@ import { SuggestedText } from './suggestedText';
 import type { Certificate } from '@/domain/certificate';
 import { useAuthState } from '@/hooks/useAuthState';
 
-<<<<<<<< HEAD:src/app/students/courses/[courseId]/certificate/certificatePageClient.tsx
 interface Props {
   courseId: string;
 }
 
-export const CertificatePageClient = ({ courseId }: Props) => {
-  const { studentId } = useAuthState();
-  const [ certificate, setCertificate ] = useState<Certificate | null>(null);
-  const [ error, setError ] = useState(false);
-========
-interface PageProps {
-  courseId: string;
-}
-
-const CertificateClient = ({ courseId }: PageProps) => {
+export const CertificateClient = ({ courseId }: Props) => {
   const { studentId } = useAuthState();
 
   const [ certificate, setCertificate ] = useState<Certificate | null>(null);
   const [ error, setError ] = useState(false);
   console.log(courseId, studentId);
->>>>>>>> d3fdc31a8b1a5ad1bc9af7c5922c87cd98e3b818:src/app/students/courses/[courseId]/certificates/Client.tsx
 
   useEffect(() => {
     if (!studentId) {
@@ -62,11 +43,7 @@ const CertificateClient = ({ courseId }: PageProps) => {
         graduationDate: new Date(data.graduationDate),
       }))
       .catch(() => setError(true));
-<<<<<<<< HEAD:src/app/students/courses/[courseId]/certificate/certificatePageClient.tsx
-  }, [ studentId, courseId ]);
-========
   }, [ courseId, studentId ]);
->>>>>>>> d3fdc31a8b1a5ad1bc9af7c5922c87cd98e3b818:src/app/students/courses/[courseId]/certificates/Client.tsx
 
   if (error) {
     console.log(error);
@@ -172,11 +149,7 @@ const CertificateClient = ({ courseId }: PageProps) => {
               <p className="mt-2">
                 You have successfully completed your {certificate.courseName}{' '}
                 course and earned the professional designation of{' '}
-<<<<<<<< HEAD:src/app/students/courses/[courseId]/certificate/certificatePageClient.tsx
-                {certificate.courseName}. Today, we proudly celebrate your
-========
                 {certificate.designation.name}. Today, we proudly celebrate your
->>>>>>>> d3fdc31a8b1a5ad1bc9af7c5922c87cd98e3b818:src/app/students/courses/[courseId]/certificates/Client.tsx
                 talent, your hard work, and your official graduation.
               </p>
             </div>
@@ -301,8 +274,3 @@ const CertificateClient = ({ courseId }: PageProps) => {
     </>
   );
 };
-<<<<<<<< HEAD:src/app/students/courses/[courseId]/certificate/certificatePageClient.tsx
-========
-
-export default CertificateClient;
->>>>>>>> d3fdc31a8b1a5ad1bc9af7c5922c87cd98e3b818:src/app/students/courses/[courseId]/certificates/Client.tsx
