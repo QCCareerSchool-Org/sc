@@ -1,21 +1,14 @@
 'use client';
-<<<<<<< HEAD
-
-=======
->>>>>>> d3fdc31a8b1a5ad1bc9af7c5922c87cd98e3b818
 import type { FC, PropsWithChildren } from 'react';
 
 import 'src/style.scss';
 import '@fontsource/great-vibes';
 import '@fontsource/cinzel';
-import { AuthStateProvider } from '@/providers/AuthStateProvider';
 
 const RootLayout: FC<PropsWithChildren> = ({ children }) => (
   <html lang="en" data-scroll-behavior="smooth">
     <body>
-      <AuthStateProvider>
-        {children}
-      </AuthStateProvider>
+      {children}
     </body>
   </html>
 );
