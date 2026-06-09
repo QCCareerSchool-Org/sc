@@ -38,13 +38,7 @@ const CertificateClient = ({ signature }: PageProps) => {
     <>
       <section>
         <div className="text-center mt-4">
-          <div
-            className="mx-auto"
-            style={{
-              maxWidth: '1000px',
-              boxShadow: '0 4px 24px rgba(0, 0, 0, 0.12)',
-            }}
-          >
+          <div className="mx-auto" style={{ maxWidth: '1000px', boxShadow: '0 4px 24px rgba(0, 0, 0, 0.12)' }}>
             <CertificateWrapper
               name={certificate.firstName + ' ' + certificate.lastName}
               schoolName={certificate.schoolName}
@@ -59,9 +53,7 @@ const CertificateClient = ({ signature }: PageProps) => {
       <section>
         <div className="row justify-content-center mb-4 mt-4">
           <div className="col-12 col-md-8 col-lg-6">
-            <div
-              className={`no-print rounded-3 p-4 border ${styles.infoCard}`}
-            >
+            <div className={`no-print rounded-3 p-4 border ${styles.infoCard}`}>
               <div className="row g-3 text-center">
                 <div className="col-6">
                   <span className={`d-block text-uppercase ${styles.infoLabel}`}>

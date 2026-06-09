@@ -9,7 +9,6 @@ import { GrDownload } from 'react-icons/gr';
 import { BackgroundImage } from './backgroundImage';
 import { CertificateWrapper } from './CertificateWrapper';
 import { DownloadPDFButton } from './downloadPDFButton';
-import { fetchCertificate } from './fetchCertificate';
 import Hero from './hero-.jpg';
 import styles from './index.module.css';
 import directorSignature from './kayla.svg';
@@ -22,6 +21,7 @@ import { TwitterShare } from './share/twitter';
 import { SuggestedText } from './suggestedText';
 import type { Certificate } from '@/domain/certificate';
 import { useAuthState } from '@/hooks/useAuthState';
+import { fetchCertificate } from 'src/lib/fetchCertificate';
 
 interface Props {
   courseId: number;
