@@ -1,9 +1,9 @@
 export const basePath = '/sc';
 
-export const endpoint = (process.env.OVERRIDE_ENV ?? process.env.NODE_ENV) === 'development'
-  ? 'http://localhost:8080/api/v1'
+export const endpoint = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:8080/v1'
   : 'https://studentcenter.qccareerschool.com/api/sc/v1';
 
-export const crmEndpoint = (process.env.OVERRIDE_ENV ?? process.env.NODE_ENV) === 'development'
+export const crmEndpoint = process.env.NODE_ENV === 'development'
   ? 'http://localhost:12080/v4'
   : 'https://studentcenter.qccareerschool.com/api/crm/v4';

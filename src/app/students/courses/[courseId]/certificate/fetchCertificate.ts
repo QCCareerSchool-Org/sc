@@ -3,7 +3,7 @@ import type { Certificate } from '@/domain/certificate';
 import { endpoint } from 'src/basePath';
 
 export const fetchCertificate = async (courseId: string, studentId: string): Promise<Certificate> => {
-  const url = `${endpoint}/students/${studentId}/courses/${courseId}/certificates`;
+  const url = `${endpoint}/students/${studentId}/courses/${courseId}/certificate`;
   const response = await fetch(url, {
     credentials: 'include',
   });
