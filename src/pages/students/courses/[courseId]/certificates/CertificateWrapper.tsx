@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { FaDownload } from 'react-icons/fa';
 
 import { handleDownloadPDF } from './handlePDFDownload';
-import Certificate from '../../../../Certificate';
+import Certificate from 'src/app/Certificate';
 interface CertificateProps {
   courseName: string;
   schoolName: string;

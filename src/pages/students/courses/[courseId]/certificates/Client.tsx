@@ -1,4 +1,6 @@
 'use client';
+
+import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { FaLinkedinIn } from 'react-icons/fa';
 import { GiGraduateCap } from 'react-icons/gi';
@@ -10,22 +12,22 @@ import { DownloadPDFButton } from './downloadPDFButton';
 import { fetchCertificate } from './fetchCertificate';
 import Hero from './hero-.jpg';
 import styles from './index.module.css';
+import directorSignature from './kayla.svg';
+import registrarSignature from './lucie.svg';
 import { BlueskyShare } from './share/bluesky';
 import { FacebookShare } from './share/facebook';
 import { LinkedInShare } from './share/linkedIn';
 import { ThreadsShare } from './share/threads';
 import { TwitterShare } from './share/twitter';
 import { SuggestedText } from './suggestedText';
-import directorSignature from '../../../../kayla.svg';
-import registrarSignature from '../../../../lucie.svg';
 import type { Certificate } from '@/domain/certificate';
 import { useAuthState } from '@/hooks/useAuthState';
 
-interface PageProps {
-  courseId: string;
+interface Props {
+  courseId: number;
 }
 
-const CertificateClient = ({ courseId }: PageProps) => {
+const CertificateClient: FC<Props> = ({ courseId }) => {
   const { studentId } = useAuthState();
 
   const [ certificate, setCertificate ] = useState<Certificate | null>(null);
@@ -36,7 +38,7 @@ const CertificateClient = ({ courseId }: PageProps) => {
     if (!studentId) {
       return;
     }
-    fetchCertificate(courseId, String(studentId))
+    fetchCertificate(courseId, studentId)
       .then(data => setCertificate({
         ...data,
         graduationDate: new Date(data.graduationDate),
@@ -73,8 +75,7 @@ const CertificateClient = ({ courseId }: PageProps) => {
 
   const suggestedText = `I just earned this Certificate from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫 ${schoolUsername}`;
   const suggestedTextNoUsername = `I just earned this Certificate from ${certificate.schoolName} for my work in ${certificate.courseName}! I'm so excited to be pursuing my dream career. 💫`;
-  const url = `https://www.qceventplanning.com/awards/${certificate.signature}`;
-  const certUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const certUrl = `https://studentcenter.qccareerschool.com/sc/certificates/${certificate.signature}`;
 
   const month = new Date(certificate.graduationDate).getMonth() + 1;
   const year = new Date(certificate.graduationDate).getFullYear();
@@ -276,20 +277,20 @@ const CertificateClient = ({ courseId }: PageProps) => {
               </div>
               <div className="mt-2">
                 <ThreadsShare
-                  text={`${suggestedTextNoUsername.replace(' 💫', '')} ${url}`}
+                  text={`${suggestedTextNoUsername.replace(' 💫', '')} ${certUrl}`}
                 />
               </div>
               <div className="mt-2">
-                <BlueskyShare text={`${suggestedTextNoUsername} ${url}`} />
+                <BlueskyShare text={`${suggestedTextNoUsername} ${certUrl}`} />
               </div>
               <div className="mt-2">
-                <FacebookShare url={url} />
+                <FacebookShare url={certUrl} />
               </div>
               <div className="mt-2">
-                <LinkedInShare url={url} text={suggestedText} />
+                <LinkedInShare url={certUrl} text={suggestedText} />
               </div>
               <div className="mt-2">
-                <TwitterShare url={url} text={suggestedText} />
+                <TwitterShare url={certUrl} text={suggestedText} />
               </div>
             </div>
           </div>
