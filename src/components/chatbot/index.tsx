@@ -34,7 +34,7 @@ export const Chatbot: FC = () => {
   const [ conversationId, setConverstionId ] = useState<string | null>(null);
   const [ nextMessage, setNextMessage ] = useState('');
   const [ isSending, setIsSending ] = useState(false);
-  const [ isMinimized, setIsMinimized ] = useState(false);
+  const [ isMinimized, setIsMinimized ] = useState(true);
   const [ student, setStudent ] = useState<StudentPayload>();
   const messageEndRef = useRef<HTMLDivElement>(null);
 
