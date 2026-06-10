@@ -56,11 +56,11 @@ export const CertificateView: FC<Props> = ({ name, courseName, schoolName, date 
 
   return (
     <div style={{ height: `${scaledHeight}px`, display: 'flex', alignItems: 'start' }}>
-      <div ref={containerRef} className="certificate-container relative shrink-0 print-full-page select-none origin-top" style={{ transform: `scale(${scale})`, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), inset 0 0 40px rgba(0,0,0,0.02)' }}>
+      <div ref={containerRef} className="shrink-0" style={{ transform: `scale(${scale})`, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), inset 0 0 40px rgba(0,0,0,0.02)' }}>
         <div className={styles.institutionHeader}>{schoolName}</div>
 
         <div className="flex items-center justify-center p-4" style={{ position: 'absolute', top: '172px', left: '80px', width: '896px', height: '120px', margin: '0px' }}>
-          <div className={` ${styles.recipientName} select-text w-full text-center`}>{name}</div>
+          <div className={` ${styles.recipientName} w-full text-center`}>{name}</div>
         </div>
 
         <div className={` ${styles.metaSubtext} ${styles.requirements}`}> has completed all requirements of</div>
