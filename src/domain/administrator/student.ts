@@ -20,7 +20,6 @@ export interface Student {
   videoViewed: boolean;
   ajaxUploads: boolean;
   upgradeNotification: boolean;
-  tutorNote: string | null;
   entityVersion: number;
   created: Date;
   modified: Date;
@@ -50,7 +49,6 @@ export interface RawStudent {
   videoViewed: boolean;
   ajaxUploads: boolean;
   upgradeNotification: boolean;
-  tutorNote: string | null;
   entityVersion: number;
   /** string date */
   created: string;
