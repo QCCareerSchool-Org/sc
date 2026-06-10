@@ -4,6 +4,8 @@ import { Banner } from '../banner';
 import { SiteNav } from '@/components/nav';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
+import '@fontsource/great-vibes';
+import '@fontsource/cinzel';
 
 export const DefaultLayout: FC<PropsWithChildren> = ({ children }) => (
   <div className="d-flex flex-column vh-100">

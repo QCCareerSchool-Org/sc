@@ -23,6 +23,9 @@ export const classifyRequest = async (question: string, candidateSchools: School
     ? { ...parsed, school: schoolScope.school }
     : parsed;
 
+  console.log('PARSED JSON:', parsed);
+  console.log('PARSED TYPE:', typeof parsed);
+
   if (!isPromptClassification(classification)) {
     throw new Error(`Classification response JSON had an unexpected shape`);
   }

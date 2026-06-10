@@ -24,4 +24,4 @@ export interface School {
   slug: SchoolSlug;
   order: number;
   entityVersion: number;
-}
+};
