@@ -13,7 +13,7 @@ interface Props {
 export const CertificateWrapper: FC<PropsWithChildren<Props>> = ({ savePdf, children }) => {
   const generating = useRef(false);
 
-  const handleDownload = () => {
+  const handleDownloadClick = () => {
     if (generating.current) {
       return;
     }
@@ -33,7 +33,7 @@ export const CertificateWrapper: FC<PropsWithChildren<Props>> = ({ savePdf, chil
           <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#fbbf24', display: 'inline-block' }} />
           <span style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Official Digital Certificate</span>
         </div>
-        {savePdf && <button onClick={handleDownload} className="btn btn-primary btn-sm"><FaDownload /> Save PDF</button>}
+        {savePdf && <button onClick={handleDownloadClick} className="btn btn-primary btn-sm"><FaDownload /> Save PDF</button>}
       </div>
 
       {/* Certificate frame */}

@@ -10,8 +10,6 @@
     "test": "jest src/*"
   },
   "dependencies": {
-    "@fontsource/cinzel": "^5.2.8",
-    "@fontsource/great-vibes": "^5.2.8",
     "@openai/guardrails": "^0.2.1",
     "@react-pdf/renderer": "^4.5.1",
     "axios": "^1.15.0",
