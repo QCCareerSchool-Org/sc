@@ -61,16 +61,8 @@ export const CertificateView: FC<Props> = ({ name, courseName, schoolName, date 
 
         {/* Gentle aged paper cream gradient overlay */}
         <div className="absolute inset-0 pointer-events-none opacity-50" style={{ background: 'radial-gradient(circle, rgba(255,252,246,0) 0%, rgba(255,252,246,0.08) 50%, rgba(255,252,246,0) 100%)' }} />
+        <div className={styles.institutionHeader}>{schoolName}</div>
 
-        {/* =========================================================================
-         SECTION 1: SCHOOL HEADER BLOCK (Optimized spacing with fixed width for pristine alignment)
-         ========================================================================= */}
-        {/* Y=80px Institution Title (Cinzel serif, 28px) */}
-        <div className={styles.institutionHeader} style={{ position: 'absolute', top: '84px', left: '0px', width: '1056px', textAlign: 'center', lineHeight: '34px', textTransform: 'uppercase' }}>{schoolName}</div>
-
-        {/* =========================================================================
-         SECTION 2: RECIPIENT NAME BANNER WRAPPER (Visual breathing space)
-         ========================================================================= */}
         <div className="flex items-center justify-center p-4" style={{ position: 'absolute', top: '172px', left: '80px', width: '896px', height: '120px', margin: '0px' }}>
           <div className={` ${styles.recipientName} select-text w-full text-center`} style={{ lineHeight: '1.2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{name}</div>
         </div>
