@@ -30,6 +30,7 @@ export const fetchRawCertificate: FetchRawCertificateFunction = async (clientCoo
 
   const body: unknown = await response.json();
   if (!isRawCertificate(body)) {
+    console.error(await response.text());
     throw Error('Unexpected response');
   }
 
