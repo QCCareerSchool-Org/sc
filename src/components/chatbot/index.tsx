@@ -114,7 +114,7 @@ export const Chatbot: FC = () => {
   }, [ studentId, conversationId, messages ]);
 
   const authState = useAuthState();
-  if (typeof authState.administratorId === 'undefined') {
+  if (typeof authState.administratorId === 'undefined' || typeof authState.studentId === 'undefined') {
     return null;
   }
 
