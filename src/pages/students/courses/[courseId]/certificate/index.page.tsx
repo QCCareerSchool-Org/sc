@@ -1,40 +1,67 @@
-import cookie from 'cookie';
-import type { GetServerSideProps, NextPage } from 'next';
+import type { NextPage } from 'next';
 import ErrorPage from 'next/error';
+import { useRouter } from 'next/router';
+import { useEffect, useReducer } from 'react';
 
 import { ActionsSection } from './ActionsSection';
 import HeroBackgroundImage from './hero-bg.jpg';
 import styles from './index.module.css';
 import { SocialSharingSection } from './SocialSharingSection';
+import { initialState, reducer } from './state';
 import { BackgroundImage } from '@/components/BackgroundImage';
 import { CertificateView } from '@/components/certificate/CertificateView';
 import { CertificateWrapper } from '@/components/certificate/CertificateWrapper';
-import type { Certificate, RawCertificate } from '@/domain/certificate';
-import { fetchRawCertificate } from 'src/lib/fetchCertificate';
+import { Spinner } from '@/components/Spinner';
+import { useAuthState } from '@/hooks/useAuthState';
+import { fetchCertificate } from 'src/lib/fetchCertificate';
 
-type Props = {
-  rawCertificate: RawCertificate;
-  error?: undefined;
-} | {
-  rawCertificate?: undefined;
-  error: {
-    code: number;
-    message: string;
-  };
-};
+const CertificatePage: NextPage = () => {
+  const router = useRouter();
+  const [ state, dispatch ] = useReducer(reducer, initialState);
 
-const CertificatePage: NextPage<Props> = ({ rawCertificate, error }) => {
-  if (error) {
-    console.error(error.message);
-    return <ErrorPage statusCode={error.code} />;
+  const { courseId: courseIdParam } = router.query;
+  const { studentId } = useAuthState();
+
+  useEffect(() => {
+    if (typeof courseIdParam !== 'string') {
+      return;
+    }
+    if (typeof studentId !== 'number') {
+      dispatch({ type: 'CERTIFICATE_FAILED', payload: { code: 400, message: 'No studentId' } });
+      return;
+    }
+    const courseId = parseInt(courseIdParam, 10);
+    if (isNaN(courseId)) {
+      dispatch({ type: 'CERTIFICATE_FAILED', payload: { code: 400, message: 'Invalid courseId' } });
+      return;
+    }
+
+    dispatch({ type: 'FETCH_STARTED' });
+
+    fetchCertificate(studentId, courseId)
+      .then(c => dispatch({ type: 'CERTIFICATE_LOADED', payload: c }))
+      .catch((e: unknown) => dispatch({ type: 'CERTIFICATE_FAILED', payload: { code: 500, message: e instanceof Error ? e.message : String(e) } }));
+  }, [ studentId, courseIdParam ]);
+
+  if (state.fetchState === 'idle') {
+    return;
   }
 
-  const certificate: Certificate = {
-    ...rawCertificate,
-    graduationDate: new Date(rawCertificate.graduationDate),
-  };
+  if (state.fetchState === 'fetching') {
+    return (
+      <section>
+        <div className="d-flex justify-content-center">
+          <Spinner />
+        </div>
+      </section>
+    );
+  }
 
-  const certUrl = `https://studentcenter.qccareerschool.com/sc/certificates/${certificate.signature}`;
+  if (state.fetchState === 'error') {
+    return <ErrorPage statusCode={state.error.code} title={state.error.message} />;
+  }
+
+  const certUrl = `https://studentcenter.qccareerschool.com/sc/certificates/${state.certificate.signature}`;
 
   return (
     <>
@@ -44,8 +71,8 @@ const CertificatePage: NextPage<Props> = ({ rawCertificate, error }) => {
           <div className="row justify-content-center">
             <div className="col-12 col-sm-10 col-md-8 col-lg-9">
               <h1 className="fw-bold mb-4">You Did It!</h1>
-              <div className="bg-white py-2 px-4 rounded-4 shadow text-black fw-bold mb-4 d-inline-block">Congratulations, {certificate.firstName} {certificate.lastName}! 🎉</div>
-              <p className="lead mb-0">You have successfully completed your <span className="fw-bold">{certificate.courseName}</span> course and earned the professional designation of <span className="fw-bold">{certificate.designation.name}</span>. Today, we proudly celebrate your talent, your hard work, and your official graduation.</p>
+              <div className="bg-white py-2 px-4 rounded-4 shadow text-black fw-bold mb-4 d-inline-block">Congratulations, {state.certificate.firstName} {state.certificate.lastName}! 🎉</div>
+              <p className="lead mb-0">You have successfully completed your <span className="fw-bold">{state.certificate.courseName}</span> course and earned the professional designation of <span className="fw-bold">{state.certificate.designation.name}</span>. Today, we proudly celebrate your talent, your hard work, and your official graduation.</p>
             </div>
           </div>
         </div>
@@ -55,10 +82,10 @@ const CertificatePage: NextPage<Props> = ({ rawCertificate, error }) => {
           <div className="mx-auto" style={{ maxWidth: '1000px', boxShadow: '0 4px 24px rgba(0, 0, 0, 0.12)' }}>
             <CertificateWrapper savePdf>
               <CertificateView
-                name={`${certificate.firstName} ${certificate.lastName}`}
-                courseName={certificate.courseName}
-                schoolName={certificate.schoolName}
-                date={certificate.graduationDate}
+                name={`${state.certificate.firstName} ${state.certificate.lastName}`}
+                courseName={state.certificate.courseName}
+                schoolName={state.certificate.schoolName}
+                date={state.certificate.graduationDate}
               />
             </CertificateWrapper>
           </div>
@@ -71,55 +98,21 @@ const CertificatePage: NextPage<Props> = ({ rawCertificate, error }) => {
               <div className="row g-3 text-center">
                 <div className="col-6">
                   <span className={`d-block text-uppercase ${styles.infoLabel}`}>Certification ID</span>
-                  <span className={`fw-bold ${styles.infoValue}`}>{certificate.signature}</span>
+                  <span className={`fw-bold ${styles.infoValue}`}>{state.certificate.signature}</span>
                 </div>
                 <div className="col-6">
                   <span className={`d-block text-uppercase ${styles.infoLabel}`}>Issue Date Authority</span>
-                  <span className={`fw-bold ${styles.infoValue}`}>{certificate.graduationDate.toLocaleDateString()}</span>
+                  <span className={`fw-bold ${styles.infoValue}`}>{state.certificate.graduationDate.toLocaleDateString()}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <ActionsSection graduationDate={certificate.graduationDate} url={certUrl} />
-      <SocialSharingSection schoolName={certificate.schoolName} courseName={certificate.courseName} url={certUrl} />
+      <ActionsSection graduationDate={state.certificate.graduationDate} url={certUrl} />
+      <SocialSharingSection schoolName={state.certificate.schoolName} courseName={state.certificate.courseName} url={certUrl} />
     </>
   );
-};
-
-export const getServerSideProps: GetServerSideProps<Props> = async context => {
-  const courseIdParam = context.query.courseId;
-  if (typeof courseIdParam !== 'string') {
-    return { props: { error: { code: 400, message: 'missing courseId' } } };
-  }
-
-  const courseId = parseInt(courseIdParam, 10);
-  if (isNaN(courseId)) {
-    return { props: { error: { code: 400, message: 'invalid courseId' } } };
-  }
-
-  const parsedCookies = cookie.parse(context.req.headers.cookie ?? '');
-
-  const studentIdCookie = parsedCookies.studentId;
-  if (!studentIdCookie) {
-    return { props: { error: { code: 400, message: 'missing studentId' } } };
-  }
-
-  const studentId = parseInt(studentIdCookie, 10);
-  if (isNaN(studentId)) {
-    return { props: { error: { code: 400, message: 'missing studentId' } } };
-  }
-
-  const clientCookies = context.req.headers.cookie ?? '';
-
-  try {
-    const rawCertificate = await fetchRawCertificate(clientCookies, studentId, courseId);
-
-    return { props: { rawCertificate } };
-  } catch (err) {
-    return { props: { error: { code: 500, message: err instanceof Error ? err.message : String(err) } } };
-  }
 };
 
 export default CertificatePage;
