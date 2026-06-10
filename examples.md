@@ -81,11 +81,11 @@ import type { PageComponent } from '@/serverComponent';
 
 // lint-disable-next-line @typescript-eslint/consistent-type-definitions
 type Params = {
-  studentId: string;
+  postId: string;
 };
 
 const FooPage: PageComponent<Params> = ({ searchParams, params }) => {
-  const { studentId } = await params;
+  const { postId } = await params;
   const { qux } = await searchParams;
 
   return (
