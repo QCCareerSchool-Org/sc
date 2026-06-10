@@ -19,6 +19,7 @@ export type StudentWithCountryAndProvince = Student & {
 
 export interface IStudentService {
   getStudent: (administratorId: number, studentId: number) => Observable<StudentWithCountryAndProvince>;
+  saveAdminNote: (administratorId: number, studentId: number, note: string | null) => Observable<void>;
 }
 
 export class StudentService implements IStudentService {
@@ -30,6 +31,16 @@ export class StudentService implements IStudentService {
     return this.httpService.get<RawStudentWithCountryAndProvince>(url).pipe(
       map(this.mapStudent),
     );
+  }
+
+  public saveAdminNote(administratorId: number, studentId: number, note: string | null): Observable<void> {
+    const url = `${this.getUrl(administratorId, studentId)}/note`;
+    const body = { note };
+    return this.httpService.put(url, body);
+  }
+
+  private getUrl(administratorId: number, studentId: number): string {
+    return `${endpoint}/administrators/${administratorId}/students/${studentId}`;
   }
 
   private getBaseUrl(administratorId: number): string {

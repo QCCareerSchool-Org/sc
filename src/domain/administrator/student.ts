@@ -7,6 +7,8 @@ export interface Student {
   sex: 'M' | 'F';
   firstName: string;
   lastName: string;
+  tutorNote: string | null;
+  adminNote: string | null;
   numLogins: number;
   lastLogin: Date | null;
   expiry: Date | null;
@@ -18,7 +20,6 @@ export interface Student {
   videoViewed: boolean;
   ajaxUploads: boolean;
   upgradeNotification: boolean;
-  tutorNote: string | null;
   entityVersion: number;
   created: Date;
   modified: Date;
@@ -33,6 +34,8 @@ export interface RawStudent {
   sex: 'M' | 'F';
   firstName: string;
   lastName: string;
+  tutorNote: string | null;
+  adminNote: string | null;
   numLogins: number;
   /** string date */
   lastLogin: string | null;
@@ -46,7 +49,6 @@ export interface RawStudent {
   videoViewed: boolean;
   ajaxUploads: boolean;
   upgradeNotification: boolean;
-  tutorNote: string | null;
   entityVersion: number;
   /** string date */
   created: string;

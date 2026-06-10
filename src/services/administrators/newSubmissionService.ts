@@ -136,8 +136,10 @@ export class NewSubmissionService implements INewSubmissionService {
         dueDate: newSubmission.enrollment.dueDate === null ? null : new Date(newSubmission.enrollment.dueDate),
         student: {
           ...newSubmission.enrollment.student,
-          lastLogin: newSubmission.enrollment.student.lastLogin === null ? null : new Date(newSubmission.enrollment.student.lastLogin),
-          expiry: newSubmission.enrollment.student.expiry === null ? null : new Date(newSubmission.enrollment.student.expiry),
+          tutorNote: newSubmission.enrollment.student.tutorNote,
+          adminNote: newSubmission.enrollment.student.adminNote,
+          lastLogin: newSubmission.enrollment.student.lastLogin ? new Date(newSubmission.enrollment.student.lastLogin) : null,
+          expiry: newSubmission.enrollment.student.expiry ? new Date(newSubmission.enrollment.student.expiry) : null,
           created: new Date(newSubmission.enrollment.student.created),
           modified: new Date(newSubmission.enrollment.student.modified),
         },
