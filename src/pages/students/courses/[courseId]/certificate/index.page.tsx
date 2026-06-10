@@ -5,7 +5,6 @@ import { useEffect, useReducer } from 'react';
 
 import { ActionsSection } from './ActionsSection';
 import HeroBackgroundImage from './hero-bg.jpg';
-import styles from './index.module.css';
 import { SocialSharingSection } from './SocialSharingSection';
 import { initialState, reducer } from './state';
 import { BackgroundImage } from '@/components/BackgroundImage';
@@ -72,18 +71,19 @@ const CertificatePage: NextPage = () => {
             <div className="col-12 col-sm-10 col-md-8 col-lg-9">
               <h1 className="fw-bold mb-4">You Did It!</h1>
               <div className="bg-white py-2 px-4 rounded-4 shadow text-black fw-bold mb-4 d-inline-block">Congratulations, {state.certificate.firstName} {state.certificate.lastName}! 🎉</div>
-              <p className="lead mb-0">You have successfully completed your <span className="fw-bold">{state.certificate.courseName}</span> course and earned the professional designation of <span className="fw-bold">{state.certificate.designation.name}</span>. Today, we proudly celebrate your talent, your hard work, and your official graduation.</p>
+              <p className="lead mb-0">You have successfully completed <span className="fw-bold">{state.certificate.courseName}</span>{state.certificate.designation?.name && <> and earned the professional designation of <span className="fw-bold">{state.certificate.designation.name}</span></>}. Today, we proudly celebrate your talent, your hard work, and your official graduation.</p>
             </div>
           </div>
         </div>
       </section>
       <section>
-        <div>
-          <div className="mx-auto" style={{ maxWidth: '1000px', boxShadow: '0 4px 24px rgba(0, 0, 0, 0.12)' }}>
+        <div className="container">
+          <div className="mx-auto" style={{ maxWidth: '1000px', boxShadow: '0 4px 24px rgba(0, 0, 0, 0.12)', borderRadius: '1rem' }}>
             <CertificateWrapper savePdf>
               <CertificateView
                 name={`${state.certificate.firstName} ${state.certificate.lastName}`}
                 courseName={state.certificate.courseName}
+                designation={state.certificate.designation?.name}
                 schoolName={state.certificate.schoolName}
                 date={state.certificate.graduationDate}
               />
@@ -92,24 +92,18 @@ const CertificatePage: NextPage = () => {
         </div>
       </section>
       <section>
-        <div className="row justify-content-center mb-4 mt-4">
-          <div className="col-12 col-md-8 col-lg-6">
-            <div className={`no-print rounded-3 p-4 border ${styles.infoCard}`}>
-              <div className="row g-3 text-center">
-                <div className="col-6">
-                  <span className={`d-block text-uppercase ${styles.infoLabel}`}>Certification ID</span>
-                  <span className={`fw-bold ${styles.infoValue}`}>{state.certificate.signature}</span>
-                </div>
-                <div className="col-6">
-                  <span className={`d-block text-uppercase ${styles.infoLabel}`}>Issue Date Authority</span>
-                  <span className={`fw-bold ${styles.infoValue}`}>{state.certificate.graduationDate.toLocaleDateString()}</span>
-                </div>
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-12 col-md-8 col-lg-6 text-center">
+              <div className={`rounded-3 p-4 border card`}>
+                <div className="text-uppercase">Issue Date Authority</div>
+                <div className="fw-bold">{state.certificate.graduationDate.toLocaleDateString()}</div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <ActionsSection graduationDate={state.certificate.graduationDate} url={certUrl} />
+      <ActionsSection certification={state.certificate.designation?.name} graduationDate={state.certificate.graduationDate} url={certUrl} />
       <SocialSharingSection schoolName={state.certificate.schoolName} courseName={state.certificate.courseName} url={certUrl} />
     </>
   );
