@@ -1,6 +1,7 @@
 import type { Material } from '@/domain/material';
 import type { MaterialWithUnitWithCourse } from '@/services/administrators/materialService';
-import { getLength } from 'src/lib/segmenter';
+import { getByteLength } from 'src/lib/byteLength';
+import { getCodePointLength } from 'src/lib/codePointLength';
 
 interface LessonMeta {
   minutes: string;
@@ -146,7 +147,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 191;
-        const newLength = getLength(action.payload);
+        const newLength = getCodePointLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }
@@ -164,7 +165,7 @@ export const reducer = (state: State, action: Action): State => {
       let validationMessage: string | undefined;
       if (action.payload) {
         const maxLength = 65_535;
-        const newLength = getLength(action.payload);
+        const newLength = getByteLength(action.payload);
         if (newLength > maxLength) {
           validationMessage = `Exceeds maximum length of ${maxLength}`;
         }

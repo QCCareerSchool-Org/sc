@@ -5,7 +5,7 @@ import { debounceTime, exhaustMap, Subject, takeUntil } from 'rxjs';
 import type { TextBoxFunction } from './NewAssignmentView';
 import type { TextBoxState } from './state';
 import { Spinner } from '@/components/Spinner';
-import { getLength } from 'src/lib/segmenter';
+import { getByteLength } from 'src/lib/byteLength';
 
 interface Props {
   textBox: TextBoxState;
@@ -41,10 +41,10 @@ export const NewTextBoxForm: FC<Props> = memo(({ textBox, locked, update, save }
     return () => { destroy$.next(); destroy$.complete(); };
   }, [ save, update, textBox.partId, textBox.textBoxId ]);
 
-  const characters = getLength(textBox.text);
+  const byteLength = getByteLength(textBox.text);
 
   const handleTextareaChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
-    const newLength = getLength(e.target.value);
+    const newLength = getByteLength(e.target.value);
     if (newLength <= maxLength) {
       textChange$.current.next(e.target.value);
     }
@@ -78,7 +78,7 @@ export const NewTextBoxForm: FC<Props> = memo(({ textBox, locked, update, save }
             {textBox.optional && <small className="text-danger">optional</small>}
           </div>
           <div className="col text-end">
-            <small>{characters} / {maxLength}</small>
+            <small>{byteLength} / {maxLength}</small>
           </div>
         </div>
       </div>

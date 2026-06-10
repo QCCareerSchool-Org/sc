@@ -1,5 +1,6 @@
 import type { NewSubmission } from '@/domain/tutor/newSubmission';
 import type { NewSubmissionWithEnrollmentAndAssignments } from '@/services/tutors/newSubmissionService';
+import { getByteLength } from 'src/lib/byteLength';
 
 export interface State {
   newSubmission?: NewSubmissionWithEnrollmentAndAssignments;
@@ -88,9 +89,7 @@ export const reducer = (state: State, action: Action): State => {
         returnForm: { ...state.returnForm, message: action.payload },
       };
     case 'TUTOR_NOTE_CHANGED': {
-      // eslint-disable-next-line @typescript-eslint/no-misused-spread
-      const length = [ ...action.payload ].length;
-      if (length > 16_777_215) {
+      if (getByteLength(action.payload) > 16_777_215) {
         throw Error('maximum length exceeded');
       }
       return {

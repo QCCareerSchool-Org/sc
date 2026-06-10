@@ -21,28 +21,20 @@
     "baseUrl": ".",
     "downlevelIteration": true,
     "paths": {
-      "@/components/*": [
-        "src/components/*"
-      ],
-      "@/domain/*": [
-        "src/domain/*"
-      ],
-      "@/hooks/*": [
-        "src/hooks/*"
-      ],
-      "@/services/*": [
-        "src/services/*"
-      ],
-      "@/providers/*": [
-        "src/providers/*"
-      ],
-      "@/state/*": [
-        "src/state/*"
-      ],
-      "@/images/*": [
-        "src/images/*"
-      ]
-    }
+      "@/components/*": [ "src/components/*" ],
+      "@/domain/*": [ "src/domain/*" ],
+      "@/hooks/*": [ "src/hooks/*" ],
+      "@/services/*": [ "src/services/*" ],
+      "@/providers/*": [ "src/providers/*" ],
+      "@/state/*": [ "src/state/*" ],
+      "@/images/*": [ "src/images/*" ],
+      "@/lib/*": [ "src/lib/*" ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "custom-next-env.d.ts",
@@ -50,9 +42,20 @@
     "**/*.js",
     "**/*.tsx",
     "**/*.jsx",
+    "**/*.mts",
+    "**/*.mjs",
+    "**/*.mtsx",
+    "**/*.mjsx",
+    "**/*.cts",
+    "**/*.cjs",
+    "**/*.ctsx",
+    "**/*.cjsx",
     ".eslintrc.js",
     "jest.config.js",
-    "jest.setup.js"
+    "jest.setup.js",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    ".next/dev/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
