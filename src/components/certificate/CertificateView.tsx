@@ -55,7 +55,7 @@ export const CertificateView: FC<Props> = ({ name, courseName, schoolName, date 
   const scaledHeight = 816 * scale;
 
   return (
-    <div style={{ height: `${scaledHeight}px`, display: 'flex', alignItems: 'start' }}>
+    <div style={{ height: `${scaledHeight}px`, display: 'flex', alignItems: 'start' }} id="certificate-print-area">
       <div ref={containerRef} className="shrink-0" style={{ transform: `scale(${scale})`, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), inset 0 0 40px rgba(0,0,0,0.02)' }}>
         <div className={styles.institutionHeader}>{schoolName}</div>
 
