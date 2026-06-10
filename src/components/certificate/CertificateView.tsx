@@ -70,9 +70,7 @@ export const CertificateView: FC<Props> = ({ name, courseName, schoolName, date 
         <div style={{ position: 'absolute', top: '454px', left: '488px', width: '80px', display: 'flex', justifyContent: 'center' }}>
           <MiniFlourish />
         </div>
-        <div className={`${styles.metaSubtext} ${styles.officialGraduateText}`}>
-          and is an official graduate of {schoolName}
-        </div>
+        <div className={`${styles.metaSubtext} ${styles.officialGraduateText}`}>and is an official graduate of {schoolName}</div>
 
         <div style={{ position: 'absolute', top: '520px', left: '80px', width: '896px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0px' }}>
           <span className={styles.graduationDate}>
@@ -84,7 +82,7 @@ export const CertificateView: FC<Props> = ({ name, courseName, schoolName, date 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={registrarPng} alt="Registrar Signature" style={{ position: 'absolute', bottom: '30px', left: '50%', transform: 'translateX(-50%)', height: '80px', width: 'auto', maxHeight: '140%', objectFit: 'contain' }} />
           <div style={{ height: '1px', backgroundColor: '#000000', width: '100%' }} />
-          <div className={`${styles.signature} ${styles.metaSubtext}`}>REGISTRAR</div>
+          <div className={`${styles.signature} ${styles.metaSubtext}`}>Registrar</div>
         </div>
 
         <div style={{ position: 'absolute', left: '468px', top: '645px', width: '120px', height: '120px' }}>
@@ -96,7 +94,7 @@ export const CertificateView: FC<Props> = ({ name, courseName, schoolName, date 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={directorPng} alt="Director Signature" style={{ position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)', height: '80px', width: 'auto', maxHeight: '144%', objectFit: 'contain' }} />
           <div style={{ height: '1px', backgroundColor: '#000000', width: '100%' }} />
-          <div className={`${styles.signature} ${styles.metaSubtext}`}>DIRECTOR OF STUDENT SUPPORT</div>
+          <div className={`${styles.signature} ${styles.metaSubtext}`}>Director of Student Support</div>
         </div>
 
       </div>

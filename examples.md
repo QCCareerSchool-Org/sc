@@ -9,6 +9,7 @@ interface Props {
   bar: number;
 }
 
+// named export
 export const Foo: FC<Props> = ({ bar }) => {
 }
 ```
@@ -27,8 +28,8 @@ const FooPage: NextPage<Props> = ({ bar }) => (
 );
 
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
-  const bar = await fetchBar();
-  return { props: { bar } };
+  const bar = await fetchBar(); // server-side fetching
+  return { props: { bar } }; // send value via props
 }
 
 export default FooPage;
@@ -56,7 +57,7 @@ export default FooPage;
 import type { LayoutComponent } from '@/serverComponent';
 
 const FooLayout: LayoutComponent = async ({ searchParams, children }) => {
-  const { qux } = await searchParams; // server-side fetching
+  const { qux } = await searchParams;
 
   return (
     <div>
