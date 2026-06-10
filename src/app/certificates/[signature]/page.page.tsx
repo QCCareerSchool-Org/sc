@@ -1,3 +1,5 @@
+import { cookies } from 'next/headers';
+
 import styles from './index.module.css';
 import { CertificateView } from '@/components/certificate/CertificateView';
 import { CertificateWrapper } from '@/components/certificate/CertificateWrapper';
@@ -11,7 +13,8 @@ type Params = {
 
 const CertificatePage: PageComponent<Params> = async ({ params }) => {
   const { signature } = await params;
-  const certificate = await fetchCertificate(signature);
+  const cookieStore = await cookies();
+  const certificate = await fetchCertificate(cookieStore.toString(), signature);
 
   return (
     <>

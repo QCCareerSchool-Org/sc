@@ -31,7 +31,7 @@ export const SocialSharingSection: FC<Props> = ({ schoolName, courseName, url })
               <h3 className="h4 mb-1">Sample Text</h3>
               <SuggestedText text={suggestedText} />
             </div>
-            <div className="d-flex gap-2 mt-2">
+            <div className="d-flex flex-column align-items-center gap-2 mt-2">
               <ThreadsShare text={`${suggestedTextNoUsername.replace(' 💫', '')} ${url}`} />
               <BlueskyShare text={`${suggestedTextNoUsername} ${url}`} />
               <FacebookShare url={url} />

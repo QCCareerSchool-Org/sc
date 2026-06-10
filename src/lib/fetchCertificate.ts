@@ -3,57 +3,50 @@ import { isRawCertificate } from '@/domain/certificate';
 import { endpoint } from 'src/basePath';
 
 interface FetchCertificateFunction {
-  (signature: string): Promise<Certificate>;
-  (studentId: number, courseId: number): Promise<Certificate>;
+  (clientCookies: string, signature: string): Promise<Certificate>;
+  (clientCookies: string, studentId: number, courseId: number): Promise<Certificate>;
 }
 
 interface FetchRawCertificateFunction {
-  (signature: string): Promise<RawCertificate>;
-  (studentId: number, courseId: number): Promise<RawCertificate>;
+  (clientCookies: string, signature: string): Promise<RawCertificate>;
+  (clientCookies: string, studentId: number, courseId: number): Promise<RawCertificate>;
 }
 
-export const fetchRawCertificate: FetchRawCertificateFunction = async (signatureOrStudentId: string | number, courseId?: number): Promise<RawCertificate> => {
-  return {
-    courseName: 'Course Name',
-    designation: {
-      name: 'Lorem Ipsum',
-      code: 'LI',
+export const fetchRawCertificate: FetchRawCertificateFunction = async (clientCookies: string, signatureOrStudentId: string | number, courseId?: number): Promise<RawCertificate> => {
+  const url = typeof signatureOrStudentId === 'string'
+    ? `${endpoint}/certificates/${signatureOrStudentId}`
+    : `${endpoint}/students/${signatureOrStudentId}/courses/${courseId}/certificate`;
+
+  const response = await fetch(url, {
+    headers: {
+      'Cookie': clientCookies,
+      'Content-Type': 'application/json',
     },
-    firstName: 'John',
-    lastName: 'Doe',
-    graduationDate: '2026-01-01T02:32:23-0400',
-    schoolName: 'QC Design School',
-    signature: 'sdfidyus',
-  };
+  });
+  if (!response.ok) {
+    console.error(await response.text());
+    throw Error(response.statusText);
+  }
 
-  // const url = typeof signatureOrStudentId === 'string'
-  //   ? `${endpoint}/certificates/${signatureOrStudentId}`
-  //   : `${endpoint}/students/${signatureOrStudentId}/courses/${courseId}/certificate`;
+  const body: unknown = await response.json();
+  if (!isRawCertificate(body)) {
+    throw Error('Unexpected response');
+  }
 
-  // const response = await fetch(url);
-  // if (!response.ok) {
-  //   throw Error(response.statusText);
-  // }
-
-  // const body: unknown = await response.json();
-  // if (!isRawCertificate(body)) {
-  //   throw Error('Unexpected response');
-  // }
-
-  // return body;
+  return body;
 };
 
-export const fetchCertificate: FetchCertificateFunction = async (signatureOrStudentId: string | number, courseId?: number): Promise<Certificate> => {
+export const fetchCertificate: FetchCertificateFunction = async (clientCookies: string, signatureOrStudentId: string | number, courseId?: number): Promise<Certificate> => {
   let certificate: RawCertificate;
 
   if (typeof signatureOrStudentId === 'string') {
-    certificate = await fetchRawCertificate(signatureOrStudentId);
+    certificate = await fetchRawCertificate(clientCookies, signatureOrStudentId);
   } else {
     if (courseId === undefined) {
       throw Error('courseId is required');
     }
 
-    certificate = await fetchRawCertificate(signatureOrStudentId, courseId);
+    certificate = await fetchRawCertificate(clientCookies, signatureOrStudentId, courseId);
   }
 
   return { ...certificate, graduationDate: new Date(certificate.graduationDate) };

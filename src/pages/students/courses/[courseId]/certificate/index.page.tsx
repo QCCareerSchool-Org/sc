@@ -111,8 +111,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
     return { props: { error: { code: 400, message: 'missing studentId' } } };
   }
 
+  const clientCookies = context.req.headers.cookie ?? '';
+
   try {
-    const rawCertificate = await fetchRawCertificate(studentId, courseId);
+    const rawCertificate = await fetchRawCertificate(clientCookies, studentId, courseId);
 
     return { props: { rawCertificate } };
   } catch (err) {
