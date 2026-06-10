@@ -111,7 +111,6 @@ export const runPreflightGuardrails = async (inputText: string, candidateSchools
   const context = { guardrailLlm: client };
   const config = getPreflightGuardrailConfig(candidateSchools);
   const results = await runGuardrails(inputText, config, context, true);
-  console.log(results);
 
   const triggeredGuardrail = getFirstTriggeredGuardrail(results);
 
