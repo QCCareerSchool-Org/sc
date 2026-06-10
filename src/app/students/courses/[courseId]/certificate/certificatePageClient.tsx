@@ -8,7 +8,6 @@ import { GrDownload } from 'react-icons/gr';
 import { BackgroundImage } from './backgroundImage';
 import { CertificateWrapper } from './CertificateWrapper';
 import { DownloadPDFButton } from './downloadPDFButton';
-import { fetchCertificate } from './fetchCertificate';
 import Hero from './hero-.jpg';
 import styles from './index.module.css';
 import directorSignature from './kayla.svg';
@@ -21,6 +20,7 @@ import { TwitterShare } from './share/twitter';
 import { SuggestedText } from './suggestedText';
 import type { Certificate } from '@/domain/certificate';
 import { useAuthState } from '@/hooks/useAuthState';
+import { useStudentServices } from '@/hooks/useStudentServices';
 
 interface Props {
   courseId: string;
@@ -28,22 +28,21 @@ interface Props {
 
 export const CertificateClient = ({ courseId }: Props) => {
   const { studentId } = useAuthState();
-
+  const { certificateService } = useStudentServices();
   const [ certificate, setCertificate ] = useState<Certificate | null>(null);
   const [ error, setError ] = useState(false);
   console.log(courseId, studentId);
 
   useEffect(() => {
-    if (!studentId) {
-      return;
-    }
-    fetchCertificate(courseId, String(studentId))
-      .then(data => setCertificate({
-        ...data,
-        graduationDate: new Date(data.graduationDate),
-      }))
-      .catch(() => setError(true));
-  }, [ courseId, studentId ]);
+    if (!studentId) { return; }
+
+    const subscription = certificateService.getCertificate(studentId, Number(courseId)).subscribe({
+      next: data => setCertificate(data),
+      error: () => setError(true),
+    });
+
+    return () => subscription.unsubscribe();
+  }, [ studentId, courseId, certificateService ]);
 
   if (error) {
     console.log(error);

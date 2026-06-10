@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-import { fetchCertificate } from './fetchCertificate';
 import directorSignature from '../../kayla.svg';
 import registrarSignature from '../../lucie.svg';
 import type { Certificate } from '@/domain/certificate';
+import { useServices } from '@/hooks/useServices';
 import { CertificateWrapper } from 'src/app/students/courses/[courseId]/certificate/CertificateWrapper';
 
 interface PageProps {
@@ -12,18 +12,19 @@ interface PageProps {
 }
 
 const CertificateClient = ({ signature }: PageProps) => {
+  const { certificateService } = useServices();
 
   const [ certificate, setCertificate ] = useState<Certificate | null>(null);
   const [ error, setError ] = useState(false);
 
   useEffect(() => {
-    fetchCertificate(signature)
-      .then(data => setCertificate({
-        ...data,
-        graduationDate: new Date(data.graduationDate),
-      }))
-      .catch(() => setError(true));
-  }, [ signature ]);
+    const subscription = certificateService.getCertificate(signature).subscribe({
+      next: data => setCertificate(data),
+      error: () => setError(true),
+    });
+
+    return () => subscription.unsubscribe();
+  }, [ signature, certificateService ]);
 
   if (error) {
     console.log(error);
