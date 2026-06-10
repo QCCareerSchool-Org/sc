@@ -113,6 +113,11 @@ export const Chatbot: FC = () => {
     );
   }, [ studentId, conversationId, messages ]);
 
+  const authState = useAuthState();
+  if (typeof authState.administratorId === 'undefined') {
+    return null;
+  }
+
   const handleSubmit = () => {
     const message = nextMessage.trim();
 
