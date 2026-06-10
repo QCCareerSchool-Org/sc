@@ -2,6 +2,8 @@ import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
 import { useServices } from '@/hooks/useServices';
+import type { ICertificateService } from '@/services/students/certificateService';
+import { CertificateService } from '@/services/students/certificateService';
 import type { ICRMEnrollmentService } from '@/services/students/crmEnrollmentService';
 import { CRMEnrollmentService } from '@/services/students/crmEnrollmentService';
 import type { ICRMPaymentMethodService } from '@/services/students/crmPaymentMethodService';
@@ -34,6 +36,7 @@ export interface StudentServices {
   crmStudentService: ICRMStudentService;
   crmEnrollmentService: ICRMEnrollmentService;
   crmPaymentMethodService: ICRMPaymentMethodService;
+  certificateService: ICertificateService;
 }
 
 export const StudentServicesContext = createContext<StudentServices | undefined>(undefined);
@@ -55,6 +58,7 @@ export const StudentServicesProvider: FC<Props> = ({ children }) => {
     crmStudentService: new CRMStudentService(httpService),
     crmEnrollmentService: new CRMEnrollmentService(httpService),
     crmPaymentMethodService: new CRMPaymentMethodService(httpService),
+    certificateService: new CertificateService(httpService),
   });
 
   return (

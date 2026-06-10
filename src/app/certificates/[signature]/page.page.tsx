@@ -2,6 +2,7 @@ import styles from './index.module.css';
 import { CertificateView } from '@/components/certificate/CertificateView';
 import { CertificateWrapper } from '@/components/certificate/CertificateWrapper';
 import { fetchCertificate } from 'src/lib/fetchCertificate';
+// import { useServices } from '@/hooks/useServices';
 import type { PageComponent } from 'src/serverComponent';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

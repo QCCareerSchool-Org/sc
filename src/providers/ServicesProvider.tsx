@@ -1,6 +1,8 @@
 import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
+import type { ICertificateService } from '@/services/certificateService';
+import { CertificateService } from '@/services/certificateService';
 import type { ICRMCountryService } from '@/services/crmCountryService';
 import { CRMCountryService } from '@/services/crmCountryService';
 import type { ICRMProvinceService } from '@/services/crmProvinceService';
@@ -31,6 +33,7 @@ export interface Services {
   crmTelephoneCountryCodeService: ICRMTelephoneCountryCodeService;
   crmCountryService: ICRMCountryService;
   crmProvinceService: ICRMProvinceService;
+  certificateService: ICertificateService;
 }
 
 export const ServicesContext = createContext<Services | undefined>(undefined);
@@ -52,6 +55,7 @@ export const ServicesProvider: FC<Props> = ({ children }) => {
     crmTelephoneCountryCodeService: new CRMTelephoneCountryCodeService(axiosHttpService),
     crmCountryService: new CRMCountryService(axiosHttpService),
     crmProvinceService: new CRMProvinceService(axiosHttpService),
+    certificateService: new CertificateService(axiosHttpService),
   });
 
   return (

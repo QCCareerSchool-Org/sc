@@ -12,7 +12,7 @@ import { CertificateView } from '@/components/certificate/CertificateView';
 import { CertificateWrapper } from '@/components/certificate/CertificateWrapper';
 import { Spinner } from '@/components/Spinner';
 import { useAuthState } from '@/hooks/useAuthState';
-import { fetchCertificate } from 'src/lib/fetchCertificate';
+import { useStudentServices } from '@/hooks/useStudentServices';
 
 const CertificatePage: NextPage = () => {
   const router = useRouter();
@@ -20,11 +20,10 @@ const CertificatePage: NextPage = () => {
 
   const { courseId: courseIdParam } = router.query;
   const { studentId } = useAuthState();
+  const { certificateService } = useStudentServices();
 
   useEffect(() => {
-    if (typeof courseIdParam !== 'string') {
-      return;
-    }
+    if (typeof courseIdParam !== 'string') { return; }
     if (typeof studentId !== 'number') {
       dispatch({ type: 'CERTIFICATE_FAILED', payload: { code: 400, message: 'No studentId' } });
       return;
@@ -37,10 +36,13 @@ const CertificatePage: NextPage = () => {
 
     dispatch({ type: 'FETCH_STARTED' });
 
-    fetchCertificate(studentId, courseId)
-      .then(c => dispatch({ type: 'CERTIFICATE_LOADED', payload: c }))
-      .catch((e: unknown) => dispatch({ type: 'CERTIFICATE_FAILED', payload: { code: 500, message: e instanceof Error ? e.message : String(e) } }));
-  }, [ studentId, courseIdParam ]);
+    const subscription = certificateService.getCertificate(studentId, courseId).subscribe({
+      next: c => dispatch({ type: 'CERTIFICATE_LOADED', payload: c }),
+      error: (e: unknown) => dispatch({ type: 'CERTIFICATE_FAILED', payload: { code: 500, message: e instanceof Error ? e.message : String(e) } }),
+    });
+
+    return () => subscription.unsubscribe();
+  }, [ studentId, courseIdParam, certificateService ]);
 
   if (state.fetchState === 'idle') {
     return;
