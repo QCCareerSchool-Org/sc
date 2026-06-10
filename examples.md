@@ -83,7 +83,7 @@ type Params = {
 };
 
 const FooPage: PageComponent<Params> = ({ searchParams, params }) => {
-	const { studentId } = await params;
+  const { studentId } = await params;
   const { qux } = await searchParams;
 
   return (
