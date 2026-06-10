@@ -13,9 +13,12 @@ interface FetchRawCertificateFunction {
 }
 
 export const fetchRawCertificate: FetchRawCertificateFunction = async (clientCookies: string, signatureOrStudentId: string | number, courseId?: number): Promise<RawCertificate> => {
+  console.error(clientCookies);
+
   const url = typeof signatureOrStudentId === 'string'
     ? `${endpoint}/certificates/${signatureOrStudentId}`
     : `${endpoint}/students/${signatureOrStudentId}/courses/${courseId}/certificate`;
+  console.error(url);
 
   const response = await fetch(url, {
     headers: {
