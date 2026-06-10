@@ -3,12 +3,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { ChangeEventHandler, SubmitEventHandler } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
-import type { Observable } from 'rxjs';
-import { catchError, EMPTY, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { catchError, EMPTY, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { Section } from '@/components/Section';
 import { Spinner } from '@/components/Spinner';
-import type { AuthenticationPayload } from '@/domain/authenticationPayload';
 import { useAuthDispatch } from '@/hooks/useAuthDispatch';
 import { useServices } from '@/hooks/useServices';
 import { basePath } from 'src/basePath';
@@ -39,20 +37,12 @@ const LoginPage: NextPage<Props> = ({ returnUrl }) => {
   useEffect(() => {
     const destroy$ = new Subject<void>();
 
-    const doubleLogIn = (u: string, p: string, s: boolean): Observable<AuthenticationPayload> => {
-      return loginService.logIn(u, p, s).pipe(
-        switchMap(authenticationPayload => {
-          return of(0).pipe(map(() => authenticationPayload));
-        }),
-      );
-    };
-
     logIn$.current.pipe(
       tap(() => {
         setSubmitting(true);
         setError(false);
       }),
-      switchMap(({ username: u, password: p, stayLoggedIn: s, returnUrl: r }) => doubleLogIn(u, p, s).pipe(
+      switchMap(({ username: u, password: p, stayLoggedIn: s, returnUrl: r }) => loginService.logIn(u, p, s).pipe(
         tap({
           next: response => {
             setSubmitting(false);

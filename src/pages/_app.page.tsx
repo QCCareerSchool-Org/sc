@@ -60,13 +60,15 @@ const SCApp = ({ Component, pageProps }: AppPropsWithLayout): ReactElement => {
         <SessionRefresh />
         <LessonCloser />
         {getLayout(
-          <RouteGuard>
-            <PageErrorBoundary fallback={<ErrorFallback />}>
-              <Component {...pageProps} />
-            </PageErrorBoundary>
-          </RouteGuard>,
+          <>
+            <RouteGuard>
+              <PageErrorBoundary fallback={<ErrorFallback />}>
+                <Component {...pageProps} />
+                <Chatbot />
+              </PageErrorBoundary>
+            </RouteGuard>
+          </>,
         )}
-        {process.env.NODE_ENV === 'development' && <Chatbot />}
         <ModalBackdrop />
       </StateProvider>
     </AppErrorBoundary>

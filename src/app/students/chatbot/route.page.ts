@@ -16,8 +16,6 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
       cookies(),
     ]);
 
-    const lastResponseId = cookieStore.get('lastResponseId')?.value ?? null;
-
     if (!isValid(body)) {
       return NextResponse.json(
         { error: 'Bad request' },
@@ -27,10 +25,28 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
 
     const metadata: QCMetadata = { studentId: body.student.studentId.toString() };
 
-    const chatResponse = await run(body.message, body.student, metadata, lastResponseId);
+    let conversationId = cookieStore.get('conversationId')?.value ?? null;
 
-    if (chatResponse.responseId) {
-      cookieStore.set('lastResponseId', chatResponse.responseId, { secure: true, httpOnly: true, sameSite: true, maxAge: cookieMaxAge });
+    if ('conversationId' in body) {
+      conversationId = body.conversationId ?? null;
+    }
+
+    const chatResponse = await run(
+      body.message,
+      body.student,
+      metadata,
+      conversationId,
+    );
+
+    if (chatResponse.conversationId) {
+      conversationId = chatResponse.conversationId;
+
+      cookieStore.set('conversationId', conversationId, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        maxAge: cookieMaxAge,
+      });
     }
 
     return NextResponse.json({
@@ -49,10 +65,12 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
 interface RequestBody {
   message: string;
   student: StudentPayload;
+  conversationId?: string | null;
 }
 
 const isValid = (u: unknown): u is RequestBody => {
   return u !== null && typeof u === 'object'
     && 'message' in u && typeof u.message === 'string'
-    && 'student' in u && isStudentPayload(u.student);
+    && 'student' in u && isStudentPayload(u.student)
+    && (!('conversationId' in u) || typeof u.conversationId === 'string' || u.conversationId === null);
 };

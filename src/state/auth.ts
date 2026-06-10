@@ -79,6 +79,7 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
 const storeState = (state: AuthState): void => {
   if (typeof window !== 'undefined' && 'localStorage' in window && navigator.cookieEnabled) {
     window.localStorage.setItem('authState', JSON.stringify(state));
+    setCookie('studentId', state.studentId?.toString() ?? '', 1);
   }
 };
 
@@ -130,4 +131,16 @@ const isRecord = (u: unknown): u is Record<string | number | symbol, unknown> =>
 
 const isStudentType = (u: unknown): u is StudentType => {
   return typeof u === 'string' && [ 'general', 'design', 'event', 'writing' ].includes(u);
+};
+
+const setCookie = (name: string, value: string, daysToLive?: number) => {
+  let cookieString = encodeURIComponent(name) + '=' + encodeURIComponent(value);
+
+  if (daysToLive) {
+    // Convert days to seconds for max-age
+    cookieString += `; max-age=${daysToLive * 24 * 60 * 60}`;
+  }
+
+  cookieString += '; path=/; Secure; SameSite=Lax';
+  document.cookie = cookieString;
 };
