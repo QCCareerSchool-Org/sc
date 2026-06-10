@@ -1,25 +1,43 @@
+import { isSchoolName, type SchoolName } from './school';
+
+interface Designation {
+  name: string;
+  code: string;
+}
+
+export interface RawCertificate {
+  firstName: string;
+  lastName: string;
+  graduationDate: string;
+  courseName: string;
+  schoolName: SchoolName;
+  designation: Designation;
+  signature: string;
+}
+
 export interface Certificate {
   firstName: string;
   lastName: string;
   graduationDate: Date;
   courseName: string;
-  schoolName: string;
-  designation: {
-    name: string;
-    code: string;
-  };
+  schoolName: SchoolName;
+  designation: Designation;
   signature: string;
 }
 
-export const isCertificate = (obj: unknown): obj is Certificate => {
+export const isRawCertificate = (obj: unknown): obj is RawCertificate => {
   return typeof obj === 'object' && obj !== null &&
     'firstName' in obj && typeof obj.firstName === 'string' &&
     'lastName' in obj && typeof obj.lastName === 'string' &&
-    'graduationDate' in obj && (obj.graduationDate instanceof Date || typeof obj.graduationDate === 'string') &&
+    'graduationDate' in obj && typeof obj.graduationDate === 'string' &&
     'courseName' in obj && typeof obj.courseName === 'string' &&
-    'schoolName' in obj && typeof obj.schoolName === 'string' &&
-    'designation' in obj && typeof obj.designation === 'object' && obj.designation !== null &&
-    'name' in obj.designation && typeof obj.designation.name === 'string' &&
-    'code' in obj.designation && typeof obj.designation.code === 'string' &&
+    'schoolName' in obj && isSchoolName(obj.schoolName) &&
+    'designation' in obj && isDesignation(obj.designation) &&
     'signature' in obj && typeof obj.signature === 'string';
+};
+
+const isDesignation = (obj: unknown): obj is Designation => {
+  return typeof obj === 'object' && obj !== null &&
+    'name' in obj && typeof obj.name === 'string' &&
+    'code' in obj && typeof obj.code === 'string';
 };

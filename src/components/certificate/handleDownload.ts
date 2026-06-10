@@ -3,11 +3,12 @@ import jsPDF from 'jspdf';
 
 import { oklchToRgb } from './oklchToRgb';
 
-export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v: boolean) => void) => {
+export const handleDownload = async () => {
   const element = document.getElementById('certificate-print-area');
-  if (!element) { return; }
-
-  setIsGenerating(true);
+  if (!element) {
+    console.error('id not found');
+    return;
+  }
 
   try {
     // Ensure all custom loaded fonts (such as Cinzel and Great Vibes) are fully loaded and prepared by browser
@@ -115,12 +116,9 @@ export const handleDownloadPDF = async (studentName: string, setIsGenerating: (v
     pdf.addImage(imgData, 'JPEG', 0, 0, 11, 8.5);
 
     // Save file with student name
-    const cleanName = studentName ? studentName.trim().replace(/[^a-zA-Z0-9]/gu, '_') : 'QC_Certificate';
-    pdf.save(`QC_Credential_${cleanName}.pdf`);
+    pdf.save(`certificate.pdf`);
   } catch (error) {
     console.error('PDF creation failed, falling back to window.print():', error);
     window.print();
-  } finally {
-    setIsGenerating(false);
   }
 };

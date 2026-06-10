@@ -1,0 +1,17 @@
+.linkedin {
+  background: #0369a1;
+  border: none;
+}
+
+.linkedin:hover {
+  background: #0369a1;
+}
+
+.blackBtn {
+  background: black;
+  border: none;
+}
+
+.blackBtn:hover {
+  background: black;
+}
