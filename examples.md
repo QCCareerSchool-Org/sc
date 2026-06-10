@@ -1,3 +1,5 @@
+# Example Components
+
 ## Standard Component
 
 ```tsx
