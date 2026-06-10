@@ -1,6 +1,6 @@
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
-import type { ChangeEventHandler, FC, MouseEvent, MouseEventHandler, SubmitEventHandler } from 'react';
+import type { ChangeEventHandler, FC, FocusEventHandler, MouseEvent, MouseEventHandler, SubmitEventHandler } from 'react';
 import { useCallback, useId, useReducer } from 'react';
 
 import { NewAssignmentList } from './NewAssignmentList';
@@ -9,6 +9,7 @@ import { NewSubmissionStatus } from './NewSubmissionStatus';
 import { NewTransfersList } from './NewTransfersList';
 import { initialState, reducer } from './state';
 import { useInitialData } from './useInitialData';
+import { useSaveAdminNote } from './useSaveAdminNote';
 import { useSubmissionRestart } from './useSubmissionRestart';
 import { useSubmissionTransfer } from './useSubmissionTransfer';
 import { Modal } from '@/components/Modal';
@@ -25,11 +26,13 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
   const id = useId();
   const router = useRouter();
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  // const [ adminNote, setAdminNote ] = useState<string>(state.data?.newSubmission.enrollment.student.adminNote ?? '');
 
   useInitialData(dispatch, administratorId, submissionId);
 
   const submissionTransfer$ = useSubmissionTransfer(dispatch, administratorId, submissionId);
   const submissionRestart$ = useSubmissionRestart(dispatch, administratorId, submissionId);
+  const saveAdminNote$ = useSaveAdminNote(administratorId, dispatch);
 
   const handleClick = useCallback((e: MouseEvent<HTMLTableRowElement>, assignmentId: string): void => {
     void router.push(`/administrators/new-assignments/${assignmentId}`);
@@ -39,6 +42,18 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
     const tutorId = e.target.value.length ? parseInt(e.target.value, 10) : null;
     dispatch({ type: 'TUTOR_ID_CHANGED', payload: tutorId });
   };
+
+  const handleNoteChange: ChangeEventHandler<HTMLTextAreaElement> = e => {
+    dispatch({ type: 'ADMIN_NOTE_CHANGED', payload: e.target.value });
+  };
+
+  const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
+    if (!state.data) {
+      return;
+    }
+    const studentId = state.data.newSubmission.enrollment.studentId;
+    saveAdminNote$.next({ studentId, note: state.data.newSubmission.enrollment.student.adminNote ?? '' });
+  }, [ saveAdminNote$, state.data ]);
 
   const handlePopupClose = useCallback(() => dispatch({ type: 'POPUP_TOGGLED' }), []);
 
@@ -97,6 +112,22 @@ export const NewSubmissionView: FC<Props> = ({ administratorId, submissionId }) 
                   <NewTransfersList transfers={submission.newTransfers} />
                 </div>
               )}
+              <label htmlFor={id + '_note'} className="form-label">
+                Admin Note
+                {state.adminNoteForm.processingState === 'saving' && <span className="ms-2"><Spinner size="sm" /></span>}
+                {state.adminNoteForm.processingState === 'idle' && state.adminNoteForm.errorMessage === undefined && <span className="ms-2 text-success small">Saved</span>}
+                {state.adminNoteForm.processingState === 'save error' && <span className="ms-2 text-danger small">{state.adminNoteForm.errorMessage}</span>}
+              </label>
+              <textarea
+                id={id + '_note'}
+                className="form-control"
+                rows={4}
+                value={state.data.newSubmission.enrollment.student.adminNote ?? ''}
+                onChange={handleNoteChange}
+                onBlur={handleSaveNote}
+                placeholder="Enter note here..."
+              />
+              <label htmlFor={id + '_note'} className="form-label mt-3">Tutor Note</label>
               <div className="form-control" style={{ minHeight: 120 }}>
                 {state.data.newSubmission.enrollment.student.tutorNote ?? ''}
               </div>

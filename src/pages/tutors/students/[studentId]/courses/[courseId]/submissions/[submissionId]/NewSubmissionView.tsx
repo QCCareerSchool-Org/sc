@@ -12,7 +12,7 @@ import { useFeedbackDelete } from './useFeedbackDelete';
 import { useFeedbackUpload } from './useFeedbackUpload';
 import { useInitialData } from './useInitialData';
 import { useReturn } from './useReturn';
-import { useSaveNote } from './useSaveNote';
+import { useSaveTutorNote } from './useSaveTutorNote';
 import { Audio } from '@/components/Audio';
 import { InaccessibleUnit } from '@/components/InaccessibleUnit';
 import { Section } from '@/components/Section';
@@ -38,11 +38,11 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   const feedbackDelete$ = useFeedbackDelete(dispatch);
   const close$ = useClose(dispatch);
   const return$ = useReturn(dispatch);
-  const saveNote$ = useSaveNote();
+  const saveTutorNote$ = useSaveTutorNote(dispatch);
 
   const handleSaveNote: FocusEventHandler<HTMLTextAreaElement> = useCallback(() => {
-    saveNote$.next({ tutorId, studentId, note: state.newSubmission?.enrollment.student.tutorNote ?? null });
-  }, [ saveNote$, tutorId, studentId, state.newSubmission?.enrollment.student.tutorNote ]);
+    saveTutorNote$.next({ tutorId, studentId, note: state.newSubmission?.enrollment.student.tutorNote ?? null });
+  }, [ saveTutorNote$, tutorId, studentId, state.newSubmission?.enrollment.student.tutorNote ]);
 
   const handleAssignmentClick = useCallback((e: MouseEvent, assignmentId: string): void => {
     void router.push(`${router.asPath}/assignments/${assignmentId}`);
@@ -106,7 +106,12 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
               </table>
             </div>
             <div className="col-lg-6 col-md-12">
-              <label htmlFor={id + '_note'} className="form-label">Tutor Note</label>
+              <label htmlFor={id + '_note'} className="form-label">
+                Tutor Note
+                {state.tutorNoteForm.processingState === 'saving' && <span className="ms-2"><Spinner size="sm" /></span>}
+                {state.tutorNoteForm.processingState === 'idle' && state.tutorNoteForm.errorMessage === undefined && <span className="ms-2 text-success small">Saved</span>}
+                {state.tutorNoteForm.processingState === 'save error' && <span className="ms-2 text-danger small">{state.tutorNoteForm.errorMessage}</span>}
+              </label>
               <textarea
                 id={id + '_note'}
                 className="form-control"
@@ -116,6 +121,10 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
                 onBlur={handleSaveNote}
                 placeholder="Enter note here..."
               />
+              <label htmlFor={id + '_note'} className="form-label mt-3">Admin Note</label>
+              <div className="form-control" style={{ minHeight: 120 }}>
+                {state.newSubmission.enrollment.student.adminNote ?? ''}
+              </div>
             </div>
           </div>
           {state.newSubmission.tutorId !== tutorId && (

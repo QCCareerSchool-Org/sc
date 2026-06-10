@@ -7,6 +7,7 @@ export interface Student {
   firstName: string;
   lastName: string;
   tutorNote: string | null;
+  adminNote: string | null;
   entityVersion: number;
   modified: Date;
 }
@@ -21,6 +22,7 @@ export interface RawStudent {
   firstName: string;
   lastName: string;
   tutorNote: string | null;
+  adminNote: string | null;
   entityVersion: number;
   /** string date */
   modified: string;
