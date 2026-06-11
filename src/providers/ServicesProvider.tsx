@@ -1,6 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
+import { certificateService, crmCountryService, crmProvinceService, crmTelephoneCountryCodeService, gradeService, loginService, passwordResetRequestService, uuidService, videoService } from '../services';
 import type { ICertificateService } from '@/services/certificateService';
 import { CertificateService } from '@/services/certificateService';
 import type { ICRMCountryService } from '@/services/crmCountryService';
@@ -22,7 +23,6 @@ import { UUIDService } from '@/services/uuidService';
 import type { IVideoService } from '@/services/videoService';
 import { VideoService } from '@/services/videoService';
 import { instance } from 'src/axiosInstance';
-import { loginService, passwordResetRequestService } from '../services';
 
 export interface Services {
   httpService: IHttpService;
@@ -46,15 +46,15 @@ interface Props {
 export const ServicesProvider: FC<Props> = ({ children }) => {
   const [ state ] = useState({
     httpService: AxiosHttpService,
-    loginService
+    loginService,
     passwordResetRequestService,
-    uuidService: new UUIDService(),
-    gradeService: new GradeService(),
-    videoService: new VideoService(axiosHttpService),
-    crmTelephoneCountryCodeService: new CRMTelephoneCountryCodeService(axiosHttpService),
-    crmCountryService: new CRMCountryService(axiosHttpService),
-    crmProvinceService: new CRMProvinceService(axiosHttpService),
-    certificateService: new CertificateService(axiosHttpService),
+    uuidService,
+    gradeService,
+    videoService,
+    crmTelephoneCountryCodeService,
+    crmCountryService,
+    crmProvinceService,
+    certificateService,
   });
 
   return (

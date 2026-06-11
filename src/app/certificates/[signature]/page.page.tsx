@@ -1,8 +1,9 @@
+import { firstValueFrom } from 'rxjs';
+
 import styles from './index.module.css';
 import { CertificateView } from '@/components/certificate/CertificateView';
 import { CertificateWrapper } from '@/components/certificate/CertificateWrapper';
-import { fetchCertificate } from 'src/lib/fetchCertificate';
-// import { useServices } from '@/hooks/useServices';
+import { certificateService } from '@/services/index';
 import type { PageComponent } from 'src/serverComponent';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -12,7 +13,7 @@ type Params = {
 
 const CertificatePage: PageComponent<Params> = async ({ params }) => {
   const { signature } = await params;
-  const certificate = await certificateService.getCertificate(signature);
+  const certificate = await firstValueFrom(certificateService.getCertificate(signature));
 
   return (
     <>
