@@ -12,7 +12,7 @@ type Params = {
 
 const CertificatePage: PageComponent<Params> = async ({ params }) => {
   const { signature } = await params;
-  const certificate = await fetchCertificate(signature);
+  const certificate = await certificateService.getCertificate(signature);
 
   return (
     <>

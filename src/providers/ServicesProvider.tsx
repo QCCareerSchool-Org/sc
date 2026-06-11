@@ -22,6 +22,7 @@ import { UUIDService } from '@/services/uuidService';
 import type { IVideoService } from '@/services/videoService';
 import { VideoService } from '@/services/videoService';
 import { instance } from 'src/axiosInstance';
+import { loginService, passwordResetRequestService } from '../services';
 
 export interface Services {
   httpService: IHttpService;
@@ -38,17 +39,15 @@ export interface Services {
 
 export const ServicesContext = createContext<Services | undefined>(undefined);
 
-const axiosHttpService = new AxiosHttpService(instance);
-
 interface Props {
   children: ReactNode;
 }
 
 export const ServicesProvider: FC<Props> = ({ children }) => {
   const [ state ] = useState({
-    httpService: axiosHttpService,
-    loginService: new LoginService(axiosHttpService),
-    passwordResetRequestService: new PasswordResetRequestService(axiosHttpService),
+    httpService: AxiosHttpService,
+    loginService
+    passwordResetRequestService,
     uuidService: new UUIDService(),
     gradeService: new GradeService(),
     videoService: new VideoService(axiosHttpService),
