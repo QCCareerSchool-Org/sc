@@ -46,7 +46,7 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
 
   const handleAssignmentClick = useCallback((e: MouseEvent, assignmentId: string): void => {
     const url = `/tutors/students/${studentId}/courses/${courseId}/submissions/${submissionId}/assignments/${assignmentId}`;
-    console.log(url);
+    console.log({ url, routerBasePath: router.basePath, pathname: router.pathname, asPath: router.asPath });
     void router.push(url);
   }, [ router, studentId, courseId, submissionId ]);
 
