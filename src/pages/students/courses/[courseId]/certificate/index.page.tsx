@@ -38,7 +38,7 @@ const CertificatePage: NextPage = () => {
 
     const subscription = certificateService.getCertificate(studentId, courseId).subscribe({
       next: c => dispatch({ type: 'CERTIFICATE_LOADED', payload: c }),
-      error: (e: unknown) => dispatch({ type: 'CERTIFICATE_FAILED', payload: { code: 500, message: e instanceof Error ? e.message : String(e) } }),
+      error: e => dispatch({ type: 'CERTIFICATE_FAILED', payload: { code: 500, message: e instanceof Error ? e.message : String(e) } }),
     });
 
     return () => subscription.unsubscribe();

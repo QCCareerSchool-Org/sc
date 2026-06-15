@@ -10,7 +10,7 @@ import { UUIDService } from './uuidService';
 import { VideoService } from './videoService';
 import { instance } from 'src/axiosInstance';
 
-const axiosHttpService = new AxiosHttpService(instance);
+export const axiosHttpService = new AxiosHttpService(instance);
 
 export const loginService = new LoginService(axiosHttpService);
 export const passwordResetRequestService = new PasswordResetRequestService(axiosHttpService);
