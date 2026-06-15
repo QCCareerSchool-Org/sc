@@ -13,6 +13,9 @@ const nextConfig = {
     // If your sass-loader / Sass version supports it, you can also do:
     silenceDeprecations: [ 'import', 'global-builtin' ],
   },
+  experimental: {
+    clientRouterFilter: false,
+  },
 };
 
 module.exports = nextConfig;
