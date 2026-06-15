@@ -21,8 +21,9 @@ const CertificatePage: PageComponent<Params> = async ({ params }) => {
             <CertificateWrapper>
               <CertificateView
                 name={certificate.firstName + ' ' + certificate.lastName}
-                schoolName={certificate.schoolName}
                 courseName={certificate.courseName}
+                designation={certificate.courseName}
+                schoolName={certificate.schoolName}
                 date={certificate.graduationDate}
               />
             </CertificateWrapper>

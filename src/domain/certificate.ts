@@ -11,7 +11,7 @@ export interface RawCertificate {
   graduationDate: string;
   courseName: string;
   schoolName: SchoolName;
-  designation: Designation;
+  designation?: Designation;
   signature: string;
 }
 
@@ -21,7 +21,7 @@ export interface Certificate {
   graduationDate: Date;
   courseName: string;
   schoolName: SchoolName;
-  designation: Designation;
+  designation?: Designation;
   signature: string;
 }
 
@@ -32,7 +32,7 @@ export const isRawCertificate = (obj: unknown): obj is RawCertificate => {
     'graduationDate' in obj && typeof obj.graduationDate === 'string' &&
     'courseName' in obj && typeof obj.courseName === 'string' &&
     'schoolName' in obj && isSchoolName(obj.schoolName) &&
-    'designation' in obj && isDesignation(obj.designation) &&
+    (!('designation' in obj) || isDesignation(obj.designation)) &&
     'signature' in obj && typeof obj.signature === 'string';
 };
 

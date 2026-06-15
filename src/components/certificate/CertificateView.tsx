@@ -13,11 +13,12 @@ import { svgToPngBase64 } from './svgToPngBase64';
 interface Props {
   name: string;
   courseName: string;
+  designation?: string;
   schoolName: string;
   date: Date;
 }
 
-export const CertificateView: FC<Props> = ({ name, courseName, schoolName, date }) => {
+export const CertificateView: FC<Props> = ({ name, courseName, designation, schoolName, date }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [ scale, setScale ] = useState(1);
   const [ registrarPng, setRegistrarPng ] = useState('');
@@ -63,9 +64,9 @@ export const CertificateView: FC<Props> = ({ name, courseName, schoolName, date 
           <div className={` ${styles.recipientName} w-full text-center`}>{name}</div>
         </div>
 
-        <div className={` ${styles.metaSubtext} ${styles.requirements}`}> has completed all requirements of</div>
+        <div className={` ${styles.metaSubtext} ${styles.requirements}`}> has completed all requirements {designation && 'for the designation' } of</div>
         <div style={{ position: 'absolute', top: '365px', left: '80px', width: '896px', height: '69px', borderTop: '1.5px solid #000000', borderBottom: '1.5px solid #000000', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', padding: '0 16px', zIndex: 10 }}>
-          <h2 className={styles.courseTitle}>{courseName}</h2>
+          <h2 className={styles.courseTitle}>{designation ?? courseName}</h2>
         </div>
         <div style={{ position: 'absolute', top: '454px', left: '488px', width: '80px', display: 'flex', justifyContent: 'center' }}>
           <MiniFlourish />

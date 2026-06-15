@@ -3,7 +3,7 @@
 import type { FC } from 'react';
 import { useState } from 'react';
 
-import styles from './index.module.css';
+import styles from './ActionsSection.module.css';
 import { handleDownload } from '@/components/certificate/handleDownload';
 
 export const DownloadButton: FC = () => {

@@ -3,22 +3,23 @@ import { FaLinkedinIn } from 'react-icons/fa';
 import { GiGraduateCap } from 'react-icons/gi';
 import { GrDownload } from 'react-icons/gr';
 
+import styles from './ActionsSection.module.css';
 import { DownloadButton } from './DownloadButton';
-import styles from './index.module.css';
 
 interface Props {
+  certification?: string;
   graduationDate: Date;
   url: string;
 }
 
-export const ActionsSection: FC<Props> = ({ graduationDate, url }) => {
+export const ActionsSection: FC<Props> = ({ certification, graduationDate, url }) => {
   const linkedInUrl = getLinkedInUrl(graduationDate, url);
 
   const actions = [
     {
       title: 'Add to LinkedIn Profile',
       subtitle: 'Licenses & Certifications Section',
-      description: "Add this verified credential to your LinkedIn profile's Licenses & Certifications section. It makes your profile highly searchable for recruiters and instantly signals your expertise.",
+      description: `Update your LinkedIn Profile to add your ${certification} certification under "Licenses & Certifications." This designation instantly signals your expertise.`,
       buttonText: 'Add Credential',
       styling: styles.linkedin,
       link: linkedInUrl,
