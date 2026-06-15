@@ -45,7 +45,9 @@ export const NewSubmissionView: FC<Props> = ({ tutorId, studentId, courseId, sub
   }, [ saveTutorNote$, tutorId, studentId, state.newSubmission?.enrollment.student.tutorNote ]);
 
   const handleAssignmentClick = useCallback((e: MouseEvent, assignmentId: string): void => {
-    void router.push(`/tutors/students/${studentId}/courses/${courseId}/submissions/${submissionId}/assignments/${assignmentId}`);
+    const url = `/tutors/students/${studentId}/courses/${courseId}/submissions/${submissionId}/assignments/${assignmentId}`;
+    console.log(url);
+    void router.push(url);
   }, [ router, studentId, courseId, submissionId ]);
 
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback(e => {
