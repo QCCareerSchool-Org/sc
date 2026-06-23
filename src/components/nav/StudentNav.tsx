@@ -79,7 +79,7 @@ export const StudentNav: FC<StudentNavProps> = props => {
           <div className="collapse navbar-collapse" id="studentNav">
             {otherNavPresent && <span className="d-none d-md-inline me-3" style={{ minWidth: 64 }}><span className="badge text-bg-secondary">Student</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
-              {authState.studentType === 'general'
+              {authState.studentType === 'general' || authState.studentType === 'makeup' || authState.studentType === 'pet'
                 ? <GeneralNavItems studentId={authState.studentId} index={index} />
                 : <OldNavItems studentId={authState.studentId} studentType={authState.studentType} index={index} />
               }
@@ -136,11 +136,16 @@ const GeneralNavItems: FC<GeneralNavItemsProps> = ({ studentId, index }) => {
       </li>
       {nonPPAEnrollments && (
         <li className="nav-item">
-          <a className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/virtual-community.php">Community Resources</a>
+          <Link className={`nav-link ${index === 4 ? 'active' : ''}`} aria-current={index === 4 ? 'page' : undefined} href="/students/community">Community</Link>
+        </li>
+      )}
+      {nonPPAEnrollments && (
+        <li className="nav-item">
+          <Link className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined} href="/students/shop">Shop</Link>
         </li>
       )}
       <li className="nav-item">
-        <Link href="/students/account" className={`nav-link ${index === 5 ? 'active' : ''}`} aria-current={index === 5 ? 'page' : undefined}><span className="d-none d-xl-inline">My </span>Account</Link>
+        <Link href="/students/account" className={`nav-link ${index === 6 ? 'active' : ''}`} aria-current={index === 6 ? 'page' : undefined}><span className="d-none d-xl-inline">My </span>Account</Link>
       </li>
     </>
   );
@@ -215,13 +220,13 @@ const OldNavItems: FC<OldNavItemsProps> = ({ index, studentType, assignmentsEnab
           )}
           <li><a className="dropdown-item" href="/students/badges.php">School Badges</a></li>
           {(studentType === 'event' || studentType === 'design') && (
-            <li><a className="dropdown-item d-none d-md-block d-lg-none" href="/students/virtual-community.php">Community Resources</a></li>
+            <li><Link className="dropdown-item d-none d-md-block d-lg-none" href="/students/community">Community</Link></li>
           )}
         </ul>
       </li>
       {(studentType === 'event' || studentType === 'design') && (
         <li className="nav-item d-md-none d-lg-inline">
-          <a href="/students/virtual-community.php" className="nav-link">Community Resources</a>
+          <Link href="/students/community" className="nav-link">Community</Link>
         </li>
       )}
       <li className="nav-item">
