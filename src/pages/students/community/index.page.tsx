@@ -1,67 +1,67 @@
-import { RedditExpertSection } from './RedditSection';
-import { useAuthState } from '@/hooks/useAuthState';
+import { type FC, useEffect, useState } from 'react';
 
-const Community = () => {
-  const authState = useAuthState();
-  const studentType = authState.studentType;
+import { RedditExpertSection } from './RedditSection';
+import type { SchoolSlug } from '@/domain/school';
+import { useAuthState } from '@/hooks/useAuthState';
+import { useStudentServices } from '@/hooks/useStudentServices';
+
+interface State {
+  school?: SchoolSlug;
+  schools: SchoolSlug[];
+}
+
+const initialState: State = { schools: [] };
+
+const Community: FC = () => {
+  const { studentId } = useAuthState();
+  const { studentService } = useStudentServices();
+  const [ state, dispatch ] = useState<State>(initialState);
+
+  useEffect(() => {
+    if (!studentId) {
+      return;
+    }
+
+    const subscription = studentService.getStudent(studentId).subscribe(student => {
+      console.log(student);
+      dispatch({ schools: [] }); // update the state here based on the response
+    });
+
+    return () => { subscription.unsubscribe(); };
+  }, [ studentService, studentId ]);
+
+  if (!state.school) {
+    return;
+  }
+
   const hasWorkshopSeries =
-    studentType === 'event' ||
-    studentType === 'design' ||
-    studentType === 'makeup' ||
-    studentType === 'pet';
+    state.school === 'event' ||
+    state.school === 'design' ||
+    state.school === 'makeup' ||
+    state.school === 'pet';
+
   return (
     <>
-      {hasWorkshopSeries && (
-        <RedditExpertSection school={studentType} />
-      )}
+      {hasWorkshopSeries && <RedditExpertSection school={state.school} />}
+
       <section className="bg-white">
         <div className="container">
           <h2 className="h1">Join the Virtual Community</h2>
-
-          <p>
-            Meet and interact with fellow students across all programs in our
-            private Facebook group. Ask questions, share insights, or just say
-            hi—this is your space to connect.
-          </p>
-
-          {studentType === 'makeup' ? (
-            <p>
-              <a href="https://www.facebook.com/groups/qcmakeupacademyvc">
-                QC Makeup Academy Virtual Community
-              </a>
-            </p>
-          ) : null}
-
-          {studentType === 'event' && (
-            <p>
-              <a href="https://www.facebook.com/groups/qceventschoolvc">
-                QC Event School Virtual Community
-              </a>
-            </p>
+          <p>Meet and interact with fellow students across all programs in our private Facebook group. Ask questions, share insights, or just say hi—this is your space to connect.</p>
+          {state.schools.includes('makeup') && (
+            <p><a href="https://www.facebook.com/groups/qcmakeupacademyvc">QC Makeup Academy Virtual Community</a></p>
           )}
-
-          {studentType === 'design' && (
-            <p>
-              <a href="https://www.facebook.com/groups/QCDesignSchoolVirtualClassroom">
-                QC Design School Virtual Community
-              </a>
-            </p>
+          {state.school.includes('event') && (
+            <p><a href="https://www.facebook.com/groups/qceventschoolvc">QC Event School Virtual Community</a></p>
           )}
-
-          {studentType === 'pet' && (
-            <p>
-              <a href="https://www.facebook.com/groups/qcpetstudiesvirtualclassroom">
-                QC Pet Studies Virtual Community
-              </a>
-            </p>
+          {state.schools.includes('design') && (
+            <p><a href="https://www.facebook.com/groups/QCDesignSchoolVirtualClassroom">QC Design School Virtual Community</a></p>
           )}
-
-          {studentType === 'wellness' && (
-            <p>
-              <a href="https://www.facebook.com/groups/qcwellnessvc">
-                QC Wellness Studies Virtual Community
-              </a>
-            </p>
+          {state.schools.includes('pet') && (
+            <p><a href="https://www.facebook.com/groups/qcpetstudiesvirtualclassroom">QC Pet Studies Virtual Community</a></p>
+          )}
+          {state.schools.includes('wellness') && (
+            <p><a href="https://www.facebook.com/groups/qcwellnessvc">QC Wellness Studies Virtual Community</a></p>
           )}
         </div>
       </section>
@@ -70,18 +70,9 @@ const Community = () => {
         <section>
           <div className="container">
             <h2>Live Expert Workshop Series</h2>
-
-            <p className="lead">
-              Expert Advice. Industry Insights. Real-World Success.
-            </p>
-
-            <p>
-              Watch past live workshops featuring industry professionals
-              sharing career advice, practical tips, and insider knowledge to
-              help you succeed in the design industry.
-            </p>
-
-            {studentType === 'makeup' && (
+            <p className="lead">Expert Advice. Industry Insights. Real-World Success.</p>
+            <p>Watch past live workshops featuring industry professionals sharing career advice, practical tips, and insider knowledge to help you succeed in the design industry.</p>
+            {state.school === 'makeup' && (
               <>
                 <h3 className="h5 mt-2">QC Makeup Academy</h3>
                 <iframe
@@ -94,7 +85,7 @@ const Community = () => {
               </>
             )}
 
-            {studentType === 'event' && (
+            {state.school === 'event' && (
               <>
                 <h3 className="h5 mt-2">QC Event School</h3>
                 <iframe
@@ -107,7 +98,7 @@ const Community = () => {
               </>
             )}
 
-            {studentType === 'design' && (
+            {state.school === 'design' && (
               <>
                 <h3 className="h5 mt-2">QC Design School</h3>
                 <iframe
@@ -120,7 +111,7 @@ const Community = () => {
               </>
             )}
 
-            {studentType === 'pet' && (
+            {state.school === 'pet' && (
               <>
                 <h3 className="h5 mt-2">QC Pet Studies</h3>
                 <iframe
