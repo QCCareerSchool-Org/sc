@@ -67,7 +67,6 @@ const Community: FC = () => {
     const subscription = studentService.getStudent(studentId).subscribe(student => {
       const slugs = student.enrollments.map(e => e.course.school.slug);
       const uniqueSlugs = [ ...new Set(slugs) ] as SchoolSlug[];
-      console.log('Unique slugs:', uniqueSlugs);
       dispatch({
         schools: uniqueSlugs,
         school: uniqueSlugs[0],
