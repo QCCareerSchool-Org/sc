@@ -130,7 +130,7 @@ const isRecord = (u: unknown): u is Record<string | number | symbol, unknown> =>
 };
 
 const isStudentType = (u: unknown): u is StudentType => {
-  return typeof u === 'string' && [ 'general', 'design', 'event', 'writing', 'makeup', 'pet' ].includes(u);
+  return typeof u === 'string' && [ 'general', 'design', 'event', 'writing' ].includes(u);
 };
 
 const setCookie = (name: string, value: string, daysToLive?: number) => {

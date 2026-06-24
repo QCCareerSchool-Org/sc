@@ -79,7 +79,7 @@ export const StudentNav: FC<StudentNavProps> = props => {
           <div className="collapse navbar-collapse" id="studentNav">
             {otherNavPresent && <span className="d-none d-md-inline me-3" style={{ minWidth: 64 }}><span className="badge text-bg-secondary">Student</span></span>}
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
-              {authState.studentType === 'general' || authState.studentType === 'makeup' || authState.studentType === 'pet'
+              {authState.studentType === 'general'
                 ? <GeneralNavItems studentId={authState.studentId} index={index} />
                 : <OldNavItems studentId={authState.studentId} studentType={authState.studentType} index={index} />
               }

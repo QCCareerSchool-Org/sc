@@ -14,6 +14,7 @@ interface FacebookGroup {
   url: string;
   name: string;
 }
+const schoolPriority: SchoolSlug[] = [ 'makeup', 'event', 'design', 'pet', 'wellness', 'writing' ];
 
 const facebookGroups: Partial<Record<SchoolSlug, FacebookGroup>> = {
   makeup: { url: 'https://www.facebook.com/groups/qcmakeupacademyvc', name: 'QC Makeup Academy Virtual Community' },
@@ -67,9 +68,11 @@ const Community: FC = () => {
     const subscription = studentService.getStudent(studentId).subscribe(student => {
       const slugs = student.enrollments.map(e => e.course.school.slug);
       const uniqueSlugs = [ ...new Set(slugs) ] as SchoolSlug[];
+      const primarySchool = schoolPriority.find(slug => uniqueSlugs.includes(slug));
+
       dispatch({
         schools: uniqueSlugs,
-        school: uniqueSlugs[0],
+        school: primarySchool,
       }); // update the state here based on the response
     });
 

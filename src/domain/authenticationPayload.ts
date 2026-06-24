@@ -1,4 +1,4 @@
-export type StudentType = 'general' | 'design' | 'event' | 'writing' | 'makeup' | 'pet' | 'wellness';
+export type StudentType = 'general' | 'design' | 'event' | 'writing';
 
 export interface AuthenticationPayload {
   studentCenter: {
