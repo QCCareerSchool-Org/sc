@@ -2,6 +2,7 @@
 const nextConfig = {
   basePath: '/sc',
   pageExtensions: [ 'page.tsx', 'page.ts', 'page.jsx', 'page.js' ],
+  transpilePackages: [ 'sanitize-html' ],
   images: {
     remotePatterns: [
       { protocol: 'http', hostname: 'localhost' },
