@@ -1,6 +1,5 @@
 import NextError from 'next/error';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
 import { Fragment, useCallback, useEffect, useMemo, useReducer, useState } from 'react';
@@ -173,7 +172,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
                   {optionalSubmission && (
                     <div className="alert alert-info mt-4">
-                      Submission {optionalSubmission.unitLetter} is optional. If you do not wish to complete it, you can <Link href={`/students/courses/${courseId}/submissions/${optionalSubmission.submissionId}#skip`}>skip it and move on to the next submission</Link>.
+                      Submission {optionalSubmission.unitLetter} is optional. If you do not wish to complete it, you can <a href={`/students/courses/${courseId}/submissions/${optionalSubmission.submissionId}#skip`}>skip it and move on to the next submission</a>.
                     </div>
                   )}
                 </>
