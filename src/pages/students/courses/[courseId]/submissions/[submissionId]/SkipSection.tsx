@@ -33,7 +33,7 @@ export const SkipSection: FC<Props> = ({ studentId, courseId, submissionId, proc
   const buttonDisabled = processingState === 'submitting' || processingState === 'skipping';
 
   return (
-    <Section className="skipSection">
+    <Section className="skipSection" id="skip">
       <div className="container">
         <h2>Skip Assignments</h2>
         <p>These assignments are optional. You can skip them.</p>

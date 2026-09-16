@@ -1,8 +1,9 @@
 import NextError from 'next/error';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FC, MouseEvent, MouseEventHandler, SyntheticEvent } from 'react';
-import { Fragment, useCallback, useMemo, useReducer, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { MdAssignmentTurnedIn, MdCollectionsBookmark, MdListAlt, MdMovie, MdMusicNote, MdPolicy } from 'react-icons/md';
 
 import { certificationDataDictionary } from './certificationData';
@@ -59,6 +60,19 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
     void router.push(`/students/courses/${courseId}/submissions/${submissionId}`);
   }, [ router, courseId ]);
 
+  useEffect(() => {
+    if (!state.data) {
+      return;
+    }
+
+    if (state.data.enrollment.course.submissionType === 1) {
+      return;
+    }
+
+    // courses with the old system should use the old page
+    window.location.href = `/students/course-materials/new.bs.php?course_id=${courseId}`;
+  }, [ courseId, state.data, state.data?.enrollment.course.submissionType ]);
+
   const isDesignCourse = state.data?.enrollment.course.school.slug === 'design';
 
   if (state.error) {
@@ -99,13 +113,6 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
     ? [ state.data.crmEnrollment.status === 'G', state.data.crmEnrollment.status === 'G' ? state.data.crmEnrollment.statusDate : null ]
     : [ enrollment.graduated, null ];
 
-  if (enrollment.course.submissionType !== 1) {
-    // courses with the old system should use the old page
-    // eslint-disable-next-line react-hooks/immutability
-    window.location.href = `/students/course-materials/new.bs.php?course_id=${courseId}`;
-    return null;
-  }
-
   const handleInitializeButtonClick: MouseEventHandler<HTMLButtonElement> = () => {
     initializeNextUnit$.next({
       processingState: state.form.processingState,
@@ -125,6 +132,8 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
       dispatch({ type: 'METADATA_INSERTED_OR_UPDATED', payload: { name: '', value: '1' } });
     });
   };
+
+  const optionalSubmission = enrollment.newSubmissions.find(n => n.optional && n.submitted === null);
 
   return (
     <>
@@ -162,6 +171,11 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                 <>
                   <p id="assignments" className="lead mb-2 text-shadow menuScrollOffset"><MdAssignmentTurnedIn /> Assignments</p>
                   <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
+                  {optionalSubmission && (
+                    <div className="alert alert-info mt-4">
+                      Submission {optionalSubmission.unitLetter} is optional. If you do not wish to complete it, you can <Link href={`/students/courses/${courseId}/submissions/${optionalSubmission.submissionId}#skip`}>skip it and move on to the next submission</Link>.
+                    </div>
+                  )}
                 </>
               )}
               {courseId === 118 && <div className="d-none d-lg-flex justify-content-center"><Image src={EWLogo} alt="Earthwise" /></div>}
