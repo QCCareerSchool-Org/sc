@@ -172,7 +172,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
                   {optionalSubmission && (
                     <div className="alert alert-info mt-4">
-                      Submission {optionalSubmission.unitLetter} is optional. If you do not wish to complete it, you can <a href={`/students/courses/${courseId}/submissions/${optionalSubmission.submissionId}#skip`}>skip it and move on to the next submission</a>.
+                      Submission {optionalSubmission.unitLetter} is optional. If you do not wish to complete it, you can <a href={`/sc/students/courses/${courseId}/submissions/${optionalSubmission.submissionId}#siteFooter`}>skip it and move on to the next submission</a>.
                     </div>
                   )}
                 </>
