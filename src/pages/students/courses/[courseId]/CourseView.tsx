@@ -134,6 +134,11 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
 
   const optionalSubmission = enrollment.newSubmissions.find(n => n.optional && n.submitted === null);
 
+  const handleOptionalClick: MouseEventHandler<HTMLAnchorElement> = e => {
+    e.preventDefault();
+    void router.push(`/students/courses/${courseId}/submissions/${optionalSubmission?.submissionId}#skip`);
+  };
+
   return (
     <>
       <Section>
@@ -172,7 +177,7 @@ export const CourseView: FC<Props> = ({ studentId, courseId }) => {
                   <SubmissionsTable newSubmissions={enrollment.newSubmissions} onNewUnitClick={handleNewUnitClick} />
                   {optionalSubmission && (
                     <div className="alert alert-info mt-4">
-                      Submission {optionalSubmission.unitLetter} is optional. If you do not wish to complete it, you can <a className="alert-link" href={`/sc/students/courses/${courseId}/submissions/${optionalSubmission.submissionId}#siteFooter`}>skip it and move on to the next submission</a>.
+                      Submission {optionalSubmission.unitLetter} is optional. If you do not wish to complete it, you can <a className="alert-link" href="#" onClick={handleOptionalClick}>skip it and move on to the next submission</a>.
                     </div>
                   )}
                 </>
